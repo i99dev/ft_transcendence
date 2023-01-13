@@ -15,6 +15,16 @@
   "devDependencies": {
     "lerna": "^6.4.1",
     "concurrently": "^7.6.0",
-    "prettier": "^2.8.2"
+    "prettier": "^2.8.2",
+    "lerna-changelog": "^2.2.0"
+  },
+  "changelog": {
+    "labels": {
+      "feature": "New Feature",
+      "bug": "Bug Fix",
+      "enhancement": "Enhancement",
+      "documentation": "Documentation",
+      "internal": "Internal"
+    }
   }
 }
