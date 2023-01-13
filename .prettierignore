@@ -1,0 +1,3 @@
+node_modules/*
+packages/api/dist/*
+packages/web/.nuxt/*

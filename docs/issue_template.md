@@ -27,4 +27,3 @@ Please add any other context about the problem here. If applicable, add screensh
 - [ ] The issue is understood and described clearly.
 - [ ] The issue is related to a specific area of the codebase.
 - [ ] The issue is related to a specific feature or user story.
-
