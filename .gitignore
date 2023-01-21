@@ -1,1 +1,8 @@
+# node packages
 node_modules/
+
+# .env file
+.env
+
+# database directory
+data/*
