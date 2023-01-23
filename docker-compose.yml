@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 
 services:
 
@@ -26,8 +26,6 @@ services:
     volumes:
       - ./app/api:/usr/src/app
     command: bash -c "npm install && npm run dev"
-    # environment:
-    #   - NODE_ENV=development
     networks:
       - backend_net
       - proxy_net
@@ -40,12 +38,8 @@ services:
     image: postgres:12
     env_file:
       - .env
-    # environment:
-    #   - POSTGRES_USER=user
-    #   - POSTGRES_PASSWORD=password
-    #   - POSTGRES_DB=dbname
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     networks:
       - db_net
       - backend_net
@@ -58,10 +52,6 @@ services:
       - .env
     ports:
       - 5050:80
-    # environment:
-    #   - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
-    #   - PGADMIN_DEFAULT_PASSWORD=admin
-    #   - PGADMIN_LISTEN_PORT=80
     networks:
       - db_net
     depends_on:
