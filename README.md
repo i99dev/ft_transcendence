@@ -27,19 +27,23 @@ Create a multiplayer online Pong game website using NestJS, TypeScript, and Post
 # Contributors Guide
 
 ## Forking the Repository
+
 - Go to the main repository on GitHub.
 - Click on the "Fork" button in the top right corner.
 - Select your own GitHub account to fork the repository to.
 
 ## Cloning the Repository
+
 - Open your terminal and navigate to the directory where you want to clone the repository.
 - Run the following command to clone the repository: `git clone https://github.com/[YOUR_USERNAME]/[REPO_NAME].git`
 - Navigate into the cloned repository: `cd [REPO_NAME]`
 
 ## Setting Up the Remote
+
 Run the following command to add the main repository as a remote: `git remote add upstream https://github.com/i99dev/ft_transcendence.git`
 
 ## Making Changes
+
 - Before making any changes, make sure you are on the develop branch by running `git checkout develop`
 - Create a new branch for your changes: `git branch [BRANCH_NAME]`
 - Switch to the new branch: `git checkout [BRANCH_NAME]`
@@ -53,6 +57,7 @@ graph LR;
 ```
 
 ## Submitting a Pull Request.
+
 - Push your changes to your forked repository: `git push origin [BRANCH_NAME]`
 - Go to the main repository on GitHub and click on the "New pull request" button.
 - Select your forked repository and the branch that contains your changes.
@@ -68,6 +73,7 @@ graph LR;
 ```
 
 ## Review and Merging
+
 - The repository maintainers will review your pull request and provide feedback.
 - Make any necessary changes based on the feedback.
 - Once your pull request is approved, it will be merged into the develop branch.
@@ -81,6 +87,7 @@ graph LR;
 ```
 
 ## Keeping your Fork Up to Date
+
 - Fetch the latest changes from the main repository: `git fetch upstream`
 - Switch to the develop branch: `git checkout develop`
 - Merge the latest changes: `git merge upstream/develop`
