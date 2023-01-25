@@ -1,0 +1,84 @@
+version: '3'
+
+services:
+
+  # frontend (Nuxtjs)
+  web:
+    image: node:19
+    env_file:
+      - .env
+    working_dir: /usr/src/app
+    volumes:
+      - ./app/web:/usr/src/app
+    command: bash -c "yarn install && yarn dev"
+    networks:
+      - frontend_net
+      - proxy_net
+    depends_on:
+      - api
+
+  # backend (Nestjs)
+  api:
+    image: node:19
+    env_file:
+      - .env
+    working_dir: /usr/src/app
+    volumes:
+      - ./app/api:/usr/src/app
+    command: bash -c "npm install && npm run dev"
+    networks:
+      - backend_net
+      - proxy_net
+      - db_net
+    depends_on:
+      - db
+
+  # Database (Postgres)
+  db:
+    image: postgres:12
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - db_net
+      - backend_net
+
+
+  # database management (pgadmin)
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - 5050:80
+    networks:
+      - db_net
+    depends_on:
+      - db
+
+  # reverse proxy (nginx)
+  nginx:
+    image: nginx:latest
+    env_file:
+      - .env
+    ports:
+      - 80:80
+    volumes:
+      - ./config/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - proxy_net
+      - frontend_net
+      - backend_net
+    depends_on:
+      - api
+      - web
+
+networks:
+  proxy_net:
+  frontend_net:
+  backend_net:
+  db_net:
+
+volumes:
+  db-data:

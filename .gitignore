@@ -1,1 +1,9 @@
+# node packages
 node_modules/
+package-lock.json
+
+# .env file
+.env
+
+# database directory
+data/*
