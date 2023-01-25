@@ -42,6 +42,26 @@ Create a multiplayer online Pong game website using NestJS, TypeScript, and Post
 
 Run the following command to add the main repository as a remote: `git remote add upstream https://github.com/i99dev/ft_transcendence.git`
 
+## Usage
+
+Run the following command:
+
+```bash
+bash setup.sh
+```
+This script will create .env default file and checks if you have docker and docker setup on your machine.
+
+If all good, run:
+**NOTE:** check the output of 'setup.sh to know which one you can use'
+
+```bash
+docker-compose up
+```
+OR
+```bash
+docker compose up
+```
+
 ## Making Changes
 
 - Before making any changes, make sure you are on the develop branch by running `git checkout develop`
