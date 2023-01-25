@@ -3,6 +3,7 @@
   "useWorkspaces": true,
   "version": "0.0.1",
   "npmClient": "yarn",
+  "packages": ["./app/api/*", "./app/web/*"],
   "command": {
     "publish": {
       "ignoreChanges": ["ignored-file", "*.md"],
