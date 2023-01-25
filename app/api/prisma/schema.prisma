@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma
+
+model User {
+  id          Int         @default(autoincrement()) @id
+  username    String      @unique
+  fullname    String
+  email       String      @unique
+  avatar      String?
+  status      UserStatus  @default(online)
+  createdAt   DateTime    @default(now())
+  lastLogin   DateTime    @default(now())
+}
+
+enum UserStatus {
+  online
+  offline
+  in_game
+}
