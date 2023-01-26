@@ -11,11 +11,11 @@ export class userService{
 	}
 
 	async getUser(name: string): Promise<User> {
-		return await this.prisma.user.findUniqueOrThrow({ where: { username: name } });
+		return await this.prisma.user.findUnique({ where: { username: name } });
 	}
 
-	async getUserInfo(name: string, info: string): Promise<User> {
-		return await this.getUser(name)[info];
+	async getUserInfo(name: string, info: string): Promise<any> {
+		return await (await this.getUser(name))[info];
 	}
 
 	async createUser(data: User) {

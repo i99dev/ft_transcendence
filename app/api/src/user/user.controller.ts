@@ -20,7 +20,7 @@ export class userController {
 	}
 
 	@Get('/api/users/:name/:info')
-	getSignup(@Param('name') name:string, @Param('info') info:string): Promise<User> {
+	getInfo(@Param('name') name:string, @Param('info') info:string): Promise<any> {
 		return this.userService.getUserInfo(name, info);
 	}
 
