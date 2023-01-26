@@ -6,11 +6,18 @@ import { Injectable } from "@nestjs/common";
 export class userService{
 	constructor(private prisma: PrismaService) {}
 
-	getSignin() {
-		return this.prisma.user.findFirst();
-	  }
+	async getUser(name: string) {
+		const user = await this.prisma.user.findUniqueOrThrow({
+			where: { username: name }
+		});
+		return user;
+	}
 
-	  getSignup(): string {
-		return 'Hello from signup!';
-	  }
+	async getAllUsers() {
+		return await this.prisma.user.findMany();
+	}
+
+	async getUserInfo(name: string, info: string) {
+		return await this.getUser(name)[info];
+	}
 }
