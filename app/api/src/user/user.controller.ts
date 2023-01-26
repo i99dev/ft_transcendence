@@ -6,16 +6,6 @@ import { Controller} from "@nestjs/common";
 export class userController {
 	constructor(private readonly userService: userService) {}
 
-	// @Post('signin')
-	// signin() {
-	// 	return 'test from signin';
-	// }
-
-	// @Post('signup')
-	// signup() {
-	// 	return 'test from signup';
-	// }
-
 	@Get('/api/signin')
 	getSignin() {
 		return this.userService.getSignin();

@@ -5,10 +5,11 @@ import { Injectable } from "@nestjs/common";
 @Injectable({})
 export class userService{
 	constructor(private prisma: PrismaService) {}
-	// login() {}
+
 	getSignin() {
 		return this.prisma.user.findFirst();
 	  }
+
 	  getSignup(): string {
 		return 'Hello from signup!';
 	  }
