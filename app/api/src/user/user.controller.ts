@@ -1,17 +1,28 @@
-import { AuthService } from './user.service';
-import { Controller, Post } from "@nestjs/common";
+import { Get } from '@nestjs/common';
+import { userService } from './user.service';
+import { Controller} from "@nestjs/common";
 
 @Controller()
-export class AuthController {
-	constructor(private authService: AuthService) {}
+export class userController {
+	constructor(private readonly userService: userService) {}
 
-	@Post('signin')
-	signin() {
-		return 'test from signin';
+	// @Post('signin')
+	// signin() {
+	// 	return 'test from signin';
+	// }
+
+	// @Post('signup')
+	// signup() {
+	// 	return 'test from signup';
+	// }
+
+	@Get('/api/signin')
+	getSignin() {
+		return this.userService.getSignin();
 	}
 
-	@Post('signup')
-	signup() {
-		return 'test from signup';
+	@Get('/api/signup')
+	getSignup(): string {
+		return this.userService.getSignup();
 	}
 }
