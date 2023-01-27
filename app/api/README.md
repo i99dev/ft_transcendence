@@ -104,6 +104,18 @@ docker exec -it ft_transcendence-api-1 npx prisma db seed # make sure you are us
 9. Right click on the table and go to ```View/Edit Data``` => ```All Rows```.
 10. if database has pre-populated with initial data you will find some data. Otherwise, you will get an empty table.
 
+## EndPoints
+### GET
+1. ```(/api/users)``` => to get all users in the database.
+2. ```(/api/users/:name)``` => type a specific name to get the information of a specific user.
+3. ```(/api/users/:name/:info)``` => to get a specific info only from the mentioned user.
+### POST
+4. ```(/api/post)``` => add users by passing a JSON with the info of the new user.
+### PATCH
+5. ```(/api/patch/:name)``` => update an existing user by passing a JSON and passing the login of that user in the url.
+### DELETE
+6. ```(/api/delete/:name)``` =>by passing the login of the user, the user will get deleted permanentley from the database.
+
 
 ## Support
 
