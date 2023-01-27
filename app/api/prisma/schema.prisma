@@ -13,18 +13,31 @@ datasource db {
 // prisma/schema.prisma
 
 model User {
-  id          Int         @default(autoincrement()) @id
-  username    String      @unique
-  fullname    String
-  email       String      @unique
-  avatar      String?
-  status      UserStatus  @default(online)
-  createdAt   DateTime    @default(now())
-  lastLogin   DateTime    @default(now())
+  id           Int        @id @default(autoincrement())
+  login        String     @unique @default("login")
+  email        String     @unique
+  status       UserStatus @default(OFFLINE)  
+  first_name   String?    @default("first")
+  last_name    String?    @default("last")
+  created_at   DateTime?  @default(now())
+  last_login   DateTime?  @default(now())
+  image        String?
+  total_wins   Int?       @default(0)
+  total_loses  Int?       @default(0)
+  exp_level    Int?       @default(0)
+  points       Int?       @default(0)
+  friends      Friend[]
 }
 
+model Friend {
+  id              Int     @id @default(autoincrement())
+  friend_id       Int     @unique
+  friend          User    @relation(fields: [friend_id], references: [id])
+}
+
+
 enum UserStatus {
-  online
-  offline
-  in_game
+  OFFLINE
+  ONLINE
+  LIVE
 }
