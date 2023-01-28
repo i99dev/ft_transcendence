@@ -57,6 +57,53 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Default env file
+
+```bash
+cp .env_sample .env
+```
+
+## Run Docker compose
+run docker compose on main directory of repo if it's not running
+```bash
+docker compose up
+# OR
+docker-compose up
+
+```
+
+## Database migration
+
+```bash
+# The command should run inside docker since the database container are not exposed to the host but for db_net network only.
+# db_net is shared between the database and the backend containers.
+
+docker exec -it ft_transcendence-api-1 npx prisma migrate dev --name "<migration_name>" # make sure you are using the right api contianer name (ft_transcendance)
+```
+
+
+## Pre-populate the database with initial data
+
+```bash
+# The command should run inside docker since the database container are not exposed to the host but for db_net network only.
+# db_net is shared between the database and the backend containers.
+
+docker exec -it ft_transcendence-api-1 npx prisma db seed # make sure you are using the right api contianer name (ft_transcendance)
+```
+
+## Access Database with Pgadmin
+**NOTE:** names like ```PGADMIN_DEFAULT_EMAIL``` are environment variables that is used in ```.env``` under the root path of the repo.
+1. Connect to ```localhost:5050``` and. Enter ```PGADMIN_DEFAULT_EMAIL``` and ```PGADMIN_DEFAULT_PASSWORD```.
+2. Go to ```object``` => ```register``` => ```Server...```.
+3. Setup any name for the server under ```General```
+4. Under ```Connection``` set ```Hostname/address``` to ```db``` and set Username to ```PGADMIN_DEFAULT_EMAIL``` and ```PGADMIN_DEFAULT_PASSWORD```.
+5. Click ```Save```.
+6. Now on the left you find your server name under ```Servers```.
+7. Go to ```Servers``` => server_name => ```databases``` => ```POSTGRES_DB``` => ```Shcemas``` => ```public``` => ```Tables```.
+8. If database has been migrated you will find some tables under ```Tables``` like ```User```.
+9. Right click on the table and go to ```View/Edit Data``` => ```All Rows```.
+10. if database has pre-populated with initial data you will find some data. Otherwise, you will get an empty table.
+
 
 ## Support
 
