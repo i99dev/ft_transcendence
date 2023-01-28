@@ -32,7 +32,7 @@
 export default {
 	data() {
 		return {
-			nickname: "abcd",
+			nickname: "",
 			image: null,
 			defualtImage: "https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-512.png"
 		}
