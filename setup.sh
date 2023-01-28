@@ -18,6 +18,11 @@ cp .env_sample .env
 echo -e $GREY"generate '$NC.env$GREY'"$NC
 sleep 0.4
 
+# setup .env for back-end development
+cp app/api/.env_sample app/api/.env
+echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/api/.env$GREY'"$NC
+sleep 0.4
+
 # check docker
 if command -v docker > /dev/null 2>&1; then
   echo -e $REPLACE_LINE$GREEN"$NC'"$PINK"docker"$NC"'$GREEN is working"$NC
