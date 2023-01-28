@@ -25,11 +25,13 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./app/api:/usr/src/app
-    command: bash -c "npm install && npm run dev"
+    command: bash -c "npm install && npx prisma studio | npm run dev"
     networks:
       - backend_net
       - proxy_net
       - db_net
+    ports:
+      - 5555:5555
     depends_on:
       - db
 
@@ -43,19 +45,6 @@ services:
     networks:
       - db_net
       - backend_net
-
-
-  # database management (pgadmin)
-  pgadmin:
-    image: dpage/pgadmin4
-    env_file:
-      - .env
-    ports:
-      - 5050:80
-    networks:
-      - db_net
-    depends_on:
-      - db
 
   # reverse proxy (nginx)
   nginx:
