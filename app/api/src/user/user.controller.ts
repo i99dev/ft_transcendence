@@ -5,21 +5,21 @@ import { Body, Get, Post, Controller, Param, Patch, Delete } from '@nestjs/commo
 import { PrismaService } from './../prisma/prisma.service';
 
 
-@Controller('/api')
+@Controller('/api/users')
 export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
-	@Get('/users') // get all users
+	@Get() // get all users
 	GetUsers(): Promise<User[]> {
 		return this.UserService.GetAllUsers();
 	}
 
-	@Get('/users/:name') // get all of the info of the passed login user
+	@Get('/:name') // get all of the info of the passed login user
 	GetUser(@Param('name') name: string): Promise<User> {
 		return this.UserService.GetUser(name);
 	}
 
-	@Get('/users/:name/:info') // get specific info from a user
+	@Get('/:name/:info') // get specific info from a user
 	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<User> {
 		return this.UserService.GetUserInfo(name, info);
 	}
