@@ -24,7 +24,7 @@ export class UserController {
 		return this.UserService.GetUserInfo(name, info);
 	}
 
-	@Post('/post') // for testing purposes only
+	@Post() // for testing purposes only
 	CreateUser(@Body() data1: UserDto): Promise<User> {
 		let data: User;
 		data = {
@@ -41,14 +41,14 @@ export class UserController {
 		return this.UserService.CreateUser(data);
 	}
 
-	@Patch('/patch/:name') // to be edited later
+	@Patch('/:name') // to be edited later
 	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
 		const existingUser = await this.UserService.GetUser(name);
 		const updatedUser = Object.assign({}, existingUser, data1);
 		return await this.UserService.UpdateUser(updatedUser);
 	}
 
-	@Delete('/delete/:name') // for testing purposes only
+	@Delete('/:name') // for testing purposes only
 	DeleteUser(@Param('name') name: string) {
 		return this.UserService.DeleteUser(name);
 	}
