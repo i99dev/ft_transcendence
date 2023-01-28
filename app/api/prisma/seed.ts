@@ -1,6 +1,6 @@
 // prisma/seed.ts
 
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
@@ -30,37 +30,50 @@ async function main() {
       last_name: 'Saad',
       status: 'LIVE',
       image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg'
-    },
+    }
   });
 
-  const friend1 = await prisma.user.upsert({
-    where: { login: 'friend1' },
+  const friend1 = await prisma.friend.upsert({
+    where: { friend_id: 1 },
     update: {
-      login: 'friend3'
+      friend_id: 2
     },
     create: {
-      login: "friend1",
-      email: "friend1@email.com",
-      status: "ONLINE",
-      first_name: "Jane",
-      last_name: "Smith",
+      friend_id: 1
     }
   })
 
-  const friend2 = await prisma.user.upsert({
-    where: { login: 'friend2' },
+  const friend2 = await prisma.friend.upsert({
+    where: { friend_id: 2 },
     update: {
+      friend_id: 1
     },
     create: {
-      login: "friend2",
-      email: "friend1@email.com",
-      status: "ONLINE",
-      first_name: "Jane",
-      last_name: "Smith",
+      friend_id: 2
     }
   })
 
-  console.log({ user1, user2, friend1, friend2 });
+  const powerUp1 = await prisma.powerUp.upsert({
+    where: { type: 'sonic_ball' },
+    update: { period: 1 },
+    create: {
+      type: 'sonic_ball',
+      period: 2
+    }
+  })
+
+  const achievement1 = await prisma.achievement.upsert({
+    where: { type: 'points_hunter' },
+    update: {},
+    create: {
+      type: "points_hunter",
+      description: "Collect 100 points in one day.",
+      points: 200
+    }
+  })
+  
+
+  console.log({ user1, user2, friend1, friend2, powerUp1, achievement1});
 }
 
 // execute the main function
