@@ -8,17 +8,22 @@ import { PrismaService } from './../prisma/prisma.service';
 @Controller('/api/users')
 export class UserController {
 	constructor(private readonly UserService: UserService) {}
-
+	
 	@Get() // get all users
 	GetUsers(): Promise<User[]> {
 		return this.UserService.GetAllUsers();
 	}
 
+	@Get('/sorted')
+	SortUser() {
+		return this.UserService.SortUserById();
+	}
+	
 	@Get('/:name') // get all of the info of the passed login user
 	GetUser(@Param('name') name: string): Promise<User> {
 		return this.UserService.GetUser(name);
 	}
-
+	
 	@Get('/:name/:info') // get specific info from a user
 	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<User> {
 		return this.UserService.GetUserInfo(name, info);

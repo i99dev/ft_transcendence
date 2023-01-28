@@ -33,4 +33,14 @@ export class UserService{
 		return await this.prisma.user.delete({ where: { username: name } });
 	}
 
+	async SortUserById() {
+		const sortedUsers = await this.prisma.user.groupBy({
+			by: ['id', 'username', 'fullname', 'avatar', 'email', 'createdAt', 'lastLogin', 'status'],
+			orderBy: {
+				id: 'asc'
+			}
+		});
+		return sortedUsers;
+	}
+
 }
