@@ -110,9 +110,12 @@ docker exec -it ft_transcendence-api-1 npx prisma db seed # make sure you are us
 2. ```(/api/users/:name)``` => type a specific name to get the information of a specific user.
 3. ```(/api/users/:name/:info)``` => to get a specific info only from the mentioned user.
 ### POST
-4. ```(/api/post)``` => add users by passing a JSON with the info of the new user.
+4. ```(/api/post)``` => add users by passing a JSON with the info of the new user.<br>
+Provide a JSON form as a Body with the following information: ```(id, login, first_name, last_name, image, email)```<br>
+```NOTE: ID AND LOGIN MUST BE UNIQUE```
 ### PATCH
-5. ```(/api/patch/:name)``` => update an existing user by passing a JSON and passing the login of that user in the url.
+5. ```(/api/patch/:name)``` => update an existing user by passing a JSON and passing the login of that user in the url.<br>
+Provide a JSON form as a Body with the information you want to change and set its new value.
 ### DELETE
 6. ```(/api/delete/:name)``` =>by passing the login of the user, the user will get deleted permanentley from the database.
 
