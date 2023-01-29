@@ -11,7 +11,7 @@ export class UserService{
 	}
 
 	async GetUser(name: string): Promise<User> {
-		return await this.prisma.user.findUnique({ where: { username: name } });
+		return await this.prisma.user.findUnique({ where: { login: name } });
 	}
 
 	async GetUserInfo(name: string, info: string): Promise<User> {
@@ -24,18 +24,18 @@ export class UserService{
 
 	async UpdateUser(data: User) {
 		return await this.prisma.user.update({
-			where: { username: data.username },
+			where: { login: data.login },
 			data,
 		});
 	}
 
 	async DeleteUser(name: string) {
-		return await this.prisma.user.delete({ where: { username: name } });
+		return await this.prisma.user.delete({ where: { login: name } });
 	}
 
 	async SortUserById() {
 		const sortedUsers = await this.prisma.user.groupBy({
-			by: ['id', 'username', 'fullname', 'avatar', 'email', 'createdAt', 'lastLogin', 'status'],
+			by: ['id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
 			orderBy: {
 				id: 'asc'
 			}

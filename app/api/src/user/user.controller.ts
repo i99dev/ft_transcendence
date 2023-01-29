@@ -2,7 +2,6 @@ import { UserDto, UserPatchDto } from './dto/user.dto';
 import { User, UserStatus } from '@prisma/client';
 import { UserService } from './user.service';
 import { Body, Get, Post, Controller, Param, Patch, Delete } from '@nestjs/common';
-import { PrismaService } from './../prisma/prisma.service';
 
 
 @Controller('/api/users')
@@ -34,13 +33,19 @@ export class UserController {
 		let data: User;
 		data = {
 			id: data1.id,
-			username: data1.username,
-			fullname: data1.fullname,
-			avatar: data1.avatar,
+			login: data1.login,
+			first_name: data1.first_name,
+			last_name: data1.last_name,
+			image: data1.image,
 			email: data1.email,
-			createdAt: new Date(),
-			lastLogin: new Date(),
-			status: UserStatus.online,
+			total_wins: 0,
+			total_loses: 0,
+			exp_level: 0,
+			points: 0,
+			two_fac_auth: false,
+			created_at: new Date(),
+			last_login: new Date(),
+			status: UserStatus.ONLINE,
 		};
 		console.log({data});
 		return this.UserService.CreateUser(data);
