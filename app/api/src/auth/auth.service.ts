@@ -5,9 +5,9 @@ import { Injectable } from "@nestjs/common";
 export class AuthService {
 	constructor(private prisma: PrismaService) {}
 
-	GetToken(name: any): string{
-		let token: string = name.split(' ')[1];
-		return token;
-	}
+	// GetToken(name: any): string{
+	// 	let token: string = name.split(' ')[1];
+	// 	return token;
+	// }
 
 }

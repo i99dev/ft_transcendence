@@ -36,6 +36,7 @@ export class UserController {
 	CreateUser(@Body() data1: UserDto): Promise<User> {
 		let data: User;
 		data = {
+			token: '',
 			id: data1.id,
 			login: data1.login,
 			first_name: data1.first_name,
