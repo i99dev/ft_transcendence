@@ -36,7 +36,7 @@ export default {
 				nickname: "",
 				image: null,
 				defualtImage: "https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-512.png",
-				code: null,
+				code42: null,
 			}
 		}
 	},
@@ -44,8 +44,8 @@ export default {
 		if (this.$route.query.code) {
 			this.$router.replace({ path: '/login_new_user', query: {} });
 		}
-		this.user.code = this.$route.query.code;
-		console.log(this.user.code);
+		this.user.code42 = this.$route.query.code;
+		console.log(this.user.code42);
 	},
 	methods: {
 		selectImage() {
@@ -57,7 +57,6 @@ export default {
 			}
 			input.click();
 		}
-
 	}
 }
 </script>
