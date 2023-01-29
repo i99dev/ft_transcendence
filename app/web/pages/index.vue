@@ -35,10 +35,11 @@
 </template>
 
 <script>
+
 export default {
 	data() {
 		return {
-			link: "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-0790e6eeae1028551e49d7958f62e9e0194a3816c15060dfedd2064583678acb&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin_new_user&response_type=code",
+			link:  this.$nuxt.$config.public.API_KEY,
 			user: {
 				email: '',
 				password: '',
@@ -55,7 +56,6 @@ export default {
 		},
 	},
 };
-
 
 </script>
 
