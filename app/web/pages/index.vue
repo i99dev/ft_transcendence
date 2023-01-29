@@ -14,7 +14,7 @@
 					<div class="mt-8 flex justify-center text-lg text-black">
 						<button type="submit"
 							class="rounded-3xl bg-gray-90 bg-opacity-50 px-10 py-2 text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600">
-							<NuxtLink to="/login_new_user">Login</NuxtLink>
+							<NuxtLink to="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-0790e6eeae1028551e49d7958f62e9e0194a3816c15060dfedd2064583678acb&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin_new_user&response_type=code">Login</NuxtLink>
 						</button>
 					</div>
 				</form>

@@ -7,13 +7,12 @@
 				<h1 class="mb-3 text-2xl font-semibold">Setup Your Account</h1>
 
 				<h1 class="text-xl mb-1 flex justify-center"> Nickname</h1>
-				<h1 class="text-xl mb-1 flex justify-center"> {{ nickname }}</h1>
+				<h1 class="text-xl mb-1 flex justify-center"> {{ user.nickname }}</h1>
 
-				<input v-model="nickname" class=" mb-10 placeholder:text-center flex  justify-center border" type="text"
+				<input v-model="user.nickname" class=" mb-10 placeholder:text-center flex  justify-center border" type="text"
 					placeholder="Enter your nickname">
-
 				<input id="fileUpload" type="file" hidden>
-				<img v-bind:src="image || defualtImage" class="border mb-2" width="150" alt="" srcset="" />
+				<img v-bind:src="user.image || user.defualtImage" class="border mb-2" width="150" alt="" srcset="" />
 				<button>
 					<img src="~/assets/upload_icon.png" class="w-7" @click="selectImage()">
 				</button>
@@ -32,10 +31,21 @@
 export default {
 	data() {
 		return {
-			nickname: "",
-			image: null,
-			defualtImage: "https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-512.png"
+			user:
+			{
+				nickname: "",
+				image: null,
+				defualtImage: "https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-512.png",
+				code: null,
+			}
 		}
+	},
+	mounted() {
+		if (this.$route.query.code) {
+			this.$router.replace({ path: '/login_new_user', query: {} });
+		}
+		this.user.code = this.$route.query.code;
+		console.log(this.user.code);
 	},
 	methods: {
 		selectImage() {
@@ -43,12 +53,11 @@ export default {
 			input.type = 'file';
 			input.onchange = e => {
 				let x = e.target.files[0];
-				this.image = URL.createObjectURL(x);
+				this.user.image = URL.createObjectURL(x);
 			}
 			input.click();
 		}
 
 	}
-
 }
 </script>
