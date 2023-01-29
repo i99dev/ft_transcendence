@@ -1,6 +1,6 @@
 <template>
 
-<div class="flex h-screen w-full items-center justify-center bg-gray-900 bg-no-repeat" style="background-image:url('https://i.pinimg.com/originals/be/f8/81/bef881862133387b96ad0fd47ea56468.gif'); background-size: 100% 100%; ">
+<div class="flex h-screen w-full items-center justify-center bg-gray-900 bg-no-repeat" style="background-image:url('https://d1an7elaqzcblb.cloudfront.net/RSMIG/PROD/eukddc/PACKSHOTS/d5f7084f485e1f652784217487fe278c.jpeg'); background-size: 100% 100%; ">
 		
 	<div class="rounded-xl bg-gray-800 bg-opacity-50 px-16 py-10 shadow-lg backdrop-blur-md max-sm:px-8">
 	
@@ -8,7 +8,7 @@
 			
 			<div class="mb-8 flex flex-col items-center">
 			
-				<img src="https://cdn-icons-png.flaticon.com/512/1178/1178864.png" width="100" alt="" srcset="" />
+				<img src="https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-1024.png" width="150" alt="" srcset="" />
 				
 				<h1 class="mb-2 text-2xl">Ping Pong</h1>
 				<!-- <span class="text-gray-300">Enter Login Details</span> -->
