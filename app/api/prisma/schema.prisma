@@ -27,14 +27,14 @@ model User {
   exp_level    Int        @default(0)
   points       Int        @default(0)
   two_fac_auth Boolean    @default(false)
-  friends      Friend[]
+  friends      Friend[]   @relation("UserFriends")
 }
 
 model Friend {
-  id        Int  @id @default(autoincrement())
-  friend_id Int  @unique
-  friend    User @relation(fields: [friend_id], references: [id])
-}
+  id             Int  @id @default(autoincrement())
+  friend_id      Int?
+  user_friend    User? @relation("UserFriends", fields: [friend_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+} 
 
 model PowerUp {
   id     Int    @id @default(autoincrement())
