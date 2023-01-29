@@ -6,6 +6,7 @@ export interface Friend {
 	friend: UserDto;
 }
 export interface UserDto{
+	token?: string;
 	id: number;
 	login: string;
 	first_name: string;
@@ -15,6 +16,7 @@ export interface UserDto{
 }
 
 export interface UserPatchDto{
+	token?: string;
 	id?: number;
 	login?: string;
 	first_name?: string;

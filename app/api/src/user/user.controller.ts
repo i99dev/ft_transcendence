@@ -13,7 +13,11 @@ export class UserController {
 		return this.UserService.GetAllUsers();
 	}
 
-	@Get('/sorted')
+	@Get('/me') // get the logged in user
+	GetMe() {
+	}
+
+	@Get('/sorted') // get the users sorted by their id
 	SortUser() {
 		return this.UserService.SortUserById();
 	}
