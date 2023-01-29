@@ -78,7 +78,8 @@ docker-compose up
 # The command should run inside docker since the database container are not exposed to the host but for db_net network only.
 # db_net is shared between the database and the backend containers.
 
-docker exec -it ft_transcendence-api-1 npx prisma migrate dev --name "<migration_name>" # make sure you are using the right api contianer name (ft_transcendance)
+docker exec -it ft_transcendence-api-1 npx prisma migrate dev
+# make sure you are using the right api contianer name (ft_transcendance)
 ```
 
 
@@ -88,7 +89,14 @@ docker exec -it ft_transcendence-api-1 npx prisma migrate dev --name "<migration
 # The command should run inside docker since the database container are not exposed to the host but for db_net network only.
 # db_net is shared between the database and the backend containers.
 
-docker exec -it ft_transcendence-api-1 npx prisma db seed # make sure you are using the right api contianer name (ft_transcendance)
+docker exec -it ft_transcendence-api-1 npx prisma db seed
+# make sure you are using the right api contianer name (ft_transcendance)
+```
+
+## migrate & seed in one Command
+
+```bash
+docker exec -it ft_transcendence-api-1 npx prisma migrate reset
 ```
 
 ## Access Database with Pgadmin
