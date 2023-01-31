@@ -5,7 +5,8 @@ import * as jwt from 'jsonwebtoken';
 import { User, UserStatus } from '@prisma/client';
 const crypto = require('crypto');
 import { v4 as uuidv4 } from 'uuid';
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 
 
@@ -26,8 +27,8 @@ export class AuthService {
 	async getAccessToken(authCode) {
 		const response = await axios.post('https://api.intra.42.fr/oauth/token', {
 			grant_type: 'authorization_code',
-			client_id: 'u-s4t2ud-a57fc988e9677abe7958c6b9f528a97eab342d42289ccfbf3b1cf0f270692e20',
-			client_secret: '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',
+			client_id: process.env.client_id,
+			client_secret: process.env.client_secret,
 			code: authCode,
 			redirect_uri: 'http://127.0.0.1/api'
 		});
@@ -74,10 +75,11 @@ export class AuthService {
 	async GetUserInfo(data) {
 		let check: User;
 		if (check = (await this.prisma.user.findUnique({ where: { login: data.login } }))){
+			// console.log('.env: --->>' + process.env.secret);
 			return check;
 		}
-		const key = jwt.sign(uuidv4(), 'process.env.secret');
-		// const decoded = jwt.verify(key, 'process.env.secret');
+		const key = jwt.sign(uuidv4(), process.env.secret);
+		// const decoded = jwt.verify(key, process.env.secret);
 		let id = this.generateUniqueId();
 		// console.log('.env: --->>' + process.env.secret);
 		const user = this.CreateUserObject(data, key, id);
