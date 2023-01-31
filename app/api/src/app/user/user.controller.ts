@@ -33,30 +33,6 @@ export class UserController {
 		return this.UserService.GetUserInfo(name, info);
 	}
 
-	@Post() // for testing purposes only
-	CreateUser(@Body() data1: UserDto): Promise<User> {
-		let data: User;
-		data = {
-			token: '',
-			id: data1.id,
-			login: data1.login,
-			first_name: data1.first_name,
-			last_name: data1.last_name,
-			image: data1.image,
-			email: data1.email,
-			total_wins: 0,
-			total_loses: 0,
-			exp_level: 0,
-			points: 0,
-			two_fac_auth: false,
-			created_at: new Date(),
-			last_login: new Date(),
-			status: UserStatus.ONLINE,
-		};
-		console.log({data});
-		return this.UserService.CreateUser(data);
-	}
-
 	@Patch('/:name') // to be edited later
 	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
 		const existingUser = await this.UserService.GetUser(name);

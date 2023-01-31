@@ -1,28 +1,32 @@
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 import { Injectable } from "@nestjs/common";
 import axios, { AxiosRequestConfig } from 'axios';
-// import { ExtractJwt } from 'passport-jwt';
 import * as jwt from 'jsonwebtoken';
 import { User, UserStatus } from '@prisma/client';
-import { randomInt } from 'crypto';
-import * as base64url from 'base64url';
+const crypto = require('crypto');
 import { v4 as uuidv4 } from 'uuid';
+require('dotenv').config();
 
 
 
 @Injectable({})
 export class AuthService {
-	constructor(private prisma: PrismaService) {}
+	prisma = new PrismaClient();
 
+	generateUniqueId = (): number => {
+		const buf = crypto.randomBytes(4);
+		return buf.readUInt32BE(0) % 2147483647;
+	}
+	
 	GetToken(name: any): string{
 		let token: string = name.split(' ')[1];
 		return token;
 	}
-
+	
 	async getAccessToken(authCode) {
 		const response = await axios.post('https://api.intra.42.fr/oauth/token', {
 			grant_type: 'authorization_code',
-			client_id: process.env.client_id,
+			client_id: 'u-s4t2ud-a57fc988e9677abe7958c6b9f528a97eab342d42289ccfbf3b1cf0f270692e20',
 			client_secret: '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',
 			code: authCode,
 			redirect_uri: 'http://127.0.0.1/api'
@@ -41,18 +45,11 @@ export class AuthService {
 		return profile;
 	}
 	
-	async GetUserInfo(data) {
-		let data1: User;
-		
-		const key = jwt.sign(uuidv4(), process.env.secret);
-
-		const decoded = jwt.verify(key, process.env.secret);
-
-		console.log('token: --->>' + key);
-		console.log('token: --->>' + decoded);
-		data1 = {
+	CreateUserObject(data, key: string, id: number) {
+		let user: User;
+		user = {
 			token: key,
-			id: randomInt(1000),
+			id: id,
 			login: data.login,
 			first_name: data.first_name,
 			last_name: data.last_name,
@@ -67,20 +64,20 @@ export class AuthService {
 			last_login: new Date(),
 			status: UserStatus.ONLINE,
 		};
-
-
-		// console.log(data.login);
-		// console.log(data.email);
-		// console.log(data.first_name);
-		// console.log(data.last_name);
-		// console.log(data.image.link);
-		return await this.CreateUser(data1);
-		// return this.prisma.user.create({ data: data1 });
-		// return this.prisma.user.findMany();
+		return user;
 	}
-
+	
 	async CreateUser(data: User) {
 		return await this.prisma.user.create({ data });
+	}
+
+	async GetUserInfo(data) {
+		const key = jwt.sign(uuidv4(), 'process.env.secret');
+		// const decoded = jwt.verify(key, 'process.env.secret');
+		let id = this.generateUniqueId();
+		// console.log('.env: --->>' + process.env.secret);
+		const user = this.CreateUserObject(data, key, id);
+		return await this.CreateUser(user);
 	}
 
 }
