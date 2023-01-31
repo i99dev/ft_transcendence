@@ -72,6 +72,10 @@ export class AuthService {
 	}
 
 	async GetUserInfo(data) {
+		let check: User;
+		if (check = (await this.prisma.user.findUnique({ where: { login: data.login } }))){
+			return check;
+		}
 		const key = jwt.sign(uuidv4(), 'process.env.secret');
 		// const decoded = jwt.verify(key, 'process.env.secret');
 		let id = this.generateUniqueId();
