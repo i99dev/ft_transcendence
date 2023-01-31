@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - main
+      - back-end
   push:
     branches:
       - main
+      - back-end
 jobs:
   test-api:
     runs-on: ubuntu-latest
