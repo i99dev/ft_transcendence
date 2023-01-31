@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.GetHello()).toBe('Hello World!');
+    it('should return "Hello from Backend!"', () => {
+      expect(appController.GetHello()).toBe('Hello from Backend!');
     });
   });
 });
