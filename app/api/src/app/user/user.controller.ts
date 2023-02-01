@@ -22,6 +22,26 @@ export class UserController {
 	SortUser() {
 		return this.UserService.SortUserById();
 	}
+
+	@Get('/sorted/wins') // get the users sorted by their wins
+	SortUserWins() {
+		return this.UserService.SortUserByWins();
+	}
+
+	@Get('/sorted/loses') // get the users sorted by their loses
+	SortUserLoses() {
+		return this.UserService.SortUserByLoses();
+	}
+
+	@Get('/sorted/ladder') // get the users sorted by their wins-loses
+	SortUserLadder() {
+		return this.UserService.SortUserByWinGap();
+	}
+
+	@Get('/sorted/xp') // get the users sorted by their XP
+	SortUserXP() {
+		return this.UserService.SortUserByXP();
+	}
 	
 	@Get('/:name') // get all of the info of the passed login user
 	GetUser(@Param('name') name: string): Promise<User> {

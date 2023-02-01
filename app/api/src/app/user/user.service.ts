@@ -37,4 +37,45 @@ export class UserService{
 		return sortedUsers;
 	}
 
+	async SortUserByWins() {
+		const sortedUsers = await this.prisma.user.groupBy({
+			by: ['token', 'id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
+			orderBy: {
+				total_wins: 'desc'
+			}
+		});
+		return sortedUsers;
+	}
+
+	async SortUserByXP() {
+		const sortedUsers = await this.prisma.user.groupBy({
+			by: ['token', 'id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
+			orderBy: {
+				exp_level: 'desc'
+			}
+		});
+		return sortedUsers;
+	}
+
+	async SortUserByLoses() {
+		const sortedUsers = await this.prisma.user.groupBy({
+			by: ['token', 'id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
+			orderBy: {
+				total_loses: 'desc'
+			}
+		});
+		return sortedUsers;
+	}
+
+	SortUserByWinLose(a, b) {
+		const winLoseA = a.total_wins - a.total_loses;
+		const winLoseB = b.total_wins - b.total_loses;
+		return winLoseB - winLoseA;
+	}	
+
+	async SortUserByWinGap() {
+		const sortedUsers = await this.prisma.user.findMany();
+		return sortedUsers.sort(this.SortUserByWinLose);
+	}
+
 }
