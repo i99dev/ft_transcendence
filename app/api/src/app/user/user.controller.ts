@@ -1,66 +1,68 @@
-import { UserDto, UserPatchDto } from './dto/user.dto';
-import { User, UserStatus } from '@prisma/client';
+import { UserGetDto, UserPatchDto } from './dto/user.dto';
+import { User } from '@prisma/client';
 import { UserService } from './user.service';
-import { Body, Get, Post, Controller, Param, Patch, Delete } from '@nestjs/common';
+import { Body, Get, Controller, Param, Patch, Delete } from '@nestjs/common';
+
 
 
 @Controller('/api/users')
 export class UserController {
 	constructor(private readonly UserService: UserService) {}
-	
+
 	@Get() // get all users
 	GetUsers(): Promise<User[]> {
-		return this.UserService.GetAllUsers();
+		return this.UserService.getAllUsers();
 	}
 
-	@Get('/sorted')
+	@Get('/me') // get the logged in user
+	GetMe() {
+	}
+
+	@Get('/sorted') // get the users sorted by their id
 	SortUser() {
-		return this.UserService.SortUserById();
+		return this.UserService.sortUserBy();
+	}
+
+	@Get('/sorted/wins') // get the users sorted by their wins
+	SortUserWins() {
+		return this.UserService.SortUserByWins();
+	}
+
+	@Get('/sorted/loses') // get the users sorted by their loses
+	SortUserLoses() {
+		return this.UserService.SortUserByLoses();
+	}
+
+	@Get('/sorted/ladder') // get the users sorted by their wins-loses
+	SortUserLadder() {
+		return this.UserService.SortUserByWinGap();
+	}
+
+	@Get('/sorted/xp') // get the users sorted by their XP
+	SortUserXP() {
+		return this.UserService.SortUserByXP();
 	}
 	
 	@Get('/:name') // get all of the info of the passed login user
-	GetUser(@Param('name') name: string): Promise<User> {
-		return this.UserService.GetUser(name);
+	GetUser(@Param('name') name: string): Promise<UserGetDto> {
+		return this.UserService.getUser(name);
 	}
 	
 	@Get('/:name/:info') // get specific info from a user
-	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<User> {
-		return this.UserService.GetUserInfo(name, info);
-	}
-
-	@Post() // for testing purposes only
-	CreateUser(@Body() data1: UserDto): Promise<User> {
-		let data: User;
-		data = {
-			id: data1.id,
-			login: data1.login,
-			first_name: data1.first_name,
-			last_name: data1.last_name,
-			image: data1.image,
-			email: data1.email,
-			total_wins: 0,
-			total_loses: 0,
-			exp_level: 0,
-			points: 0,
-			two_fac_auth: false,
-			created_at: new Date(),
-			last_login: new Date(),
-			status: UserStatus.ONLINE,
-		};
-		console.log({data});
-		return this.UserService.CreateUser(data);
+	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<UserGetDto> {
+		return this.UserService.getUserInfo(name, info);
 	}
 
 	@Patch('/:name') // to be edited later
 	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
-		const existingUser = await this.UserService.GetUser(name);
+		const existingUser = await this.UserService.getUser(name);
 		const updatedUser = Object.assign({}, existingUser, data1);
-		return await this.UserService.UpdateUser(updatedUser);
+		return await this.UserService.updateUser(updatedUser);
 	}
 
 	@Delete('/:name') // for testing purposes only
 	DeleteUser(@Param('name') name: string) {
-		return this.UserService.DeleteUser(name);
+		return this.UserService.deleteUser(name);
 	}
 
 }
