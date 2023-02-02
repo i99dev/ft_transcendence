@@ -4,6 +4,7 @@ import { UserRepository } from "./repository/user.repository";
 import * as jwt from 'jsonwebtoken';
 const crypto = require('crypto');
 import { v4 as uuidv4 } from 'uuid';
+import { config } from "../../config/config";
 
 @Injectable({})
 export class UserService{
@@ -77,6 +78,54 @@ export class UserService{
 	async SortUserByWinGap() {
 		const sortedUsers = await this.prisma.user.findMany();
 		return sortedUsers.sort(this.SortUserByWinLose);
+	}
+
+	generateUniqueId = (): number => {
+		const buf = crypto.randomBytes(4);
+		return buf.readUInt32BE(0) % 2147483647;
+	}
+
+	CreateUserObject(data, key: string, id: number) {
+		let user: User;
+		user = {
+			token: key,
+			id: id,
+			login: data.login,
+			username: data.login,
+			first_name: data.first_name,
+			last_name: data.last_name,
+			image: data.image.link,
+			email: data.email,
+			total_wins: 0,
+			total_loses: 0,
+			exp_level: 0,
+			points: 0,
+			two_fac_auth: false,
+			created_at: new Date(),
+			last_login: new Date(),
+			status: UserStatus.ONLINE,
+		};
+		return user;
+	}
+	
+	async CreateUser(data: User) {
+		return await this.prisma.user.create({ data });
+	}
+
+	async GetUserInfo(data) {
+		let check: User;
+		if (check = (await this.prisma.user.findUnique({ where: { login: data.login } }))){
+			return check;
+		}
+		const token = {
+			login: data.login,
+			username: data.username
+		}
+		const key = jwt.sign(token, config.jwt.secret);
+		// const decoded = jwt.verify(key, config.jwt.secret);
+		let id = this.generateUniqueId();
+		const user = this.CreateUserObject(data, key, id);
+		return await this.CreateUser(user);
 	}
 
 }
