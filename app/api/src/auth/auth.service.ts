@@ -24,10 +24,10 @@ export class AuthService {
 	async getAccessToken(authCode) {
 		const response = await axios.post('https://api.intra.42.fr/oauth/token', {
 			grant_type: 'authorization_code',
-			client_id: 'u-s4t2ud-a57fc988e9677abe7958c6b9f528a97eab342d42289ccfbf3b1cf0f270692e20',
-			client_secret: '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',
+			client_id: process.env.CLIENT_ID,
+			client_secret: process.env.CLIENT_SECRET,
 			code: authCode,
-			redirect_uri: 'http://localhost/api'
+			redirect_uri: 'http://127.0.0.1/api'
 		});
 		const accessToken = response.data.access_token;
 		return accessToken;
@@ -76,7 +76,7 @@ export class AuthService {
 			// console.log('.env: --->>' + process.env.secret);
 			return check;
 		}
-		const key = jwt.sign(uuidv4(), 'process.env.secret');
+		const key = jwt.sign(uuidv4(), process.env.JWT_SECRET);
 		// const decoded = jwt.verify(key, process.env.secret);
 		let id = this.generateUniqueId();
 		// console.log('.env: --->>' + process.env.secret);
