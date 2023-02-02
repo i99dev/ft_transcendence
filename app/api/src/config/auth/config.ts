@@ -1,7 +1,4 @@
 export const auth = {
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  username: process.env.DB_USERNAME || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_DATABASE || 'postgres',
+  client_id: process.env.CLIENT_ID || 'EMPTY',
+  client_secret: process.env.CLIENT_SECRET || 'EMPTY',
 };
