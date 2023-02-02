@@ -9,16 +9,18 @@ export interface UserDto{
 	token?: string;
 	id: number;
 	login: string;
+	username: string;
 	first_name: string;
 	last_name: string;
 	image: string;
 	email: string;
 }
 
-export interface UserPatchDto{
+export class UserPatchDto{
 	token?: string;
 	id?: number;
 	login?: string;
+	username?: string;
 	first_name?: string;
 	last_name?: string;
 	image?: string;

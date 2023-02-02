@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { Injectable } from "@nestjs/common";
+import { User, UserStatus, PrismaClient } from '@prisma/client';
 import axios, { AxiosRequestConfig } from 'axios';
+import { Injectable } from "@nestjs/common";
 import * as jwt from 'jsonwebtoken';
-import { User, UserStatus } from '@prisma/client';
-const crypto = require('crypto');
 import { v4 as uuidv4 } from 'uuid';
+const crypto = require('crypto');
 // import * as dotenv from 'dotenv';
 // dotenv.config();
 
@@ -45,13 +44,14 @@ export class AuthService {
 		const profile = response.data;
 		return profile;
 	}
-	
+
 	CreateUserObject(data, key: string, id: number) {
 		let user: User;
 		user = {
 			token: key,
 			id: id,
 			login: data.login,
+			username: data.login,
 			first_name: data.first_name,
 			last_name: data.last_name,
 			image: data.image.link,
