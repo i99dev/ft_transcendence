@@ -15,6 +15,7 @@ datasource db {
 model User {
   id           Int        @id @default(autoincrement())
   login        String     @unique
+  username     String     @unique
   email        String     @unique
   status       UserStatus @default(OFFLINE)
   first_name   String?

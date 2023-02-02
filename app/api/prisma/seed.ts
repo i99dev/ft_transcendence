@@ -16,6 +16,7 @@ async function main() {
     update: {},
     create: {
       login: 'bnaji',
+      username: 'BN',
       email: 'bnaji@student.42abudhabi.ae',
       status: 'ONLINE',
       first_name: 'Bassam',
@@ -29,6 +30,7 @@ async function main() {
     update: {},
     create: {
       login: 'isaad',
+      username: 'IS',
       email: 'isaad@student.42abudhabi.ae',
       first_name: 'Imad',
       last_name: 'Saad',
@@ -42,6 +44,7 @@ async function main() {
     update: {},
     create: {
       login: 'aaljaber',
+      username: 'AA',
       email: 'aaljaber@student.42abudhabi.ae',
       first_name: 'Abrar',
       last_name: 'Aljaberi',
@@ -55,6 +58,7 @@ async function main() {
     update: {},
     create: {
       login: 'mal-guna',
+      username: 'MG',
       email: 'mal-guna@student.42abudhabi.ae',
       first_name: 'Moatasem',
       last_name: 'Al Gunaid',
@@ -68,6 +72,7 @@ async function main() {
     update: {},
     create: {
       login: 'oal-tena',
+      username: 'OT',
       email: 'oal-tena@student.42abudhabi.ae',
       first_name: 'Obaid',
       last_name: 'Al Tenaiji',
