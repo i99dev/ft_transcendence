@@ -7,8 +7,6 @@ const crypto = require('crypto');
 // import * as dotenv from 'dotenv';
 // dotenv.config();
 
-
-
 @Injectable({})
 export class AuthService {
 	prisma = new PrismaClient();
@@ -29,7 +27,7 @@ export class AuthService {
 			client_id: 'u-s4t2ud-a57fc988e9677abe7958c6b9f528a97eab342d42289ccfbf3b1cf0f270692e20',
 			client_secret: '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',
 			code: authCode,
-			redirect_uri: 'http://127.0.0.1/api'
+			redirect_uri: 'http://localhost/api'
 		});
 		const accessToken = response.data.access_token;
 		return accessToken;

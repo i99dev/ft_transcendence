@@ -1,17 +1,17 @@
-import { UserDto, UserPatchDto } from './dto/user.dto';
-import { User, UserStatus } from '@prisma/client';
+import { UserGetDto, UserPatchDto } from './dto/user.dto';
+import { User } from '@prisma/client';
 import { UserService } from './user.service';
-import { Body, Get, Post, Controller, Param, Patch, Delete } from '@nestjs/common';
+import { Body, Get, Controller, Param, Patch, Delete } from '@nestjs/common';
 
 
 
 @Controller('/api/users')
 export class UserController {
 	constructor(private readonly UserService: UserService) {}
-	
+
 	@Get() // get all users
 	GetUsers(): Promise<User[]> {
-		return this.UserService.GetAllUsers();
+		return this.UserService.getAllUsers();
 	}
 
 	@Get('/me') // get the logged in user
@@ -20,7 +20,7 @@ export class UserController {
 
 	@Get('/sorted') // get the users sorted by their id
 	SortUser() {
-		return this.UserService.SortUserById();
+		return this.UserService.sortUserBy();
 	}
 
 	@Get('/sorted/wins') // get the users sorted by their wins
@@ -44,25 +44,25 @@ export class UserController {
 	}
 	
 	@Get('/:name') // get all of the info of the passed login user
-	GetUser(@Param('name') name: string): Promise<User> {
-		return this.UserService.GetUser(name);
+	GetUser(@Param('name') name: string): Promise<UserGetDto> {
+		return this.UserService.getUser(name);
 	}
 	
 	@Get('/:name/:info') // get specific info from a user
-	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<User> {
-		return this.UserService.GetUserInfo(name, info);
+	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<UserGetDto> {
+		return this.UserService.getUserInfo(name, info);
 	}
 
 	@Patch('/:name') // to be edited later
 	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
-		const existingUser = await this.UserService.GetUser(name);
+		const existingUser = await this.UserService.getUser(name);
 		const updatedUser = Object.assign({}, existingUser, data1);
-		return await this.UserService.UpdateUser(updatedUser);
+		return await this.UserService.updateUser(updatedUser);
 	}
 
 	@Delete('/:name') // for testing purposes only
 	DeleteUser(@Param('name') name: string) {
-		return this.UserService.DeleteUser(name);
+		return this.UserService.deleteUser(name);
 	}
 
 }
