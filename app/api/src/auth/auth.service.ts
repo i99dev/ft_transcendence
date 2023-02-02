@@ -4,8 +4,6 @@ import { Injectable } from "@nestjs/common";
 import * as jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 const crypto = require('crypto');
-// import * as dotenv from 'dotenv';
-// dotenv.config();
 
 @Injectable({})
 export class AuthService {
@@ -76,7 +74,11 @@ export class AuthService {
 			// console.log('.env: --->>' + process.env.secret);
 			return check;
 		}
-		const key = jwt.sign(uuidv4(), process.env.JWT_SECRET);
+		const token = {
+			login: data.login,
+			username: data.username
+		}
+		const key = jwt.sign(token, process.env.JWT_SECRET);
 		// const decoded = jwt.verify(key, process.env.secret);
 		let id = this.generateUniqueId();
 		// console.log('.env: --->>' + process.env.secret);
