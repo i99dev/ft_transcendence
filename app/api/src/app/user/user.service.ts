@@ -1,4 +1,5 @@
 import { PrismaClient, User, UserStatus } from '@prisma/client';
+import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
 import * as jwt from 'jsonwebtoken';
@@ -79,37 +80,22 @@ export class UserService{
 		const sortedUsers = await this.prisma.user.findMany();
 		return sortedUsers.sort(this.SortUserByWinLose);
 	}
-
-	generateUniqueId = (): number => {
-		const buf = crypto.randomBytes(4);
-		return buf.readUInt32BE(0) % 2147483647;
-	}
-
-	CreateUserObject(data, key: string, id: number) {
-		let user: User;
-		user = {
-			token: key,
-			id: id,
-			login: data.login,
-			username: data.login,
-			first_name: data.first_name,
-			last_name: data.last_name,
-			image: data.image.link,
-			email: data.email,
-			total_wins: 0,
-			total_loses: 0,
-			exp_level: 0,
-			points: 0,
-			two_fac_auth: false,
-			created_at: new Date(),
-			last_login: new Date(),
-			status: UserStatus.ONLINE,
-		};
-		return user;
-	}
 	
-	async CreateUser(data: User) {
-		return await this.prisma.user.create({ data });
+	CreateUserObject(data: any, token: any): NewUser {
+    let user: NewUser = {
+      login: data.login,
+      username: data.login,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      image: data.image.link,
+      email: data.email,
+      token: token,
+    }
+    return user;
+  }
+
+	async CreateUser(data: any) {
+		return await this.prisma.user.create({data});
 	}
 
 }

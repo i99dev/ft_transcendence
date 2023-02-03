@@ -10,3 +10,7 @@ export const jwtHeader = {
   alg: 'HS256',
   typ: 'JWT',
 };
+
+export const accessToken = {
+  type: 'bearer',
+}
