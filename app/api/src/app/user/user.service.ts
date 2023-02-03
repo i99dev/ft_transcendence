@@ -11,11 +11,17 @@ export class UserService{
 	repository = new UserRepository();
 
 	async getAllUsers() {
-		return await this.prisma.user.findMany();
+		const users = await this.prisma.user.findMany();
+		for (let i = 0; i < users.length; i++) {
+			delete users[i].token;
+		}
+		return users;
 	}
 
 	async getUser(name: string): Promise<User> {
-		return await this.prisma.user.findUnique({ where: { login: name } });
+		const user = await this.prisma.user.findUnique({ where: { login: name } });
+		delete user.token;
+		return user;
 	}
 
 	async getUserInfo(name: string, info: string): Promise<User> {
@@ -34,36 +40,29 @@ export class UserService{
 	}
 
 	async sortUserBy() {
-		const sortedUsers = await this.repository.sortUserById();
+		const sortedUsers = await this.repository.SortMany({
+			id: 'asc'
+		});
 		return sortedUsers;
 	}
 
 	async SortUserByWins() {
-		const sortedUsers = await this.prisma.user.groupBy({
-			by: ['token', 'id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
-			orderBy: {
+		const sortedUsers = await this.repository.SortMany({
 				total_wins: 'desc'
-			}
 		});
 		return sortedUsers;
 	}
 
 	async SortUserByXP() {
-		const sortedUsers = await this.prisma.user.groupBy({
-			by: ['token', 'id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
-			orderBy: {
-				exp_level: 'desc'
-			}
+		const sortedUsers = await this.repository.SortMany({
+			exp_level: 'desc'
 		});
 		return sortedUsers;
 	}
 
 	async SortUserByLoses() {
-		const sortedUsers = await this.prisma.user.groupBy({
-			by: ['token', 'id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
-			orderBy: {
-				total_loses: 'desc'
-			}
+		const sortedUsers = await this.repository.SortMany({
+			total_loses: 'desc'
 		});
 		return sortedUsers;
 	}
@@ -75,8 +74,12 @@ export class UserService{
 	}	
 
 	async SortUserByWinGap() {
-		const sortedUsers = await this.prisma.user.findMany();
-		return sortedUsers.sort(this.SortUserByWinLose);
+		const users = await this.prisma.user.findMany();
+		const sortedUsers = users.sort(this.SortUserByWinLose);
+		for (let i = 0; i < sortedUsers.length; i++) {
+			delete sortedUsers[i].token;
+		}
+		return sortedUsers;
 	}
 
 }
