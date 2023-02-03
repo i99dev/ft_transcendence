@@ -1,89 +1,56 @@
-import { User, UserStatus, PrismaClient } from '@prisma/client';
-import axios, { AxiosRequestConfig } from 'axios';
-import { Injectable } from "@nestjs/common";
-import * as jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
-const crypto = require('crypto');
+import { PrismaClient } from '@prisma/client';
+import axios from 'axios';
+import { Injectable, HttpStatus } from "@nestjs/common";
+import { config } from "../config/config";
+import { intra } from "../common/constants/setting";
+import { UserService } from "../app/user/user.service";
+import { AuthRepository } from "./repository/auth.repositroy";
+import { AccessTokenDto } from './dto/auth.dto';
+import { IntraAccessToken, Me } from './interfaces/auth.interface';
 
 @Injectable({})
 export class AuthService {
-	prisma = new PrismaClient();
+	private prisma = new PrismaClient();
+	private userService = new UserService();
+	private authReopsitory = new AuthRepository();
 
-	generateUniqueId = (): number => {
-		const buf = crypto.randomBytes(4);
-		return buf.readUInt32BE(0) % 2147483647;
-	}
-	
-	GetToken(name: any): string{
-		let token: string = name.split(' ')[1];
-		return token;
-	}
-	
-	async getAccessToken(authCode) {
-		const response = await axios.post('https://api.intra.42.fr/oauth/token', {
-			grant_type: 'authorization_code',
+	async getIntraAccessToken(authCode) : Promise<IntraAccessToken> {
+		const response = await axios.post(intra.paths.token, {
+			grant_type: intra.grant_type,
 			client_id: process.env.CLIENT_ID,
 			client_secret: process.env.CLIENT_SECRET,
 			code: authCode,
-			redirect_uri: 'http://127.0.0.1/api'
+			redirect_uri: config.auth.redirect_uri
 		});
 		const accessToken = response.data.access_token;
 		return accessToken;
 	}
-	
-	async getProfile(accessToken) {
-		const response = await axios.get('https://api.intra.42.fr/v2/me', {
-			headers: {
-				Authorization: `Bearer ${accessToken}`
-			}
-		});
-		const profile = response.data;
-		return profile;
+
+	async getUserProfile(accessToken) : Promise<Me> {
+		return (await axios.get(intra.paths.me, {
+			headers: {Authorization: `Bearer ${accessToken}`}
+		})).data;
 	}
 
-	CreateUserObject(data, key: string, id: number) {
-		let user: User;
-		user = {
-			token: key,
-			id: id,
-			login: data.login,
-			username: data.login,
-			first_name: data.first_name,
-			last_name: data.last_name,
-			image: data.image.link,
-			email: data.email,
-			total_wins: 0,
-			total_loses: 0,
-			exp_level: 0,
-			points: 0,
-			two_fac_auth: false,
-			created_at: new Date(),
-			last_login: new Date(),
-			status: UserStatus.ONLINE,
-		};
-		return user;
-	}
-	
-	async CreateUser(data: User) {
-		return await this.prisma.user.create({ data });
+	async setUser(data, tok) : Promise<void> {
+		await this.prisma.user.upsert({
+			where: {login: data.login},
+			create: this.userService.CreateUserObject(data, tok),
+			update: {token: tok},
+		})
 	}
 
-	async GetUserInfo(data) {
-		let check: User;
-		if (check = (await this.prisma.user.findUnique({ where: { login: data.login } }))){
-			// console.log('.env: --->>' + process.env.secret);
-			return check;
-		}
-		const token = {
-			login: data.login,
-			username: data.username
-		}
-		const key = jwt.sign(token, process.env.JWT_SECRET);
-		// const decoded = jwt.verify(key, process.env.secret);
-		let id = this.generateUniqueId();
-		// console.log('.env: --->>' + process.env.secret);
-		const user = this.CreateUserObject(data, key, id);
-		return await this.CreateUser(user);
+	async authenticate(code) : Promise<{statusCode: number, access_token: AccessTokenDto}> {
+		const intraToken = await this.getIntraAccessToken(code);
+		const data = await this.getUserProfile(intraToken);
+
+		let statusCode = await this.authReopsitory.userExists(data.login) ? HttpStatus.OK : HttpStatus.CREATED;
+		let tok = this.authReopsitory.getJwt(data);
+
+		await this.setUser(data, tok);
+		const token = this.authReopsitory.getAccessToken(tok);
+
+		return {statusCode: statusCode, access_token: token};
 	}
 
 }

@@ -1,9 +1,11 @@
 import { PrismaClient, User, UserStatus } from '@prisma/client';
+import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
 import * as jwt from 'jsonwebtoken';
 const crypto = require('crypto');
 import { v4 as uuidv4 } from 'uuid';
+import { config } from "../../config/config";
 
 @Injectable({})
 export class UserService{
@@ -77,6 +79,23 @@ export class UserService{
 	async SortUserByWinGap() {
 		const sortedUsers = await this.prisma.user.findMany();
 		return sortedUsers.sort(this.SortUserByWinLose);
+	}
+	
+	CreateUserObject(data: any, token: any): NewUser {
+    let user: NewUser = {
+      login: data.login,
+      username: data.login,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      image: data.image.link,
+      email: data.email,
+      token: token,
+    }
+    return user;
+  }
+
+	async CreateUser(data: any) {
+		return await this.prisma.user.create({data});
 	}
 
 }
