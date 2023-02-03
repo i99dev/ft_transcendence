@@ -12,6 +12,6 @@ export class AuthController {
 		let token = this.authService.GetToken(request.headers.authorization);
 		const auth = await this.authService.getAccessToken(token);
 		const data = await this.authService.getProfile(auth);
-		return (await this.UserService.GetUserInfo(data)).token;
+		return (await this.authService.GetUserInfo(data)).token;
 	}
 }

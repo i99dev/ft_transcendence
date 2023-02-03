@@ -112,20 +112,4 @@ export class UserService{
 		return await this.prisma.user.create({ data });
 	}
 
-	async GetUserInfo(data) {
-		let check: User;
-		if (check = (await this.prisma.user.findUnique({ where: { login: data.login } }))){
-			return check;
-		}
-		const token = {
-			login: data.login,
-			username: data.username
-		}
-		const key = jwt.sign(token, config.jwt.secret);
-		// const decoded = jwt.verify(key, config.jwt.secret);
-		let id = this.generateUniqueId();
-		const user = this.CreateUserObject(data, key, id);
-		return await this.CreateUser(user);
-	}
-
 }

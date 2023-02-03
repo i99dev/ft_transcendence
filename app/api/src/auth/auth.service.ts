@@ -4,11 +4,15 @@ import { Injectable } from "@nestjs/common";
 const crypto = require('crypto');
 import { config } from "../config/config";
 import { intra } from "../common/constants/setting";
+import { UserService } from "../app/user/user.service";
+import { AuthRepository } from "./repository/auth.repositroy";
 
 @Injectable({})
 export class AuthService {
 	prisma = new PrismaClient();
-	
+	UserService = new UserService();
+	AuthReopsitory = new AuthRepository();
+
 	GetToken(name: any): string{
 		let token: string = name.split(' ')[1];
 		return token;
@@ -34,6 +38,18 @@ export class AuthService {
 		});
 		const profile = response.data;
 		return profile;
+	}
+
+	async GetUserInfo(data) {
+		let check: User;
+		if (check = (await this.prisma.user.findUnique({ where: { login: data.login } }))){
+			return check;
+		}
+		const token = this.AuthReopsitory.getJwt(data);
+		// const decoded = jwt.verify(token, config.jwt.secret);
+		let id = this.UserService.generateUniqueId();
+		const user = this.UserService.CreateUserObject(data, token, id);
+		return await this.UserService.CreateUser(user);
 	}
 
 }
