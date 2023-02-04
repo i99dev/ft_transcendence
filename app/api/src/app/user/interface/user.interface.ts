@@ -5,5 +5,4 @@ export interface NewUser {
   last_name: string;
   image: string;
   email: string;
-  token: string;
 }

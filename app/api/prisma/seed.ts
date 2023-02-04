@@ -67,7 +67,7 @@ async function main() {
     },
   })
 
-  const oal_tena = await prisma.user.upsert({
+  let oal_tena = await prisma.user.upsert({
     where: { login: "oal-tena" },
     update: {},
     create: {
@@ -81,6 +81,15 @@ async function main() {
     },
   })
 
+  await prisma.user.update({
+    where: { id: 1 },
+    data: {
+      friends: {
+        connect: [{login: "isaad"},{login: "mal-guna"}]
+      },
+    },
+  })
+
   // Assign Users
   /////////////////////////////////////
 
@@ -89,40 +98,40 @@ async function main() {
   // Create Friends
   /////////////////////////////////////
 
-  const friends = await prisma.friend.createMany({
-    data: [
-      {friend_id: users[0].id},
-      {friend_id: users[1].id},
-      {friend_id: users[2].id},
-      {friend_id: users[3].id},
-      {friend_id: users[4].id},
-    ],
-  })
+  // const friends = await prisma.friend.createMany({
+  //   data: [
+  //     {friend_id: users[0].id},
+  //     {friend_id: users[1].id},
+  //     {friend_id: users[2].id},
+  //     {friend_id: users[3].id},
+  //     {friend_id: users[4].id},
+  //   ],
+  // })
 
   // Assign Friends
   /////////////////////////////////////
 
-  users[1] = await prisma.user.update({
-    where: {
-      login: "bnaji",
-    },
-    data: {
-      friends: {
-        connect: [{id: 2}, {id: 5}],
-      },
-    },
-  })
+  // users[1] = await prisma.user.update({
+  //   where: {
+  //     login: "bnaji",
+  //   },
+  //   data: {
+  //     friends: {
+  //       connect: [{id: 2}, {id: 5}],
+  //     },
+  //   },
+  // })
 
-  users[4] = await prisma.user.update({
-    where: {
-      login: "oal-tena",
-    },
-    data: {
-      friends: {
-        connect: [{id: 4}, {id: 3}, {id: 1}],
-      },
-    },
-  })
+  // users[4] = await prisma.user.update({
+  //   where: {
+  //     login: "oal-tena",
+  //   },
+  //   data: {
+  //     friends: {
+  //       connect: [{id: 4}, {id: 3}, {id: 1}],
+  //     },
+  //   },
+  // })
 
 
   // Create powerUp
@@ -137,6 +146,15 @@ async function main() {
     }
   })
 
+    
+  // await prisma.user.update({
+  //   where: { login: "bnaji" },
+  //   data: {
+  //     power_ups: {
+  //       connect: {type: "sonic_ball"},
+  //     },
+  //   },
+  // })
 
   // Assign Powerup
   /////////////////////////////////////
@@ -151,9 +169,29 @@ async function main() {
       points: 200
     }
   })
+
+  
+  // await prisma.user.update({
+  //   where: { login: "bnaji" },
+  //   data: {
+  //     achievements: {
+  //       connect: {type: "points_hunter"},
+  //     },
+  //   },
+  // })
+
+  // await prisma.user.update({
+  //   where: { login: "mal-guna" },
+  //   data: {
+  //     achievements: {
+  //       connect: {type: "points_hunter"},
+  //     },
+  //   },
+  // })
+
   
 
-  console.log({ users, friends, powerUp1, achievement1});
+  console.log({ users, powerUp1, achievement1});
 }
 
 // execute the main function

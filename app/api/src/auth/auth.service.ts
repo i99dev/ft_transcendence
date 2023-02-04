@@ -35,8 +35,8 @@ export class AuthService {
 	async setUser(data, tok) : Promise<void> {
 		await this.prisma.user.upsert({
 			where: {login: data.login},
-			create: this.userService.CreateUserObject(data, tok),
-			update: {token: tok},
+			create: this.userService.CreateUserObject(data),
+			update: {},
 		})
 	}
 
