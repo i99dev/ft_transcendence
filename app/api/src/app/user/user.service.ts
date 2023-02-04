@@ -1,9 +1,6 @@
-import { PrismaClient, User, UserStatus } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
-import * as jwt from 'jsonwebtoken';
-const crypto = require('crypto');
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({})
 export class UserService{
@@ -39,47 +36,21 @@ export class UserService{
 		return await this.prisma.user.delete({ where: { login: name } });
 	}
 
-	async sortUserBy() {
-		const sortedUsers = await this.repository.SortMany({
-			id: 'asc'
-		});
-		return sortedUsers;
-	}
-
-	async SortUserByWins() {
-		const sortedUsers = await this.repository.SortMany({
-				total_wins: 'desc'
-		});
-		return sortedUsers;
-	}
-
-	async SortUserByXP() {
-		const sortedUsers = await this.repository.SortMany({
-			exp_level: 'desc'
-		});
-		return sortedUsers;
-	}
-
-	async SortUserByLoses() {
-		const sortedUsers = await this.repository.SortMany({
-			total_loses: 'desc'
-		});
-		return sortedUsers;
-	}
-
-	SortUserByWinLose(a, b) {
-		const winLoseA = a.total_wins - a.total_loses;
-		const winLoseB = b.total_wins - b.total_loses;
-		return winLoseB - winLoseA;
-	}	
-
-	async SortUserByWinGap() {
-		const users = await this.prisma.user.findMany();
-		const sortedUsers = users.sort(this.SortUserByWinLose);
-		for (let i = 0; i < sortedUsers.length; i++) {
-			delete sortedUsers[i].token;
+	DecideSortType(type: string): Promise<any> {
+		switch (type) {
+			case 'id':
+				return this.repository.sortUserBy();
+			case 'wins':
+				return this.repository.SortUserByWins();
+			case 'xp':
+				return this.repository.SortUserByXP();
+			case 'loses':
+				return this.repository.SortUserByLoses();
+			case 'ladder':
+				return this.repository.SortUserByWinGap();
+			default:
+				return this.repository.sortUserBy();
 		}
-		return sortedUsers;
 	}
 
 }

@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, IsEnum, IsOptional, IsArray, IsBoolean, ValidateNested } from 'class-validator';
 import { UserStatus, Friend } from '@prisma/client';
 
-export class UserGetDto {
+export interface UserGetDto {
   id: number;
   login: string;
   email: string;

@@ -1,7 +1,6 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
-import { User } from '@prisma/client';
 import { UserService } from './user.service';
-import { Body, Get, Controller, Param, Patch, Delete } from '@nestjs/common';
+import { Body, Get, Controller, Param, Patch, Delete, Query } from '@nestjs/common';
 
 
 
@@ -10,37 +9,16 @@ export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
 	@Get() // get all users
-	GetUsers(): Promise<User[]> {
-		return this.UserService.getAllUsers();
+	GetUsers(@Query('sort') sort: string): Promise<UserGetDto []> {
+		if (!sort)
+			return this.UserService.getAllUsers();
+		else{
+			return this.UserService.DecideSortType(sort);
+		}
 	}
 
 	@Get('/me') // get the logged in user
 	GetMe() {
-	}
-
-	@Get('/sorted') // get the users sorted by their id
-	SortUser() {
-		return this.UserService.sortUserBy();
-	}
-
-	@Get('/sorted/wins') // get the users sorted by their wins
-	SortUserWins() {
-		return this.UserService.SortUserByWins();
-	}
-
-	@Get('/sorted/loses') // get the users sorted by their loses
-	SortUserLoses() {
-		return this.UserService.SortUserByLoses();
-	}
-
-	@Get('/sorted/ladder') // get the users sorted by their wins-loses
-	SortUserLadder() {
-		return this.UserService.SortUserByWinGap();
-	}
-
-	@Get('/sorted/xp') // get the users sorted by their XP
-	SortUserXP() {
-		return this.UserService.SortUserByXP();
 	}
 	
 	@Get('/:name') // get all of the info of the passed login user
