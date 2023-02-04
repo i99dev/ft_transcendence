@@ -1,5 +1,3 @@
-import { UserPatchDto } from './../../../../src/app/user/dto/user.dto';
-import { IsNotEmpty } from 'class-validator';
 import { UserModule } from './../../../../src/app/user/user.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Body, INestApplication } from '@nestjs/common';
