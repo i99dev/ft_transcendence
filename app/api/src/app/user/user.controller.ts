@@ -9,12 +9,9 @@ export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
 	@Get() // get all users
-	GetUsers(@Query('sort') sort: string): Promise<UserGetDto []> {
-		if (!sort)
-			return this.UserService.getAllUsers();
-		else{
-			return this.UserService.DecideSortType(sort);
-		}
+	async GetUsers(@Query('sort') sort: string, @Query('way') way: string) {
+		let type = { [sort]: way };
+		return await this.UserService.SortMany(type);
 	}
 
 	@Get('/me') // get the logged in user
