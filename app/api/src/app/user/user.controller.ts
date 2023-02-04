@@ -10,7 +10,7 @@ export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
 	@Get() // get all users
-	async GetUsers(@Query('sort') sort: string, @Query('way') way: string) {
+	async GetUsers(@Query('sort') sort: string, @Query('order') way: string) {
 		let type = { [sort]: way };
 		return await this.UserService.SortMany(type);
 	}
