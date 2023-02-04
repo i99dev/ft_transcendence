@@ -1,29 +1,23 @@
+import { UserGetDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
+type UserNoToken = Omit<User, 'token'>;
 
 @Injectable({})
 export class UserService{
 	prisma = new PrismaClient();
 	repository = new UserRepository();
 
-	async getAllUsers() {
+	async getAllUsers(): Promise<User[]> {
 		const users = await this.prisma.user.findMany();
-		for (let i = 0; i < users.length; i++) {
-			delete users[i].token;
-		}
 		return users;
 	}
 
 	async getUser(name: string): Promise<User> {
-		const user = await this.prisma.user.findUnique({ where: { login: name } });
-		delete user.token;
+		const user: User = await this.prisma.user.findUnique({ where: { login: name } });
 		return user;
-	}
-
-	async getUserInfo(name: string, info: string): Promise<User> {
-		return await (await this.getUser(name))[info];
 	}
 
 	async updateUser(data: User) {

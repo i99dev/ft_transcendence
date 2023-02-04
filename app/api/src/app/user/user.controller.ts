@@ -1,6 +1,7 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import { Body, Get, Controller, Param, Patch, Delete, Query } from '@nestjs/common';
+import { User } from '@prisma/client';
 
 
 
@@ -21,11 +22,6 @@ export class UserController {
 	@Get('/:name') // get all of the info of the passed login user
 	GetUser(@Param('name') name: string): Promise<UserGetDto> {
 		return this.UserService.getUser(name);
-	}
-	
-	@Get('/:name/:info') // get specific info from a user
-	GetInfo(@Param('name') name:string, @Param('info') info:string): Promise<UserGetDto> {
-		return this.UserService.getUserInfo(name, info);
 	}
 
 	@Patch('/:name') // to be edited later
