@@ -31,7 +31,7 @@ export class UserService{
 		return await this.prisma.user.delete({ where: { login: name } });
 	}
 	
-	CreateUserObject(data: any, token: any): NewUser {
+	CreateUserObject(data: any): NewUser {
     let user: NewUser = {
       login: data.login,
       username: data.login,
@@ -39,7 +39,6 @@ export class UserService{
       last_name: data.last_name,
       image: data.image.link,
       email: data.email,
-      token: token,
     }
     return user;
   }

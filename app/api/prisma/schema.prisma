@@ -13,7 +13,6 @@ datasource db {
 // prisma/schema.prisma
 
 model User {
-  token        String?     @unique
   id           Int        @id @default(autoincrement())
   login        String     @unique
   username     String     @unique
@@ -29,19 +28,17 @@ model User {
   exp_level    Int        @default(0)
   points       Int        @default(0)
   two_fac_auth Boolean    @default(false)
-  friends      Friend[]   @relation("UserFriends")
+  achievements Achievement[]  @relation("UserAchievements")
+  power_ups    PowerUp[] @relation("UserPowerUps")
+  users        User[]  @relation("UserFriends")
+  friends      User[]  @relation("UserFriends")
 }
-
-model Friend {
-  id             Int  @id @default(autoincrement())
-  friend_id      Int?
-  user_friend    User? @relation("UserFriends", fields: [friend_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-} 
 
 model PowerUp {
   id     Int    @id @default(autoincrement())
   type   String @unique @default("default")
   period Int    @default(0)
+  users  User[] @relation("UserPowerUps")
 }
 
 model Achievement {
@@ -49,6 +46,7 @@ model Achievement {
   type        String  @unique @default("default")
   description String?
   points      Int     @default(0)
+  users        User[]  @relation("UserAchievements")
 }
 
 enum UserStatus {

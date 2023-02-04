@@ -13,9 +13,6 @@ export class UserRepository {
 	async SortUserByWinGap() {
 		const users = await this.prisma.user.findMany();
 		const sortedUsers = users.sort(this.SortUserByWinLose);
-		for (let i = 0; i < sortedUsers.length; i++) {
-			delete sortedUsers[i].token;
-		}
 		return sortedUsers;
 	}
 }
