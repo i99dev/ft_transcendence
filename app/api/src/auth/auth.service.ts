@@ -1,56 +1,79 @@
-import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
-import { Injectable, HttpStatus } from "@nestjs/common";
-import { config } from "../config/config";
-import { intra } from "../common/constants/setting";
-import { UserService } from "../app/user/user.service";
-import { AuthRepository } from "./repository/auth.repositroy";
-import { AccessTokenDto } from './dto/auth.dto';
-import { IntraAccessToken, Me } from './interfaces/auth.interface';
+import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { config } from '../config/config';
+import {
+  intraConstants,
+  jwtHeaderConstants,
+} from '../common/constants/setting';
+import { AuthRepository } from './repository/auth.repositroy';
+import { IntraAccessToken, Me } from './interfaces/intra.interface';
+import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
+
 
 @Injectable({})
 export class AuthService {
-	private prisma = new PrismaClient();
-	private userService = new UserService();
-	private authReopsitory = new AuthRepository();
+  constructor(private authRepository: AuthRepository, private jwtService: JwtService) {}
 
-	async getIntraAccessToken(authCode) : Promise<IntraAccessToken> {
-		const response = await axios.post(intra.paths.token, {
-			grant_type: intra.grant_type,
-			client_id: process.env.CLIENT_ID,
-			client_secret: process.env.CLIENT_SECRET,
-			code: authCode,
-			redirect_uri: config.auth.redirect_uri
-		});
-		const accessToken = response.data.access_token;
-		return accessToken;
-	}
+  async checkUserAccount(
+    intraUser: Me,
+  ): Promise<{ httpStatus: HttpStatus; user: User }> {
+    const myuser: User = await this.authRepository.getUser(intraUser.login);
+    if (!myuser) {
+      return {
+        httpStatus: HttpStatus.CREATED,
+        user: await this.authRepository.setupUserAccount(intraUser),
+      };
+    }
+    return { httpStatus: HttpStatus.OK, user: myuser };
+  }
 
-	async getUserProfile(accessToken) : Promise<Me> {
-		return (await axios.get(intra.paths.me, {
-			headers: {Authorization: `Bearer ${accessToken}`}
-		})).data;
-	}
+  async validateUserWithIntra(code: string): Promise<Me> {
+    try {
+      const intraToken: IntraAccessToken = await this.getIntraAccessToken(code);
+      return await this.getUserProfile(intraToken);
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
+  }
 
-	async setUser(data, tok) : Promise<void> {
-		await this.prisma.user.upsert({
-			where: {login: data.login},
-			create: this.userService.CreateUserObject(data),
-			update: {},
-		})
-	}
+  async getIntraAccessToken(authCode: string): Promise<IntraAccessToken> {
+    const response: any = await axios.post(intraConstants.paths.token, {
+      grant_type: intraConstants.grant_type,
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      code: authCode,
+      redirect_uri: config.auth.redirect_uri,
+    });
 
-	async authenticate(code) : Promise<{statusCode: number, access_token: AccessTokenDto}> {
-		const intraToken = await this.getIntraAccessToken(code);
-		const data = await this.getUserProfile(intraToken);
+    if (response.status != HttpStatus.OK) {
+      throw new UnauthorizedException();
+    }
 
-		let statusCode = await this.authReopsitory.userExists(data.login) ? HttpStatus.OK : HttpStatus.CREATED;
-		let tok = this.authReopsitory.getJwt(data);
+    return response.data.access_token;
+  }
 
-		await this.setUser(data, tok);
-		const token = this.authReopsitory.getAccessToken(tok);
+  async getUserProfile(accessToken: IntraAccessToken): Promise<Me> {
+    const response: any = await axios.get(intraConstants.paths.me, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
 
-		return {statusCode: statusCode, access_token: token};
-	}
+    if (response.status != HttpStatus.OK) {
+      throw new UnauthorizedException();
+    }
 
+    return response.data;
+  }
+
+  async getJwt(user: User): Promise<string> {
+    const payload = {
+      id: user.id,
+      login: user.login,
+    };
+    return this.jwtService.sign(payload);
+  }
+
+  async validateUser(code: string): Promise<Me> {
+    return await this.validateUserWithIntra(code);
+  }
 }
