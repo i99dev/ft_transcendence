@@ -9,7 +9,7 @@ import { User } from '@prisma/client';
 
 @Injectable({})
 export class AuthService {
-	private authRepository = new AuthRepository();
+	constructor(private authRepository: AuthRepository) {}
 
 	async checkUserAccount(intraUser: Me) : Promise<{httpStatus: HttpStatus, user: User}> {
 

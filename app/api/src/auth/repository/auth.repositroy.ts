@@ -4,7 +4,7 @@ import { UserService } from '../../app/user/user.service';
 import { Me } from '../interfaces/auth.interface';
 
 export class AuthRepository {
-  private userService = new UserService();
+  constructor(private userService: UserService) {}
 
   async setupUserAccount(user: Me) : Promise<User> {
 		return await this.userService.CreateUser(this.userService.CreateUserObject(user));

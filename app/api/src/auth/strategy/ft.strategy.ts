@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { userInfo } from 'os';
+import { Me } from '../interfaces/auth.interface';
 
 @Injectable()
 export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
@@ -12,35 +13,27 @@ export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
 
   async authenticate(req) {
 
-    // If the code header value is not present, throw an UnauthorizedException
-
     if (!req || !req.headers || !req.headers.code) {
       throw new BadRequestException();
     }
-    const code = req.headers.code;
-    // Call the validate() method with the code header value and AuthService instance
+    const code: string = req.headers.code;
+
     try {
-      const user = await this.validate(code);
+      const user: Me = await this.validate(code);
       this.success(user);
     } catch (error) {
       this.fail(error);
     }
   }
 
-  async validate(code) {
-    // Use the AuthService instance
-    // ...
-    const user = await this.authService.validateUser(code);
-    
-    // Perform any additional validation logic, such as checking the code against a database, etc.
-    // ...
+  async validate(code) : Promise<Me> {
 
-    // If the validation fails, throw an UnauthorizedException
+    const user: Me = await this.authService.validateUser(code);
+
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    // Return the user object if the validation succeeds
     return user;
   }
 }
