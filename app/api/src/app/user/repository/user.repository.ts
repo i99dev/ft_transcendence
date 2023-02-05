@@ -1,5 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
-import { UserGetDto } from '../dto/user.dto';
+import { PrismaClient } from '@prisma/client';
 
 export class UserRepository {
   prisma = new PrismaClient();

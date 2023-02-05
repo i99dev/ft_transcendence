@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsString, IsEnum, IsOptional, IsArray, IsBoolean, ValidateNested } from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsBoolean } from 'class-validator';
 import { UserStatus } from '@prisma/client';
 
-export interface UserGetDto {
+export class UserGetDto {
   id: number;
   login: string;
   email: string;
@@ -16,6 +16,8 @@ export interface UserGetDto {
   exp_level: number;
   points: number;
   two_fac_auth: boolean;
+  friend_to?: UserGetDto[];
+  friends?: UserGetDto[];
 }
 
 export class UserPatchDto {
@@ -38,4 +40,20 @@ export class UserPatchDto {
 	@IsOptional()
 	@IsBoolean()
   two_fac_auth?: boolean;
+	
+	@IsOptional()
+	@IsBoolean()
+  total_loses?: boolean;
+	
+	@IsOptional()
+	@IsBoolean()
+  total_wins?: boolean;
+	
+	@IsOptional()
+	@IsBoolean()
+  friends?: boolean;
+	
+	@IsOptional()
+	@IsBoolean()
+  friend_to?: boolean;
 }

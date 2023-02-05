@@ -3,20 +3,28 @@ import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
-type UserNoToken = Omit<User, 'token'>;
+import { isNotEmpty } from 'class-validator';
 
 @Injectable({})
 export class UserService{
 	prisma = new PrismaClient();
 	repository = new UserRepository();
 
-	async getAllUsers(): Promise<User[]> {
-		const users = await this.prisma.user.findMany();
-		return users;
+	async getUser(name: string): Promise<User> {
+		const user = await this.prisma.user.findUnique({ 
+			where: { login: name },
+			include: {
+				friend_to: true,
+				friends: true,
+			},
+		});
+		return user;
 	}
 
-	async getUser(name: string): Promise<User> {
-		const user: User = await this.prisma.user.findUnique({ where: { login: name } });
+	async getUserForPatch(name: string): Promise<User> {
+		const user = await this.prisma.user.findUnique({ 
+			where: { login: name },
+		});
 		return user;
 	}
 
@@ -49,12 +57,29 @@ export class UserService{
 
 	async SortMany(orderBy: object){
 		if ( orderBy == null ) 
-			return await this.getAllUsers();
-		const sortedUsers = await this.prisma.user.groupBy({
-			by: ['id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
-			orderBy: orderBy
+			orderBy = {id: 'asc'};
+		const sortedUsers = await this.prisma.user.findMany({
+			orderBy: orderBy,
+			include: {
+				friend_to: true,
+				friends: true,
+			},
 		});
 		return sortedUsers;
+	}
+
+	async getFriends(login: string){
+		const user = await this.prisma.user.findUnique({
+			where: {
+			  login: login
+			},
+			include: {
+			  friends: true,
+			  friend_to: true,
+			},
+		  });
+		  const commonFriends = user.friend_to.filter(friend => user.friends.some(f => f.id === friend.id));
+		  return commonFriends;
 	}
 
 }

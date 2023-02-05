@@ -29,10 +29,16 @@ export class UserController {
 
 	@Patch('/:name') // to be edited later
 	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
-		const existingUser = await this.UserService.getUser(name);
+		const existingUser = await this.UserService.getUserForPatch(name);
 		const updatedUser = Object.assign({}, existingUser, data1);
 		return await this.UserService.updateUser(updatedUser);
 	}
+
+	@Get('/:name/friends') // to be edited later
+	async GetFriends(@Param('name') name: string) {
+		return await this.UserService.getFriends(name);
+	}
+
 
 	@Delete('/:name') // for testing purposes only
 	DeleteUser(@Param('name') name: string) {
