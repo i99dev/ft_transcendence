@@ -1,5 +1,6 @@
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { FtGuard } from "../common/guards/auth.gaurd";
+import { JwtAuthGuard } from "../common/guards/jwt.guard";
 import { AuthService } from "./auth.service";
 import { AccessTokenDto } from "./dto/auth.dto";
 
@@ -11,7 +12,7 @@ export class AuthController {
 	@UseGuards(FtGuard)
 	@Get('/auth')
 	async GetAuth(@Req() req, @Res() res) : Promise<AccessTokenDto>{
-
+		
 		const {httpStatus, user} = await this.authService.checkUserAccount(req.user);
 		const token: string = await this.authService.getJwt(user);
 

@@ -1,9 +1,13 @@
 import { Strategy } from 'passport-strategy';
 import { PassportStrategy } from '@nestjs/passport';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { userInfo } from 'os';
-import { Me } from '../interfaces/auth.interface';
+import { Me } from '../interfaces/intra.interface';
 
 @Injectable()
 export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
@@ -12,7 +16,6 @@ export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
   }
 
   async authenticate(req) {
-
     if (!req || !req.headers || !req.headers.code) {
       throw new BadRequestException();
     }
@@ -26,8 +29,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
     }
   }
 
-  async validate(code) : Promise<Me> {
-
+  async validate(code): Promise<Me> {
     const user: Me = await this.authService.validateUser(code);
 
     if (!user) {

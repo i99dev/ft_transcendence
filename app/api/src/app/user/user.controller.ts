@@ -1,7 +1,8 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { UserService } from './user.service';
-import { Body, Get, Controller, Param, Patch, Delete, Query } from '@nestjs/common';
+import { Body, Get, Controller, Param, Patch, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 
 
 
@@ -14,9 +15,11 @@ export class UserController {
 		let type = { [sort]: order };
 		return await this.UserService.SortMany(type);
 	}
-
+	
+	@UseGuards(JwtAuthGuard)
 	@Get('/me') // get the logged in user
-	GetMe() {
+	async GetMe(@Req() req) {
+		return await this.UserService.getUser(req.user.login); 
 	}
 	
 	@Get('/:name') // get all of the info of the passed login user
