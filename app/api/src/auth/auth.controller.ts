@@ -1,4 +1,5 @@
-import { Controller, Get, Req, Res } from "@nestjs/common";
+import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
+import { FtGuard } from "../common/guards/auth.gaurd";
 import { AuthService } from "./auth.service";
 import { AccessTokenDto } from "./dto/auth.dto";
 
@@ -7,10 +8,13 @@ export class AuthController {
 
 	constructor(private authService: AuthService) {}
 
+	@UseGuards(FtGuard)
 	@Get('/auth')
-	async GetAuth(@Req() request, @Res() res) {
-		const { statusCode, access_token} = await this.authService.authenticate(request.headers.code);
-		res.status(statusCode);
-		res.send(access_token);
+	async GetAuth(@Req() req, @Res() res) : Promise<AccessTokenDto>{
+
+		const {httpStatus, user} = await this.authService.checkUserAccount(req.user);
+		const token = await this.authService.getJwt(user);
+
+		return res.status(httpStatus).json(new AccessTokenDto(token));
 	}
 }
