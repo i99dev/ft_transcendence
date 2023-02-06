@@ -29,10 +29,8 @@ export class UserController {
 
 	@Patch('/:name')
 	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto): Promise<UserGetDto> {
-		if (data1.friends) {
-			await this.UserService.UpdateUserFriends(name, data1.friends)
-			delete data1.friends;
-		}
+		this.UserService.CheckFriendsUpdate(data1, name);
+		delete data1.friends;
 		const existingUser: UserGetDto = await this.UserService.getUserForPatch(name);
 		const updatedUser: User = Object.assign({}, existingUser, data1);
 		return await this.UserService.updateUser(updatedUser);
