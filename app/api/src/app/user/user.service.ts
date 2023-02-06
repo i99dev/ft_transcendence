@@ -3,6 +3,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
+import { Me } from '../../auth/interfaces/intra.interface';
 type UserNoToken = Omit<User, 'token'>;
 
 @Injectable({})
@@ -56,5 +57,11 @@ export class UserService{
 		});
 		return sortedUsers;
 	}
+
+	async setupUserAccount(user: Me): Promise<User> {
+    return await this.CreateUser(
+      this.CreateUserObject(user),
+    );
+  }
 
 }

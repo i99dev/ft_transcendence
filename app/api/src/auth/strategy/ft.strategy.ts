@@ -29,7 +29,7 @@ export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
   }
 
   async validate(code): Promise<Me> {
-    const user: Me = await this.authService.validateUser(code);
+    const user: Me = await this.authService.validateUserWithIntra(code);
 
     if (!user) {
       throw new UnauthorizedException();
