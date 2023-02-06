@@ -1,3 +1,4 @@
+import { UserGetDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
@@ -9,7 +10,7 @@ export class UserService{
 	repository = new UserRepository();
 
 	async getUser(name: string): Promise<User> {
-		const user = await this.prisma.user.findUnique({ 
+		const user: User = await this.prisma.user.findUnique({ 
 			where: { login: name },
 			include: {
 				friend_to: true,
@@ -19,9 +20,9 @@ export class UserService{
 		return user;
 	}
 
-	async UpdateUserFriends(name: string, toAdd: string): Promise<User> {
-		let user2 = await this.prisma.user.findUnique({ where: { login: toAdd } });
-		let user = await this.prisma.user.update({
+	async UpdateUserFriends(name: string, toAdd: string): Promise<UserGetDto> {
+		let user2: UserGetDto = await this.prisma.user.findUnique({ where: { login: toAdd } });
+		let user: UserGetDto = await this.prisma.user.update({
 			where: { login: name },
 			include: {
 				friend_to: true,
@@ -32,7 +33,7 @@ export class UserService{
 		return user;
 	}
 
-	async getUserForPatch(name: string): Promise<User> {
+	async getUserForPatch(name: string): Promise<UserGetDto> {
 		const user = await this.prisma.user.findUnique({ 
 			where: { login: name },
 		});
@@ -46,7 +47,7 @@ export class UserService{
 		});
 	}
 
-	async deleteUser(name: string) {
+	async deleteUser(name: string): Promise<UserGetDto> {
 		return await this.prisma.user.delete({ where: { login: name } });
 	}
 	
@@ -62,14 +63,14 @@ export class UserService{
     return user;
   }
 
-	async CreateUser(data: any) {
+	async CreateUser(data: any): Promise<UserGetDto> {
 		return await this.prisma.user.create({data});
 	}
 
-	async SortMany(orderBy: object){
+	async SortMany(orderBy: object): Promise<UserGetDto[]> {
 		if ( orderBy == null ) 
 			orderBy = {id: 'asc'};
-		const sortedUsers = await this.prisma.user.findMany({
+		const sortedUsers: UserGetDto[] = await this.prisma.user.findMany({
 			orderBy: orderBy,
 			include: {
 				friend_to: true,
@@ -79,8 +80,8 @@ export class UserService{
 		return sortedUsers;
 	}
 
-	async getFriends(login: string){
-		const user = await this.prisma.user.findUnique({
+	async getFriends(login: string): Promise<UserGetDto[]> {
+		const user: UserGetDto = await this.prisma.user.findUnique({
 			where: {
 				login: login
 			},
@@ -89,11 +90,11 @@ export class UserService{
 				friend_to: true,
 			},
 		});
-		const commonFriends = user.friend_to.filter(friend => user.friends.some(f => f.id === friend.id));
+		const commonFriends: UserGetDto[] = user.friend_to.filter(friend => user.friends.some(f => f.id === friend.id));
 		return commonFriends;
 	}
 
-	deleteFriend(name: string, login: string){
+	deleteFriend(name: string, login: string): Promise<UserGetDto> {
 		return this.prisma.user.update({
 			where: { login: name },
 			include: {

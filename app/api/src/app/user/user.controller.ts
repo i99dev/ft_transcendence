@@ -11,14 +11,14 @@ export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
 	@Get()
-	async GetUsers(@Query('sort') sort: string, @Query('order') order: string) {
+	async GetUsers(@Query('sort') sort: string, @Query('order') order: string): Promise<UserGetDto[]> {
 		let type = { [sort]: order };
 		return await this.UserService.SortMany(type);
 	}
 	
 	@UseGuards(JwtAuthGuard)
 	@Get('/me')
-	async GetMe(@Req() req) {
+	async GetMe(@Req() req): Promise<UserGetDto> {
 		return await this.UserService.getUser(req.user.login); 
 	}
 	
@@ -28,23 +28,23 @@ export class UserController {
 	}
 
 	@Patch('/:name')
-	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
+	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto): Promise<UserGetDto> {
 		if (data1.friends) {
 			await this.UserService.UpdateUserFriends(name, data1.friends)
 			delete data1.friends;
 		}
-		const existingUser = await this.UserService.getUserForPatch(name);
-		const updatedUser = Object.assign({}, existingUser, data1);
+		const existingUser: UserGetDto = await this.UserService.getUserForPatch(name);
+		const updatedUser: User = Object.assign({}, existingUser, data1);
 		return await this.UserService.updateUser(updatedUser);
 	}
 
 	@Get('/:name/friends')
-	async GetFriends(@Param('name') name: string) {
+	async GetFriends(@Param('name') name: string): Promise<UserGetDto[]> {
 		return await this.UserService.getFriends(name);
 	}
 
 	@Delete('/:name')
-	DeleteUser(@Body() login, @Param('name') name: string) {
+	DeleteUser(@Body() login, @Param('name') name: string): Promise<UserGetDto> {
 		if (login.friends)
 			return this.UserService.deleteFriend(name, login.friends);
 		else {
