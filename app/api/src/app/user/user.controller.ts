@@ -44,12 +44,8 @@ export class UserController {
 	}
 
 	@Delete('/:name')
-	DeleteUser(@Body() login, @Param('name') name: string): Promise<UserGetDto> {
-		if (login.friends)
-			return this.UserService.deleteFriend(name, login.friends);
-		else {
-			return this.UserService.deleteUser(name);
-		}
+	async DeleteUser(@Body() login, @Param('name') name: string): Promise<UserGetDto> {
+		return await this.UserService.DeleteFriendOrUser(login, name);
 	}
 
 }

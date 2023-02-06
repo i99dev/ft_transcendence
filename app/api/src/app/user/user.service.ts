@@ -9,8 +9,8 @@ export class UserService{
 	prisma = new PrismaClient();
 	repository = new UserRepository();
 
-	async getUser(name: string): Promise<User> {
-		const user: User = await this.prisma.user.findUnique({ 
+	async getUser(name: string): Promise<UserGetDto> {
+		const user: UserGetDto = await this.prisma.user.findUnique({ 
 			where: { login: name },
 			include: {
 				friend_to: true,
@@ -45,10 +45,6 @@ export class UserService{
 			where: { login: data.login },
 			data,
 		});
-	}
-
-	async deleteUser(name: string): Promise<UserGetDto> {
-		return await this.prisma.user.delete({ where: { login: name } });
 	}
 	
 	CreateUserObject(data: any): NewUser {
@@ -94,15 +90,12 @@ export class UserService{
 		return commonFriends;
 	}
 
-	deleteFriend(name: string, login: string): Promise<UserGetDto> {
-		return this.prisma.user.update({
-			where: { login: name },
-			include: {
-				friend_to: true,
-				friends: true,
-			},
-			data: { friends: { disconnect: { login: login } } },
-		});
+	async DeleteFriendOrUser(login, name: string): Promise<UserGetDto> {
+		if (login.friends)
+			return this.repository.deleteFriend(name, login.friends);
+		else {
+			return this.repository.deleteUser(name);
+		}
 	}
 
 }
