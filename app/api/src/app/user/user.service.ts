@@ -95,4 +95,15 @@ export class UserService{
 		return commonFriends;
 	}
 
+	deleteFriend(name: string, login: string){
+		return this.prisma.user.update({
+			where: { login: name },
+			include: {
+				friend_to: true,
+				friends: true,
+			},
+			data: { friends: { disconnect: { login: login } } },
+		});
+	}
+
 }

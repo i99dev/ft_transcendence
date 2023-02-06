@@ -45,8 +45,12 @@ export class UserController {
 	}
 
 	@Delete('/:name') // for testing purposes only
-	DeleteUser(@Param('name') name: string) {
-		return this.UserService.deleteUser(name);
+	DeleteUser(@Query('login') login: string, @Param('name') name: string) {
+		if (!login)
+			return this.UserService.deleteUser(name);
+		else {
+			return this.UserService.deleteFriend(name, login);
+		}
 	}
 
 }
