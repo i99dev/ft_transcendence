@@ -1,7 +1,7 @@
+import { User } from '@prisma/client';
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import { Body, Get, Controller, Param, Patch, Delete, Query, UseGuards, Req } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 
 
@@ -28,17 +28,21 @@ export class UserController {
 	}
 
 	@Patch('/:name') // to be edited later
-	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
-		const existingUser = await this.UserService.getUserForPatch(name);
-		const updatedUser = Object.assign({}, existingUser, data1);
-		return await this.UserService.updateUser(updatedUser);
+	async UpdateUser(@Query('login') login: string, @Param('name') name: string, @Body() data1: UserPatchDto) {
+		if (!login){
+			const existingUser = await this.UserService.getUserForPatch(name);
+			const updatedUser = Object.assign({}, existingUser, data1);
+			return await this.UserService.updateUser(updatedUser);
+		}
+		else {
+			return await this.UserService.UpdateUserFriends(name, login);
+		}
 	}
 
 	@Get('/:name/friends') // to be edited later
 	async GetFriends(@Param('name') name: string) {
 		return await this.UserService.getFriends(name);
 	}
-
 
 	@Delete('/:name') // for testing purposes only
 	DeleteUser(@Param('name') name: string) {

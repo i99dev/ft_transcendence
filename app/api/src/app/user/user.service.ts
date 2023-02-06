@@ -21,6 +21,19 @@ export class UserService{
 		return user;
 	}
 
+	async UpdateUserFriends(name: string, toAdd: string): Promise<User> {
+		let user2 = await this.prisma.user.findUnique({ where: { login: toAdd } });
+		let user = await this.prisma.user.update({
+			where: { login: name },
+			include: {
+				friend_to: true,
+				friends: true,
+			},
+			data: { friends: { connect: [{id: user2.id}] } },
+		});
+		return user;
+	}
+
 	async getUserForPatch(name: string): Promise<User> {
 		const user = await this.prisma.user.findUnique({ 
 			where: { login: name },
@@ -71,15 +84,15 @@ export class UserService{
 	async getFriends(login: string){
 		const user = await this.prisma.user.findUnique({
 			where: {
-			  login: login
+				login: login
 			},
 			include: {
-			  friends: true,
-			  friend_to: true,
+				friends: true,
+				friend_to: true,
 			},
-		  });
-		  const commonFriends = user.friend_to.filter(friend => user.friends.some(f => f.id === friend.id));
-		  return commonFriends;
+		});
+		const commonFriends = user.friend_to.filter(friend => user.friends.some(f => f.id === friend.id));
+		return commonFriends;
 	}
 
 }
