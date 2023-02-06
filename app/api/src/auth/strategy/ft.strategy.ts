@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
-import { userInfo } from 'os';
 import { Me } from '../interfaces/intra.interface';
 
 @Injectable()
@@ -16,10 +15,10 @@ export class FtStrategy extends PassportStrategy(Strategy, 'FtStrategy') {
   }
 
   async authenticate(req) {
-    if (!req || !req.headers || !req.headers.code) {
+    if (!req || !req.body || !req.body.code) {
       throw new BadRequestException();
     }
-    const code: string = req.headers.code;
+    const code: string = req.body.code;
 
     try {
       const user: Me = await this.validate(code);
