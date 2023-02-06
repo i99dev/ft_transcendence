@@ -4,15 +4,15 @@ import { UserGetDto } from '../dto/user.dto';
 export class UserRepository {
   prisma = new PrismaClient();
 
-	SortUserByWinLose(a, b) {
-		const winLoseA = a.total_wins - a.total_loses;
-		const winLoseB = b.total_wins - b.total_loses;
+	SortUserByWinLose(a, b): number {
+		const winLoseA: number = a.total_wins - a.total_loses;
+		const winLoseB: number = b.total_wins - b.total_loses;
 		return winLoseB - winLoseA;
 	}	
 
-	async SortUserByWinGap() {
-		const users = await this.prisma.user.findMany();
-		const sortedUsers = users.sort(this.SortUserByWinLose);
+	async SortUserByWinGap(): Promise<UserGetDto[]> {
+		const users: UserGetDto[] = await this.prisma.user.findMany();
+		const sortedUsers: UserGetDto[] = users.sort(this.SortUserByWinLose);
 		return sortedUsers;
 	}
 
