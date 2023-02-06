@@ -28,7 +28,7 @@ export class UserController {
 	}
 
 	@Patch('/:name') // to be edited later
-	async UpdateUser(@Query('login') login: string, @Param('name') name: string, @Body() data1: UserPatchDto) {
+	async UpdateUser(@Query('friend') login: string, @Param('name') name: string, @Body() data1: UserPatchDto) {
 		if (!login){
 			const existingUser = await this.UserService.getUserForPatch(name);
 			const updatedUser = Object.assign({}, existingUser, data1);
@@ -45,7 +45,7 @@ export class UserController {
 	}
 
 	@Delete('/:name') // for testing purposes only
-	DeleteUser(@Query('login') login: string, @Param('name') name: string) {
+	DeleteUser(@Query('friend') login: string, @Param('name') name: string) {
 		if (!login)
 			return this.UserService.deleteUser(name);
 		else {
