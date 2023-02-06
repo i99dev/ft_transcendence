@@ -1,9 +1,7 @@
-import { UserGetDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
-import { isNotEmpty } from 'class-validator';
 
 @Injectable({})
 export class UserService{

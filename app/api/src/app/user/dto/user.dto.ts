@@ -51,9 +51,6 @@ export class UserPatchDto {
 	
 	@IsOptional()
 	@IsBoolean()
-  friends?: boolean;
-	
-	@IsOptional()
-	@IsBoolean()
-  friend_to?: boolean;
+  friends?: string;
+
 }

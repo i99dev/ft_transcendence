@@ -10,46 +10,45 @@ import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
-	@Get() // get all users
+	@Get()
 	async GetUsers(@Query('sort') sort: string, @Query('order') order: string) {
 		let type = { [sort]: order };
 		return await this.UserService.SortMany(type);
 	}
 	
 	@UseGuards(JwtAuthGuard)
-	@Get('/me') // get the logged in user
+	@Get('/me')
 	async GetMe(@Req() req) {
 		return await this.UserService.getUser(req.user.login); 
 	}
 	
-	@Get('/:name') // get all of the info of the passed login user
+	@Get('/:name')
 	GetUser(@Param('name') name: string): Promise<UserGetDto> {
 		return this.UserService.getUser(name);
 	}
 
-	@Patch('/:name') // to be edited later
-	async UpdateUser(@Query('friend') login: string, @Param('name') name: string, @Body() data1: UserPatchDto) {
-		if (!login){
-			const existingUser = await this.UserService.getUserForPatch(name);
-			const updatedUser = Object.assign({}, existingUser, data1);
-			return await this.UserService.updateUser(updatedUser);
+	@Patch('/:name')
+	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
+		if (data1.friends) {
+			await this.UserService.UpdateUserFriends(name, data1.friends)
+			delete data1.friends;
 		}
-		else {
-			return await this.UserService.UpdateUserFriends(name, login);
-		}
+		const existingUser = await this.UserService.getUserForPatch(name);
+		const updatedUser = Object.assign({}, existingUser, data1);
+		return await this.UserService.updateUser(updatedUser);
 	}
 
-	@Get('/:name/friends') // to be edited later
+	@Get('/:name/friends')
 	async GetFriends(@Param('name') name: string) {
 		return await this.UserService.getFriends(name);
 	}
 
-	@Delete('/:name') // for testing purposes only
-	DeleteUser(@Query('friend') login: string, @Param('name') name: string) {
-		if (!login)
-			return this.UserService.deleteUser(name);
+	@Delete('/:name')
+	DeleteUser(@Body() login, @Param('name') name: string) {
+		if (login.friends)
+			return this.UserService.deleteFriend(name, login.friends);
 		else {
-			return this.UserService.deleteFriend(name, login);
+			return this.UserService.deleteUser(name);
 		}
 	}
 
