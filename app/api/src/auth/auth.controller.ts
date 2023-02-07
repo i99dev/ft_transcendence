@@ -3,13 +3,13 @@ import { FtAuthGuard } from "../common/guards/ft.auth.gaurd";
 import { AuthService } from "./auth.service";
 import { AccessTokenDto } from "./dto/auth.dto";
 
-@Controller('/api')
+@Controller('auth')
 export class AuthController {
 
 	constructor(private authService: AuthService) {}
 
 	@UseGuards(FtAuthGuard)
-	@Post('/auth')
+	@Post()
 	async GetAuth(@Req() req, @Res() res) : Promise<AccessTokenDto>{
 		
 		const {httpStatus, user} = await this.authService.checkUserAccountOnDb(req.user);
