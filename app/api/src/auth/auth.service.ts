@@ -1,4 +1,4 @@
-import { UserGetDto } from './../app/user/dto/user.dto';
+import { UserGetDto } from '../modules/user/dto/user.dto';
 import axios from 'axios';
 import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { config } from '../config/config';
@@ -6,7 +6,7 @@ import { intraConstants } from '../common/constants/setting';
 import { IntraAccessToken, Me } from './interfaces/intra.interface';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../app/user/user.service';
+import { UserService } from '../modules/user/user.service';
 
 @Injectable({})
 export class AuthService {

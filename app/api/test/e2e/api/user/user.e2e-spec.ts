@@ -1,4 +1,4 @@
-import { UserModule } from './../../../../src/app/user/user.module';
+import { UserModule } from '../../../../src/modules/user/user.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Body, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
