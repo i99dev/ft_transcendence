@@ -1,7 +1,7 @@
+import { User } from '@prisma/client';
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import { Body, Get, Controller, Param, Patch, Delete, Query, UseGuards, Req } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 
 
@@ -10,33 +10,40 @@ import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 export class UserController {
 	constructor(private readonly UserService: UserService) {}
 
-	@Get() // get all users
-	async GetUsers(@Query('sort') sort: string, @Query('order') order: string) {
+	@Get()
+	async GetUsers(@Query('sort') sort: string, @Query('order') order: string): Promise<UserGetDto[]> {
 		let type = { [sort]: order };
 		return await this.UserService.SortMany(type);
 	}
 	
 	@UseGuards(JwtAuthGuard)
-	@Get('/me') // get the logged in user
-	async GetMe(@Req() req) {
+	@Get('/me')
+	async GetMe(@Req() req): Promise<UserGetDto> {
 		return await this.UserService.getUser(req.user.login); 
 	}
 	
-	@Get('/:name') // get all of the info of the passed login user
+	@Get('/:name')
 	GetUser(@Param('name') name: string): Promise<UserGetDto> {
 		return this.UserService.getUser(name);
 	}
 
-	@Patch('/:name') // to be edited later
-	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto) {
-		const existingUser = await this.UserService.getUser(name);
-		const updatedUser = Object.assign({}, existingUser, data1);
+	@Patch('/:name')
+	async UpdateUser(@Param('name') name: string, @Body() data1: UserPatchDto): Promise<UserGetDto> {
+		this.UserService.CheckFriendsUpdate(data1, name);
+		delete data1.friends;
+		const existingUser: UserGetDto = await this.UserService.getUserForPatch(name);
+		const updatedUser: User = Object.assign({}, existingUser, data1);
 		return await this.UserService.updateUser(updatedUser);
 	}
 
-	@Delete('/:name') // for testing purposes only
-	DeleteUser(@Param('name') name: string) {
-		return this.UserService.deleteUser(name);
+	@Get('/:name/friends')
+	async GetFriends(@Param('name') name: string): Promise<UserGetDto[]> {
+		return await this.UserService.getFriends(name);
+	}
+
+	@Delete('/:name')
+	async DeleteUser(@Body() login, @Param('name') name: string): Promise<UserGetDto> {
+		return await this.UserService.DeleteFriendOrUser(login, name);
 	}
 
 }

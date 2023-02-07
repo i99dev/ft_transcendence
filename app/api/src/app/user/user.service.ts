@@ -1,34 +1,50 @@
-import { UserGetDto } from './dto/user.dto';
+import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
-type UserNoToken = Omit<User, 'token'>;
 
 @Injectable({})
 export class UserService{
 	prisma = new PrismaClient();
 	repository = new UserRepository();
 
-	async getAllUsers(): Promise<User[]> {
-		const users = await this.prisma.user.findMany();
-		return users;
-	}
-
-	async getUser(name: string): Promise<User> {
-		const user: User = await this.prisma.user.findUnique({ where: { login: name } });
+	async getUser(name: string): Promise<UserGetDto> {
+		const user: UserGetDto = await this.prisma.user.findUnique({ 
+			where: { login: name },
+			include: {
+				friend_to: true,
+				friends: true,
+			},
+		});
 		return user;
 	}
 
-	async updateUser(data: User) {
+	async UpdateUserFriends(name: string, toAdd: string): Promise<UserGetDto> {
+		let user2: UserGetDto = await this.prisma.user.findUnique({ where: { login: toAdd } });
+		let user: UserGetDto = await this.prisma.user.update({
+			where: { login: name },
+			include: {
+				friend_to: true,
+				friends: true,
+			},
+			data: { friends: { connect: [{id: user2.id}] } },
+		});
+		return user;
+	}
+
+	async getUserForPatch(name: string): Promise<UserGetDto> {
+		const user: UserGetDto = await this.prisma.user.findUnique({ 
+			where: { login: name },
+		});
+		return user;
+	}
+
+	async updateUser(data: User): Promise<User> {
 		return await this.prisma.user.update({
 			where: { login: data.login },
 			data,
 		});
-	}
-
-	async deleteUser(name: string) {
-		return await this.prisma.user.delete({ where: { login: name } });
 	}
 	
 	CreateUserObject(data: any): NewUser {
@@ -43,18 +59,50 @@ export class UserService{
     return user;
   }
 
-	async CreateUser(data: any) {
+	async CreateUser(data: any): Promise<UserGetDto> {
 		return await this.prisma.user.create({data});
 	}
 
-	async SortMany(orderBy: object){
+	async SortMany(orderBy: object): Promise<UserGetDto[]> {
 		if ( orderBy == null ) 
-			return await this.getAllUsers();
-		const sortedUsers = await this.prisma.user.groupBy({
-			by: ['id', 'login', 'first_name', 'last_name', 'image', 'email', 'total_wins', 'total_loses', 'exp_level', 'points', 'created_at', 'last_login', 'status'],
-			orderBy: orderBy
+			orderBy = {id: 'asc'};
+		const sortedUsers: UserGetDto[] = await this.prisma.user.findMany({
+			orderBy: orderBy,
+			include: {
+				friend_to: true,
+				friends: true,
+			},
 		});
 		return sortedUsers;
+	}
+
+	async getFriends(login: string): Promise<UserGetDto[]> {
+		const user: UserGetDto = await this.prisma.user.findUnique({
+			where: {
+				login: login
+			},
+			include: {
+				friends: true,
+				friend_to: true,
+			},
+		});
+		const commonFriends: UserGetDto[] = user.friend_to.filter(friend => user.friends.some(f => f.id === friend.id));
+		return commonFriends;
+	}
+
+	async DeleteFriendOrUser(login: UserPatchDto, name: string): Promise<UserGetDto> {
+		if (login.friends)
+			return this.repository.deleteFriend(name, login.friends);
+		else {
+			return this.repository.deleteUser(name);
+		}
+	}
+
+	async CheckFriendsUpdate(data: UserPatchDto, name: string) {
+		if (data.friends) {
+			await this.UpdateUserFriends(name, data.friends)
+		}
+		return data;
 	}
 
 }
