@@ -1,3 +1,4 @@
+import { UserGetDto } from './../app/user/dto/user.dto';
 import axios from 'axios';
 import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { config } from '../config/config';
@@ -16,8 +17,8 @@ export class AuthService {
 
   async checkUserAccountOnDb(
     intraUser: Me,
-  ): Promise<{ httpStatus: HttpStatus; user: User }> {
-    const myuser: User = await this.userService.getUser(intraUser.login);
+  ): Promise<{ httpStatus: HttpStatus; user: UserGetDto }> {
+    const myuser: UserGetDto = await this.userService.getUser(intraUser.login);
     if (!myuser) {
       return {
         httpStatus: HttpStatus.CREATED,
@@ -56,7 +57,7 @@ export class AuthService {
     }
   }
 
-  async getJwt(user: User): Promise<string> {
+  async getJwt(user: UserGetDto): Promise<string> {
     const payload = {
       id: user.id,
       login: user.login,
