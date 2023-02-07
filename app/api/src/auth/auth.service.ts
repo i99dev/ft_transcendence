@@ -21,7 +21,7 @@ export class AuthService {
     if (!myuser) {
       return {
         httpStatus: HttpStatus.CREATED,
-        user: await this.userService.setupUserAccount(intraUser),
+        user: await this.userService.CreateUser(intraUser),
       };
     }
     return { httpStatus: HttpStatus.OK, user: myuser };
