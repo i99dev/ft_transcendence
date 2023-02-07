@@ -4,66 +4,57 @@ import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { config } from '../config/config';
 import {
   intraConstants,
-  jwtHeaderConstants,
 } from '../common/constants/setting';
-import { AuthRepository } from './repository/auth.repositroy';
 import { IntraAccessToken, Me } from './interfaces/intra.interface';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../app/user/user.service';
 
 
 @Injectable({})
 export class AuthService {
-  constructor(private authRepository: AuthRepository, private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService, private userService: UserService) {}
 
-  async checkUserAccount(
+  async checkUserAccountOnDb(
     intraUser: Me,
   ): Promise<{ httpStatus: HttpStatus; user: UserGetDto }> {
-    const myuser: UserGetDto = await this.authRepository.getUser(intraUser.login);
+    const myuser: UserGetDto = await this.userService.getUser(intraUser.login);
     if (!myuser) {
       return {
         httpStatus: HttpStatus.CREATED,
-        user: await this.authRepository.setupUserAccount(intraUser),
+        user: await this.userService.CreateUser(intraUser),
       };
     }
     return { httpStatus: HttpStatus.OK, user: myuser };
   }
 
   async validateUserWithIntra(code: string): Promise<Me> {
-    try {
-      const intraToken: IntraAccessToken = await this.getIntraAccessToken(code);
-      return await this.getUserProfile(intraToken);
-    } catch (error) {
-      throw new UnauthorizedException();
-    }
+    const intraToken: IntraAccessToken = await this.getIntraAccessToken(code);
+    return await this.getUserIntraProfile(intraToken);
   }
 
   async getIntraAccessToken(authCode: string): Promise<IntraAccessToken> {
-    const response: any = await axios.post(intraConstants.paths.token, {
-      grant_type: intraConstants.grant_type,
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      code: authCode,
-      redirect_uri: config.auth.redirect_uri,
-    });
-
-    if (response.status != HttpStatus.OK) {
-      throw new UnauthorizedException();
+    try {
+      return (await axios.post(intraConstants.paths.token, {
+        grant_type: intraConstants.grant_type,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+        code: authCode,
+        redirect_uri: config.auth.redirect_uri,
+      })).data.access_token;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid Authorization Code');
     }
-
-    return response.data.access_token;
   }
 
-  async getUserProfile(accessToken: IntraAccessToken): Promise<Me> {
-    const response: any = await axios.get(intraConstants.paths.me, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    if (response.status != HttpStatus.OK) {
-      throw new UnauthorizedException();
+  async getUserIntraProfile(accessToken: IntraAccessToken): Promise<Me> {
+    try {
+      return (await axios.get(intraConstants.paths.me, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })).data;
+    } catch (error) {
+        throw new UnauthorizedException('Invalid Intra User');
     }
-
-    return response.data;
   }
 
   async getJwt(user: UserGetDto): Promise<string> {
@@ -72,9 +63,5 @@ export class AuthService {
       login: user.login,
     };
     return this.jwtService.sign(payload);
-  }
-
-  async validateUser(code: string): Promise<Me> {
-    return await this.validateUserWithIntra(code);
   }
 }

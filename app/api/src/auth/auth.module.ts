@@ -4,7 +4,7 @@ import { forwardRef, Module } from "@nestjs/common";
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../app/user/user.module';
 import { FtStrategy } from './strategy/ft.strategy';
-import { AuthRepository } from './repository/auth.repositroy';
+import { AuthRepository } from './repository/auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { config } from '../config/config';
 import { JwtStrategy } from './strategy/jwt.strategy';

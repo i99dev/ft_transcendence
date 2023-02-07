@@ -1,3 +1,5 @@
+import { UserStatus } from "@prisma/client";
+
 export interface NewUser {
   login: string;
   username: string;
@@ -5,4 +7,5 @@ export interface NewUser {
   last_name: string;
   image: string;
   email: string;
+  status: UserStatus
 }

@@ -1,4 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, UserStatus } from '@prisma/client';
+import { Me } from '../../../auth/interfaces/intra.interface';
+import { NewUser } from '../interface/user.interface';
 import { UserGetDto } from '../dto/user.dto';
 
 export class UserRepository {
@@ -16,6 +18,18 @@ export class UserRepository {
 		return sortedUsers;
 	}
 
+	CreateUserObject(data: Me): NewUser {
+    let user: NewUser = {
+      login: data.login,
+      username: data.login,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      image: data.image.link,
+      email: data.email,
+			status: UserStatus.ONLINE
+    }
+    return user;
+  }
 	async deleteUser(name: string): Promise<UserGetDto> {
 		return await this.prisma.user.delete({ where: { login: name } });
 	}

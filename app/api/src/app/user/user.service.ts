@@ -3,6 +3,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
+import { Me } from '../../auth/interfaces/intra.interface';
 
 @Injectable({})
 export class UserService{
@@ -46,21 +47,9 @@ export class UserService{
 			data,
 		});
 	}
-	
-	CreateUserObject(data: any): NewUser {
-    let user: NewUser = {
-      login: data.login,
-      username: data.login,
-      first_name: data.first_name,
-      last_name: data.last_name,
-      image: data.image.link,
-      email: data.email,
-    }
-    return user;
-  }
 
-	async CreateUser(data: any): Promise<UserGetDto> {
-		return await this.prisma.user.create({data});
+	async CreateUser(intraUser: Me) {
+		return await this.prisma.user.create({data: await this.repository.CreateUserObject(intraUser)});
 	}
 
 	async SortMany(orderBy: object): Promise<UserGetDto[]> {
