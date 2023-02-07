@@ -13,4 +13,4 @@ export const jwtHeaderConstants = {
 
 export const accessTokenConstants = {
   type: 'bearer',
-}
+};

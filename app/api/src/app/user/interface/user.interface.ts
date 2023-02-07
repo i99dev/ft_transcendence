@@ -1,4 +1,4 @@
-import { UserStatus } from "@prisma/client";
+import { UserStatus } from '@prisma/client';
 
 export interface NewUser {
   login: string;
@@ -7,5 +7,5 @@ export interface NewUser {
   last_name: string;
   image: string;
   email: string;
-  status: UserStatus
+  status: UserStatus;
 }

@@ -1,6 +1,5 @@
-import { accessTokenConstants } from "../../common/constants/setting";
-import { config } from "../../config/config";
-
+import { accessTokenConstants } from '../../common/constants/setting';
+import { config } from '../../config/config';
 
 export class AccessTokenDto {
   access_token: string;
