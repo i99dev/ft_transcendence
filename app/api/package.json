@@ -18,7 +18,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:unit": "jest --config ./test/jest-unit.json",
+    "docker:test": "docker exec -it ft_transcendence-api-1 npm run test",
+    "docker:test:e2e": "docker exec -it ft_transcendence-api-1 npm run test:e2e",
+    "docker:unit:e2e": "docker exec -it ft_transcendence-api-1 npm run test:unit",
+    "docker:migrate:dev": "docker exec -it ft_transcendence-api-1 npx prisma migrate dev",
+    "docker:db:seed": "docker exec -it ft_transcendence-api-1 npx prisma db seed",
+    "docker:migrate:reset": "docker exec -it ft_transcendence-api-1 npx prisma migrate reset"
+
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
