@@ -1,11 +1,11 @@
-import { environment } from './app/config';
-import { database } from './database/config';
-import { auth } from './auth/config';
-import { jwt } from './jwt/config';
+import { app } from './app/config'
+import { auth } from './auth/config'
+import { database } from './database/config'
+import { jwt } from './jwt/config'
 
-export const config = {
-  environment,
-  database,
-  auth,
-  jwt,
-};
+export default () => ({
+  app: app,
+  auth: auth,
+  database: database,
+  jwt: jwt,
+});

@@ -1,7 +1,6 @@
+import { ConfigService } from "@nestjs/config";
 import { accessTokenConstants } from "../../common/constants/setting";
-import { config } from "../../config/config";
-
-
+const configService = new ConfigService();
 export class AccessTokenDto {
   access_token: string;
   token_type: string;
@@ -11,7 +10,7 @@ export class AccessTokenDto {
   constructor(accessToken: string) {
     this.access_token = accessToken;
     this.token_type = accessTokenConstants.type;
-    this.expires_in = parseInt(config.jwt.expiresIn);
+    this.expires_in = configService.get<number>('jwt.expriesIn');
     this.created_at = Date.now();
   }
 }

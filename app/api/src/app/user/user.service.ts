@@ -1,6 +1,5 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
-import { NewUser } from './interface/user.interface';
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
 import { Me } from '../../auth/interfaces/intra.interface';

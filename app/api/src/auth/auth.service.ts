@@ -1,19 +1,21 @@
 import { UserGetDto } from './../app/user/dto/user.dto';
 import axios from 'axios';
 import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
-import { config } from '../config/config';
 import {
   intraConstants,
 } from '../common/constants/setting';
 import { IntraAccessToken, Me } from './interfaces/intra.interface';
-import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../app/user/user.service';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable({})
 export class AuthService {
-  constructor(private jwtService: JwtService, private userService: UserService) {}
+  constructor(private jwtService: JwtService,
+              private userService: UserService,
+              private configService: ConfigService,
+              ) {}
 
   async checkUserAccountOnDb(
     intraUser: Me,
@@ -37,10 +39,10 @@ export class AuthService {
     try {
       return (await axios.post(intraConstants.paths.token, {
         grant_type: intraConstants.grant_type,
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
+        client_id: this.configService.getOrThrow<string>('auth.clientId'),
+        client_secret: this.configService.getOrThrow<string>('auth.clientSecret'),
         code: authCode,
-        redirect_uri: config.auth.redirect_uri,
+        redirect_uri: this.configService.getOrThrow<string>('auth.redirectUri'),
       })).data.access_token;
     } catch (error) {
       throw new UnauthorizedException('Invalid Authorization Code');
