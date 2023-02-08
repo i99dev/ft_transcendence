@@ -1,4 +1,4 @@
-import { UserModule } from '../../../../src/modules/user/user.module';
+import { UserModule } from '../../../../src/module/user/user.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Body, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
@@ -16,27 +16,27 @@ describe('UserController (e2e)', () => {
     await app.init();
   });
 
-  it('/api/users (GET)', () => {
+  it('/users (GET)', () => {
     return request(app.getHttpServer())
-      .get('/api/users')
+      .get('/users')
       .expect(200)
       .expect((res) => {
         expect(res.body.IsNotEmpty);
       });
   });
 
-  it('/api/users/:name (GET)', () => {
+  it('/users/:name (GET)', () => {
     return request(app.getHttpServer())
-      .get('/api/users/isaad')
+      .get('/users/isaad')
       .expect(200)
       .expect((res) => {
         expect(res.body.IsNotEmpty);
       });
   });
 
-  it('/api/users (GET)', () => {
+  it('/users (GET)', () => {
     return request(app.getHttpServer())
-      .get('/api/users?sort=total_wins&order=desc')
+      .get('/users?sort=total_wins&order=desc')
       .expect(200)
       .expect((res) => {
         expect(res.body.IsNotEmpty);
@@ -48,9 +48,9 @@ describe('UserController (e2e)', () => {
     last_name: 'Saad',
   };
 
-  it('/api/users/:name (Patch)', () => {
+  it('/users/:name (Patch)', () => {
     return request(app.getHttpServer())
-      .patch('/api/users/isaad', data)
+      .patch('/users/isaad', data)
       .expect(200)
       .expect((res) => {
         expect(res.body.IsNotEmpty);
