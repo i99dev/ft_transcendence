@@ -1,5 +1,5 @@
-import { ConfigService } from "@nestjs/config";
-import { accessTokenConstants } from "../../common/constants/setting";
+import { ConfigService } from '@nestjs/config';
+import { accessTokenConstants } from '../../common/constants/setting';
 const configService = new ConfigService();
 export class AccessTokenDto {
   access_token: string;
