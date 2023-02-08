@@ -21,19 +21,6 @@ export class UserService{
 		return user;
 	}
 
-	async UpdateUserFriends(name: string, toAdd: string): Promise<UserGetDto> {
-		let user2: UserGetDto = await this.prisma.user.findUnique({ where: { login: toAdd } });
-		let user: UserGetDto = await this.prisma.user.update({
-			where: { login: name },
-			include: {
-				friend_to: true,
-				friends: true,
-			},
-			data: { friends: { connect: [{id: user2.id}] } },
-		});
-		return user;
-	}
-
 	async getUserForPatch(name: string): Promise<UserGetDto> {
 		const user: UserGetDto = await this.prisma.user.findUnique({ 
 			where: { login: name },
@@ -89,7 +76,7 @@ export class UserService{
 
 	async CheckFriendsUpdate(data: UserPatchDto, name: string) {
 		if (data.friends) {
-			await this.UpdateUserFriends(name, data.friends)
+			await this.repository.UpdateUserFriends(name, data.friends)
 		}
 		return data;
 	}

@@ -44,4 +44,17 @@ export class UserRepository {
 			data: { friends: { disconnect: { login: login } } },
 		});
 	}
+
+	async UpdateUserFriends(name: string, toAdd: string): Promise<UserGetDto> {
+		let user2: UserGetDto = await this.prisma.user.findUnique({ where: { login: toAdd } });
+		let user: UserGetDto = await this.prisma.user.update({
+			where: { login: name },
+			include: {
+				friend_to: true,
+				friends: true,
+			},
+			data: { friends: { connect: [{id: user2.id}] } },
+		});
+		return user;
+	}
 }
