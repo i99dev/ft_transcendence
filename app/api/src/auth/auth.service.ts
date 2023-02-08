@@ -1,21 +1,19 @@
-import { UserGetDto } from './../app/user/dto/user.dto';
+import { UserGetDto } from '../module/user/dto/user.dto';
 import axios from 'axios';
 import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
-import {
-  intraConstants,
-} from '../common/constants/setting';
+import { intraConstants } from '../common/constants/setting';
 import { IntraAccessToken, Me } from './interfaces/intra.interface';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../app/user/user.service';
+import { UserService } from '../module/user/user.service';
 import { ConfigService } from '@nestjs/config';
-
 
 @Injectable({})
 export class AuthService {
-  constructor(private jwtService: JwtService,
-              private userService: UserService,
-              private configService: ConfigService,
-              ) {}
+  constructor(
+    private jwtService: JwtService,
+    private userService: UserService,
+    private configService: ConfigService,
+  ) {}
 
   async checkUserAccountOnDb(
     intraUser: Me,
@@ -37,13 +35,17 @@ export class AuthService {
 
   async getIntraAccessToken(authCode: string): Promise<IntraAccessToken> {
     try {
-      return (await axios.post(intraConstants.paths.token, {
-        grant_type: intraConstants.grant_type,
-        client_id: this.configService.getOrThrow<string>('auth.clientId'),
-        client_secret: this.configService.getOrThrow<string>('auth.clientSecret'),
-        code: authCode,
-        redirect_uri: this.configService.getOrThrow<string>('auth.redirectUri'),
-      })).data.access_token;
+      return (
+        await axios.post(intraConstants.paths.token, {
+          grant_type: intraConstants.grant_type,
+          client_id: this.configService.getOrThrow<string>('auth.clientId'),
+          client_secret:
+            this.configService.getOrThrow<string>('auth.clientSecret'),
+          code: authCode,
+          redirect_uri:
+            this.configService.getOrThrow<string>('auth.redirectUri'),
+        })
+      ).data.access_token;
     } catch (error) {
       throw new UnauthorizedException('Invalid Authorization Code');
     }
@@ -51,11 +53,13 @@ export class AuthService {
 
   async getUserIntraProfile(accessToken: IntraAccessToken): Promise<Me> {
     try {
-      return (await axios.get(intraConstants.paths.me, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })).data;
+      return (
+        await axios.get(intraConstants.paths.me, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+      ).data;
     } catch (error) {
-        throw new UnauthorizedException('Invalid Intra User');
+      throw new UnauthorizedException('Invalid Intra User');
     }
   }
 
