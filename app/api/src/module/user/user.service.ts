@@ -1,5 +1,6 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
+import { NewUser } from './interface/user.interface';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
 import { Me } from '../../auth/interfaces/intra.interface';
@@ -16,21 +17,6 @@ export class UserService {
         friend_to: true,
         friends: true,
       },
-    });
-    return user;
-  }
-
-  async UpdateUserFriends(name: string, toAdd: string): Promise<UserGetDto> {
-    let user2: UserGetDto = await this.prisma.user.findUnique({
-      where: { login: toAdd },
-    });
-    let user: UserGetDto = await this.prisma.user.update({
-      where: { login: name },
-      include: {
-        friend_to: true,
-        friends: true,
-      },
-      data: { friends: { connect: [{ id: user2.id }] } },
     });
     return user;
   }
@@ -95,7 +81,7 @@ export class UserService {
 
   async CheckFriendsUpdate(data: UserPatchDto, name: string) {
     if (data.friends) {
-      await this.UpdateUserFriends(name, data.friends);
+      await this.repository.UpdateUserFriends(name, data.friends);
     }
     return data;
   }

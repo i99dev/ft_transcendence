@@ -1,16 +1,17 @@
-import { IsString, IsEnum, IsOptional, IsBoolean } from 'class-validator';
 import { UserStatus } from '@prisma/client';
+import { IsString, IsEnum, IsOptional, IsBoolean } from 'class-validator';
 
 export class UserGetDto {
   id: number;
   login: string;
+  username: string;
   email: string;
   status: UserStatus;
-  first_name?: string;
-  last_name?: string;
+  first_name: string;
+  last_name: string;
   created_at: Date;
   last_login: Date;
-  image?: string;
+  image: string;
   total_wins: number;
   total_loses: number;
   exp_level: number;
@@ -21,6 +22,10 @@ export class UserGetDto {
 }
 
 export class UserPatchDto {
+  @IsOptional()
+  @IsString()
+  username?: string;
+
   @IsOptional()
   @IsString()
   first_name?: string;
@@ -43,11 +48,11 @@ export class UserPatchDto {
 
   @IsOptional()
   @IsBoolean()
-  total_loses?: boolean;
+  total_loses?: number;
 
   @IsOptional()
   @IsBoolean()
-  total_wins?: boolean;
+  total_wins?: number;
 
   @IsOptional()
   @IsBoolean()
