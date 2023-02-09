@@ -12,24 +12,21 @@ import { AchievementSeeder } from './seeders/achievement/achievement.seeder';
 const prisma = new PrismaClient();
 
 async function main() {
-  
   // Create Users
   const users = await new UserSeeder().seedUsers();
 
   // Assign Friends
   await new FriendSeeder().assignFriendsToUsers();
 
-
   // Create powerUp
   const powerUps = await new PowerUpSeeder().seedPowerUps();
-  
+
   // Assign Powerup
   await new PowerUpSeeder().assignPowerUpsToUsers();
-  
-  
+
   // Create Achievements
   const achievements = await new AchievementSeeder().seedAchievements();
-  
+
   // Assign Achievements
   const updateUsers = await new AchievementSeeder().assignAchievementsToUsers();
 

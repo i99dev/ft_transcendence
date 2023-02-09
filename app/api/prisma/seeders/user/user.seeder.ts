@@ -6,10 +6,10 @@ export class UserSeeder {
   private prisma = new PrismaClient();
   private users: User[];
 
-  async seedUsers() : Promise<User[]> {
+  async seedUsers(): Promise<User[]> {
     this.users = [
       await this.prisma.user.upsert({
-        where: { login: "bnaji" },
+        where: { login: 'bnaji' },
         update: {},
         create: {
           login: 'bnaji',
@@ -18,11 +18,12 @@ export class UserSeeder {
           status: 'ONLINE',
           first_name: 'Bassam',
           last_name: 'Naji',
-          image: 'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg'
+          image:
+            'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg',
         },
       }),
       await this.prisma.user.upsert({
-        where: { login: "isaad" },
+        where: { login: 'isaad' },
         update: {},
         create: {
           login: 'isaad',
@@ -31,11 +32,12 @@ export class UserSeeder {
           first_name: 'Imad',
           last_name: 'Saad',
           status: 'LIVE',
-          image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg'
+          image:
+            'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
         },
       }),
       await this.prisma.user.upsert({
-        where: { login: "aaljaber" },
+        where: { login: 'aaljaber' },
         update: {},
         create: {
           login: 'aaljaber',
@@ -44,11 +46,12 @@ export class UserSeeder {
           first_name: 'Abrar',
           last_name: 'Aljaberi',
           status: 'LIVE',
-          image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg'
+          image:
+            'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
         },
       }),
       await this.prisma.user.upsert({
-        where: { login: "mal-guna" },
+        where: { login: 'mal-guna' },
         update: {},
         create: {
           login: 'mal-guna',
@@ -57,11 +60,12 @@ export class UserSeeder {
           first_name: 'Moatasem',
           last_name: 'Al Gunaid',
           status: 'LIVE',
-          image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg'
+          image:
+            'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
         },
       }),
       await this.prisma.user.upsert({
-        where: { login: "oal-tena" },
+        where: { login: 'oal-tena' },
         update: {},
         create: {
           login: 'oal-tena',
@@ -70,12 +74,11 @@ export class UserSeeder {
           first_name: 'Obaid',
           last_name: 'Al Tenaiji',
           status: 'LIVE',
-          image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg'
-        },  
+          image:
+            'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+        },
       }),
-    ]
+    ];
     return this.users;
   }
-
-
 }

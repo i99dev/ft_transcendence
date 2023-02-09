@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Achievement, PrismaClient, User } from '@prisma/client';
 
-
 @Injectable()
 export class AchievementSeeder {
   private prisma = new PrismaClient();
   private achievements: Achievement[];
 
-  async seedAchievements() : Promise<Achievement[]> {
-
+  async seedAchievements(): Promise<Achievement[]> {
     this.achievements = [
       await this.prisma.achievement.upsert({
         where: { type: 'points_hunter' },
@@ -37,51 +35,53 @@ export class AchievementSeeder {
           points: 5,
         },
       }),
-    ]
+    ];
     return this.achievements;
   }
 
-  async assignAchievementsToUsers() : Promise<User[]> {
+  async assignAchievementsToUsers(): Promise<User[]> {
     const users: User[] = [
       await this.prisma.user.update({
-        where: { login: "bnaji" },
+        where: { login: 'bnaji' },
         data: {
           achievements: {
-            connect: [{type: "points_hunter"}, {type: "serial_killer"},
-                      {type: "steel_defender"}
+            connect: [
+              { type: 'points_hunter' },
+              { type: 'serial_killer' },
+              { type: 'steel_defender' },
             ],
           },
         },
       }),
       await this.prisma.user.update({
-        where: { login: "isaad" },
+        where: { login: 'isaad' },
         data: {
           achievements: {
-            connect: [{type: "steel_defender"}],
+            connect: [{ type: 'steel_defender' }],
           },
         },
       }),
       await this.prisma.user.update({
-        where: { login: "aaljaber" },
+        where: { login: 'aaljaber' },
         data: {
           achievements: {
-            connect: [{type: "points_hunter"}],
+            connect: [{ type: 'points_hunter' }],
           },
         },
       }),
       await this.prisma.user.update({
-        where: { login: "mal-guna" },
+        where: { login: 'mal-guna' },
         data: {
           achievements: {
-            connect: [{type: "points_hunter"}, {type: "serial_killer"}],
+            connect: [{ type: 'points_hunter' }, { type: 'serial_killer' }],
           },
         },
       }),
       await this.prisma.user.update({
-        where: { login: "oal-tena" },
+        where: { login: 'oal-tena' },
         data: {
           achievements: {
-            connect: [{type: "serial_killer"}],
+            connect: [{ type: 'serial_killer' }],
           },
         },
       }),

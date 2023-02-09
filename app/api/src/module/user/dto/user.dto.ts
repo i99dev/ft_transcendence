@@ -36,21 +36,20 @@ export class UserPatchDto {
   @IsOptional()
   @IsEnum(UserStatus)
   status?: UserStatus;
-	
-	@IsOptional()
-	@IsBoolean()
-  two_fac_auth?: boolean;
-	
-	@IsOptional()
-	@IsBoolean()
-  total_loses?: boolean;
-	
-	@IsOptional()
-	@IsBoolean()
-  total_wins?: boolean;
-	
-	@IsOptional()
-	@IsBoolean()
-  friends?: string;
 
+  @IsOptional()
+  @IsBoolean()
+  two_fac_auth?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  total_loses?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  total_wins?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  friends?: string;
 }
