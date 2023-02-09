@@ -19,7 +19,7 @@ echo -e $GREY"generate '$NC.env$GREY'"$NC
 sleep 0.4
 
 # setup .env for back-end development
-cp app/api/.env_sample app/api/.env
+cp app/api/.env.example app/api/.env
 echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/api/.env$GREY'"$NC
 sleep 0.4
 

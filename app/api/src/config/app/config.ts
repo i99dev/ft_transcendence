@@ -1,4 +1,4 @@
-export const environment = {
-  production: process.env.NODE_ENV === 'production',
+export const app = {
+  env: process.env.NODE_ENV || 'development',
   port: process.env.PORT || 3000,
 };
