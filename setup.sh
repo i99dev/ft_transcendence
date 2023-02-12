@@ -25,7 +25,7 @@ cp app/api/$ENV_EXAMPLE_FILE app/api/$ENV_FILE
 echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/api/$ENV_FILE$GREY'"$NC
 sleep 0.4
 
-# setup .env for back-end development
+# setup .env for front-end development
 cp app/web/$ENV_EXAMPLE_FILE app/web/$ENV_FILE
 echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/web/$ENV_FILE$GREY'"$NC
 sleep 0.4

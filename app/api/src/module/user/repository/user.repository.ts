@@ -2,7 +2,7 @@ import { PrismaClient, UserStatus } from '@prisma/client';
 
 import { NewUser } from './../../../module/user/interface/user.interface';
 import { UserGetDto } from './../../../module/user/dto/user.dto';
-import { Me } from '../../../auth/interfaces/intra.interface';
+import { Me } from '../../../auth/interface/intra.interface';
 
 export class UserRepository {
   prisma = new PrismaClient();

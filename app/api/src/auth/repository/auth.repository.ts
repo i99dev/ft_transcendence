@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { intraConstants } from '../../common/constants/setting';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
-import { IntraAccessToken, Me } from '../interfaces/intra.interface';
+import { IntraAccessToken, Me } from '../interface/intra.interface';
 
 @Injectable()
 export class AuthRepository {

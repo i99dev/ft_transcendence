@@ -1,4 +1,4 @@
-import { User } from './../../../src/auth/interfaces/intra.interface';
+import { User } from '../../../src/auth/interface/intra.interface';
 import {
   UserPatchDto,
   UserGetDto,

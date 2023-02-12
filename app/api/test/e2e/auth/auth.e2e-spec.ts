@@ -9,6 +9,7 @@ import { FtStrategy } from '../../../src/auth/strategy/ft.strategy';
 import { AuthService } from '../../../src/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { AuthPostDto } from '../../../src/auth/dto/auth.dto';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;
@@ -24,9 +25,9 @@ describe('UserController (e2e)', () => {
       link: 'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg',
     },
   };
-  var data = JSON.stringify({
+  var data : AuthPostDto = {
     code: 'auth_code',
-  });
+  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -60,6 +61,7 @@ describe('UserController (e2e)', () => {
         .post('/auth')
         .send(data)
         .expect((res) => {
+
           expect(res.body.access_token).toBeDefined();
           const decoded = jwtService.verify(res.body.access_token, {
             secret: configService.get<string>('JWT_SECRET', 'jwt_secret'),

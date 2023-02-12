@@ -1,6 +1,6 @@
 import { UserGetDto } from '../module/user/dto/user.dto';
 import { Injectable, HttpStatus } from '@nestjs/common';
-import { IntraAccessToken, Me } from './interfaces/intra.interface';
+import { IntraAccessToken, Me } from './interface/intra.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../module/user/user.service';
 import { AuthRepository } from './repository/auth.repository';
