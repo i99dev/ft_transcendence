@@ -1,6 +1,13 @@
-import { Controller, Post, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FtAuthGuard } from '../common/guards/ft.auth.gaurd';
-import { LoggingInterceptor } from '../common/interceptors/logging.interceptors';
+import { LoggingInterceptor } from '../common/interceptors/perfomance.interceptors';
 import { AuthService } from './auth.service';
 import { AccessTokenDto } from './dto/auth.dto';
 
