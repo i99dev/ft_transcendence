@@ -11,7 +11,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../module/user/user.module';
 import { FtStrategy } from './strategy/ft.strategy';
 import { AuthRepository } from './repository/auth.repository';
-import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ValidationMiddleware } from './middleware/validation.middleware';

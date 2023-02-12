@@ -12,15 +12,22 @@ NC='\033[0m'
 
 # special effects
 REPLACE_LINE='\033[A\r\033[K'
+ENV_FILE=.env
+ENV_EXAMPLE_FILE=.env.example
 
 # setup .env for development
-cp .env_sample .env
-echo -e $GREY"generate '$NC.env$GREY'"$NC
+cp $ENV_EXAMPLE_FILE $ENV_FILE
+echo -e $GREY"generate '$NC$ENV_FILE$GREY'"$NC
 sleep 0.4
 
 # setup .env for back-end development
-cp app/api/.env.example app/api/.env
-echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/api/.env$GREY'"$NC
+cp app/api/$ENV_EXAMPLE_FILE app/api/$ENV_FILE
+echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/api/$ENV_FILE$GREY'"$NC
+sleep 0.4
+
+# setup .env for front-end development
+cp app/web/$ENV_EXAMPLE_FILE app/web/$ENV_FILE
+echo -e $REPLACE_LINE$GREEN$GREY"generate '"$NC"app/web/$ENV_FILE$GREY'"$NC
 sleep 0.4
 
 # check docker
