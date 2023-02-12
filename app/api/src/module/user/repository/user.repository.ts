@@ -1,8 +1,8 @@
 import { PrismaClient, UserStatus } from '@prisma/client';
-
 import { NewUser } from './../../../module/user/interface/user.interface';
 import { UserGetDto } from './../../../module/user/dto/user.dto';
 import { Me } from '../../../auth/interface/intra.interface';
+import { NotFoundException } from '@nestjs/common';
 
 export class UserRepository {
   prisma = new PrismaClient();
@@ -32,10 +32,18 @@ export class UserRepository {
     return user;
   }
   async deleteUser(name: string): Promise<UserGetDto> {
+    const user = await this.prisma.user.findUnique({ where: { login: name } });
+    if (!user) {
+      throw new NotFoundException(`User with name ${name} was not found`);
+    }
     return await this.prisma.user.delete({ where: { login: name } });
   }
 
   async deleteFriend(name: string, login: string): Promise<UserGetDto> {
+    const user = await this.prisma.user.findUnique({ where: { login: name } });
+    if (!user) {
+      throw new NotFoundException(`User with name ${name} was not found`);
+    }
     return await this.prisma.user.update({
       where: { login: name },
       include: {

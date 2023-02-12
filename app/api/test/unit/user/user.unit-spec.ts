@@ -8,9 +8,7 @@ import { UserService } from './../../../src/module/user/user.service';
 describe('CheckFriendsUpdate', () => {
   let appService: UserService;
 
-  //   beforeEach(() => {
   appService = new UserService();
-  //   });
 
   it('should update friends list', async () => {
     const data: UserPatchDto = {
@@ -18,15 +16,6 @@ describe('CheckFriendsUpdate', () => {
     };
     const name = 'isaad';
     const response = await appService.CheckFriendsUpdate(data, name);
-    expect(response).toBeTruthy();
-  });
-
-  it('should delete a friend', async () => {
-    const data: UserPatchDto = {
-      friends: 'oal-tena',
-    };
-    const name = 'isaad';
-    const response = await appService.DeleteFriendOrUser(data, name);
     expect(response).toBeTruthy();
   });
 

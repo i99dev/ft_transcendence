@@ -1,6 +1,5 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { PrismaClient, User } from '@prisma/client';
-import { NewUser } from './interface/user.interface';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
 import { Me } from '../../auth/interface/intra.interface';
@@ -69,14 +68,18 @@ export class UserService {
     return commonFriends;
   }
 
-  async DeleteFriendOrUser(
-    login: UserPatchDto,
+  async DeleteFriend(
+    friends: string,
     name: string,
   ): Promise<UserGetDto> {
-    if (login.friends) return this.repository.deleteFriend(name, login.friends);
-    else {
+    if (friends)
+      return this.repository.deleteFriend(name, friends);
+  }
+
+  async DeleteUser(
+    name: string,
+  ): Promise<UserGetDto> {
       return this.repository.deleteUser(name);
-    }
   }
 
   async CheckFriendsUpdate(data: UserPatchDto, name: string) {
