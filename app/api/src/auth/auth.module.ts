@@ -1,6 +1,12 @@
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { forwardRef, Module } from '@nestjs/common';
+import {
+  forwardRef,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../module/user/user.module';
 import { FtStrategy } from './strategy/ft.strategy';
@@ -8,6 +14,7 @@ import { AuthRepository } from './repository/auth.repository';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ValidationMiddleware } from './middleware/validation.middleware';
 
 @Module({
   imports: [
@@ -26,4 +33,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [AuthController],
   providers: [AuthService, FtStrategy, JwtStrategy, AuthRepository],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ValidationMiddleware)
+      .forRoutes({ path: '/auth', method: RequestMethod.POST });
+  }
+}

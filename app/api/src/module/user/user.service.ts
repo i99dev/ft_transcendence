@@ -3,7 +3,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { NewUser } from './interface/user.interface';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
-import { Me } from '../../auth/interfaces/intra.interface';
+import { Me } from '../../auth/interface/intra.interface';
 
 @Injectable({})
 export class UserService {

@@ -2,7 +2,7 @@ import { UserGetDto } from '../module/user/dto/user.dto';
 import axios from 'axios';
 import { Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { intraConstants } from '../common/constants/setting';
-import { IntraAccessToken, Me } from './interfaces/intra.interface';
+import { IntraAccessToken, Me } from './interface/intra.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../module/user/user.service';
 import { ConfigService } from '@nestjs/config';

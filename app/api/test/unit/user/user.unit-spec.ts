@@ -1,5 +1,8 @@
-import { User } from './../../../src/auth/interfaces/intra.interface';
-import { UserPatchDto, UserGetDto } from './../../../src/module/user/dto/user.dto';
+import { User } from '../../../src/auth/interface/intra.interface';
+import {
+  UserPatchDto,
+  UserGetDto,
+} from './../../../src/module/user/dto/user.dto';
 import { UserService } from './../../../src/module/user/user.service';
 
 describe('CheckFriendsUpdate', () => {
@@ -50,7 +53,8 @@ describe('CheckFriendsUpdate', () => {
       email: 'isaad@student.42abudhabi.ae',
       created_at: new Date(),
       last_login: new Date(),
-      image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+      image:
+        'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
       total_wins: 9,
       total_loses: 1,
       exp_level: 0,
