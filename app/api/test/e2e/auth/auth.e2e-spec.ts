@@ -25,7 +25,7 @@ describe('UserController (e2e)', () => {
       link: 'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg',
     },
   };
-  var data : AuthPostDto = {
+  var data: AuthPostDto = {
     code: 'auth_code',
   };
 
@@ -61,7 +61,6 @@ describe('UserController (e2e)', () => {
         .post('/auth')
         .send(data)
         .expect((res) => {
-
           expect(res.body.access_token).toBeDefined();
           const decoded = jwtService.verify(res.body.access_token, {
             secret: configService.get<string>('JWT_SECRET', 'jwt_secret'),

@@ -43,7 +43,6 @@ describe('UserController (e2e)', () => {
       });
   });
 
-  
   it('/users/:name (Patch)', () => {
     const data: any = {
       first_name: 'obaid',

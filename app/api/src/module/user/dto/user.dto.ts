@@ -1,5 +1,11 @@
 import { UserStatus } from '@prisma/client';
-import { IsString, IsEnum, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsBoolean,
+  IsNumber,
+} from 'class-validator';
 
 export class UserGetDto {
   id: number;
@@ -53,7 +59,6 @@ export class UserPatchDto {
   @IsOptional()
   @IsNumber()
   total_wins?: number;
-
 }
 export class UserValidPatchDto {
   username: string;
@@ -64,5 +69,4 @@ export class UserValidPatchDto {
   two_fac_auth: boolean;
   total_loses: number;
   total_wins: number;
-
 }

@@ -69,9 +69,7 @@ export class UserController {
   }
 
   @Delete('/:name')
-  async DeleteUser(
-    @Param('name') name: string,
-  ): Promise<UserGetDto> {
+  async DeleteUser(@Param('name') name: string): Promise<UserGetDto> {
     return await this.UserService.DeleteUser(name);
   }
 

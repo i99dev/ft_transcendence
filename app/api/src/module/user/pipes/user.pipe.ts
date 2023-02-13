@@ -1,5 +1,3 @@
-
-
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { UserValidPatchDto } from '../dto/user.dto';
@@ -11,7 +9,7 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
     Object.assign(userPatch, value);
     const userPatchKeys = Object.keys(userPatch);
     const valueKeys = Object.keys(value);
-    for (let i = 0; i < (valueKeys.length); i++) {
+    for (let i = 0; i < valueKeys.length; i++) {
       const key = valueKeys[i];
       if (!isNaN(parseFloat(key))) {
         break;
@@ -22,10 +20,11 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
     }
     const errors = await validate(userPatch);
     if (errors.length > 0) {
-      const message = errors.map(error => Object.values(error.constraints)).join(', ');
+      const message = errors
+        .map((error) => Object.values(error.constraints))
+        .join(', ');
       throw new BadRequestException(message);
     }
     return value;
   }
-  
 }
