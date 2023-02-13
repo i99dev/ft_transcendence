@@ -43,14 +43,13 @@ describe('UserController (e2e)', () => {
       });
   });
 
-  const data: any = {
-    first_name: 'Imad',
-    last_name: 'Saad',
-  };
-
   it('/users/:name (Patch)', () => {
+    const data: any = {
+      first_name: 'obaid',
+      last_name: 'altenaiji',
+    };
     return request(app.getHttpServer())
-      .patch('/users/isaad', data)
+      .patch('/users/oal-tena', data)
       .expect(200)
       .expect((res) => {
         expect(res.body.IsNotEmpty);

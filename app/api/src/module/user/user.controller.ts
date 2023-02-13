@@ -1,3 +1,4 @@
+import { UserPatchValidationPipe } from './pipes/user.pipe';
 import { User } from '@prisma/client';
 import { UserGetDto, UserPatchDto } from './dto/user.dto';
 import { UserService } from './user.service';
@@ -11,6 +12,7 @@ import {
   Query,
   UseGuards,
   Req,
+  UsePipes,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 
@@ -39,13 +41,21 @@ export class UserController {
     return this.UserService.getUser(name);
   }
 
+  @Patch('/:name/friend/:friend')
+  async UpdateFriend(
+    @Param('name') name: string,
+    @Param('friend') friend: string,
+  ): Promise<UserGetDto> {
+    this.UserService.CheckFriendsUpdate(name, friend);
+    return await this.UserService.getUser(name);
+  }
+
   @Patch('/:name')
+  @UsePipes(new UserPatchValidationPipe())
   async UpdateUser(
     @Param('name') name: string,
     @Body() data1: UserPatchDto,
   ): Promise<UserGetDto> {
-    this.UserService.CheckFriendsUpdate(data1, name);
-    delete data1.friends;
     const existingUser: UserGetDto = await this.UserService.getUserForPatch(
       name,
     );
@@ -59,10 +69,15 @@ export class UserController {
   }
 
   @Delete('/:name')
-  async DeleteUser(
-    @Body() login,
+  async DeleteUser(@Param('name') name: string): Promise<UserGetDto> {
+    return await this.UserService.DeleteUser(name);
+  }
+
+  @Delete('/:name/friend/:friend')
+  async DeleteFriend(
     @Param('name') name: string,
+    @Param('friend') friend: string,
   ): Promise<UserGetDto> {
-    return await this.UserService.DeleteFriendOrUser(login, name);
+    return await this.UserService.DeleteFriend(friend, name);
   }
 }
