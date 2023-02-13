@@ -54,7 +54,15 @@ export class UserPatchDto {
   @IsNumber()
   total_wins?: number;
 
-  @IsOptional()
-  @IsString()
-  friends?: string;
+}
+export class UserValidPatchDto {
+  username: string;
+  first_name: string;
+  last_name: string;
+  image: string;
+  status: UserStatus;
+  two_fac_auth: boolean;
+  total_loses: number;
+  total_wins: number;
+
 }

@@ -11,12 +11,9 @@ describe('CheckFriendsUpdate', () => {
   appService = new UserService();
 
   it('should update friends list', async () => {
-    const data: UserPatchDto = {
-      friends: 'oal-tena',
-    };
     const name = 'isaad';
-    const response = await appService.CheckFriendsUpdate(data, name);
-    expect(response).toBeTruthy();
+    const response = await appService.CheckFriendsUpdate('oal-tena', name);
+    expect(response).toBeFalsy();
   });
 
   it('should return common friends', async () => {

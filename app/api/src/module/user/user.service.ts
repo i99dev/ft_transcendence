@@ -82,10 +82,9 @@ export class UserService {
       return this.repository.deleteUser(name);
   }
 
-  async CheckFriendsUpdate(data: UserPatchDto, name: string) {
-    if (data.friends) {
-      await this.repository.UpdateUserFriends(name, data.friends);
+  async CheckFriendsUpdate(friend: string, name: string): Promise<void> {
+    if (friend) {
+      await this.repository.UpdateUserFriends(name, friend);
     }
-    return data;
   }
 }

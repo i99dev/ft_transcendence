@@ -58,6 +58,9 @@ export class UserRepository {
     let user2: UserGetDto = await this.prisma.user.findUnique({
       where: { login: toAdd },
     });
+    if (!user2) {
+      throw new NotFoundException(`User with name ${name} was not found`);
+    }
     let user: UserGetDto = await this.prisma.user.update({
       where: { login: name },
       include: {
