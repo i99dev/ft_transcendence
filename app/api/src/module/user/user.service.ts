@@ -6,8 +6,7 @@ import { Me } from '../../auth/interface/intra.interface'
 
 @Injectable({})
 export class UserService {
-    prisma = new PrismaClient()
-    repository = new UserRepository()
+    constructor(private repository: UserRepository, private prisma: PrismaClient) {}
 
     async getUser(name: string): Promise<UserGetDto> {
         const user: UserGetDto = await this.prisma.user.findUnique({

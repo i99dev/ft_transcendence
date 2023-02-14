@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common'
 import { UserGetDto } from './../../../module/user/dto/user.dto'
 
 export class FriendRepository {
-    prisma = new PrismaClient()
+    constructor(private prisma: PrismaClient) {}
 
     async deleteFriend(name: string, login: string): Promise<UserGetDto> {
         const user = await this.prisma.user.findUnique({ where: { login: name } })

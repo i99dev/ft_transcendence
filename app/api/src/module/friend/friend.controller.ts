@@ -8,11 +8,11 @@ import {
     Delete,
 } from '@nestjs/common'
 
-@Controller('/users')
+@Controller('/friend')
 export class FriendController {
     constructor(private readonly FriendService: FriendService) {}
 
-    @Patch('/:name/friend/:friend')
+    @Patch('/:name/:friend')
     async UpdateFriend(
         @Param('name') name: string,
         @Param('friend') friend: string,
@@ -21,7 +21,7 @@ export class FriendController {
         return await this.FriendService.getUser(name)
     }
 
-    @Delete('/:name/friend/:friend')
+    @Delete('/:name/:friend')
     async DeleteFriend(
         @Param('name') name: string,
         @Param('friend') friend: string,
@@ -29,7 +29,7 @@ export class FriendController {
         return await this.FriendService.DeleteFriend(friend, name)
     }
 
-    @Get('/:name/friends')
+    @Get('/:name')
 	async GetFriends(@Param('name') name: string): Promise<UserGetDto[]> {
 			return await this.FriendService.getFriends(name)
 	}

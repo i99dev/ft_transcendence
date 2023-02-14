@@ -5,7 +5,7 @@ import { Me } from '../../../auth/interface/intra.interface'
 import { NotFoundException } from '@nestjs/common'
 
 export class UserRepository {
-    prisma = new PrismaClient()
+    constructor(private prisma: PrismaClient) {}
 
     SortUserByWinLose(a, b): number {
         const winLoseA: number = a.total_wins - a.total_loses
