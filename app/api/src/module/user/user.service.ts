@@ -52,33 +52,8 @@ export class UserService {
         return sortedUsers
     }
 
-    async getFriends(login: string): Promise<UserGetDto[]> {
-        const user: UserGetDto = await this.prisma.user.findUnique({
-            where: {
-                login: login,
-            },
-            include: {
-                friends: true,
-                friend_to: true,
-            },
-        })
-        const commonFriends: UserGetDto[] = user.friend_to.filter(friend =>
-            user.friends.some(f => f.id === friend.id),
-        )
-        return commonFriends
-    }
-
-    async DeleteFriend(friends: string, name: string): Promise<UserGetDto> {
-        if (friends) return this.repository.deleteFriend(name, friends)
-    }
-
     async DeleteUser(name: string): Promise<UserGetDto> {
         return this.repository.deleteUser(name)
     }
-
-    async CheckFriendsUpdate(friend: string, name: string): Promise<void> {
-        if (friend) {
-            await this.repository.UpdateUserFriends(name, friend)
-        }
-    }
+    
 }

@@ -1,21 +1,24 @@
 import { User } from '../../../src/auth/interface/intra.interface'
 import { UserPatchDto, UserGetDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
+import { FriendService } from './../../../src/module/friend/friend.service'
 
 describe('CheckFriendsUpdate', () => {
     let appService: UserService
+    let friendService: FriendService
 
     appService = new UserService()
+    friendService = new FriendService()
 
     it('should update friends list', async () => {
         const name = 'isaad'
-        const response = await appService.CheckFriendsUpdate('oal-tena', name)
+        const response = await friendService.CheckFriendsUpdate('oal-tena', name)
         expect(response).toBeFalsy()
     })
 
     it('should return common friends', async () => {
         const name = 'isaad'
-        const response = await appService.getFriends(name)
+        const response = await friendService.getFriends(name)
         expect(response).toBeTruthy()
     })
 
