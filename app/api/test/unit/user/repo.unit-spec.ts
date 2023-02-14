@@ -3,13 +3,14 @@ import { UserRepository } from './../../../src/module/user/repository/user.repos
 import { FriendRepository } from './../../../src/module/friend/repository/friend.repository'
 import { UserPatchDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
+import { PrismaClient } from '@prisma/client'
 
 describe('Check repo', () => {
     let appService: UserRepository
     let friendService: FriendRepository
 
-    appService = new UserRepository()
-    friendService = new FriendRepository()
+    appService = new UserRepository(new PrismaClient())
+    friendService = new FriendRepository(new PrismaClient())
 
     it('should get win difference', async () => {
         const user1: UserPatchDto = {

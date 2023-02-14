@@ -1,14 +1,16 @@
-import { User } from '../../../src/auth/interface/intra.interface'
-import { UserPatchDto, UserGetDto } from './../../../src/module/user/dto/user.dto'
+import { FriendRepository } from './../../../src/module/friend/repository/friend.repository';
+import { UserGetDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
 import { FriendService } from './../../../src/module/friend/friend.service'
+import { UserRepository } from './../../../src/module/user/repository/user.repository'
+import { PrismaClient } from '@prisma/client'
 
 describe('CheckFriendsUpdate', () => {
     let appService: UserService
     let friendService: FriendService
 
-    appService = new UserService()
-    friendService = new FriendService()
+    appService = new UserService(new UserRepository(new PrismaClient()), new PrismaClient())
+    friendService = new FriendService(new FriendRepository(new PrismaClient()), new PrismaClient())
 
     it('should update friends list', async () => {
         const name = 'isaad'
