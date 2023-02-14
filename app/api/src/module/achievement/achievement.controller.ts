@@ -1,7 +1,7 @@
-import { AchievementService } from './achievement.service';
-import { Controller } from '@nestjs/common';
+import { AchievementService } from './achievement.service'
+import { Controller } from '@nestjs/common'
 
 @Controller('/api/users')
 export class AchievementController {
-  constructor(private readonly AchievementService: AchievementService) {}
+    constructor(private readonly AchievementService: AchievementService) {}
 }
