@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { UserRepository } from './repository/user.repository';
+import { PrismaClient } from '@prisma/client'
+import { UserRepository } from './repository/user.repository'
 import { UserService } from './user.service'
 import { UserController } from './user.controller'
 import { forwardRef, Module } from '@nestjs/common'

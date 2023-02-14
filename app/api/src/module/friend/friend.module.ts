@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
 import { FriendService } from './friend.service'
 import { FriendController } from './friend.controller'
 import { Module } from '@nestjs/common'

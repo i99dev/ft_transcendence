@@ -54,5 +54,4 @@ export class UserService {
     async DeleteUser(name: string): Promise<UserGetDto> {
         return this.repository.deleteUser(name)
     }
-    
 }

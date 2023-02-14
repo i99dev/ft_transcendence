@@ -1,12 +1,6 @@
 import { FriendService } from './friend.service'
 import { UserGetDto } from './dto/friend.dto'
-import {
-    Get,
-    Controller,
-    Param,
-    Patch,
-    Delete,
-} from '@nestjs/common'
+import { Get, Controller, Param, Patch, Delete } from '@nestjs/common'
 
 @Controller('/friend')
 export class FriendController {
@@ -30,7 +24,7 @@ export class FriendController {
     }
 
     @Get('/:name')
-	async GetFriends(@Param('name') name: string): Promise<UserGetDto[]> {
-			return await this.FriendService.getFriends(name)
-	}
+    async GetFriends(@Param('name') name: string): Promise<UserGetDto[]> {
+        return await this.FriendService.getFriends(name)
+    }
 }
