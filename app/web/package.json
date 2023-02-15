@@ -19,6 +19,7 @@
     "nuxt": "3.0.0"
   },
   "dependencies": {
+    "@nuxtjs/composition-api": "^0.33.1",
     "@nuxtjs/tailwindcss": "^6.2.0",
     "next": "^13.1.6",
     "nuxt3": "^3.1.1-rc.0-27911047.7d812db"
