@@ -26,8 +26,8 @@
 			class="absolute flex flex-wrap w-1/3 bg-white pt-8 pb-1 shadow-xl sm:mx-auto  sm:px-10 border items-center opacity-95">
 			<p class="text-2xl mx-auto mb-3 ">Pick Your Avatar</p>
 			<button class="flex flex-wrap">
-				<img @click="selectImageNew" v-for="img in user.defaultImages" :src=img
-					class="border bg-slate-100 mx-0.5 mb-2 hover:to-blue-100" width="145" alt="" srcset="" />
+				<!-- <img @click="selectImageNew" v-for="img in user.defaultImages" :src=img -->
+					<!-- class="border bg-slate-100 mx-0.5 mb-2 hover:to-blue-100" width="145" alt="" srcset="" /> -->
 			</button>
 			<!-- <button class="flex flex-wrap pt-5 pb-1  mr-auto ml-auto sm:mx-auto items-center opacity-100" @click="showAvatarWindow">
 			</button> -->
