@@ -31,10 +31,14 @@
   </template>
   
 <script setup>
-
-import { ref } from 'vue'
+/*
+  getCurrentInstance() returns the current Vue instance, 
+  which has access to the $nuxt property through the
+  appContext and app properties.
+*/
+import { ref, getCurrentInstance } from 'vue'
   
-const link = ref('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-0790e6eeae1028551e49d7958f62e9e0194a3816c15060dfedd2064583678acb&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin_new_user&response_type=code')
+const link = ref(getCurrentInstance().appContext.app.$nuxt.$config.public.API_KEY)
 
 const go = () => {
 	window.location.href = link.value
