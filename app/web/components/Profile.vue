@@ -1,5 +1,4 @@
 <template>
-	<div class="h-screen bg-white flex items-center  justify-center">
 		<div class="absolute bg-white  pt-8 pb-1 shadow-xl sm:mx-auto  sm:px-10 border border-slate-900 items-center">
 
 			<div class="mb-2 flex flex-col items-center">
@@ -33,7 +32,6 @@
 			</button> -->
 			<img src="~/assets/upload_icon.png" class="w-7 mx-auto" @click="selectImage">
 		</div>
-	</div>
 </template>
 
 <script setup>

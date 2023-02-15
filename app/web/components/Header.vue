@@ -7,7 +7,7 @@
             Profile
         </button>
     </nav>
-    <div  v-if="showProfile">
+    <div  id="pro" v-if="showProfile">
         <Profile />
     </div>
   </template>
@@ -37,6 +37,11 @@ nav {
   color: rgb(124, 194, 237);
 }
 
-
-
+</style>
+<style scoped>
+#pro{
+    display: flex;
+    justify-content: center;
+    /* margin-top: 100px */
+}
 </style>
