@@ -1,14 +1,27 @@
-export const useIsLogin = () => useState<boolean>('isLogin', () => false)
+export const useIsLogin = () => { 
+    return checkCookies()
+}
 
-export const useIsAuthenticated = () => useState<boolean>('isAuthenticated', () => false)
+export const checkCookies = () => {
+    const cookie = useCookie('token')
+    console.log("Checking Cookies")
+    if(cookie.value)
+    {
+        console.log("Yes Cookies !")
+        return true
+    }
+    else
+    {
+        console.log("No Cookies :(")
+        return false
+    }
+}
 
-export const useAuthCode = () => useState<string>('authCode', () => '')
-// export const useIsLogin = () => {
+export const useLogout = () => {
 
-// 	const isLogin =  useState<boolean>('isLogin', () => false)
-// 	const setIsLogin = (value: boolean) => {
-// 		isLogin.value = value 
-// 	}
-// 	return { isLogin, setIsLogin }
-
-// }
+	const token = useCookie('token')
+	token.value = ''
+	const code = useCookie('code')
+	code.value = ''
+	return navigateTo('/login')
+}

@@ -1,47 +1,25 @@
-
-// import { useStore } from '@nuxtjs/composition-api'
-
-// console.log("from ", from.fullPath);
-// console.log("to ", to.fullPath);
-// console.log("query");
-// console.log(from.query)
-
-// console.log(from.path)
-
-// console.log(from.path.indexOf("?code"))
-// console.log(from.path.indexOf('?error'))
 export default defineNuxtRouteMiddleware((to, from) => {
 
-	// const {isLogin, setIsLogin} = useIsLogin();
-	const isLogin = useIsLogin();
-	const isAuthenticated = useIsAuthenticated();
-	const authCode = useAuthCode();
-	
-	
 	if (from.query.error == 'access_denied' && from.query.error_description == 'The resource owner or authorization server denied the request.')
 	{
 		console.log("not authorized");
-		isAuthenticated.value = false;
-		return navigateTo('/');
+		return navigateTo('/login');
 	}
 	else if (from.query.code)
 	{
-		authCode.value = from.query.code
-		isAuthenticated.value = true;
-		console.log("authCode.value");
-		console.log(authCode.value);
+		/*  get token from backend */
+        // Token = post_req(form.query.code)
+        //create Cookie with token
+		const AuthCode = useCookie('authCode')
+		AuthCode.value = from.query.code
+		
+		const token = useCookie('token')
+		token.value = "Token123999999"
+		console.log(token.value);
+        /* If any error -> redirect to login, else redirect to root or "From" */
+		return navigateTo('/');
 	}
 	else
-		navigateTo('/');
+		return navigateTo('/login');
 
-	
-	/* 
-		! this state is assigned in dashboard after extracting the Authcode .. 
-		! accessing this page through the browser is available
-		! since the state get reset when the page is refreshed
-		! the cookies is needed for this to work
-	*/
-	// else if (isAuthenticated.value == false) 
-	// 	return navigateTo('/');
-	isLogin.value = true;
 });
