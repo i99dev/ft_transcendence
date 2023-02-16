@@ -4,10 +4,11 @@
   </div>
 </template>
 
-<script> 
-
+<script setup> 
+definePageMeta({
+  middleware: ["pages"]
+})
 </script>
-
 
 <style>
 #Home {
