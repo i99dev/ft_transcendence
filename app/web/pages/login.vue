@@ -37,6 +37,12 @@
    and before mounting it to the main html page. so if isLogin is true, user will
    be redirected to the home page before the component is mounted.
  */
+
+ // remove the layout in login page
+definePageMeta({
+  layout: false,
+});
+
 const isLogin = useIsLogin()
 if(isLogin) {
     navigateTo('/')

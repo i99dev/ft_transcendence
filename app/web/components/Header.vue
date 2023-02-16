@@ -4,9 +4,12 @@
         <NuxtLink to="Play" @click="hideProfileWindow" class="NuxtLink">Play</NuxtLink>
         <NuxtLink to="Matchhistory" @click="hideProfileWindow" class="NuxtLink">Match History</NuxtLink>
         <button @click="toggleProfileWindow" class="NuxtLink">
-            Profile
+			Profile
         </button>
-    </nav>
+        <button @click="logout" class="NuxtLink">
+			Logout
+        </button>
+	</nav>
     <div  id="pro" v-if="showProfile">
         <Profile />
     </div>
@@ -15,6 +18,16 @@
 
 <script setup>
 const showProfile = ref(false)
+
+
+const logout = () => {
+	const token = useCookie('token')
+	token.value = ''
+	const code = useCookie('code')
+	code.value = ''
+	navigateTo('/login')
+}
+
 const toggleProfileWindow = () => {
     showProfile.value = !showProfile.value;
 }
