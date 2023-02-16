@@ -17,3 +17,11 @@ export const checkCookies = () => {
     }
 }
 
+export const useLogout = () => {
+
+	const token = useCookie('token')
+	token.value = ''
+	const code = useCookie('code')
+	code.value = ''
+	return navigateTo('/login')
+}

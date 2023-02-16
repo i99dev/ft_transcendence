@@ -10,6 +10,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
 		/*  get token from backend */
         // Token = post_req(form.query.code)
         //create Cookie with token
+		const AuthCode = useCookie('authCode')
+		AuthCode.value = from.query.code
+		
 		const token = useCookie('token')
 		token.value = "Token123999999"
 		console.log(token.value);
