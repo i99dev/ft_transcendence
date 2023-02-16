@@ -8,5 +8,6 @@ import { FriendRepository } from './repository/friend.repository'
     imports: [],
     controllers: [FriendController],
     providers: [FriendService, FriendRepository, PrismaClient],
+    exports: [FriendService, FriendRepository, PrismaClient],
 })
-export class UserModule {}
+export class FriendModule {}

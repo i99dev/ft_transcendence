@@ -27,6 +27,7 @@ export class FriendRepository {
         if (!user2) {
             throw new NotFoundException(`User with name ${name} was not found`)
         }
+        console.log(user2.login)
         let user: UserGetDto = await this.prisma.user.update({
             where: { login: name },
             include: {

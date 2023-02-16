@@ -7,25 +7,12 @@ import { UserGetDto } from './dto/friend.dto'
 export class FriendService {
     constructor(private repository: FriendRepository, private prisma: PrismaClient) {}
 
-    async getUser(name: string): Promise<UserGetDto> {
-        const user: UserGetDto = await this.prisma.user.findUnique({
-            where: { login: name },
-            include: {
-                friend_to: true,
-                friends: true,
-            },
-        })
-        return user
+    async CheckFriendsUpdate(user: string, friend: string): Promise<UserGetDto> {
+        return await this.repository.UpdateUserFriends(user, friend)
     }
 
-    async CheckFriendsUpdate(friend: string, name: string): Promise<void> {
-        if (friend) {
-            await this.repository.UpdateUserFriends(name, friend)
-        }
-    }
-
-    async DeleteFriend(friends: string, name: string): Promise<UserGetDto> {
-        if (friends) return this.repository.deleteFriend(name, friends)
+    async DeleteFriend(friends: string, user: string): Promise<UserGetDto> {
+        if (friends) return this.repository.deleteFriend(user, friends)
     }
 
     async getFriends(login: string): Promise<UserGetDto[]> {

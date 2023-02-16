@@ -1,4 +1,4 @@
-import { FriendRepository } from './../../../src/module/friend/repository/friend.repository';
+import { FriendRepository } from './../../../src/module/friend/repository/friend.repository'
 import { UserGetDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
 import { FriendService } from './../../../src/module/friend/friend.service'
@@ -15,7 +15,7 @@ describe('CheckFriendsUpdate', () => {
     it('should update friends list', async () => {
         const name = 'isaad'
         const response = await friendService.CheckFriendsUpdate('oal-tena', name)
-        expect(response).toBeFalsy()
+        expect(response).toBeTruthy()
     })
 
     it('should return common friends', async () => {
