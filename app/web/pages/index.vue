@@ -1,9 +1,14 @@
 <template> 
-	<login />
+	{{ isLogin }}
+	<login v-if="!isLogin"/>
 
 </template>
 
 <script setup>
-import login from '../components/login.vue'
+
+const isLogin = useIsLogin()
+// const {isLogin, setIsLogin} = useIsLogin()
+
+
 
 </script>

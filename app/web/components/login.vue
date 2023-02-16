@@ -12,6 +12,7 @@
 			<h1 class="mb-2 text-2xl">Ping Pong</h1>
 		  </div>
   
+		  {{ isLogin }}
 		  <form action="#">
 			<div class="mt-8 flex justify-center text-lg text-black">
 			  <div class="rounded-3xl bg-gray-90 bg-opacity-50 px-10 py-2 text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600">
@@ -21,13 +22,14 @@
 				  width="35"
 				  height="20"
 				  alt="icon"
-				/>
-			  </div>
+				  />
 			</div>
-		  </form>
 		</div>
-	  </div>
-	</div>
+		<dashboard/>
+	</form>
+</div>
+</div>
+</div>
   </template>
   
 <script setup>
@@ -36,12 +38,19 @@
   which has access to the $nuxt property through the
   appContext and app properties.
 */
-import { ref, getCurrentInstance } from 'vue'
   
 const link = ref(getCurrentInstance().appContext.app.$nuxt.$config.public.API_KEY)
+const isLogin = useIsLogin()
+// const {isLogin, setIsLogin} = useIsLogin()
+
 
 const go = () => {
+	isLogin.value = true
+	// setIsLogin(true)
+	console.log("is login :")
+	console.log(isLogin)
+	// navigateTo('/login_new_user');
 	window.location.href = link.value
 }
-  
+
 </script>
