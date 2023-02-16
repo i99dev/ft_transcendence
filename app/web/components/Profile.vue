@@ -35,33 +35,33 @@
 </template>
 
 <script setup>
-	const user = ref( {
-		nickname: "",
-		image: null,
-		defaultImages:
-			["https://i1.ae/img/icons/1.png",
-				"https://i1.ae/img/icons/2.png",
-				"https://i1.ae/img/icons/3.png",
-				"https://i1.ae/img/icons/4.png",
-				"https://i1.ae/img/icons/5.png",
-				"https://i1.ae/img/icons/6.png",
-				"https://i1.ae/img/icons/7.png",
-				"https://i1.ae/img/icons/15.png",
-				"https://i1.ae/img/icons/8.png",
-				"https://i1.ae/img/icons/9.png",
-				"https://i1.ae/img/icons/10.png",
-				"https://i1.ae/img/icons/11.png",
-				"https://i1.ae/img/icons/12.png",
-				"https://i1.ae/img/icons/13.png",
-				"https://i1.ae/img/icons/14.png",
-				"https://i1.ae/img/icons/16.png",
-				"https://i1.ae/img/icons/17.png",
-				"https://i1.ae/img/icons/18.png",
-				"https://i1.ae/img/icons/19.png",
-				"https://i1.ae/img/icons/20.png"],
-		code42: null,
-		imgSelected: true
-	})
+const user = ref( {
+	nickname: "",
+	image: null,
+	defaultImages:
+		["https://i1.ae/img/icons/1.png",
+			"https://i1.ae/img/icons/2.png",
+			"https://i1.ae/img/icons/3.png",
+			"https://i1.ae/img/icons/4.png",
+			"https://i1.ae/img/icons/5.png",
+			"https://i1.ae/img/icons/6.png",
+			"https://i1.ae/img/icons/7.png",
+			"https://i1.ae/img/icons/15.png",
+			"https://i1.ae/img/icons/8.png",
+			"https://i1.ae/img/icons/9.png",
+			"https://i1.ae/img/icons/10.png",
+			"https://i1.ae/img/icons/11.png",
+			"https://i1.ae/img/icons/12.png",
+			"https://i1.ae/img/icons/13.png",
+			"https://i1.ae/img/icons/14.png",
+			"https://i1.ae/img/icons/16.png",
+			"https://i1.ae/img/icons/17.png",
+			"https://i1.ae/img/icons/18.png",
+			"https://i1.ae/img/icons/19.png",
+			"https://i1.ae/img/icons/20.png"],
+	code42: null,
+	imgSelected: true
+})
 const selectImage = () => {
 	let input = document.createElement('input');
 	input.type = 'file';
