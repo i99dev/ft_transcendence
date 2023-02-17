@@ -1,16 +1,20 @@
 <template>
-    <nav >
-        <NuxtLink to="/" @click="hideProfileWindow" class="NuxtLink" > Home</NuxtLink>
-        <NuxtLink to="Play" @click="hideProfileWindow" class="NuxtLink">Play</NuxtLink>
-        <NuxtLink to="Matchhistory" @click="hideProfileWindow" class="NuxtLink">Match History</NuxtLink>
-        <button @click="toggleProfileWindow" class="NuxtLink">
-			Profile
-        </button>
-        <button @click="logout" class="NuxtLink">
+    <nav class="rounded-md bg-blue-900 ">
+		<button @click="go('/')" class="NuxtLink" > 
+			Home
+		</button>
+		<button @click="go('Play')" class="NuxtLink">
+			Play
+		</button>
+		<button @click="go('MatchHistory')" class="NuxtLink" >
+			Match History
+		</button>
+		<button @click="logout" class="NuxtLink">
 			Logout
-        </button>
+		</button>
+		<img @click="toggleProfileWindow" class="w-90 h-20 rounded-full" src="https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-1024.png">
 	</nav>
-    <div  id="pro" v-if="showProfile">
+    <div id="pro" v-if="showProfile">
         <Profile />
     </div>
   </template>
@@ -26,6 +30,11 @@ const logout = () => {
 	const code = useCookie('code')
 	code.value = ''
 	navigateTo('/login')
+}
+
+const go = (path) => {
+	hideProfileWindow()
+	useRouter().push(path)
 }
 
 const toggleProfileWindow = () => {

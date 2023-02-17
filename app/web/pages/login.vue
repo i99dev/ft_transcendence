@@ -11,9 +11,7 @@
 			/>
 			<h1 class="mb-2 text-2xl">Ping Pong</h1>
 		  </div>
-  
-		  {{ isLogin }}
-		  <form action="#">
+  		  <form action="#">
 			<div class="mt-8 flex justify-center text-lg text-black">
 			  <div class="rounded-3xl bg-gray-90 bg-opacity-50 px-10 py-2 text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600">
 				<img
