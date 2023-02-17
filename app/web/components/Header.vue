@@ -1,6 +1,6 @@
 <template>
     <nav class="rounded-md bg-blue-900 ">
-		<button @click="go('MatchHistory')" class="NuxtLink" > 
+		<button @click="go('/')" class="NuxtLink" > 
 			Home
 		</button>
 		<button @click="go('Play')" class="NuxtLink">
