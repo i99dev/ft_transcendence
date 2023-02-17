@@ -1,21 +1,26 @@
-import { User } from '../../../src/auth/interface/intra.interface'
-import { UserPatchDto, UserGetDto } from './../../../src/module/user/dto/user.dto'
+import { FriendRepository } from '../../../src/module/friend/repository/friend.repository'
+import { UserGetDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
+import { FriendService } from '../../../src/module/friend/friend.service'
+import { UserRepository } from './../../../src/module/user/repository/user.repository'
+import { PrismaClient } from '@prisma/client'
 
 describe('CheckFriendsUpdate', () => {
     let appService: UserService
+    let friendService: FriendService
 
-    appService = new UserService()
+    appService = new UserService(new UserRepository(new PrismaClient()), new PrismaClient())
+    friendService = new FriendService(new FriendRepository(), new PrismaClient())
 
     it('should update friends list', async () => {
         const name = 'isaad'
-        const response = await appService.CheckFriendsUpdate('oal-tena', name)
-        expect(response).toBeFalsy()
+        const response = await friendService.CheckFriendsUpdate('oal-tena', name)
+        expect(response).toBeTruthy()
     })
 
     it('should return common friends', async () => {
         const name = 'isaad'
-        const response = await appService.getFriends(name)
+        const response = await friendService.getFriends(name)
         expect(response).toBeTruthy()
     })
 

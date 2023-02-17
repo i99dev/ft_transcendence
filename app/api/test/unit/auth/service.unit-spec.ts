@@ -123,25 +123,4 @@ describe('AuthService', () => {
             expect(user.login).toBe(user.login)
         })
     })
-
-    // describe('getIntraAccessToken', () => {
-    //   it('should return token', async () => {
-    //       const code: string = 'auth_code';
-    //       const respons = {
-    //         data: {
-    //           access_token: 'intra_access_token'
-    //         }
-    //       };
-
-    //       // console.log(respons.data.access_token);
-    //       const mockGet = jest.spyOn(axios, 'post');
-    //       mockGet.mockReturnValueOnce(Promise.resolve(respons));
-    //       // jest.spyOn(axios, 'get').mockImplementation(Promise.resolve(response));
-
-    //       expect(await authService.getIntraAccessToken(code)).toBeDefined()
-
-    //       // expect(res).toBe(HttpStatus.CREATED)
-    //       // expect(user.login).toBe(user.login)
-    //   });
-    // });
 })

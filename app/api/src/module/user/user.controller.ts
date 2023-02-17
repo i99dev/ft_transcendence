@@ -41,15 +41,6 @@ export class UserController {
         return this.UserService.getUser(name)
     }
 
-    @Patch('/:name/friend/:friend')
-    async UpdateFriend(
-        @Param('name') name: string,
-        @Param('friend') friend: string,
-    ): Promise<UserGetDto> {
-        this.UserService.CheckFriendsUpdate(name, friend)
-        return await this.UserService.getUser(name)
-    }
-
     @Patch('/:name')
     @UsePipes(new UserPatchValidationPipe())
     async UpdateUser(
@@ -61,21 +52,8 @@ export class UserController {
         return await this.UserService.updateUser(updatedUser)
     }
 
-    @Get('/:name/friends')
-    async GetFriends(@Param('name') name: string): Promise<UserGetDto[]> {
-        return await this.UserService.getFriends(name)
-    }
-
     @Delete('/:name')
     async DeleteUser(@Param('name') name: string): Promise<UserGetDto> {
         return await this.UserService.DeleteUser(name)
-    }
-
-    @Delete('/:name/friend/:friend')
-    async DeleteFriend(
-        @Param('name') name: string,
-        @Param('friend') friend: string,
-    ): Promise<UserGetDto> {
-        return await this.UserService.DeleteFriend(friend, name)
     }
 }
