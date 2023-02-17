@@ -1,4 +1,4 @@
-import { FriendModule } from '../friend/friend.module';
+import { FriendModule } from '../friend/friend.module'
 import { PrismaClient } from '@prisma/client'
 import { UserRepository } from './repository/user.repository'
 import { UserService } from './user.service'
