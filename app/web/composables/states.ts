@@ -1,4 +1,4 @@
-import { redirect } from "next/dist/server/api-utils"
+// import { redirect } from "next/dist/server/api-utils"
 
 export const useIsLogin = () => { 
     return checkCookies()
@@ -31,10 +31,7 @@ export const useLogout = () => {
 export default function useAuthCode() {
 
 	const authCode = useCookie('authCode')
-	const token = useCookie('token')
 	// const config = useRuntimeConfig()
-	// config.public.CLIENT_ID
-	console.log("HHHHHEEYYYYY");
 	async function sendAuthCode() {
 		const { data, pending, error, refresh } = await useFetch("https://api.intra.42.fr/oauth/token", {
 			method: "POST",
@@ -49,12 +46,6 @@ export default function useAuthCode() {
 				code: authCode.value,
 			},
 		});
-		// console.log("id", authCode.value)
-		// console.log("secret", config.public.CLIENT_SECRET)
-		console.log("data: ", data.value);
-		console.log("token: ", data.value.access_token);
-		token.value = data.value.access_token
-		console.log("1token: ", token.value);
 		return { data }
 	}
 	return {

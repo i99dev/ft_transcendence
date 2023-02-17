@@ -1,7 +1,4 @@
-import next from "next";
 import useAuthCode from "~~/composables/states";
-
-
 
 export default defineNuxtRouteMiddleware((to, from) => {
 
@@ -12,20 +9,16 @@ export default defineNuxtRouteMiddleware((to, from) => {
 	}
 	else if (from.query.code)
 	{
-		const authCode = useCookie('authCode')
-		const token = useCookie('token')
-		authCode.value = from.query.code
+		useCookie('authCode').value = from.query.code
 		const {sendAuthCode} = useAuthCode();
 		sendAuthCode()
 		.then((res) => {
 			console.log("success");
-			console.log("res: ", res.data.value.access_token);
-			token.value = res.data.value.access_token
-			console.log("token: ", token.value);
+			useCookie('token').value = res.data.value.access_token
 			return navigateTo('/')
 		}).catch((err) => {
-			console.log("HHHHHEEREEEE");
 			console.log("Error");
+			console.log(err);
 			return navigateTo('/login')
 		});
 	}
