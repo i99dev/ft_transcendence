@@ -55,4 +55,22 @@ describe('UserController (e2e)', () => {
                 expect(res.body.IsNotEmpty)
             })
     })
+
+    it('/users/:user/friend/:friend (Patch)', () => {
+        return request(app.getHttpServer())
+            .patch('/users/isaad/friend/oal-tena')
+            .expect(200)
+            .expect(res => {
+                expect(res.body.IsNotEmpty)
+            })
+    })
+
+    it('/users/:user/friend/:friend (Patch)', () => {
+        return request(app.getHttpServer())
+            .delete('/users/isaad/friend/oal-tena')
+            .expect(200)
+            .expect(res => {
+                expect(res.body.IsNotEmpty)
+            })
+    })
 })
