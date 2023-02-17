@@ -16,40 +16,18 @@ describe('UserController (e2e)', () => {
         await app.init()
     })
 
-    it('/users (GET)', () => {
+    it('/users/:user/friend/:friend (Patch)', () => {
         return request(app.getHttpServer())
-            .get('/users')
+            .patch('/users/isaad/friend/oal-tena')
             .expect(200)
             .expect(res => {
                 expect(res.body.IsNotEmpty)
             })
     })
 
-    it('/users/:name (GET)', () => {
+    it('/users/:user/friend/:friend (Patch)', () => {
         return request(app.getHttpServer())
-            .get('/users/isaad')
-            .expect(200)
-            .expect(res => {
-                expect(res.body.IsNotEmpty)
-            })
-    })
-
-    it('/users (GET)', () => {
-        return request(app.getHttpServer())
-            .get('/users?sort=total_wins&order=desc')
-            .expect(200)
-            .expect(res => {
-                expect(res.body.IsNotEmpty)
-            })
-    })
-
-    it('/users/:name (Patch)', () => {
-        const data: any = {
-            first_name: 'obaid',
-            last_name: 'altenaiji',
-        }
-        return request(app.getHttpServer())
-            .patch('/users/oal-tena', data)
+            .delete('/users/isaad/friend/oal-tena')
             .expect(200)
             .expect(res => {
                 expect(res.body.IsNotEmpty)
