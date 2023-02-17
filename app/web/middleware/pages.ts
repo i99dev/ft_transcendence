@@ -8,6 +8,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 	if(isLogin === true)
 	{
 		console.log("Token Found In Cookies!")
+		console.log("Redirecting to: ", to.path)
 		// return navigateTo(from)
 	}
 	else{

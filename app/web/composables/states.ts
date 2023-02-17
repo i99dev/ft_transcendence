@@ -1,3 +1,5 @@
+import { redirect } from "next/dist/server/api-utils"
+
 export const useIsLogin = () => { 
     return checkCookies()
 }
@@ -28,27 +30,35 @@ export const useLogout = () => {
 
 export default function useAuthCode() {
 
-	const authCode = useCookie('authCode');
-	const token = useCookie('token');
-	const  config  = useRuntimeConfig();
-	config.public.CLIENT_ID
-
+	const authCode = useCookie('authCode')
+	const token = useCookie('token')
+	// const config = useRuntimeConfig()
+	// config.public.CLIENT_ID
+	console.log("HHHHHEEYYYYY");
 	async function sendAuthCode() {
 		const { data, pending, error, refresh } = await useFetch("https://api.intra.42.fr/oauth/token", {
 			method: "POST",
 			body: {
 				grant_type: "authorization_code",
-				client_id:config.public.CLIENT_ID,
-				client_secret: config.public.CLIENT_SECRET,
-				redirect_uri: config.public.EDIRECT_URI,
+				client_id: "u-s4t2ud-0790e6eeae1028551e49d7958f62e9e0194a3816c15060dfedd2064583678acb",
+				client_secret:"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",
+				redirect_uri: "http://localhost:3000/callback",
+				// client_id:config.public.CLIENT_ID,
+				// client_secret: config.public.CLIENT_SECRET,
+				// redirect_uri: config.public.EDIRECT_URI,
 				code: authCode.value,
 			},
-		})
-		if (data) {
-			token.value = data.value.access_token
-		}
+		});
+		// console.log("id", authCode.value)
+		// console.log("secret", config.public.CLIENT_SECRET)
+		console.log("data: ", data.value);
+		console.log("token: ", data.value.access_token);
+		token.value = data.value.access_token
+		console.log("1token: ", token.value);
+		return { data }
 	}
 	return {
 		sendAuthCode
-	  }
+	}
 }
+

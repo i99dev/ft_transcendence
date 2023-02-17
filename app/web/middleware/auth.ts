@@ -1,4 +1,7 @@
+import next from "next";
 import useAuthCode from "~~/composables/states";
+
+
 
 export default defineNuxtRouteMiddleware((to, from) => {
 
@@ -9,24 +12,22 @@ export default defineNuxtRouteMiddleware((to, from) => {
 	}
 	else if (from.query.code)
 	{
-		/*  get token from backend */
-        // Token = post_req(form.query.code)
-        //create Cookie with token
-		const AuthCode = useCookie('authCode')
-		AuthCode.value = from.query.code
+		const authCode = useCookie('authCode')
 		const token = useCookie('token')
-		token.value = "Token123999999"
-		useAuthCode().sendAuthCode()
-		// .then(() => {
-		// 	console.log("Token sent to 42 API");
-			
-		// }).catch((err) => {
-		// 	console.log(err);
-		// })
-		
-		console.log(token.value);
-        /* If any error -> redirect to login, else redirect to root or "From" */
-		return navigateTo('/');
+		authCode.value = from.query.code
+		const {sendAuthCode} = useAuthCode();
+		sendAuthCode()
+		.then((res) => {
+			console.log("success");
+			console.log("res: ", res.data.value.access_token);
+			token.value = res.data.value.access_token
+			console.log("token: ", token.value);
+			return navigateTo('/')
+		}).catch((err) => {
+			console.log("HHHHHEEREEEE");
+			console.log("Error");
+			return navigateTo('/login')
+		});
 	}
 	else
 		return navigateTo('/login');
