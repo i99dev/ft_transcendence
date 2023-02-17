@@ -63,5 +63,4 @@ describe('CheckFriendsUpdate', () => {
         const response = await appService.getUser(user)
         expect(response).toBeTruthy()
     })
-
 })
