@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { NotFoundException } from '@nestjs/common'
-import { UserGetDto } from '../../dto/user.dto'
+import { UserGetDto } from '../../user/dto/user.dto'
 
 export class FriendRepository {
     prisma = new PrismaClient()

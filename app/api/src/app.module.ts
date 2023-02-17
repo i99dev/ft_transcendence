@@ -4,7 +4,6 @@ import { AppService } from './app.service'
 import { UserModule } from './module/user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
-import { FriendModule } from './module/user/friend/friend.module'
 import config from './config/config'
 
 @Module({
@@ -14,7 +13,6 @@ import config from './config/config'
         }),
         AuthModule,
         UserModule,
-        FriendModule,
     ],
     controllers: [AppController],
     providers: [AppService],

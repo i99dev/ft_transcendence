@@ -1,7 +1,7 @@
-import { FriendRepository } from '../../../src/module/user/friend/repository/friend.repository'
+import { FriendRepository } from '../../../src/module/friend/repository/friend.repository'
 import { UserGetDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
-import { FriendService } from '../../../src/module/user/friend/friend.service'
+import { FriendService } from '../../../src/module/friend/friend.service'
 import { UserRepository } from './../../../src/module/user/repository/user.repository'
 import { PrismaClient } from '@prisma/client'
 

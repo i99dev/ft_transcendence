@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { UserRepository } from './../../../src/module/user/repository/user.repository'
-import { FriendRepository } from '../../../src/module/user/friend/repository/friend.repository'
+import { FriendRepository } from '../../../src/module/friend/repository/friend.repository'
 import { UserPatchDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
 import { PrismaClient } from '@prisma/client'
