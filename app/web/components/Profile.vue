@@ -1,18 +1,18 @@
 <template>
-		<div class="absolute bg-white  pt-8 pb-1 shadow-xl sm:mx-auto  sm:px-10 border border-slate-900 items-center">
+		<div class="rounded-md absolute bg-white  pt-8 pb-1 shadow-xl sm:mx-auto  sm:px-10 border border-slate-900 items-center">
 
 			<div class="mb-2 flex flex-col items-center">
-				<h1 class="mb-3 text-2xl font-semibold">Setup Your Aaaccount</h1>
+				<h1 class="mb-3 text-2xl text-blue-900 font-semibold">Setup Your Aaaccount</h1>
 
 				<h1 class="text-xl mb-1 flex justify-center"> Nickname</h1>
 				<h1 class="text-xl mb-1 flex justify-center"> {{ user.nickname }}</h1>
 
 				<input v-model="user.nickname"
-					class=" mb-10 placeholder:text-center placeholder::text-xl   flex h-13  justify-center border"
+					class="rounded-md mb-10 placeholder:text-center placeholder::text-xl   flex h-13  justify-center border"
 					type="text" placeholder="Enter your nickname">
 				<input id="fileUpload" type="file" hidden>
 				<button>
-					<img v-bind:src="user.image || user.defaultImages[0]" @click="showAvatarWindow" class="border mb-3"
+					<img v-bind:src="user.image || user.defaultImages[0]" @click="showAvatarWindow" class="rounded-md border mb-3"
 						width="150" alt="" srcset="" />
 				</button>
 
