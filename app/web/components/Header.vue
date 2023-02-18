@@ -15,7 +15,7 @@
 		<img @click="toggleProfileWindow" class="w-90 h-20 rounded-full" src="https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-1024.png">
 	</nav>
     <div id="pro" v-if="showProfile">
-        <Profile />
+        <Profile @close="toggleProfileWindow" />
     </div>
   </template>
   

@@ -2,10 +2,9 @@
 		<div class="rounded-md absolute bg-white  pt-8 pb-1 shadow-xl sm:mx-auto  sm:px-10 border border-slate-900 items-center">
 
 			<div class="mb-2 flex flex-col items-center">
-				<h1 class="mb-3 text-2xl text-blue-900 font-semibold">Setup Your Aaaccount</h1>
+				<h1 class="mb-3 text-2xl text-blue-900 font-semibold">Setup Your Account</h1>
 
-				<h1 class="text-xl mb-1 flex justify-center"> Nickname</h1>
-				<h1 class="text-xl mb-1 flex justify-center"> {{ user.nickname }}</h1>
+				<h1 class="text-xl mb-5 flex justify-center"> Nickname</h1>
 
 				<input v-model="user.nickname"
 					class="rounded-md mb-10 placeholder:text-center placeholder::text-xl   flex h-13  justify-center border"
@@ -16,7 +15,7 @@
 						width="150" alt="" srcset="" />
 				</button>
 
-				<button class="mt-5  hover:text-sky-600">Submit</button>
+				<button @click="$emit('close')" class="mt-5  hover:text-sky-600">Submit</button>
 			</div>
 
 		</div>
@@ -36,8 +35,8 @@
 
 <script setup>
 const user = ref( {
-	nickname: "",
-	image: null,
+	nickname: useNickName(),
+	image: useProfileAvatar(),
 	defaultImages:
 		["https://i1.ae/img/icons/1.png",
 			"https://i1.ae/img/icons/2.png",

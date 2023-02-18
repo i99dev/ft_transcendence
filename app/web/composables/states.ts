@@ -2,9 +2,15 @@
 
 import { NextApiResponse } from "next"
 
+
+export const useProfileAvatar = () => useState<string>('ProfileAvatar', () => 'https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-1024.png')
+
+export const useNickName = () => useState<string>('NickName', () => 'Kaydoo')
+
 export const useIsLogin = () => { 
     return checkCookies()
 }
+
 
 export const checkCookies = () => {
     const cookie = useCookie('token')
@@ -50,7 +56,7 @@ export async function sendAuthCode(): Promise<AuthResponse> {
 			grant_type: "authorization_code",
 			client_id: runtimeConfig.CLIENT_ID,
 			client_secret:runtimeConfig.CLIENT_SECRET,
-			redirect_uri: runtimeConfig.redirect_uri,
+			redirect_uri: "http://localhost:3000/callback",
 			code: useCookie('authCode').value,
 		},
 	});
