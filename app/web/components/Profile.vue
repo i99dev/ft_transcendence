@@ -15,7 +15,7 @@
 						width="150" alt="" srcset="" />
 				</button>
 
-				<button @click="$emit('close')" class="mt-5  hover:text-sky-600">Submit</button>
+				<button @click="$emit('close')" class="mt-5  hover:text-sky-600">Close</button>
 			</div>
 
 		</div>
