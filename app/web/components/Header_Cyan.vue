@@ -7,10 +7,10 @@
                     <h3 class="text-base text-cyan-100 font-bold tracking-normal leading-tight ml-3 hidden lg:block">PongPing</h3>
                 </div>
                 <ul class="pr-12 xl:flex items-center h-full hidden">
-                    <li @click="go('/')" class="cursor-pointer h-full flex items-center hover:text-lime-500 text-sm text-cyan-100   border-sky-100">Home</li>
-                    <li @click="go('Play')" class="cursor-pointer h-full flex items-center hover:text-lime-500 text-sm text-cyan-100 mx-10 tracking-normal">Play</li>
-                    <li @click="go('MatchHistory')" class="cursor-pointer h-full flex items-center hover:text-lime-500 text-sm text-cyan-100 mr-10 tracking-normal">Match History</li>
-                    <li @click="go('Leaderboard')" class="cursor-pointer h-full flex items-center hover:text-lime-500 text-sm text-cyan-100 tracking-normal">Leaderboard</li>
+                    <li @click="go('/')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100   border-sky-100">Home</li>
+                    <li @click="go('Play')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 mx-10 tracking-normal">Play</li>
+                    <li @click="go('MatchHistory')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 mr-10 tracking-normal">Match History</li>
+                    <li @click="go('Leaderboard')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 tracking-normal">Leaderboard</li>
                 </ul>
             </div>
             <div class="h-full xl:flex items-center justify-end hidden">

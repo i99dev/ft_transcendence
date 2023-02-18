@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Header_Blue/>
+      <Header_Cyan/>
       <slot />
     </div>
   </template>
