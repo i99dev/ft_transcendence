@@ -110,9 +110,6 @@
     </div>
 </template>
 <script setup>
-
-    // name: "BlackLeftAlignedWithSearchBarAndIcon",
-
     const profilePhoto =  useProfileAvatar();
     const Nickname =  useNickName();
 
