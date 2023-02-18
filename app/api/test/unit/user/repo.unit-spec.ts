@@ -9,7 +9,7 @@ describe('Check repo', () => {
     let appService: UserRepository
     let friendService: FriendRepository
 
-    appService = new UserRepository(new PrismaClient())
+    appService = new UserRepository()
     friendService = new FriendRepository()
 
     it('should get win difference', async () => {
