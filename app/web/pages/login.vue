@@ -48,6 +48,6 @@ if(isLogin) {
 
 const link = ref(getCurrentInstance().appContext.app.$nuxt.$config.public.API_KEY)
 const go = () => {
-	window.location.href = link.value   
+	window.location.href = useRuntimeConfig().API_KEY   
 }
 </script>
