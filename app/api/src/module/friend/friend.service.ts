@@ -5,8 +5,9 @@ import { UserGetDto } from './dto/friend.dto'
 
 @Injectable({})
 export class FriendService {
-    constructor(private repository: FriendRepository, private prisma: PrismaClient) {}
+    constructor(private repository: FriendRepository) {}
 
+    prisma = new PrismaClient()
     async CheckFriendsUpdate(user: string, friend: string): Promise<UserGetDto> {
         return await this.repository.UpdateUserFriends(user, friend)
     }

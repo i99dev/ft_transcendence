@@ -9,8 +9,8 @@ describe('CheckFriendsUpdate', () => {
     let appService: UserService
     let friendService: FriendService
 
-    appService = new UserService(new UserRepository(new PrismaClient()), new PrismaClient())
-    friendService = new FriendService(new FriendRepository(), new PrismaClient())
+    appService = new UserService(new UserRepository())
+    friendService = new FriendService(new FriendRepository())
 
     it('should update friends list', async () => {
         const name = 'isaad'
