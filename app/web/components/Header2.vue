@@ -1,4 +1,5 @@
 <template>
+    
     <nav class="w-full mx-auto bg-slate-800 shadow">
         <div class="container px-6 justify-between h-16 flex items-center lg:items-stretch mx-auto">
             <div class="h-full flex items-center">
@@ -132,11 +133,6 @@
             MainList.classList.add("hidden");
             el.currentTarget.classList.add("hidden");
         }
-    }
-    const searchHandler = (event) => {
-        let Input = event.currentTarget.parentElement.getElementsByTagName("input")[0];
-        Input.classList.toggle("w-0");
-        Input.classList.toggle("w-24");
     }
 const showProfile = ref(false)
 
