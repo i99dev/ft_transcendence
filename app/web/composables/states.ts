@@ -2,9 +2,15 @@
 
 import { NextApiResponse } from "next"
 
+
+export const useProfileAvatar = () => useState<string>('ProfileAvatar', () => 'https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-1024.png')
+
+export const useNickName = () => useState<string>('NickName', () => 'NickName')
+
 export const useIsLogin = () => { 
     return checkCookies()
 }
+
 
 export const checkCookies = () => {
     const cookie = useCookie('token')
@@ -41,13 +47,15 @@ interface AuthResponse {
 	error: FetchError<any> | null;
 }
 
+
 export async function sendAuthCode(): Promise<AuthResponse> {
+	const runtimeConfig = useRuntimeConfig()
 	const { data, error: errorRef } = await useFetch("https://api.intra.42.fr/oauth/token", {
 		method: "POST",
 		body: {
 			grant_type: "authorization_code",
-			client_id: "u-s4t2ud-0790e6eeae1028551e49d7958f62e9e0194a3816c15060dfedd2064583678acb",
-			client_secret:"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",
+			client_id: runtimeConfig.CLIENT_ID,
+			client_secret:runtimeConfig.CLIENT_SECRET,
 			redirect_uri: "http://localhost:3000/callback",
 			code: useCookie('authCode').value,
 		},

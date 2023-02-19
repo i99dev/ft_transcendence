@@ -1,6 +1,6 @@
 <template>
-  <div id="Home">
-    <img src="https://i1.ae/img/icons/home.png"> 
+  <div id="Home" class="flex h-screen w-full justify-center bg-neutral-900">
+    <img src="https://i1.ae/img/icons/bk-home.jpg"> 
   </div>
 </template>
 
@@ -10,9 +10,9 @@ definePageMeta({
 })
 </script>
 
-<style>
+<!-- <style>
 #Home {
   display: flex;
   justify-content: center;
 }
-</style>
+</style> -->
