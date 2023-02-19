@@ -8,7 +8,7 @@
 
 				<input v-model="user.nickname"
 					class="rounded-md mb-10 placeholder:text-center placeholder::text-xl   flex h-13  justify-center border"
-					type="text" placeholder="Enter your nickname">
+					type="text" placeholder="Enter your nickname" maxlength="10">
 				<input id="fileUpload" type="file" hidden>
 				<button>
 					<img v-bind:src="user.image || user.defaultImages[0]" @click="showAvatarWindow" class="rounded-md border mb-3"
