@@ -28,6 +28,9 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
         const valueKeys = Object.keys(value)
         for (let i = 0; i < valueKeys.length; i++) {
             const key = valueKeys[i]
+            if (!isNaN(parseFloat(key))) {
+                break
+            }
             if (!userPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`)
             }
