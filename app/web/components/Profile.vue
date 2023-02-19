@@ -7,10 +7,10 @@
 			<h1 class="text-xl mb-5 flex justify-center"> Nickname</h1>
 			<div>
 			<input v-model="user.tmpNick"
-				class="rounded-md mb-1 placeholder:text-center placeholder::text-xl   flex h-13  justify-center border"
+				class="rounded-md mb-2  placeholder:text-center placeholder::text-xl   flex h-13  justify-center border"
 				type="text" placeholder="Enter your nickname">
 			</div>
-			<h1 id="nameErrMsg" class="text-red-500"></h1>
+			<h1 id="nameErrMsg" class="text-red-500 mb-2"></h1>
 			<input id="fileUpload" type="file" hidden>
 			<button>
 				<img v-bind:src="user.tmpImg || user.image || user.defaultImages[0]" @click="showAvatarWindow" class="rounded-md border mb-3"
@@ -31,8 +31,6 @@
 			<img @click="selectImageNew" v-for="img in user.defaultImages" :src=img
 				class="border bg-slate-100 mx-0.5 mb-2 hover:to-blue-100" width="145" alt="" srcset="" />
 		</button>
-		<!-- <button class="flex flex-wrap pt-5 pb-1  mr-auto ml-auto sm:mx-auto items-center opacity-100" @click="showAvatarWindow">
-		</button> -->
 		<img src="~/assets/upload_icon.png" class="w-7 mx-auto" @click="uploadImage">
 	</div>
 </template>
@@ -68,6 +66,10 @@ code42: null,
 imgSelected: true,
 })
 
+onMounted(  () => {
+user.value.tmpNick = user.value.nickname;
+});
+
 const emit = defineEmits(['close']);
 
 const uploadImage = () => {
@@ -92,7 +94,7 @@ user.value.imgSelected = true;
 
 const updateProfile = () => {
 
-	if (user.value.tmpNick && (user.value.tmpNick.length > 0 && user.value.tmpNick.length < 10) ) {
+	if (user.value.tmpNick && (user.value.tmpNick.length > 0 && user.value.tmpNick.length <= 10) ) {
 		user.value.nickname = user.value.tmpNick;
 		if (user.value.tmpImg != null) {
 			user.value.image = user.value.tmpImg;
