@@ -34,8 +34,13 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             if (!userPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`)
             }
+            const valueType = typeof value[key];
+            const expectedType = typeof vari[key];
+            if (valueType !== expectedType) {
+              throw new BadRequestException(`Invalid type for field ${key}: expected ${expectedType}, but got ${valueType}`);
+            }
         }
-        const errors = await validate(userPatch)
+        const errors = await validate(Object.assign(userPatch, value))
         if (errors.length > 0) {
             const message = errors.map(error => Object.values(error.constraints)).join(', ')
             throw new BadRequestException(message)

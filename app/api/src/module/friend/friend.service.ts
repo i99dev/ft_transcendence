@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { FriendRepository } from './repository/friend.repository'
 import { UserGetDto } from './dto/friend.dto'
+import { NotFoundException } from '@nestjs/common'
 
 @Injectable({})
 export class FriendService {
@@ -26,6 +27,9 @@ export class FriendService {
                 friend_to: true,
             },
         })
+        if (!user) {
+            throw new NotFoundException(`User ${name} does not exist`);
+        }
         const commonFriends: UserGetDto[] = user.friend_to.filter(friend =>
             user.friends.some(f => f.id === friend.id),
         )

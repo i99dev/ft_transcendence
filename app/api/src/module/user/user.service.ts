@@ -3,6 +3,7 @@ import { PrismaClient, User } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { UserRepository } from './repository/user.repository'
 import { Me } from '../../auth/interface/intra.interface'
+import { NotFoundException } from '@nestjs/common'
 
 @Injectable({})
 export class UserService {
@@ -17,15 +18,22 @@ export class UserService {
                 friends: true,
             },
         })
+        if (!user) {
+            throw new NotFoundException(`User ${name} does not exist`);
+        }
         return user
     }
 
     async getUserForPatch(name: string): Promise<UserGetDto> {
-        const user: UserGetDto = await this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: { login: name },
         })
-        return user
+        if (!user) {
+            throw new NotFoundException(`User ${name} does not exist`);
+        }
+        return user;
     }
+    
 
     async updateUser(data: User): Promise<User> {
         return await this.prisma.user.update({
@@ -49,10 +57,19 @@ export class UserService {
                 friends: true,
             },
         })
+        if (!sortedUsers) {
+            throw new NotFoundException(`User ${name} does not exist`);
+        }
         return sortedUsers
     }
 
     async DeleteUser(name: string): Promise<UserGetDto> {
+        const existingUser = await this.prisma.user.findUnique({
+            where: { login: name },
+        })
+        if (!existingUser) {
+            throw new NotFoundException(`User ${name} not found`);
+        }
         return this.repository.deleteUser(name)
     }
 }
