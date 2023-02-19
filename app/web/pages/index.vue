@@ -1,6 +1,6 @@
 <template>
-  <div id="Home" class="flex h-screen w-full bg-neutral-900">
-    <!-- <img src="https://i1.ae/img/icons/bk-home.jpg">  -->
+  <div id="Home" class="flex h-screen w-full justify-center bg-neutral-900">
+    <img src="https://i1.ae/img/icons/bk-home.jpg"> 
   </div>
 </template>
 
