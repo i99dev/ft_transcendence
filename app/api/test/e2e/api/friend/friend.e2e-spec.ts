@@ -16,18 +16,18 @@ describe('UserController (e2e)', () => {
         await app.init()
     })
 
-    it('/users/:user/friend/:friend (Patch)', () => {
+    it('/users/:user/friends/:friend (Post)', () => {
         return request(app.getHttpServer())
-            .patch('/users/isaad/friend/oal-tena')
-            .expect(200)
+            .post('/users/bnaji/friends/aaljaber')
+            .expect(201)
             .expect(res => {
                 expect(res.body.IsNotEmpty)
             })
     })
 
-    it('/users/:user/friend/:friend (Patch)', () => {
+    it('/users/:user/friends/:friend (delete)', () => {
         return request(app.getHttpServer())
-            .delete('/users/isaad/friend/oal-tena')
+            .delete('/users/isaad/friends/bnaji')
             .expect(200)
             .expect(res => {
                 expect(res.body.IsNotEmpty)

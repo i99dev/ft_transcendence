@@ -6,10 +6,6 @@ export class FriendRepository {
     prisma = new PrismaClient()
 
     async deleteFriend(name: string, login: string): Promise<UserGetDto> {
-        const user = await this.prisma.user.findUnique({ where: { login: name } })
-        if (!user) {
-            throw new NotFoundException(`User with name ${name} was not found`)
-        }
         return await this.prisma.user.update({
             where: { login: name },
             include: {

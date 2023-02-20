@@ -8,8 +8,14 @@ import { NotFoundException } from '@nestjs/common'
 @Injectable({})
 export class UserService {
     constructor(private repository: UserRepository) {}
-
     prisma = new PrismaClient()
+
+    async checkUser(user: Promise<UserGetDto>) {
+        if (!user) {
+            throw new NotFoundException(`User ${name} does not exist`)
+        }
+    }
+
     async getUser(name: string): Promise<UserGetDto> {
         const user: UserGetDto = await this.prisma.user.findUnique({
             where: { login: name },
@@ -18,9 +24,6 @@ export class UserService {
                 friends: true,
             },
         })
-        if (!user) {
-            throw new NotFoundException(`User ${name} does not exist`);
-        }
         return user
     }
 
@@ -29,11 +32,10 @@ export class UserService {
             where: { login: name },
         })
         if (!user) {
-            throw new NotFoundException(`User ${name} does not exist`);
+            throw new NotFoundException(`User ${name} does not exist`)
         }
-        return user;
+        return user
     }
-    
 
     async updateUser(data: User): Promise<User> {
         return await this.prisma.user.update({
@@ -58,7 +60,7 @@ export class UserService {
             },
         })
         if (!sortedUsers) {
-            throw new NotFoundException(`User ${name} does not exist`);
+            throw new NotFoundException(`User ${name} does not exist`)
         }
         return sortedUsers
     }
@@ -68,7 +70,7 @@ export class UserService {
             where: { login: name },
         })
         if (!existingUser) {
-            throw new NotFoundException(`User ${name} not found`);
+            throw new NotFoundException(`User ${name} not found`)
         }
         return this.repository.deleteUser(name)
     }

@@ -1,11 +1,10 @@
-import { UserPatchDto } from './../dto/user.dto';
+import { UserPatchDto } from './../dto/user.dto'
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common'
 import { validate } from 'class-validator'
 import { UserValidPatchDto } from '../dto/user.dto'
 
 @Injectable()
 export class UserPatchValidationPipe implements PipeTransform<any> {
-
     createAssignValue(): UserPatchDto {
         const vari: UserPatchDto = {
             username: 'string',
@@ -17,15 +16,16 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             total_loses: 0,
             total_wins: 0,
         }
-        return vari;
+        return vari
     }
-    
+
     async transform(value: any) {
         const userPatch = new UserValidPatchDto()
-        const vari = this.createAssignValue();
+        const vari = this.createAssignValue()
         Object.assign(userPatch, vari)
         const userPatchKeys = Object.keys(userPatch)
         const valueKeys = Object.keys(value)
+
         for (let i = 0; i < valueKeys.length; i++) {
             const key = valueKeys[i]
             if (!isNaN(parseFloat(key))) {
@@ -34,10 +34,15 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             if (!userPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`)
             }
-            const valueType = typeof value[key];
-            const expectedType = typeof vari[key];
+            const valueType = typeof value[key]
+            const expectedType = typeof vari[key]
             if (valueType !== expectedType) {
-              throw new BadRequestException(`Invalid type for field ${key}: expected ${expectedType}, but got ${valueType}`);
+                throw new BadRequestException(
+                    `Invalid type for field ${key}: expected ${expectedType}, but got ${valueType}`,
+                )
+            }
+            if ((typeof value[key] === 'number' && value[key] > 2147483647) || value[key] < 0) {
+                throw new BadRequestException(`The value of ${key} is out of range`)
             }
         }
         const errors = await validate(Object.assign(userPatch, value))
