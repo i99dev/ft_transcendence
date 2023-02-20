@@ -1,7 +1,7 @@
 import { PrismaClient, UserStatus } from '@prisma/client'
-import { NewUser } from './../../../module/user/interface/user.interface'
-import { UserGetDto } from './../../../module/user/dto/user.dto'
-import { Me } from '../../../auth/interface/intra.interface'
+import { NewUser } from '@module/user/interface/user.interface'
+import { UserGetDto } from '@module/user/dto/user.dto'
+import { Me } from '@auth/interface/intra.interface'
 import { NotFoundException } from '@nestjs/common'
 
 export class UserRepository {

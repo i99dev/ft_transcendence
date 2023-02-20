@@ -1,0 +1,200 @@
+0 silly argv {
+0 silly argv   _: [ 'bootstrap' ],
+0 silly argv   lernaVersion: '6.5.1',
+0 silly argv   '$0': '../../.npm/_npx/d5cad42883f80c04/node_modules/.bin/lerna'
+0 silly argv }
+1 notice cli v6.5.1
+2 verbose rootPath /home/i99dev/projects/ft_transcendence
+3 info versioning independent
+4 silly npmConfig {
+4 silly npmConfig   registry: undefined,
+4 silly npmConfig   npmClient: 'yarn',
+4 silly npmConfig   npmClientArgs: [],
+4 silly npmConfig   mutex: 'network:42424'
+4 silly npmConfig }
+5 info Bootstrapping 2 packages
+6 verbose lifecycle preinstall
+7 silly lifecycle No script for "preinstall" in "api", continuing
+8 silly lifecycle No script for "preinstall" in "web", continuing
+9 silly hasDependencyInstalled api prettier
+10 silly hasDependencyInstalled api @nestjs/common
+11 silly hasDependencyInstalled api class-validator
+12 silly hasDependencyInstalled api jest
+13 silly hasDependencyInstalled api passport-jwt
+14 silly hasDependencyInstalled api @nestjs/cli
+15 silly hasDependencyInstalled api @nestjs/schematics
+16 silly hasDependencyInstalled api @nestjs/testing
+17 silly hasDependencyInstalled api @types/express
+18 silly hasDependencyInstalled api @types/hapi__joi
+19 silly hasDependencyInstalled api @types/jest
+20 silly hasDependencyInstalled api @types/node
+21 silly hasDependencyInstalled api @types/passport-jwt
+22 silly hasDependencyInstalled api @types/supertest
+23 silly hasDependencyInstalled api @typescript-eslint/eslint-plugin
+24 silly hasDependencyInstalled api @typescript-eslint/parser
+25 silly hasDependencyInstalled api eslint
+26 silly hasDependencyInstalled api eslint-config-prettier
+27 silly hasDependencyInstalled api eslint-plugin-prettier
+28 silly hasDependencyInstalled api prisma
+29 silly hasDependencyInstalled api source-map-support
+30 silly hasDependencyInstalled api supertest
+31 silly hasDependencyInstalled api ts-jest
+32 silly hasDependencyInstalled api ts-loader
+33 silly hasDependencyInstalled api ts-node
+34 silly hasDependencyInstalled api tsconfig-paths
+35 silly hasDependencyInstalled api typescript
+36 silly hasDependencyInstalled api @hapi/joi
+37 silly hasDependencyInstalled api @nestjs/config
+38 silly hasDependencyInstalled api @nestjs/core
+39 silly hasDependencyInstalled api @nestjs/jwt
+40 silly hasDependencyInstalled api @nestjs/passport
+41 silly hasDependencyInstalled api @nestjs/platform-express
+42 silly hasDependencyInstalled api @prisma/client
+43 silly hasDependencyInstalled api chai
+44 silly hasDependencyInstalled api class-transformer
+45 silly hasDependencyInstalled api dotenv
+46 silly hasDependencyInstalled api passport
+47 silly hasDependencyInstalled api reflect-metadata
+48 silly hasDependencyInstalled api rimraf
+49 silly hasDependencyInstalled api rxjs
+50 silly hasDependencyInstalled web nuxt
+51 silly hasDependencyInstalled web @nuxtjs/tailwindcss
+52 silly root dependencies {}
+53 silly leaf dependencies {}
+54 info Installing external dependencies
+55 verbose actions 2 actions, concurrency 16
+56 silly npmInstallDependencies api [
+56 silly npmInstallDependencies   'prettier@^2.3.2',
+56 silly npmInstallDependencies   '@nestjs/common@^8.0.0',
+56 silly npmInstallDependencies   'class-validator@^0.14.0',
+56 silly npmInstallDependencies   'jest@^27.2.5',
+56 silly npmInstallDependencies   'passport-jwt@^4.0.1',
+56 silly npmInstallDependencies   '@nestjs/cli@^8.0.0',
+56 silly npmInstallDependencies   '@nestjs/schematics@^8.0.0',
+56 silly npmInstallDependencies   '@nestjs/testing@^8.0.0',
+56 silly npmInstallDependencies   '@types/express@^4.17.13',
+56 silly npmInstallDependencies   '@types/hapi__joi@^17.1.9',
+56 silly npmInstallDependencies   '@types/jest@27.4.1',
+56 silly npmInstallDependencies   '@types/node@^16.0.0',
+56 silly npmInstallDependencies   '@types/passport-jwt@^3.0.8',
+56 silly npmInstallDependencies   '@types/supertest@^2.0.11',
+56 silly npmInstallDependencies   '@typescript-eslint/eslint-plugin@^5.0.0',
+56 silly npmInstallDependencies   '@typescript-eslint/parser@^5.0.0',
+56 silly npmInstallDependencies   'eslint@^8.0.1',
+56 silly npmInstallDependencies   'eslint-config-prettier@^8.3.0',
+56 silly npmInstallDependencies   'eslint-plugin-prettier@^4.0.0',
+56 silly npmInstallDependencies   'prisma@^4.9.0',
+56 silly npmInstallDependencies   'source-map-support@^0.5.20',
+56 silly npmInstallDependencies   'supertest@^6.1.3',
+56 silly npmInstallDependencies   'ts-jest@^27.0.3',
+56 silly npmInstallDependencies   'ts-loader@^9.2.3',
+56 silly npmInstallDependencies   'ts-node@^10.0.0',
+56 silly npmInstallDependencies   'tsconfig-paths@^3.10.1',
+56 silly npmInstallDependencies   'typescript@^4.3.5',
+56 silly npmInstallDependencies   '@hapi/joi@^17.1.1',
+56 silly npmInstallDependencies   '@nestjs/config@^2.2.0',
+56 silly npmInstallDependencies   '@nestjs/core@^8.0.0',
+56 silly npmInstallDependencies   '@nestjs/jwt@^10.0.1',
+56 silly npmInstallDependencies   '@nestjs/passport@^9.0.1',
+56 silly npmInstallDependencies   '@nestjs/platform-express@^8.0.0',
+56 silly npmInstallDependencies   '@prisma/client@^4.9.0',
+56 silly npmInstallDependencies   'chai@^4.3.7',
+56 silly npmInstallDependencies   'class-transformer@^0.5.1',
+56 silly npmInstallDependencies   'dotenv@^16.0.3',
+56 silly npmInstallDependencies   'passport@^0.6.0',
+56 silly npmInstallDependencies   'reflect-metadata@^0.1.13',
+56 silly npmInstallDependencies   'rimraf@^3.0.2',
+56 silly npmInstallDependencies   'rxjs@^7.2.0'
+56 silly npmInstallDependencies ]
+57 silly npmInstallDependencies backup /home/i99dev/projects/ft_transcendence/app/api/package.json
+58 silly npmInstallDependencies web [ 'nuxt@3.0.0', '@nuxtjs/tailwindcss@^6.2.0' ]
+59 silly npmInstallDependencies backup /home/i99dev/projects/ft_transcendence/app/web/package.json
+60 silly npmInstallDependencies writing tempJson {
+60 silly npmInstallDependencies   name: 'web',
+60 silly npmInstallDependencies   version: '0.0.1',
+60 silly npmInstallDependencies   private: true,
+60 silly npmInstallDependencies   devDependencies: { nuxt: '3.0.0' },
+60 silly npmInstallDependencies   dependencies: { '@nuxtjs/tailwindcss': '^6.2.0' }
+60 silly npmInstallDependencies }
+61 silly npmInstallDependencies writing tempJson {
+61 silly npmInstallDependencies   name: 'api',
+61 silly npmInstallDependencies   version: '0.0.1',
+61 silly npmInstallDependencies   description: '',
+61 silly npmInstallDependencies   author: '',
+61 silly npmInstallDependencies   private: true,
+61 silly npmInstallDependencies   license: 'UNLICENSED',
+61 silly npmInstallDependencies   dependencies: {
+61 silly npmInstallDependencies     '@hapi/joi': '^17.1.1',
+61 silly npmInstallDependencies     '@nestjs/common': '^8.0.0',
+61 silly npmInstallDependencies     '@nestjs/config': '^2.2.0',
+61 silly npmInstallDependencies     '@nestjs/core': '^8.0.0',
+61 silly npmInstallDependencies     '@nestjs/jwt': '^10.0.1',
+61 silly npmInstallDependencies     '@nestjs/passport': '^9.0.1',
+61 silly npmInstallDependencies     '@nestjs/platform-express': '^8.0.0',
+61 silly npmInstallDependencies     '@prisma/client': '^4.9.0',
+61 silly npmInstallDependencies     chai: '^4.3.7',
+61 silly npmInstallDependencies     'class-transformer': '^0.5.1',
+61 silly npmInstallDependencies     'class-validator': '^0.14.0',
+61 silly npmInstallDependencies     dotenv: '^16.0.3',
+61 silly npmInstallDependencies     passport: '^0.6.0',
+61 silly npmInstallDependencies     'passport-jwt': '^4.0.1',
+61 silly npmInstallDependencies     'reflect-metadata': '^0.1.13',
+61 silly npmInstallDependencies     rimraf: '^3.0.2',
+61 silly npmInstallDependencies     rxjs: '^7.2.0'
+61 silly npmInstallDependencies   },
+61 silly npmInstallDependencies   devDependencies: {
+61 silly npmInstallDependencies     '@nestjs/cli': '^8.0.0',
+61 silly npmInstallDependencies     '@nestjs/schematics': '^8.0.0',
+61 silly npmInstallDependencies     '@nestjs/testing': '^8.0.0',
+61 silly npmInstallDependencies     '@types/express': '^4.17.13',
+61 silly npmInstallDependencies     '@types/hapi__joi': '^17.1.9',
+61 silly npmInstallDependencies     '@types/jest': '27.4.1',
+61 silly npmInstallDependencies     '@types/node': '^16.0.0',
+61 silly npmInstallDependencies     '@types/passport-jwt': '^3.0.8',
+61 silly npmInstallDependencies     '@types/supertest': '^2.0.11',
+61 silly npmInstallDependencies     '@typescript-eslint/eslint-plugin': '^5.0.0',
+61 silly npmInstallDependencies     '@typescript-eslint/parser': '^5.0.0',
+61 silly npmInstallDependencies     eslint: '^8.0.1',
+61 silly npmInstallDependencies     'eslint-config-prettier': '^8.3.0',
+61 silly npmInstallDependencies     'eslint-plugin-prettier': '^4.0.0',
+61 silly npmInstallDependencies     jest: '^27.2.5',
+61 silly npmInstallDependencies     prettier: '^2.3.2',
+61 silly npmInstallDependencies     prisma: '^4.9.0',
+61 silly npmInstallDependencies     'source-map-support': '^0.5.20',
+61 silly npmInstallDependencies     supertest: '^6.1.3',
+61 silly npmInstallDependencies     'ts-jest': '^27.0.3',
+61 silly npmInstallDependencies     'ts-loader': '^9.2.3',
+61 silly npmInstallDependencies     'ts-node': '^10.0.0',
+61 silly npmInstallDependencies     'tsconfig-paths': '^3.10.1',
+61 silly npmInstallDependencies     typescript: '^4.3.5'
+61 silly npmInstallDependencies   },
+61 silly npmInstallDependencies   jest: {
+61 silly npmInstallDependencies     moduleFileExtensions: [ 'js', 'json', 'ts' ],
+61 silly npmInstallDependencies     rootDir: 'src',
+61 silly npmInstallDependencies     testRegex: '.*\\.spec\\.ts$',
+61 silly npmInstallDependencies     transform: { '^.+\\.(t|j)s$': 'ts-jest' },
+61 silly npmInstallDependencies     collectCoverageFrom: [ '**/*.(t|j)s' ],
+61 silly npmInstallDependencies     coverageDirectory: '../coverage',
+61 silly npmInstallDependencies     testEnvironment: 'node'
+61 silly npmInstallDependencies   },
+61 silly npmInstallDependencies   prisma: { seed: 'ts-node prisma/seed.ts' }
+61 silly npmInstallDependencies }
+62 silly getNpmExecOpts /home/i99dev/projects/ft_transcendence/app/web undefined
+63 silly npmInstall [
+63 silly npmInstall   'yarn',
+63 silly npmInstall   [ 'install', '--mutex', 'network:42424', '--non-interactive' ]
+63 silly npmInstall ]
+64 silly getNpmExecOpts /home/i99dev/projects/ft_transcendence/app/api undefined
+65 silly npmInstall [
+65 silly npmInstall   'yarn',
+65 silly npmInstall   [ 'install', '--mutex', 'network:42424', '--non-interactive' ]
+65 silly npmInstall ]
+66 silly npmInstallDependencies cleanup /home/i99dev/projects/ft_transcendence/app/web/package.json
+67 verbose installed leaf web
+68 silly npmInstallDependencies cleanup /home/i99dev/projects/ft_transcendence/app/api/package.json
+69 error Error: ENOENT: no such file or directory, rename '/home/i99dev/projects/ft_transcendence/app/api/package.json.lerna_backup' -> '/home/i99dev/projects/ft_transcendence/app/api/package.json'
+69 error     at Object.renameSync (node:fs:980:3)
+69 error     at cleanup (/home/i99dev/.npm/_npx/d5cad42883f80c04/node_modules/lerna/dist/cli.js:2679:32)
+69 error     at done (/home/i99dev/.npm/_npx/d5cad42883f80c04/node_modules/lerna/dist/cli.js:2683:7)
+69 error     at /home/i99dev/.npm/_npx/d5cad42883f80c04/node_modules/lerna/dist/cli.js:2691:122
+69 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
