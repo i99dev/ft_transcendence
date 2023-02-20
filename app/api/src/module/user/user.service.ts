@@ -12,7 +12,7 @@ export class UserService {
 
     async checkUser(user: Promise<UserGetDto>) {
         if (!user) {
-            throw new NotFoundException(`User ${name} does not exist`)
+            throw new NotFoundException(`User ${user} does not exist`)
         }
     }
 
