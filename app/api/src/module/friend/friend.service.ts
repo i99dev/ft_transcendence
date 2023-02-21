@@ -13,8 +13,8 @@ export class FriendService {
     prisma = new PrismaClient()
 
     async validateUsers(user: string, friend: string) {
-        if (user) await this.userService.checkUser(this.userService.getUser(user))
-        if (friend) await this.userService.checkUser(this.userService.getUser(friend))
+        if (user) await this.userService.checkUser(await this.userService.getUser(user))
+        if (friend) await this.userService.checkUser(await this.userService.getUser(friend))
     }
 
     async CheckFriendsUpdate(user: string, friend: string): Promise<UserGetDto> {
@@ -38,7 +38,7 @@ export class FriendService {
             },
         })
         if (!user) {
-            throw new NotFoundException(`User ${name} does not exist`)
+            throw new NotFoundException(`User ${login} does not exist`)
         }
         const commonFriends: UserGetDto[] = user.friend_to.filter(friend =>
             user.friends.some(f => f.id === friend.id),

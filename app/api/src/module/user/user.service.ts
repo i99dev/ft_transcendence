@@ -10,10 +10,11 @@ export class UserService {
     constructor(private repository: UserRepository) {}
     prisma = new PrismaClient()
 
-    async checkUser(user: Promise<UserGetDto>) {
+    async checkUser(user: UserGetDto): Promise<UserGetDto> {
         if (!user) {
             throw new NotFoundException(`User ${user} does not exist`)
         }
+        return user
     }
 
     async getUser(name: string): Promise<UserGetDto> {

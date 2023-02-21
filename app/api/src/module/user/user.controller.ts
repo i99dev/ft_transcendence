@@ -37,8 +37,8 @@ export class UserController {
     }
 
     @Get('/:name')
-    GetUser(@Param('name') name: string): Promise<UserGetDto> {
-        return this.UserService.getUser(name)
+    async GetUser(@Param('name') name: string): Promise<UserGetDto> {
+        return await this.UserService.checkUser(await this.UserService.getUser(name))
     }
 
     @Patch('/:name')
