@@ -19,13 +19,13 @@ services:
 
   # backend (Nestjs)
   api:
-    image: node:19
+    image: nestjs/cli:latest
     env_file:
       - .env
     working_dir: /usr/src/app
     volumes:
       - ./app/api:/usr/src/app
-    command: bash -c "npm install && npx prisma studio | npm run dev"
+    command: npm install && npx prisma studio | npm run dev
     networks:
       - backend_net
       - proxy_net
