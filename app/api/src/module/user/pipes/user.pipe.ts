@@ -25,11 +25,10 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
         Object.assign(userPatch, vari)
         const userPatchKeys = Object.keys(userPatch)
         const valueKeys = Object.keys(value)
-
-        for (let i = 0; i < valueKeys.length; i++) {
-            const key = valueKeys[i]
+    
+        const validationPromises = valueKeys.map(async (key) => {
             if (!isNaN(parseFloat(key))) {
-                break
+                return
             }
             if (!userPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`)
@@ -44,7 +43,11 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             if ((typeof value[key] === 'number' && value[key] > 2147483647) || value[key] < 0) {
                 throw new BadRequestException(`The value of ${key} is out of range`)
             }
-        }
+            return
+        })
+    
+        await Promise.all(validationPromises)
+    
         const errors = await validate(Object.assign(userPatch, value))
         if (errors.length > 0) {
             const message = errors.map(error => Object.values(error.constraints)).join(', ')
@@ -52,4 +55,5 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
         }
         return value
     }
+    
 }
