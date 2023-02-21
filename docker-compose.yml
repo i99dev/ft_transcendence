@@ -19,7 +19,7 @@ services:
 
   # backend (Nestjs)
   api:
-    image: nestjs/cli:latest
+    image: node:19
     env_file:
       - .env
     working_dir: /usr/src/app

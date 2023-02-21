@@ -22,6 +22,7 @@ import {
     ApiTags,
     ApiParam,
     ApiQuery,
+    ApiBody,
 } from '@nestjs/swagger'
 
 @ApiBearerAuth()
@@ -89,30 +90,10 @@ export class UserController {
         summary: 'Update user by name',
         tags: ['users'],
     })
-    @ApiParam({
-        name: 'first_name',
-        description: 'User first name',
-        type: String,
-    })
-    @ApiQuery({
-        name: 'last_name',
-        description: 'User last name',
-        type: String,
-    })
-    @ApiQuery({
-        name: 'password',
-        description: 'User password',
-        type: String,
-    })
-    @ApiQuery({
-        name: 'email',
-        description: 'User email',
-        type: String,
-    })
-    @ApiQuery({
-        name: 'login',
-        description: 'User login',
-        type: String,
+    @ApiBody({
+        type: UserPatchDto,
+        description: 'User data',
+        required: true,
     })
     @UsePipes(new UserPatchValidationPipe())
     async UpdateUser(
