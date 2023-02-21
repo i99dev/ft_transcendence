@@ -25,8 +25,8 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
         Object.assign(userPatch, vari)
         const userPatchKeys = Object.keys(userPatch)
         const valueKeys = Object.keys(value)
-    
-        const validationPromises = valueKeys.map(async (key) => {
+
+        const validationPromises = valueKeys.map(async key => {
             if (!isNaN(parseFloat(key))) {
                 return
             }
@@ -45,9 +45,9 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             }
             return
         })
-    
+
         await Promise.all(validationPromises)
-    
+
         const errors = await validate(Object.assign(userPatch, value))
         if (errors.length > 0) {
             const message = errors.map(error => Object.values(error.constraints)).join(', ')
@@ -55,5 +55,4 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
         }
         return value
     }
-    
 }
