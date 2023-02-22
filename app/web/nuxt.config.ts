@@ -8,6 +8,7 @@ export default defineNuxtConfig({
       BACKEND_PORT: process.env.BACKEND_PORT,
       CLIENT_ID: process.env.CLIENT_ID,
       CLIENT_SECRET: process.env.CLIENT_SECRET,
+      REDIRECT_URI: process.env.REDIRECT_URI,
     },
   },
   modules: ['@nuxtjs/tailwindcss'],

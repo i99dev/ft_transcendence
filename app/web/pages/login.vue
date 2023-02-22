@@ -47,6 +47,6 @@ if(isLogin) {
 }
 
 const go = () => {
-	window.location.href = useRuntimeConfig().API_KEY   
+	window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${useRuntimeConfig().CLIENT_ID}&redirect_uri=${useRuntimeConfig().REDIRECT_URI}&response_type=code`  
 }
 </script>

@@ -48,19 +48,24 @@ interface AuthResponse {
 }
 
 
-export async function sendAuthCode(): Promise<AuthResponse> {
+export async function sendAuthCode(code:string): Promise<any> {
 	const runtimeConfig = useRuntimeConfig()
-	const { data, error: errorRef } = await useFetch("https://api.intra.42.fr/oauth/token", {
+	console.log("Sending Auth Code",code)
+	const { data, error: errorRef } = await useFetch("http://localhost:8000/api/auth", {
 		method: "POST",
 		body: {
-			grant_type: "authorization_code",
-			client_id: runtimeConfig.CLIENT_ID,
-			client_secret:runtimeConfig.CLIENT_SECRET,
-			redirect_uri: "http://localhost:3000/callback",
-			code: useCookie('authCode').value,
+			// grant_type: "authorization_code",
+			// client_id: runtimeConfig.CLIENT_ID,
+			// client_secret:runtimeConfig.CLIENT_SECRET,
+			// redirect_uri: "http://localhost:3000/callback",
+			code: code,
 		},
 	});
+	
 	const error = errorRef.value as FetchError<any> | null;
-
 	return { data, error };
+}
+
+export const useAuth = () => {
+
 }
