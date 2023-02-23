@@ -13,6 +13,7 @@ import {
     UseGuards,
     Req,
     UsePipes,
+    Logger,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import {

@@ -1,71 +1,94 @@
 // import { redirect } from "next/dist/server/api-utils"
 
-import { NextApiResponse } from "next"
+import { NextApiResponse } from 'next'
 
+export const useProfileAvatar = () =>
+    useState<string>('ProfileAvatar', () => useAuth().value?.image)
 
-export const useProfileAvatar = () => useState<string>('ProfileAvatar', () => 'https://cdn3.iconfinder.com/data/icons/one-piece-colored/48/Cartoons__Anime_One_Piece_Artboard_6-1024.png')
+export const useNickName = () => useState<string>('Nickname', () => useAuth().value?.username)
 
-export const useNickName = () => useState<string>('NickName', () => 'NickName')
-
-export const useIsLogin = () => { 
-    return checkCookies()
-}
-
-
-export const checkCookies = () => {
-    const cookie = useCookie('token')
-    console.log("Checking Cookies")
-    if(cookie.value)
-    {
-        console.log("Yes Cookies !")
+export const useIsLogin = () => {
+    if (useAuth().value) {
         return true
     }
-    else
-    {
-        console.log("No Cookies :(")
+    return false
+}
+
+export const checkCookies = () => {
+    const cookie = useCookie('access_token')
+    console.log('Checking Cookies')
+    if (cookie.value) {
+        console.log('Yes Cookies !')
+        return true
+    } else {
+        console.log('No Cookies :(')
         return false
     }
 }
 
 export const useLogout = () => {
+    useCookie('access_token').value = ''
+    useCookie('authCode').value = ''
 
-	const token = useCookie('token')
-	token.value = ''
-	const code = useCookie('code')
-	code.value = ''
-	return navigateTo('/login')
+    return useRouter().push('/login')
 }
 
-
 interface FetchError<T> extends Error {
-	status: number;
-	statusText: string;
+    status: number
+    statusText: string
 }
 
 interface AuthResponse {
-	data: any;
-	error: FetchError<any> | null;
+    data: any
+    error: FetchError<any> | null
 }
 
+export async function sendAuthCode(code: string): Promise<any> {
+    const runtimeConfig = useRuntimeConfig()
+    console.log('Sending Auth Code', code)
+    const { data, error: errorRef } = await useFetch('auth', {
+        method: 'POST',
+        body: {
+            code: code,
+        },
+        baseURL: useRuntimeConfig().API_URL,
+    })
 
-export async function sendAuthCode(code:string): Promise<any> {
-	const runtimeConfig = useRuntimeConfig()
-	console.log("Sending Auth Code",code)
-	const { data, error: errorRef } = await useFetch("http://localhost:8000/api/auth", {
-		method: "POST",
-		body: {
-			// grant_type: "authorization_code",
-			// client_id: runtimeConfig.CLIENT_ID,
-			// client_secret:runtimeConfig.CLIENT_SECRET,
-			// redirect_uri: "http://localhost:3000/callback",
-			code: code,
-		},
-	});
-	
-	const error = errorRef.value as FetchError<any> | null;
-	return { data, error };
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
 }
 
-export const useAuth = () => {
+export async function fetchUser(): Promise<any> {
+    const runtimeConfig = useRuntimeConfig()
+    console.log('Fetching User', useState('me').value)
+    const { data, error: errorRef } = await useFetch('users/me', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
+}
 
+export async function fetchUserUpdate(): Promise<any> {
+    const runtimeConfig = useRuntimeConfig()
+    console.log('Fetching User', useState('me').value)
+    const { data, error: errorRef } = await useFetch(`users/${useAuth().value.login}`, {
+        method: 'PATCH',
+        body: {
+            username: useState<string>('Nickname', () => useAuth().value),
+            image: useState<string>('ProfileAvatar', () => useAuth().value?.image),
+        },
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
+}
+
+export const useAuth: any = () => {
+    return useState('me', async () => null)
 }

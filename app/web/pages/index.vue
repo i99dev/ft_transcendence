@@ -1,12 +1,12 @@
 <template>
-  <div id="Home" class="flex h-screen w-full justify-center bg-neutral-900">
-    <img src="https://i1.ae/img/icons/bk-home.jpg"> 
-  </div>
+    <div id="Home" class="flex h-screen w-full justify-center bg-neutral-900">
+        <img src="https://i1.ae/img/icons/bk-home.jpg" />
+    </div>
 </template>
 
-<script setup> 
+<script setup>
 definePageMeta({
-  middleware: ["pages"]
+    middleware: ['pages'],
 })
 </script>
 
