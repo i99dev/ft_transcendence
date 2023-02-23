@@ -8,10 +8,7 @@ export const useProfileAvatar = () =>
 export const useNickName = () => useState<string>('Nickname', () => useAuth().value?.username)
 
 export const useIsLogin = () => {
-    if (useAuth().value) {
-        return true
-    }
-    return false
+    return useAuth().value !== null
 }
 
 export const checkCookies = () => {
@@ -90,5 +87,5 @@ export async function fetchUserUpdate(): Promise<any> {
 }
 
 export const useAuth: any = () => {
-    return useState('me', async () => null)
+    return useState('me', async () => {})
 }
