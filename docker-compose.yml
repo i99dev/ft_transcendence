@@ -7,9 +7,8 @@ services:
     image: node:19
     working_dir: /usr/src/app
     environment:
-      - API_KEY="value"
-      - CLIENT_ID=""
-      - CLIENT_SECRET=""
+      - CLIENT_ID=${CLIENT_ID} # export CLIENT_ID=xxx on your terminal
+      - CLIENT_SECRET=${CLIENT_SECRET} # export CLIENT_SECRET=xxx on your terminal
       - REDIRECT_URI=""
       - API_URL=http://api:8000
       - NODE_ENV=development
@@ -36,9 +35,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
       - DATABASE_URL=postgresql://user:password@db:5432/dbname
-      - CLIENT_ID=""
-      - CLIENT_SECRET=""
-      - REDIRECT_URI=""
+      - CLIENT_ID=${CLIENT_ID} # export CLIENT_ID=xxx on your terminal
+      - CLIENT_SECRET=${CLIENT_SECRET} # export CLIENT_SECRET=xxx on your terminal
+      - REDIRECT_URI=${REDIRECT_URI} # export REDIRECT_URI=xxx on your terminal
       - PORT=8000
       - NODE_ENV=development
     networks:
@@ -51,8 +50,6 @@ services:
   # Database (Postgres)
   db:
     image: postgres:12
-    env_file:
-      - .env
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
