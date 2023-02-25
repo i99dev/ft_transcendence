@@ -30,7 +30,6 @@
         }
     },
     "dependencies": {
-        "@nestjs/common": "^9.2.1",
         "base64url": "^3.0.1",
         "class-validator": "^0.14.0",
         "jest": "^29.4.1",
