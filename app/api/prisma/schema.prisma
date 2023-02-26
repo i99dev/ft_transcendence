@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma
+
+model User {
+  id           Int        @id @default(autoincrement())
+  login        String     @unique
+  username     String     @unique
+  email        String     @unique
+  status       UserStatus @default(OFFLINE)
+  first_name   String?
+  last_name    String?
+  created_at   DateTime   @default(now())
+  last_login   DateTime   @default(now())
+  image        String?
+  total_wins   Int        @default(0)
+  total_loses  Int        @default(0)
+  exp_level    Int        @default(0)
+  points       Int        @default(0)
+  two_fac_auth Boolean    @default(false)
+  achievements Achievement[]  @relation("UserAchievements")
+  power_ups    PowerUp[] @relation("UserPowerUps")
+  friend_to    User[]  @relation("UserFriends")
+  friends      User[]  @relation("UserFriends")
+}
+
+model PowerUp {
+  id     Int    @id @default(autoincrement())
+  type   String @unique @default("default")
+  period Int    @default(0)
+  users  User[] @relation("UserPowerUps")
+}
+
+model Achievement {
+  id          Int     @id @default(autoincrement())
+  type        String  @unique @default("default")
+  description String?
+  points      Int     @default(0)
+  users        User[]  @relation("UserAchievements")
+}
+
+enum UserStatus {
+  OFFLINE
+  ONLINE
+  LIVE
+}

@@ -1,7 +1,18 @@
-<script lang="ts" setup></script>
-
 <template>
-  <div class="bg-slate-500">Hello from Frontend here </div>
+    <div id="Home" class="flex h-screen w-full justify-center bg-neutral-900">
+        <img src="https://i1.ae/img/icons/bk-home.jpg" />
+    </div>
 </template>
 
-<style scoped></style>
+<script setup>
+definePageMeta({
+    middleware: ['pages'],
+})
+</script>
+
+<!-- <style>
+#Home {
+  display: flex;
+  justify-content: center;
+}
+</style> -->
