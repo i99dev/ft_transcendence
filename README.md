@@ -44,7 +44,9 @@ With this structure, you can use **`docker-compose up --build`** command to buil
 
 ## Environment Value.
 
-To set up the necessary environment variables for the API, you will need to obtain the `CLIENT_ID` and `CLIENT_SECRET` values from the [intra.42.fr](http://intra.42.fr/) API. Then, set the `REDIRECT_URI` to the page you want to redirect to after the user logs in. To do this, run the `init_docker.sh` script on your local machine and enter the required values. Once you have set the values, you can start the development servers by running `docker-compose up --build`.
+To set up the necessary environment variables for the API, you will need to obtain the `CLIENT_ID` and `CLIENT_SECRET` values from the [intra.42.fr](http://intra.42.fr/) API. Then, set the `REDIRECT_URI` to the page you want to redirect to after the user logs in. To do this, run the `init_docker.sh` script on your local machine and enter the required values. Once you have set the values, you can start the development servers by running `docker compose --env-file ./.env up --build`.
+
+> Note: You can also set the environment variables in the `.env` after  copy the`.env.example` file and rename it to `.env` .
 
 ## Running Applications.
 

@@ -41,8 +41,6 @@ interface AuthResponse {
 }
 
 export async function sendAuthCode(code: string): Promise<any> {
-    const runtimeConfig = useRuntimeConfig()
-    console.log('Sending Auth Code', code)
     const { data, error: errorRef } = await useFetch('auth', {
         method: 'POST',
         body: {
@@ -50,7 +48,6 @@ export async function sendAuthCode(code: string): Promise<any> {
         },
         baseURL: useRuntimeConfig().API_URL,
     })
-
     const error = errorRef.value as FetchError<any> | null
     return { data, error }
 }

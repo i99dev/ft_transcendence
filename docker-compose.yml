@@ -7,10 +7,10 @@ services:
     image: node:19
     working_dir: /usr/src/app
     environment:
-      - CLIENT_ID=${CLIENT_ID} # export CLIENT_ID=xxx on your terminal
-      - CLIENT_SECRET=${CLIENT_SECRET} # export CLIENT_SECRET=xxx on your terminal
-      - REDIRECT_URI=""
-      - API_URL=http://api:8000
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - REDIRECT_URI=${REDIRECT_URI}
+      - API_URL=${API_URL}
       - NODE_ENV=development
     volumes:
       - ./app/web:/usr/src/app
