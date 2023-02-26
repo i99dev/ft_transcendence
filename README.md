@@ -1,17 +1,22 @@
-to run project 
-1. docker-compose up
-
-```bash
-docker-compose up
-```
-
-2. visit localhost:3000 in your browser to see the app
-3. visit localhost:3000/api to see the api
-
-
 # ft_transcendence
 
 Create a multiplayer online Pong game website using NestJS, TypeScript, and PostgreSQL. The website will feature a user-friendly interface, real-time multiplayer Pong game, and a chat system for players to communicate. Users will be able to login using the OAuth system of 42 intranet, create a unique profile, and play against other players through a matchmaking system. The website must be a single-page application, compatible with the latest stable versions of Google Chrome and one additional web browser, and have no unhandled errors or warnings.
+
+## Run Project
+
+To run the project with Docker Compose, you will need to first run the `init_docker.sh` script to set your environment variables. Once you have done that, you can run the following command to build and run the services defined in the `docker-compose.yml` file:
+
+```
+docker-compose up --build
+
+```
+
+Note that this assumes that you have Docker and Git installed on your local machine. The `init_docker.sh` script will set the necessary environment variables for the project.
+
+After running the command, the application should be running on your localhost. You can access the web interface by visiting `http://localhost/api` and the API by visiting `http://localhost`.
+
+If you encounter any issues, be sure to check that the necessary ports are available on your local machine and that you have followed all the necessary installation and setup steps.
+
 
 # Rules
 
