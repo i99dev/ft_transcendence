@@ -27,7 +27,10 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./app/api:/usr/src/app
-    command: sh -c "yarn install && yarn dev"
+    command:
+      - sh
+      - -c
+      - "yarn install && npx prisma migrate dev && yarn dev"
     environment:
       - JWT_EXPIRES_IN=1d
       - JWT_SECRET=secret
