@@ -7,8 +7,8 @@ export const useProfileAvatar = () =>
 
 export const useNickName = () => useState<string>('Nickname', () => useAuth().value?.username)
 
-export const useIsLogin = () => {
-    return useAuth().value !== null
+export const useIsLogin = async () => {
+    return await useAuth() ? false : true
 }
 
 export const checkCookies = () => {
@@ -83,6 +83,12 @@ export async function fetchUserUpdate(): Promise<any> {
     return { data, error }
 }
 
-export const useAuth: any = () => {
-    return useState('me', async () => {})
+export const useAuth: any = async () => {
+    const { error: errorRef } = await useFetch('/users/me', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    return errorRef.value as FetchError<any> | null;
 }
