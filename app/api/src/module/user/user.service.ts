@@ -1,5 +1,6 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto'
-import { PrismaClient, User } from '@prisma/client'
+import { User } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { UserRepository } from './repository/user.repository'
 import { Me } from '../../auth/interface/intra.interface'
@@ -7,8 +8,7 @@ import { NotFoundException } from '@nestjs/common'
 
 @Injectable({})
 export class UserService {
-    constructor(private repository: UserRepository) {}
-    prisma = new PrismaClient()
+    constructor(private prisma: PrismaService, private repository: UserRepository) {}
 
     async checkUser(user: UserGetDto): Promise<UserGetDto> {
         if (!user) {

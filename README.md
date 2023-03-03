@@ -1,120 +1,65 @@
-# ft_transcendence
-
-Create a multiplayer online Pong game website using NestJS, TypeScript, and PostgreSQL. The website will feature a user-friendly interface, real-time multiplayer Pong game, and a chat system for players to communicate. Users will be able to login using the OAuth system of 42 intranet, create a unique profile, and play against other players through a matchmaking system. The website must be a single-page application, compatible with the latest stable versions of Google Chrome and one additional web browser, and have no unhandled errors or warnings.
-
-# Rules
-
-- The main branch is considered the production branch and should only contain stable and tested code.
-
-- The develop branch is used for development and testing of new features and changes.
-
-- All pull requests should be made to the develop branch and reviewed by at least one other team member before being merged.
-
-- Once changes on the develop branch have been thoroughly tested and are deemed stable, they can be merged into the main branch.
-
-- Any conflicts or issues encountered during the merge process should be resolved before the merge is completed.
-
-- Regularly merge the main branch into the develop branch to ensure that the develop branch is up to date with the production code.
-
-- All merge should be done by team leader or senior developer.
-
-- Any merge should be done with proper comments and description of the changes.
-
-- Continuous integration and automated testing should be set up to ensure that the code on both branches is always functional and stable.
-
-- Any code that is found to be causing issues or errors should be promptly identified and fixed, and the relevant branches updated accordingly.
-
-# Contributors Guide
-
-## Forking the Repository
-
-- Go to the main repository on GitHub.
-- Click on the "Fork" button in the top right corner.
-- Select your own GitHub account to fork the repository to.
-
-## Cloning the Repository
-
-- Open your terminal and navigate to the directory where you want to clone the repository.
-- Run the following command to clone the repository: `git clone https://github.com/[YOUR_USERNAME]/[REPO_NAME].git`
-- Navigate into the cloned repository: `cd [REPO_NAME]`
-
-## Setting Up the Remote
-
-Run the following command to add the main repository as a remote: `git remote add upstream https://github.com/i99dev/ft_transcendence.git`
-
-## Usage
-
-Run the following command:
+# Overviews.
 
 ```bash
-bash setup.sh
-```
-This script will create .env default file and checks if you have docker and docker setup on your machine.
-
-If all good, run:
-**NOTE:** check the output of 'setup.sh to know which one you can use'
-
-```bash
-docker-compose up
-```
-OR
-```bash
-docker compose up
-```
-
-## Making Changes
-
-- Before making any changes, make sure you are on the develop branch by running `git checkout develop`
-- Create a new branch for your changes: `git branch [BRANCH_NAME]`
-- Switch to the new branch: `git checkout [BRANCH_NAME]`
-- Make your changes and commit them.
-
-```mermaid
-graph LR;
-    A[Fork Repo] --> B[Clone Repo];
-    B --> C[Add Remote];
-    C --> D[Make Changes];
-```
-
-## Submitting a Pull Request.
-
-- Push your changes to your forked repository: `git push origin [BRANCH_NAME]`
-- Go to the main repository on GitHub and click on the "New pull request" button.
-- Select your forked repository and the branch that contains your changes.
-- Fill in a detailed description of the changes you made and why they were necessary.
-- Submit the pull request for review.
-
-```mermaid
-graph LR;
-    D[Make Changes];
-    D --> E[Push Changes];
-    E --> F[Submit Pull Request];
-
+my-project/
+├── database/
+├── app/
+│   ├── api/
+│   │   ├── src/
+│   │   │   ├── controllers/
+│   │   │   ├── middlewares/
+│   │   │   ├── models/
+│   │   │   ├── services/
+│   │   │   ├── app.module.ts
+│   │   │   ├── main.ts
+│   │   ├── Dockerfile
+│   │   ├── package.json
+│   ├── web/
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   ├── middlewares/
+│   │   │   ├── pages/
+│   │   │   ├── plugins/
+│   │   │   ├── store/
+│   │   │   ├── nuxt.config.ts
+│   │   ├── Dockerfile
+│   │   ├── package.json
+├── docker-compose.yml
+├── lerna.json
+├── package.json
 ```
 
-## Review and Merging
+- Each package (api and web) now has its own **`Dockerfile`**, which is used to build the image for that specific package.
+- **`docker-compose.yml`** is used to define and run multi-container Docker applications. You'll use this file to define your services (api, web, and database) and their configurations and dependencies.
+- **`lerna.json`** is the configuration file for Lerna.js, which is used to manage the monorepo structure and versioning of the packages.
+- **`package.json`** is the root package.json file, which contains the dependencies and scripts that apply to the entire project.
 
-- The repository maintainers will review your pull request and provide feedback.
-- Make any necessary changes based on the feedback.
-- Once your pull request is approved, it will be merged into the develop branch.
+With this structure, you can use **`docker-compose up --build`** command to build and run all the services defined in the **`docker-compose.yml`** file, and easily manage the dependencies and versioning of your packages using Lerna.js.
 
-```mermaid
-graph LR;
-    F[Submit Pull Request];
-    F --> G[Review and Feedback];
-    G --> H[Make Changes];
-    H --> I[Merge into Develop];
-```
+## Team Members
 
-## Keeping your Fork Up to Date
+🧓@Obaid Al Tenaiji |👨‍💻@Bassam Naji | @Motasem algunaid | @Abrar  | @Emad Saad 
 
-- Fetch the latest changes from the main repository: `git fetch upstream`
-- Switch to the develop branch: `git checkout develop`
-- Merge the latest changes: `git merge upstream/develop`
+# Development.
 
-```mermaid
-graph LR;
-    I[Merge into Develop];
-    I --> J[Fetch Latest Changes];
-    J --> K[Merge into Develop];
-```
+## Environment Value.
+
+To set up the necessary environment variables for the API, you will need to obtain the `CLIENT_ID` and `CLIENT_SECRET` values from the [intra.42.fr](http://intra.42.fr/) API. Then, set the `REDIRECT_URI` to the page you want to redirect to after the user logs in. To do this, run the `init_docker.sh` script on your local machine and enter the required values. Once you have set the values, you can start the development servers by running `docker compose --env-file ./.env up --build`.
+
+> Note: You can also set the environment variables in the `.env` after  copy the`.env.example` file and rename it to `.env` .
+
+## Running Applications.
+
+Sure! `docker-compose up --build` command is used to build and rebuild all the images defined in the docker-compose file. This command is useful when you have made changes to your code or configuration files, and you want to rebuild the images with the new changes. On the other hand, the `docker-compose up` command is used to start the containers that are defined in the docker-compose file. This command will not rebuild the images, but it will use the existing images that are available on your local machine. Finally, running the `docker-compose down` command will stop and remove the containers that were started by the `docker-compose up` command.
+
+## API.
+
+To access the API, go to `http://localhost/api` in your web browser.
+
+### API Docs
+
+You can access the API documentation by going to `http://localhost/api/docs` in your web browser.
+
+## web.
+
+To access the front end, go to `http://localhost/` in your web browser.
