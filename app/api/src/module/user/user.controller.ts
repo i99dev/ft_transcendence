@@ -63,7 +63,6 @@ export class UserController {
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async GetMe(@Req() req): Promise<UserGetDto> {
-        console.log(`name: ${req.user.login}`)
         return await this.UserService.getUser(req.user.login)
     }
 
