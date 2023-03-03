@@ -1,3 +1,4 @@
+import { PrismaService } from '../../providers/prisma/prisma.service'
 import { UserService } from './../user/user.service'
 import { PrismaClient } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
@@ -9,7 +10,7 @@ import { UserRepository } from '../user/repository/user.repository'
 @Injectable({})
 export class FriendService {
     constructor(private repository: FriendRepository) {}
-    userService = new UserService(new UserRepository())
+    userService = new UserService(new PrismaService(), new UserRepository())
     prisma = new PrismaClient()
 
     async validateUsers(user: string, friend: string) {

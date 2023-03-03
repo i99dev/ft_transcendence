@@ -43,7 +43,12 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             if ((typeof value[key] === 'number' && value[key] > 2147483647) || value[key] < 0) {
                 throw new BadRequestException(`The value of ${key} is out of range`)
             }
-            if (key === 'status' && value[key] !== 'ONLINE' && value[key] !== 'OFFLINE' && value[key] !== 'Live') {
+            if (
+                key === 'status' &&
+                value[key] !== 'ONLINE' &&
+                value[key] !== 'OFFLINE' &&
+                value[key] !== 'Live'
+            ) {
                 throw new BadRequestException(`Invalid status value`)
             }
             return
