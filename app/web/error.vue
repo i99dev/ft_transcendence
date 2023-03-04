@@ -4,7 +4,7 @@
 				<div class="text-center">
 					<h1 class="mt-6 text-3xl font-bold tracking-tight text-blue-900 sm:text-9xl">404</h1> 
 				 	<div class="mt-10 flex items-center justify-center gap-x-6">
-					  <img src="https://media.tenor.com/yyi93c8CMJkAAAAC/one-piece-chopper.gif">
+					  <!-- <img src="https://media.tenor.com/yyi93c8CMJkAAAAC/one-piece-chopper.gif"> -->
 					</div>
 				<p class="mt-6 text-base leading-7 text-gray-600">Sorry, we couldn’t find the page you’re looking for.</p>
 				  <div class="mt-3 flex items-center justify-center gap-x-6">
