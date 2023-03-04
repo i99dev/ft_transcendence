@@ -30,6 +30,9 @@ services:
 
     networks:
       - proxy_frontend_net
+    
+    ports:
+      - 24678:24678
 
     depends_on:
       - api
