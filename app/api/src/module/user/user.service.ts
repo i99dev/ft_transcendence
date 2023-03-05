@@ -3,11 +3,19 @@ import { User } from '@prisma/client'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { UserRepository } from './repository/user.repository'
-import { Me } from '@auth/interface/intra.interface'
+import { Me } from '../../auth/interface/intra.interface'
+import { NotFoundException } from '@nestjs/common'
 
 @Injectable({})
 export class UserService {
     constructor(private prisma: PrismaService, private repository: UserRepository) {}
+
+    async checkUser(user: UserGetDto): Promise<UserGetDto> {
+        if (!user) {
+            throw new NotFoundException(`User ${user} does not exist`)
+        }
+        return user
+    }
 
     async getUser(name: string): Promise<UserGetDto> {
         const user: UserGetDto = await this.prisma.user.findUnique({
@@ -21,9 +29,12 @@ export class UserService {
     }
 
     async getUserForPatch(name: string): Promise<UserGetDto> {
-        const user: UserGetDto = await this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: { login: name },
         })
+        if (!user) {
+            throw new NotFoundException(`User ${name} does not exist`)
+        }
         return user
     }
 
@@ -49,10 +60,19 @@ export class UserService {
                 friends: true,
             },
         })
+        if (!sortedUsers) {
+            throw new NotFoundException(`User ${name} does not exist`)
+        }
         return sortedUsers
     }
 
     async DeleteUser(name: string): Promise<UserGetDto> {
+        const existingUser = await this.prisma.user.findUnique({
+            where: { login: name },
+        })
+        if (!existingUser) {
+            throw new NotFoundException(`User ${name} not found`)
+        }
         return this.repository.deleteUser(name)
     }
 }

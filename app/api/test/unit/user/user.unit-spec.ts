@@ -4,12 +4,13 @@ import { UserService } from './../../../src/module/user/user.service'
 import { FriendService } from '../../../src/module/friend/friend.service'
 import { UserRepository } from './../../../src/module/user/repository/user.repository'
 import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 describe('CheckFriendsUpdate', () => {
     let appService: UserService
     let friendService: FriendService
 
-    appService = new UserService(new UserRepository())
+    appService = new UserService(new PrismaService(), new UserRepository())
     friendService = new FriendService(new FriendRepository())
 
     it('should update friends list', async () => {
