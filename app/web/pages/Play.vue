@@ -55,7 +55,7 @@ let player1 = ref({
   speed: 10,
 })
 let player2 = ref({
-  id: 1,
+  id: 2,
   name: 'Player 2',
   score: 0,
   position: {
@@ -72,15 +72,20 @@ let player2 = ref({
 onMounted(() => {
 
   // Socket.io
-  socket.value = io(useRuntimeConfig().API_URL)
+  socket.value = io("http://192.168.192.2:8000/games")
   socket.value.on('game_settings', (gameSettingsData) => {
     gameSettings = gameSettingsData
   })
-  socket.value.on('move', (playerData, dir) => {
-    if (dir === 'up')
-      moveUp(playerData)
-    else if (dir === 'down')
-      moveDown(playerData)
+  socket.value.on('move', (payload) => {
+    payload = JSON.parse(payload)
+    if (payload.player._value.id === player1.value.id)
+      player1.value = payload.player._value
+    else if (payload.player._value.id === player2.value.id)
+      player2.value = payload.player._value
+    if (payload.dir === 'up')
+      moveUp(payload.player._value)
+    else if (payload.dir === 'down')  
+      moveDown(payload.player._value)
   })
 
   // initial player1 position
@@ -117,20 +122,16 @@ const drawMiddleLine = () => {
 const handleKeyDown = (event) => {
   switch (event.key) {
     case 'w':
-      // socket.value.emit('move', (player1, 'up'))
-      moveUp(player1.value)
+      socket.value.emit('move', (JSON.stringify({player: player1, dir: 'up'})))
       break
     case 's':
-      // socket.value.emit('move', (player1, 'down'))
-      moveDown(player1.value)
+      socket.value.emit('move', (JSON.stringify({player: player1, dir: 'down'})))
       break
     case 'i':
-      // socket.value.emit('move', (player2, 'up'))
-      moveUp(player2.value)
+      socket.value.emit('move', (JSON.stringify({player: player2, dir: 'up'})))
       break
     case 'k':
-      // socket.value.emit('move', (player2, 'down'))
-      moveDown(player2.value)
+      socket.value.emit('move', (JSON.stringify({player: player2, dir: 'down'})))
       break
   }
 }

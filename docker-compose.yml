@@ -32,6 +32,7 @@ services:
 
     networks:
       - proxy_frontend_net
+      - frontend_backend_net
     
     ports:
       - 24678:24678
@@ -77,9 +78,11 @@ services:
     networks:
       - proxy_backend_net
       - backend_db_net
+      - frontend_backend_net
     
     ports:
       - 5555:5555
+      - 8000:8000
 
     depends_on:
       - db
@@ -135,6 +138,7 @@ networks:
   proxy_frontend_net:
   proxy_backend_net:
   backend_db_net:
+  frontend_backend_net:
 
 volumes:
   db-data:
