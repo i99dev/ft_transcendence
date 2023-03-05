@@ -20,6 +20,8 @@ services:
       - API_URL=${API_URL}
     volumes:
       - ./app/web:/usr/src/app
+    
+    init: true
 
     command: 
       - sh
@@ -51,6 +53,8 @@ services:
 
     volumes:
       - ./app/api:/usr/src/app
+
+    init: true
 
     command: 
     - sh
