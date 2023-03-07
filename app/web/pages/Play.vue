@@ -49,8 +49,8 @@ let player1 = ref({
     y: 0
   },
   bar: {
-    width: 10,
-    height: 150
+    width: 0,
+    height: 0
   },
   speed: 10,
 })
@@ -63,16 +63,22 @@ let player2 = ref({
     y: 0
   },
   bar: {
-    width: 10,
-    height: 150
+    width: 0,
+    height: 0
   },
   speed: 10,
 })
 
 onMounted(() => {
+  console.log(useCookie('access_token').value)
 
   // Socket.io
-  socket.value = io("http://192.168.192.2:8000/games")
+  socket.value = io("http://192.168.240.2:8000/games", {
+    // withCredentials: true,
+  extraHeaders: {
+    'Authorization': `Bearer ${useCookie('access_token').value}`
+  }
+  })
   socket.value.on('game_settings', (gameSettingsData) => {
     gameSettings = gameSettingsData
   })
@@ -89,12 +95,20 @@ onMounted(() => {
   })
 
   // initial player1 position
+  player1.value.bar = {
+    width: 10,
+    height: game.value.getContext('2d').canvas.height / 4
+  }
   player1.value.position = {
     x: 0,
     y: game.value.getContext('2d').canvas.height / 2 - player1.value.bar.height / 2
   }
   
   // initial player2 position
+  player2.value.bar = {
+    width: 10,
+    height: game.value.getContext('2d').canvas.height / 4
+  }
   player2.value.position = {
     x: game.value.getContext('2d').canvas.width - player2.value.bar.width,
     y: game.value.getContext('2d').canvas.height / 2 - player2.value.bar.height / 2
