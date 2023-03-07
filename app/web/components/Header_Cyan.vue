@@ -17,10 +17,10 @@
                         Home
                     </li>
                     <li
-                        @click="go('Play')"
+                        @click="go('play')"
                         class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 mx-10 tracking-normal"
                     >
-                        Play
+                        play
                     </li>
                     <li
                         @click="go('MatchHistory')"
@@ -142,7 +142,7 @@
                         class="flex md:hidden flex-col cursor-pointer text-sky-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex justify-center"
                     >
                         <div class="flex items-center">
-                            <span @click="go('Play')" class="ml-2 font-bold">Play</span>
+                            <span @click="go('play')" class="ml-2 font-bold">play</span>
                         </div>
                     </li>
                     <li

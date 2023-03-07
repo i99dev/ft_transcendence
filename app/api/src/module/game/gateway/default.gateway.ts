@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common'
+import { Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
@@ -8,14 +8,13 @@ import {
     SubscribeMessage,
     WebSocketGateway,
 } from '@nestjs/websockets'
-import console from 'console'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
 
 @WebSocketGateway({
     namespace: '/games',
-    // cors: { origin: 'http://ft_transcendence_web/', credentials: true },
-    cors: true,
+    cors: { origin: 'http://localhost/play', credentials: true },
+    path: '/api/socket.io',
 })
 export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
@@ -25,16 +24,13 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     constructor(private defaultService: DefaultService, private jwtService: JwtService) {}
 
-    handleConnection(client: Socket, ...args: any[]): any {
-        // const token = client.request.headers.authorization
+    handleConnection(client: Socket, ...args: any[]) {
+        // let token = client.request.headers.authorization
         // this.logger.log(token)
-        // this.logger.log(process.env.JWT_SECRET)
-        // const decoded = this.jwtService.verify(token, {
-        //     secret: process.env.JWT_SECRET,
-        // })
+        // token = token.split(" ")[1]
+        // const decoded = this.jwtService.decode(token)
         // this.logger.log(decoded)
-        // const token
-        // this.logger.log(client)
+
         this.logger.log(`Client connected: ${client.id}`)
     }
 
@@ -43,7 +39,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('move')
-    OnNewMessage(client: any, payload: any) {
+    OnNewMessage(client: any,@MessageBody() payload: any) {
         this.wss.emit('move', payload)
     }
 }

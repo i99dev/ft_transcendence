@@ -69,15 +69,14 @@ let player2 = ref({
   speed: 10,
 })
 
-onMounted(() => {
-  console.log(useCookie('access_token').value)
-
+onMounted( () => {
   // Socket.io
-  socket.value = io("http://192.168.240.2:8000/games", {
-    // withCredentials: true,
-  extraHeaders: {
-    'Authorization': `Bearer ${useCookie('access_token').value}`
-  }
+  socket.value = io("http://localhost/games", {
+    withCredentials: true,
+    extraHeaders: {
+      'Authorization': `Bearer ${useCookie('access_token').value}`
+    },
+    path: '/api/socket.io'
   })
   socket.value.on('game_settings', (gameSettingsData) => {
     gameSettings = gameSettingsData
@@ -90,7 +89,7 @@ onMounted(() => {
       player2.value = payload.player._value
     if (payload.dir === 'up')
       moveUp(payload.player._value)
-    else if (payload.dir === 'down')  
+    else if (payload.dir === 'down')
       moveDown(payload.player._value)
   })
 

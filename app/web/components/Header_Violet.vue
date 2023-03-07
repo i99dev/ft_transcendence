@@ -8,7 +8,7 @@
                 </div>
                 <ul class="pr-12 xl:flex items-center h-full hidden">
                     <li @click="go('/')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100   border-sky-100">Home</li>
-                    <li @click="go('Play')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 mx-10 tracking-normal">Play</li>
+                    <li @click="go('play')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 mx-10 tracking-normal">Play</li>
                     <li @click="go('MatchHistory')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 mr-10 tracking-normal">Match History</li>
                     <li @click="go('Leaderboard')" class="cursor-pointer h-full flex items-center hover:text-cyan-200 text-sm text-cyan-100 tracking-normal">Leaderboard</li>
                 </ul>
@@ -59,7 +59,7 @@
                     </li>
                     <li class="flex md:hidden flex-col cursor-pointer text-sky-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex justify-center">
                         <div class="flex items-center">
-                            <span @click="go('Play')" class="ml-2 font-bold">Play</span>
+                            <span @click="go('play')" class="ml-2 font-bold">Play</span>
                         </div>
                     </li>
                     <li class="flex md:hidden flex-col cursor-pointer text-sky-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex justify-center">
