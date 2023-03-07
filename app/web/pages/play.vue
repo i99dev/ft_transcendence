@@ -38,7 +38,11 @@ let gameSettings = ref({
     }
   }
 });
-let socket = ref(null) // socket.io
+
+const nuxtApp = useNuxtApp();
+
+const socket = nuxtApp.socket;
+
 let context = ref({})
 let player1 = ref({
   id: 1,
@@ -70,14 +74,6 @@ let player2 = ref({
 })
 
 onMounted( () => {
-  // Socket.io
-  socket.value = io("http://localhost/games", {
-    withCredentials: true,
-    extraHeaders: {
-      'Authorization': `Bearer ${useCookie('access_token').value}`
-    },
-    path: '/api/socket.io'
-  })
   socket.value.on('game_settings', (gameSettingsData) => {
     gameSettings = gameSettingsData
   })
