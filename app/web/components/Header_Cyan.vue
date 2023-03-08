@@ -252,7 +252,7 @@
     </div>
 </template>
 <script setup>
-const profilePhoto = useProfileAvatar()
+const profilePhoto = await useProfileAvatar()
 const Nickname = useNickName()
 console.log(useAuth().value)
 const dropdownHandler = event => {
