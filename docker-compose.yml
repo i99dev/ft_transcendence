@@ -6,11 +6,7 @@ services:
   web:
     container_name: ft_transcendence_web
 
-    image: node:19
-
-    user: node
-
-    working_dir: /usr/src/app
+    build: ./app/web
 
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -23,16 +19,8 @@ services:
     
     init: true
 
-    command: 
-      - sh
-      - -c
-      - "chown -R node:node /usr/src/app \
-        && yarn \
-        && yarn dev"
-
     networks:
       - proxy_frontend_net
-      - frontend_backend_net
     
     ports:
       - 24678:24678
@@ -46,24 +34,12 @@ services:
   api:
     container_name: ft_transcendence_api
 
-    image: node:19
-
-    user: node
-
-    working_dir: /usr/src/app
+    build: ./app/api
 
     volumes:
       - ./app/api:/usr/src/app
 
     init: true
-
-    command: 
-    - sh
-    - -c
-    - "chown -R node:node /usr/src/app \
-      && yarn \
-      && npx prisma migrate dev \
-      && npx prisma studio | yarn dev"
 
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -78,7 +54,6 @@ services:
     networks:
       - proxy_backend_net
       - backend_db_net
-      - frontend_backend_net
     
     ports:
       - 5555:5555
@@ -107,7 +82,7 @@ services:
     networks:
       - backend_db_net
     
-    restart: on-failure
+    restart: unless-stopped
 
   # reverse proxy (nginx)
   nginx:
@@ -123,6 +98,8 @@ services:
 
     volumes:
       - ./config/default.conf:/etc/nginx/conf.d/default.conf
+    
+    init: true
 
     networks:
       - proxy_frontend_net
@@ -138,7 +115,6 @@ networks:
   proxy_frontend_net:
   proxy_backend_net:
   backend_db_net:
-  frontend_backend_net:
 
 volumes:
   db-data:
