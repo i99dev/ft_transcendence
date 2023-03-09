@@ -3,10 +3,10 @@
 		<button @click="go('/')" class="NuxtLink" > 
 			Home
 		</button>
-		<button @click="go('Play')" class="NuxtLink">
+		<button @click="go('/play')" class="NuxtLink">
 			Play
 		</button>
-		<button @click="go('MatchHistory')" class="NuxtLink" >
+		<button @click="go('/matchHistory')" class="NuxtLink" >
 			Match History
 		</button>
 		<button @click="logout" class="NuxtLink">

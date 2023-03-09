@@ -2,13 +2,15 @@
 
 import { NextApiResponse } from 'next'
 
-export const useProfileAvatar = () =>
-    useState<string>('ProfileAvatar', () => useAuth().value?.image)
+export const useProfileAvatar = async () => {
+    const { data, error } = await fetchUser()
+    return data.value?.image
+}
 
 export const useNickName = () => useState<string>('Nickname', () => useAuth().value?.username)
 
 export const useIsLogin = async () => {
-    return await useAuth() ? false : true
+    return useCookie('access_token').value
 }
 
 export const checkCookies = () => {
@@ -54,7 +56,6 @@ export async function sendAuthCode(code: string): Promise<any> {
 
 export async function fetchUser(): Promise<any> {
     const runtimeConfig = useRuntimeConfig()
-    console.log('Fetching User', useState('me').value)
     const { data, error: errorRef } = await useFetch('users/me', {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
@@ -67,7 +68,6 @@ export async function fetchUser(): Promise<any> {
 
 export async function fetchUserUpdate(): Promise<any> {
     const runtimeConfig = useRuntimeConfig()
-    console.log('Fetching User', useState('me').value)
     const { data, error: errorRef } = await useFetch(`users/${useAuth().value.login}`, {
         method: 'PATCH',
         body: {

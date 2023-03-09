@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
+import { GameModule } from './module/game/game.module'
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { PrismaModule } from './providers/prisma/prisma.module'
         AuthModule,
         UserModule,
         PrismaModule,
+        GameModule,
     ],
     controllers: [AppController],
     providers: [AppService],
