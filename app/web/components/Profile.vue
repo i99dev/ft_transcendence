@@ -11,7 +11,7 @@
                     v-model="user.tmpNick"
                     class="rounded-md mb-2 placeholder:text-center placeholder::text-xl flex h-13 justify-center border"
                     type="text"
-                    placeholder="Enter your nickname"
+                    placeholder="Enter your username"
                 />
             </div>
             <h1 id="nameErrMsg" class="text-red-500 mb-2"></h1>
@@ -54,9 +54,11 @@
 </template>
 
 <script setup>
+const {data} = await useGetMe();
 const user = ref({
-    nickname: useNickName(),
-    image: useProfileAvatar(),
+    login: data.value.login,
+    username: data.value.username,
+    image: data.value.image,
     tmpNick: null,
     tmpImg: null,
     defaultImages: [
@@ -86,7 +88,7 @@ const user = ref({
 })
 
 onMounted(() => {
-    user.value.tmpNick = user.value.nickname
+    user.value.tmpNick = user.value.username
 })
 
 const emit = defineEmits(['close'])
@@ -113,12 +115,16 @@ const selectImageNew = e => {
 
 const updateProfile = async () => {
     if (user.value.tmpNick && user.value.tmpNick.length > 0 && user.value.tmpNick.length <= 10) {
-        user.value.nickname = user.value.tmpNick
+        user.value.username = user.value.tmpNick
         if (user.value.tmpImg != null) {
             user.value.image = user.value.tmpImg
         }
         //Post req to update backend here
-        await fetchUserUpdate()
+        const payload = {
+            username: user.value.username,
+            image: user.value.image,
+        }
+        await useUpdateUserInfo(user.value.login, payload)
         emit('close')
     } else {
         document.getElementById('nameErrMsg').innerHTML = 'Must be between 1-10 chars'

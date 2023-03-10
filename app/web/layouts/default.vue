@@ -1,15 +1,11 @@
-import Header_Cyan from '~~/components/Header_Cyan.vue';
-
-<template>
+<template> 
     <div>
-        <!-- <Header_Cyan/> -->
-        <Header_Cyan />
+        <Header />
         <slot />
     </div>
 </template>
 
 <script setup>
-const { data, error } = await fetchUser()
-const user = useAuth()
-user.value = data.value
+// console.log('layout')
+// console.log(context.route)
 </script>
