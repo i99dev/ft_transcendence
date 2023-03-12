@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="m-10 flex justify-center" >
     <canvas ref="game" width="800" height="600" class="border rounded-lg shadow-lg bg-slate-100 block"></canvas>
   </div>
@@ -7,6 +8,7 @@
       <button @click="moveUp(player2)" class="border rounded-md p-2 m-2 bg-slate-200 w-96 place-self-start">Up</button>
       <button @click="moveDown(player1)" class="border rounded-md p-2 m-2 bg-slate-200 w-96 place-self-end">Down</button>
       <button @click="moveDown(player2)" class="border rounded-md p-2 m-2 bg-slate-200 w-96 place-self-start">Down</button>
+  </div>
   </div>
 </template>
 
