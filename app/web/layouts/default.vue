@@ -9,7 +9,9 @@ import Header_Cyan from '~~/components/Header_Cyan.vue';
 </template>
 
 <script setup>
-const { data, error } = await fetchUser()
-const user = useAuth()
-user.value = data.value
+if (typeof window !== 'undefined') {
+    const { data, error } = await fetchUser()
+    const user = useAuth()
+    user.value = data.value
+}
 </script>
