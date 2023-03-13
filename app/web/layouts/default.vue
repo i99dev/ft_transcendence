@@ -7,8 +7,8 @@
 
 <script setup>
 if (typeof window !== 'undefined') {
-    const { data, error } = await fetchUser()
-    const user = useAuth()
-    user.value = data.value
+    if (useIsAuth()) {
+        const { data : user, error } = await useGetMe()
+    }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-slate-700 p-10 flex justify-center">
-    <canvas ref="canvas" width="800" height="700" class="bg-slate-800 border-2 shadow-2xl shadow-slate-900"></canvas>
+    <canvas ref="canvas" class="bg-slate-800 border-2 shadow-2xl shadow-slate-900"></canvas>
   </div>
 </template>
 
@@ -12,41 +12,56 @@
   let player1 = ref({})
   let player2 = ref({})
   let winner = ref({})
+  let objsSizes = ref({})
 
   const nuxtApp = useNuxtApp();
   const socket = nuxtApp.socket;
 
   const initialize = () => {
     ctx.value = canvas.value.getContext('2d')
+    ctx.value.styl
 
     ball.value = {
       x: canvas.value.width / 2,
       y: canvas.value.height / 2,
-      speedX: 4,
-      speedY: 4,
-      radius: 10
+      speedX: canvas.value.height / 150,
+      speedY: canvas.value.height / 150,
+      radius: canvas.value.height / 100
     }
 
     player1.value = {
       login: 'bnaji',
       x: 0,
       y: canvas.value.height / 2 - 50,
-      width: 10,
-      height: 150,
+      width: canvas.value.width / 50,
+      height: canvas.value.height / 5,
       score: 0,
-      speed: 15
+      speed: canvas.value.height / 32
     }
 
     player2.value = {
       login: 'isaad',
-      x: canvas.value.width - 10,
+      x: canvas.value.width - canvas.value.width / 50,
       y: canvas.value.height / 2 - 50,
-      width: 10,
-      height: 150,
+      width: canvas.value.width / 50,
+      height: canvas.value.height / 5,
       score: 0,
-      speed: 20
+      speed: canvas.value.height / 32
+    }
+
+    objsSizes.value = {
+      scoreSize: canvas.value.width / 25,
+      gameStatusSize: canvas.value.width / 20,
+      gameStatusDisSize: canvas.value.width / 30,
     }
   }
+  const setUpCanvas = () => {
+    // Feed the size back to the canvas.
+    canvas.value.width = canvas.value.clientWidth;
+    canvas.value.height = canvas.value.clientHeight;
+
+    initialize()
+  };
 
   onMounted(() => {
     // socket.value.on('game_settings', (gameSettingsData) => {
@@ -76,12 +91,22 @@
         moveDown(payload.player._value)
     })
 
-    initialize()
-
+    setUpCanvas()
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keypress', switchGameState)
+    let animationInterval = draw()
+    window.addEventListener('resize', () => {
+    	// Clear the canvas.
+    	ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
 
-    drawElements()
+      // End the old animation.
+      clearInterval(animationInterval);
+    
+    	// Draw it all again.
+    	setUpCanvas();
+    	animationInterval = draw();
+    });
+
     draw()
   })
 
@@ -134,11 +159,16 @@
     if (gameStatus.value === 'play')
       requestAnimationFrame(draw)
     else if (gameStatus.value === 'start')
-      drawText('Start', 50)
+      drawText('Start', objsSizes.value.gameStatusSize)
     else if (gameStatus.value === 'paused')
-      drawText('Paused', 50)
+      drawText('Paused', objsSizes.value.gameStatusSize)
     else if (gameStatus.value === 'end')
       drawWinner()
+
+
+    return setInterval(() => {
+      /* Code for changes to canvas over time. */
+    }, 100);
   }
 
   const drawElements = () => {
@@ -225,10 +255,10 @@
 
   const drawScore = () => {
     if (gameStatus.value === 'end')
-      ctx.value.clearRect(canvas.value.width / 2 - 30, 0, 100, 100)
-    ctx.value.font = '30px Arial'
+      ctx.value.clearRect(canvas.value.width / 2, 0, 100, 100)
+    ctx.value.font = `${objsSizes.value.scoreSize}px Arial`
     ctx.value.fillStyle = 'white'
-    ctx.value.fillText(`${player1.value.score} : ${player2.value.score}`, canvas.value.width / 2 - 30, 30)
+    ctx.value.fillText(`${player1.value.score} : ${player2.value.score}`, canvas.value.width / 2 - objsSizes.value.scoreSize, objsSizes.value.scoreSize)
   }
 
   const drawText = (text, size, posx = 0, posy = 0) => {
@@ -250,14 +280,15 @@
 
   const drawWinner = () => {
     if (player1.value.score === 11)
-      drawText(`Player 1 wins`, 100)
+      drawText(`Player 1 wins`, objsSizes.value.gameStatusSize)
     else if (player2.value.score === 11)
-      drawText(`Player 2 wins`, 100)
-    drawText(`Press 'Enter' to restart`, 20, 0, 100)
+      drawText(`Player 2 wins`, objsSizes.value.gameStatusSize)
+    drawText(`Press 'Enter' to restart`, 20, 0, objsSizes.value.gameStatusDisSize)
   }
 
   const switchGameState = (event) => {
     if (event.key === ' ') {
+      console.log(ctx.value.getImageData(100, 100, 1, 1).data)
       if (gameStatus.value === 'paused' || gameStatus.value === 'start')
         socket.value.emit('gameStatus', 'play')
       else if (gameStatus.value === 'play')
@@ -268,3 +299,18 @@
         socket.value.emit('gameStatus', 'start')
   }
 </script>
+
+<style scoped>
+
+div {
+  height: 90vh;
+}
+
+canvas {
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+
+</style>
