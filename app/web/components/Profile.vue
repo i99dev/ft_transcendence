@@ -1,60 +1,69 @@
 <template>
-    <div
-        class="rounded-md absolute bg-white pt-8 pb-1 shadow-xl sm:mx-auto sm:px-10 border border-slate-900 items-center"
-    >
-        <div class="mb-2 flex flex-col items-center">
-            <h1 class="mb-3 text-2xl text-blue-900 font-semibold">Setup Your Account</h1>
+    <div>
+        <div
+            class="rounded-md absolute bg-white pt-8 pb-1 shadow-xl sm:mx-auto sm:px-10 border border-slate-900 items-center"
+        >
+            <div class="mb-2 flex flex-col items-center">
+                <h1 class="mb-3 text-2xl text-blue-900 font-semibold">Setup Your Account</h1>
 
-            <h1 class="text-xl mb-5 flex justify-center">Nickname</h1>
-            <div>
-                <input
-                    v-model="user.tmpNick"
-                    class="rounded-md mb-2 placeholder:text-center placeholder::text-xl flex h-13 justify-center border"
-                    type="text"
-                    placeholder="Enter your username"
-                />
+                <h1 class="text-xl mb-5 flex justify-center">Nickname</h1>
+                <div>
+                    <input
+                        v-model="user.tmpNick"
+                        class="rounded-md mb-2 placeholder:text-center placeholder::text-xl flex h-13 justify-center border"
+                        type="text"
+                        placeholder="Enter your username"
+                    />
+                </div>
+                <h1 id="nameErrMsg" class="text-red-500 mb-2"></h1>
+                <input id="fileUpload" type="file" hidden />
+                <button>
+                    <img
+                        v-bind:src="user.tmpImg || user.image || user.defaultImages[0]"
+                        @click="showAvatarWindow"
+                        class="rounded-md border mb-3"
+                        width="150"
+                        alt=""
+                        srcset=""
+                    />
+                </button>
+                <div>
+                    <button @click="$emit('close')" class="mt-5 mx-5 hover:text-sky-600">
+                        Close
+                    </button>
+                    <button @click="updateProfile" class="mt-5 mx-5 hover:text-sky-600">
+                        Submit
+                    </button>
+                </div>
             </div>
-            <h1 id="nameErrMsg" class="text-red-500 mb-2"></h1>
-            <input id="fileUpload" type="file" hidden />
-            <button>
+        </div>
+
+        <div
+            v-show="!user.imgSelected"
+            class="absolute flex flex-wrap w-1/3 bg-white pt-8 pb-1 shadow-xl sm:mx-auto sm:px-10 border items-center opacity-95"
+        >
+            <p class="text-2xl mx-auto mb-3">Pick Your Avatar</p>
+            <button class="flex flex-wrap">
                 <img
-                    v-bind:src="user.tmpImg || user.image || user.defaultImages[0]"
-                    @click="showAvatarWindow"
-                    class="rounded-md border mb-3"
-                    width="150"
+                    @click="selectImageNew"
+                    v-for="img in user.defaultImages"
+                    :key="img"
+                    :src="img"
+                    class="border bg-slate-100 mx-0.5 mb-2 hover:to-blue-100"
+                    width="145"
                     alt=""
                     srcset=""
                 />
             </button>
-            <div>
-                <button @click="$emit('close')" class="mt-5 mx-5 hover:text-sky-600">Close</button>
-                <button @click="updateProfile" class="mt-5 mx-5 hover:text-sky-600">Submit</button>
-            </div>
+            <img src="~/assets/upload_icon.png" class="w-7 mx-auto" @click="uploadImage" />
         </div>
-    </div>
-
-    <div
-        v-show="!user.imgSelected"
-        class="absolute flex flex-wrap w-1/3 bg-white pt-8 pb-1 shadow-xl sm:mx-auto sm:px-10 border items-center opacity-95"
-    >
-        <p class="text-2xl mx-auto mb-3">Pick Your Avatar</p>
-        <button class="flex flex-wrap">
-            <img
-                @click="selectImageNew"
-                v-for="img in user.defaultImages"
-                :src="img"
-                class="border bg-slate-100 mx-0.5 mb-2 hover:to-blue-100"
-                width="145"
-                alt=""
-                srcset=""
-            />
-        </button>
-        <img src="~/assets/upload_icon.png" class="w-7 mx-auto" @click="uploadImage" />
     </div>
 </template>
 
 <script setup>
-const {data} = await useGetMe();
+const user_info = user_info()
+console.log('user info', user_info)
+const { data } = await useGetMe()
 const user = ref({
     login: data.value.login,
     username: data.value.username,
