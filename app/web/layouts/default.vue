@@ -6,6 +6,9 @@
 </template>
 
 <script setup>
-// console.log('layout')
-// console.log(context.route)
+if (typeof window !== 'undefined') {
+    const { data, error } = await fetchUser()
+    const user = useAuth()
+    user.value = data.value
+}
 </script>

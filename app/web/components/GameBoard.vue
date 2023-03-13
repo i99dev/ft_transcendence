@@ -22,8 +22,8 @@
     ball.value = {
       x: canvas.value.width / 2,
       y: canvas.value.height / 2,
-      speedX: 3,
-      speedY: 3,
+      speedX: 4,
+      speedY: 4,
       radius: 10
     }
 
@@ -53,7 +53,9 @@
     //   gameSettings = gameSettingsData
     // })
     socket.value.on('gameStatus', (gameStatusData) => {
+      console.log('gameStatusData', gameStatusData)
       if (gameStatus.value === 'paused' || gameStatus.value === 'start' || gameStatus.value === 'end') {
+        console.log('In')
         if (gameStatus.value == 'end') {
           player1.value.score = 0
           player2.value.score = 0
@@ -142,6 +144,7 @@
   }
 
   const drawElements = () => {
+    console.log('clearElements')
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawPlayer(player1.value)
     drawPlayer(player2.value)
@@ -255,7 +258,7 @@
       drawText(`Player 1 wins`, 100)
     else if (player2.value.score === 11)
       drawText(`Player 2 wins`, 100)
-    drawText(`Press Enter to restart`, 20, 0, 100)
+    drawText(`Press 'Enter' to restart`, 20, 0, 100)
   }
 
   const switchGameState = (event) => {
@@ -267,6 +270,6 @@
     }
     else if (event.key === 'Enter')
       if (gameStatus.value === 'end')
-        socket.value.emit('gameStatus', 'end')
+        socket.value.emit('gameStatus', 'start')
   }
 </script>
