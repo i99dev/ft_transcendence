@@ -53,9 +53,7 @@
     //   gameSettings = gameSettingsData
     // })
     socket.value.on('gameStatus', (gameStatusData) => {
-      console.log('gameStatusData', gameStatusData)
       if (gameStatus.value === 'paused' || gameStatus.value === 'start' || gameStatus.value === 'end') {
-        console.log('In')
         if (gameStatus.value == 'end') {
           player1.value.score = 0
           player2.value.score = 0
@@ -144,7 +142,6 @@
   }
 
   const drawElements = () => {
-    console.log('clearElements')
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawPlayer(player1.value)
     drawPlayer(player2.value)
@@ -237,8 +234,6 @@
   const drawText = (text, size, posx = 0, posy = 0) => {
     const {w, h} = textSetup(text, size)
     clearText(text, size, w, h, posx, posy)
-    console.log(w)
-    console.log(h)
     ctx.value.fillText(text, canvas.value.width / 2 - w/2 + posx, canvas.value.height / 2 - h/2 + posy)
   }
 
