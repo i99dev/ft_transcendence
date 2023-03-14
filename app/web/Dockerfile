@@ -6,4 +6,8 @@ RUN chown -R node:node .
 
 USER node
 
-CMD [ "sh", "-c", "yarn && yarn dev"]
+# install dependencies
+COPY --chown=node:node package.json yarn.lock ./
+RUN yarn
+
+CMD [ "yarn", "dev" ]

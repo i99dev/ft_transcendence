@@ -39,7 +39,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('move')
-    OnNewMessage(client: any,@MessageBody() payload: any) {
+    movePlayer(client: any, @MessageBody() payload: any) {
         this.wss.emit('move', payload)
+    }
+
+    @SubscribeMessage('gameStatus')
+    changeGameStatus(client: any, @MessageBody() payload: any) {
+        this.wss.emit('gameStatus', payload)
     }
 }

@@ -1,15 +1,17 @@
-import Header_Cyan from '~~/components/Header_Cyan.vue';
+<script setup>
+const { data, error, pending, refresh, execute } = await fetchUser()
+</script>
 
 <template>
     <div>
-        <!-- <Header_Cyan/> -->
-        <Header_Cyan />
-        <slot />
+        <!-- loading -->
+        <div v-if="pending">Loading...</div>
+        <!-- error -->
+        <div v-if="error">Error: {{ error.message }}</div>
+        <!-- success -->
+        <div v-if="data">
+            <Header :user="data" />
+            <slot />
+        </div>
     </div>
 </template>
-
-<script setup>
-const { data, error } = await fetchUser()
-const user = useAuth()
-user.value = data.value
-</script>

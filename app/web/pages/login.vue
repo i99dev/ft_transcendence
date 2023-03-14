@@ -51,11 +51,6 @@ definePageMeta({
     layout: false,
 })
 
-const isLogin = useIsLogin()
-// if(isLogin) {
-//     navigateTo('/')
-// }
-
 const go = () => {
     window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${
         useRuntimeConfig().CLIENT_ID

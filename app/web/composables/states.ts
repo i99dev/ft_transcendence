@@ -43,27 +43,33 @@ interface AuthResponse {
 }
 
 export async function sendAuthCode(code: string): Promise<any> {
-    const { data, error: errorRef } = await useFetch('auth', {
+    return useFetch('auth', {
         method: 'POST',
         body: {
             code: code,
         },
         baseURL: useRuntimeConfig().API_URL,
     })
-    const error = errorRef.value as FetchError<any> | null
-    return { data, error }
 }
 
 export async function fetchUser(): Promise<any> {
     const runtimeConfig = useRuntimeConfig()
-    const { data, error: errorRef } = await useFetch('users/me', {
+    const {
+        data,
+        error: errorRef,
+        execute,
+        pending,
+        refresh,
+    } = await useFetch('users/me', {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
+        server: false,
+        lazy: true,
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error }
+    return { data, error, pending, refresh, execute }
 }
 
 export async function fetchUserUpdate(): Promise<any> {
@@ -90,5 +96,5 @@ export const useAuth: any = async () => {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
     })
-    return errorRef.value as FetchError<any> | null;
+    return errorRef.value as FetchError<any> | null
 }
