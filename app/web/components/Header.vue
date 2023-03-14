@@ -255,15 +255,19 @@
             </div>
         </nav>
         <div id="pro" v-if="showProfile">
-            <Profile @close="hideProfileWindow" />
+            <Profile @close="hideProfileWindow" :userData="props.user" />
         </div>
     </div>
 </template>
 <script setup>
-const { data: user, error, refresh, pending } = await useGetMe()
-
-const profilePhoto = user.value?.image
-const Nickname = user.value?.username
+const props = defineProps({
+    user: {
+        type: Object,
+        required: true,
+    },
+})
+const profilePhoto = props.user?.image
+const Nickname = props.user?.username
 const dropdownHandler = event => {
     let single = event.currentTarget.getElementsByTagName('ul')[0]
     single.classList.toggle('hidden')

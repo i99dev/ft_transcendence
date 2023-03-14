@@ -61,13 +61,17 @@
 </template>
 
 <script setup>
-const user_info = user_info()
-console.log('user info', user_info)
-const { data } = await useGetMe()
+// props page
+const props = defineProps({
+    userData: {
+        type: Object,
+        required: true,
+    },
+})
 const user = ref({
-    login: data.value.login,
-    username: data.value.username,
-    image: data.value.image,
+    login: props.userData.login,
+    username: props.userData.username,
+    image: props.userData.image,
     tmpNick: null,
     tmpImg: null,
     defaultImages: [
