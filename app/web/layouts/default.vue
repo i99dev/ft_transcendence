@@ -1,5 +1,5 @@
 <script setup>
-const { data, error, pending, refresh, execute } = await fetchUser()
+const { data, error, pending, refresh, execute } = await useGetMe()
 </script>
 
 <template>

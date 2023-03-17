@@ -11,6 +11,7 @@ export async function useGetMe(): Promise<any> {
         },
         server: false,
         lazy: true,
+        key: 'meUser',
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error }
