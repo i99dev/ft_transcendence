@@ -7,6 +7,13 @@ export default defineNuxtConfig({
             API_URL: process.env.API_URL,
         },
     },
-    modules: ['@nuxtjs/tailwindcss'],
+    modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
     plugins: ['~/plugins/socket-io.ts'],
+    imports: {
+        dirs: ['./stores'],
+    },
+
+    pinia: {
+        autoImports: ['defineStore', 'acceptHMRUpdate'],
+    },
 })

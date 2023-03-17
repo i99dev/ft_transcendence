@@ -19,6 +19,8 @@
     },
     "dependencies": {
         "@nuxtjs/tailwindcss": "^6.6.0",
+        "@pinia/nuxt": "^0.4.7",
+        "pinia": "^2.0.33",
         "socket.io": "^4.6.1",
         "socket.io-client": "^4.6.1"
     }
