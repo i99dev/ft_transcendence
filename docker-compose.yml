@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
     # frontend (Nuxtjs)
     web:
         container_name: ft_transcendence_web
@@ -28,7 +27,6 @@ services:
             - api
 
         restart: on-failure
-
 
     # backend (Nestjs)
     api:
@@ -62,7 +60,6 @@ services:
 
         restart: on-failure
 
-
     # Database (Postgres)
     db:
         container_name: ft_transcendence_db
@@ -82,7 +79,6 @@ services:
             - backend_db_net
 
         restart: unless-stopped
-
 
     # reverse proxy (nginx)
     nginx:

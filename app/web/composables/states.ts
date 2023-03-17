@@ -54,14 +54,22 @@ export async function sendAuthCode(code: string): Promise<any> {
 
 export async function fetchUser(): Promise<any> {
     const runtimeConfig = useRuntimeConfig()
-    const { data, error: errorRef } = await useFetch('users/me', {
+    const {
+        data,
+        error: errorRef,
+        execute,
+        pending,
+        refresh,
+    } = await useFetch('users/me', {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
+        server: false,
+        lazy: true,
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error }
+    return { data, error, pending, refresh, execute }
 }
 
 export async function fetchUserUpdate(): Promise<any> {
