@@ -1,5 +1,10 @@
 <script setup>
 const { data, error, pending, refresh, execute } = await useGetMe()
+const { user_info, setUserInfo } = useUserInfo()
+
+if (data) {
+    await setUserInfo(data.value)
+}
 </script>
 
 <template>
@@ -10,7 +15,7 @@ const { data, error, pending, refresh, execute } = await useGetMe()
         <div v-if="error">Error: {{ error.message }}</div>
         <!-- success -->
         <div v-if="data">
-            <Header :user="data" />
+            <Header />
             <slot />
         </div>
     </div>

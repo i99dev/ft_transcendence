@@ -255,19 +255,14 @@
             </div>
         </nav>
         <div id="pro" v-if="showProfile">
-            <Profile @close="hideProfileWindow" :userData="props.user" />
+            <Profile @close="hideProfileWindow" />
         </div>
     </div>
 </template>
 <script setup>
-const props = defineProps({
-    user: {
-        type: Object,
-        required: true,
-    },
-})
-const profilePhoto = props.user?.image
-const Nickname = props.user?.username
+const { user_info } = useUserInfo()
+let profilePhoto = computed(() => user_info.value?.image)
+const Nickname = computed(() => user_info.value?.username)
 const dropdownHandler = event => {
     let single = event.currentTarget.getElementsByTagName('ul')[0]
     single.classList.toggle('hidden')

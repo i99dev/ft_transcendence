@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+    ssr: false,
     runtimeConfig: {
         public: {
             CLIENT_ID: process.env.CLIENT_ID,
@@ -7,13 +8,6 @@ export default defineNuxtConfig({
             API_URL: process.env.API_URL,
         },
     },
-    modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
+    modules: ['@nuxtjs/tailwindcss'],
     plugins: ['~/plugins/socket-io.ts'],
-    imports: {
-        dirs: ['./stores'],
-    },
-
-    pinia: {
-        autoImports: ['defineStore', 'acceptHMRUpdate'],
-    },
 })

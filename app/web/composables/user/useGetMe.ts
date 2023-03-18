@@ -4,17 +4,16 @@ export async function useGetMe(): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('users/me', {
-        baseURL: useRuntimeConfig().API_URL,
-        headers: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-        server: false,
-        lazy: true,
-        key: 'meUser',
+    } = await useAsyncData('meUser', () => {
+        return $fetch('users/me', {
+            headers: {
+                Authorization: `Bearer ${useCookie('access_token').value}`,
+            },
+            baseURL: useRuntimeConfig().API_URL,
+        })
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error }
+    return { data, error, refresh, pending }
 }
 
 interface UserInfo {
@@ -25,10 +24,23 @@ interface UserInfo {
     image: string
 }
 
-export const useUserInfo = (data: UserInfo) =>
-    useState<UserInfo | null>('userInfo', () => {
-        return data
-    })
+export const useUserInfo = () => {
+    const user_info = useState<any | null>('user_info', () => {})
+
+    const setUserInfo = (user: any) => {
+        user_info.value = user
+    }
+
+    const clearUserInfo = () => {
+        user_info.value = null
+    }
+
+    const setUserName = (name: string) => {
+        user_info.value.username = name
+    }
+
+    return { user_info, setUserInfo, clearUserInfo, setUserName }
+}
 
 interface FetchError<T> extends Error {
     status: number
