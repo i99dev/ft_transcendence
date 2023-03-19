@@ -1,11 +1,11 @@
 <template>
-    <div class="w-60 rounded shadow-lg p-6 bg-white dark:bg-gray-800">
+    <div class="w-40 rounded shadow-lg p-6 bg-white dark:bg-gray-800">
         <div class="w-full flex items-center justify-center">
             <div class="sm:w-full w-60 relative">
                 <canvas :id="chartKey"> </canvas>
                 <div class="absolute inset-0 flex flex-col items-center justify-center mt-14">
                     <p
-                        class="text-5xl font-medium leading-10 text-center text-gray-800 dark:text-gray-100"
+                        class="text-2xl font-medium leading-10 text-center text-gray-800 dark:text-gray-100"
                     >
                         {{ percentage }}
                         <span
@@ -14,18 +14,13 @@
                         >
                     </p>
                     <p
-                        class="text-sm font-medium leading-none text-center text-gray-600 dark:text-gray-100 pt-2"
+                        class="text-sm leading-none text-center text-gray-600 dark:text-gray-100 pb-8"
                     >
-                        Completion
+                        {{ title }}
                     </p>
                 </div>
             </div>
         </div>
-        <p
-            class="text-sm font-medium cursor-pointer pt-8 underline text-center text-gray-600 dark:text-gray-100"
-        >
-            View Details
-        </p>
     </div>
 </template>
 
@@ -49,6 +44,10 @@ export default {
         chartKey: {
             type: String,
             default: 'myChart',
+        },
+        title: {
+            type: String,
+            default: 'Title',
         },
     },
     data() {

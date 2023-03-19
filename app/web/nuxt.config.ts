@@ -8,12 +8,6 @@ export default defineNuxtConfig({
             API_URL: process.env.API_URL,
         },
     },
-    postcss: {
-        plugins: {
-            tailwindcss: {},
-            autoprefixer: {},
-        },
-    },
-    css: ['@/assets/css/main.css'],
+    modules: ['@nuxtjs/tailwindcss'],
     plugins: ['~/plugins/socket-io.ts'],
 })
