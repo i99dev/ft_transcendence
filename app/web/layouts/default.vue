@@ -15,7 +15,7 @@ if (data) {
         <div v-if="error">Error: {{ error.message }}</div>
         <!-- success -->
         <div v-if="data">
-            <Header />
+            <!-- <Header /> -->
             <slot />
         </div>
     </div>
