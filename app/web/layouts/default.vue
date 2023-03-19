@@ -1,6 +1,6 @@
 <script setup>
-const { data, error, pending, refresh, execute } = await useGetMe()
-const { user_info, setUserInfo } = useUserInfo()
+const { data, error, pending, refresh, execute } = await useMe()
+const { setUserInfo } = useUserInfo()
 
 if (data) {
     await setUserInfo(data.value)

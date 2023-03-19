@@ -123,6 +123,7 @@
                                     </li>
                                 </ul>
                                 <img
+                                    v-if="profilePhoto"
                                     class="rounded h-14 w-14 object-cover"
                                     :src="profilePhoto"
                                     alt="logo"

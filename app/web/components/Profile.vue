@@ -147,7 +147,7 @@ const updateProfile = async () => {
             image: user.value.tmpImg,
         }
     }
-    await useUpdateUserInfo(payload)
+    await useUpdateUserInfo()
     await emit('close')
 }
 </script>
