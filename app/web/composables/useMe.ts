@@ -24,20 +24,13 @@ export async function useMe(): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useAsyncData(
-        'meUser',
-        () => {
-            return $fetch('users/me', {
-                headers: {
-                    Authorization: `Bearer ${useCookie('access_token').value}`,
-                },
-                baseURL: useRuntimeConfig().API_URL,
-            })
+    } = await useFetch('users/me', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
         },
-        {
-            server: false,
-        },
-    )
+        server: false,
+    })
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }
 }

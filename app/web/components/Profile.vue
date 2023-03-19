@@ -123,17 +123,8 @@ const selectImageNew = e => {
 }
 
 const updateProfile = async () => {
-    let payload = {
-        username: user.value.username,
-        image: user.value.image,
-        login: user.value.login,
-    }
     if (user.value.tmpNick.length > 0 && user.value.tmpNick.length < 11) {
         setUserName(user.value.tmpNick)
-        payload = {
-            ...payload,
-            username: user.value.tmpNick,
-        }
     } else {
         document.getElementById('nameErrMsg').innerHTML = 'Must be between 1-10 chars'
     }
@@ -142,10 +133,6 @@ const updateProfile = async () => {
             ...user_info.value,
             image: user.value.tmpImg,
         })
-        payload = {
-            ...payload,
-            image: user.value.tmpImg,
-        }
     }
     await useUpdateUserInfo()
     await emit('close')
