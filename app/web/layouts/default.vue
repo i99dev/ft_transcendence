@@ -10,7 +10,7 @@ const { data, error, pending, refresh, execute } = await fetchUser()
         <div v-if="error">Error: {{ error.message }}</div>
         <!-- success -->
         <div v-if="data">
-            <Header :user="data" />
+            <!-- <Header :user="data" /> -->
             <slot />
         </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-slate-700 p-10 flex justify-center">
-    <canvas ref="canvas" class="bg-slate-800 border-2 shadow-2xl shadow-slate-900"></canvas>
+  <div class="canvas-wrapper bg-slate-700 flex justify-center">
+    <canvas ref="canvas" class="bg-slate-800 border-2 rounded-xl shadow-2xl shadow-slate-900"></canvas>
   </div>
 </template>
 
@@ -14,12 +14,12 @@
   let winner = ref({})
   let objsSizes = ref({})
 
+
   const nuxtApp = useNuxtApp();
   const socket = nuxtApp.socket;
 
   const initialize = () => {
     ctx.value = canvas.value.getContext('2d')
-    ctx.value.styl
 
     ball.value = {
       x: canvas.value.width / 2,
@@ -32,7 +32,7 @@
     player1.value = {
       login: 'bnaji',
       x: 0,
-      y: canvas.value.height / 2 - 50,
+      y: 1 / 2,
       width: canvas.value.width / 50,
       height: canvas.value.height / 5,
       score: 0,
@@ -42,7 +42,7 @@
     player2.value = {
       login: 'isaad',
       x: canvas.value.width - canvas.value.width / 50,
-      y: canvas.value.height / 2 - 50,
+      y: 1 / 2,
       width: canvas.value.width / 50,
       height: canvas.value.height / 5,
       score: 0,
@@ -56,17 +56,18 @@
     }
   }
   const setUpCanvas = () => {
-    // Feed the size back to the canvas.
-    canvas.value.width = canvas.value.clientWidth;
-    canvas.value.height = canvas.value.clientHeight;
+
+    const canvasWrapper = document.querySelector('.canvas-wrapper')
+    if (canvasWrapper.parentNode.offsetHeight * 1.5 >= canvasWrapper.parentNode.offsetWidth)
+      canvasWrapper.style.height = (canvasWrapper.offsetWidth / 1.5 / canvasWrapper.parentNode.offsetHeight * 100) + '%'
+
+    canvas.value.height = canvasWrapper.offsetHeight;
+    canvas.value.width = canvas.value.height * 1.5;
 
     initialize()
   };
 
   onMounted(() => {
-    // socket.value.on('game_settings', (gameSettingsData) => {
-    //   gameSettings = gameSettingsData
-    // })
     socket.value.on('gameStatus', (gameStatusData) => {
       if (gameStatus.value === 'paused' || gameStatus.value === 'start' || gameStatus.value === 'end') {
         if (gameStatus.value == 'end') {
@@ -81,10 +82,14 @@
     })
     socket.value.on('move', (payload) => {
       payload = JSON.parse(payload)
-      if (payload.player._value.login == player1.value.login)
-        player1.value = payload.player._value
-      else if (payload.player._value.login == player2.value.login)
-        player2.value = payload.player._value
+      if (payload.player._value.login == player1.value.login) {
+        player1.value.y = payload.player._value.y
+        payload.player._value = player1.value
+      }
+      else if (payload.player._value.login == player2.value.login) {
+        player2.value.y = payload.player._value.y
+        payload.player._value = player2.value
+      } 
       if (payload.dir === 'up')
         moveUp(payload.player._value)
       else if (payload.dir === 'down')
@@ -94,21 +99,19 @@
     setUpCanvas()
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keypress', switchGameState)
-    let animationInterval = draw()
-    window.addEventListener('resize', () => {
-    	// Clear the canvas.
-    	ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
-
-      // End the old animation.
-      clearInterval(animationInterval);
-    
-    	// Draw it all again.
-    	setUpCanvas();
-    	animationInterval = draw();
-    });
+    window.addEventListener('resize', () => redraw());
 
     draw()
   })
+
+  const redraw = () => {
+    // Clear the canvas.
+    ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
+
+    // Draw it all again.
+    setUpCanvas();
+    draw();
+  }
 
   const draw = () => {
     drawElements()
@@ -165,10 +168,6 @@
     else if (gameStatus.value === 'end')
       drawWinner()
 
-
-    return setInterval(() => {
-      /* Code for changes to canvas over time. */
-    }, 100);
   }
 
   const drawElements = () => {
@@ -197,16 +196,25 @@
   }
 
   const moveUp = (player) => {
-    if (player.y >= player.speed)
-      player.y -= player.speed
-    else if (player.y > 0)
-      player.y = 0
+    let posy = player.y * canvas.value.height - player.height / 2
+
+    if (posy >= player.speed)
+      posy -= player.speed
+    else if (posy > 0)
+      posy = 0
+
+    player.y = (posy + player.height / 2) / canvas.value.height
   }
+
   const moveDown = (player) => {
-    if (player.y + player.height < canvas.value.height - player.speed)
-      player.y += player.speed
-    else if (player.y + player.height < canvas.value.height)
-      player.y = canvas.value.height - player.height
+    let posy = player.y * canvas.value.height - player.height / 2
+
+    if (posy + player.height < canvas.value.height - player.speed)
+      posy += player.speed
+    else if (posy + player.height < canvas.value.height)
+      posy = canvas.value.height - player.height
+
+    player.y = (posy + player.height / 2) / canvas.value.height
   }
 
   const drawBall = () => {
@@ -241,24 +249,22 @@
   }
 
   const checkPlayerCollision = (player, x, y) => {
+    const posy = player.y * canvas.value.height - player.height / 2
     if (x > player.x && x < player.x + player.width &&
-      y > player.y && y < player.y + player.height)
+      y > posy && y < posy + player.height)
       return true
     return false
   }
 
   const drawPlayer = (p) => {
+    const posy = p.y * canvas.value.height - p.height / 2
     ctx.value.clearRect(p.x, 0, p.width, canvas.value.height)
     ctx.value.fillStyle = 'white'
-    ctx.value.fillRect(p.x, p.y, p.width, p.height)
+    ctx.value.fillRect(p.x, posy, p.width, p.height)
   }
 
   const drawScore = () => {
-    if (gameStatus.value === 'end')
-      ctx.value.clearRect(canvas.value.width / 2, 0, 100, 100)
-    ctx.value.font = `${objsSizes.value.scoreSize}px Arial`
-    ctx.value.fillStyle = 'white'
-    ctx.value.fillText(`${player1.value.score} : ${player2.value.score}`, canvas.value.width / 2 - objsSizes.value.scoreSize, objsSizes.value.scoreSize)
+    drawText(`${player1.value.score} : ${player2.value.score}`, objsSizes.value.scoreSize, 0, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
   }
 
   const drawText = (text, size, posx = 0, posy = 0) => {
@@ -288,7 +294,6 @@
 
   const switchGameState = (event) => {
     if (event.key === ' ') {
-      console.log(ctx.value.getImageData(100, 100, 1, 1).data)
       if (gameStatus.value === 'paused' || gameStatus.value === 'start')
         socket.value.emit('gameStatus', 'play')
       else if (gameStatus.value === 'play')
@@ -302,15 +307,14 @@
 
 <style scoped>
 
-div {
-  height: 90vh;
-}
-
-canvas {
-  height: 100%;
-  width: 100%;
-  left: 0;
-  top: 0;
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 90%;
+  margin: 0;
+  padding: 0;
 }
 
 </style>
