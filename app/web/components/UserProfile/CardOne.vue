@@ -55,7 +55,9 @@ const defaultImages = [
 
 <template>
     <div>
-        <div class="flex flex-row mobile:flex-col items-center shadow bg-white space-y-4 p-6">
+        <div
+            class="flex flex-row mobile:flex-col items-center shadow bg-white dark:bg-gray-800 space-y-4 p-6"
+        >
             <img
                 v-if="userData"
                 class="rounded-full border-2 h-32 w-32 object-cover"
@@ -67,7 +69,7 @@ const defaultImages = [
             />
 
             <div class="flex flex-col space-x-1 justify-center p-6">
-                <p class="text-3xl">Welcome</p>
+                <p class="text-3xl text-black dark:text-white">Welcome</p>
                 <!-- update username -->
                 <div class="flex flex-row justify-center items-center">
                     <input

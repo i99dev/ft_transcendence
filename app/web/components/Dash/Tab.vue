@@ -18,9 +18,9 @@
                         <p
                             class="text-xs xl:text-lg font-bold leading-none text-center"
                             :class="{
-                                'text-indigo-700 border-b-2 border-indigo-700 text-xs':
+                                'text-indigo-700 dark:text-orange-300 border-b-2 border-orange-300 text-xs':
                                     isActive(tab),
-                                'text-gray-600 text-xs': !isActive(tab),
+                                'text-gray-600 dark:text-white text-xs': !isActive(tab),
                             }"
                         >
                             {{ tab.name }}

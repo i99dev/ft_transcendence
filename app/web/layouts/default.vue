@@ -16,8 +16,7 @@ if (data) {
         <!-- success -->
         <div v-if="data">
             <!-- <Header /> -->
-            <Chat />
-
+            <ChatNavBar />
             <slot />
         </div>
     </div>

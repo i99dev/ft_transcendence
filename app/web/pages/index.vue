@@ -1,7 +1,7 @@
 <template>
     <div
         id="Home"
-        class="flex min-h-screen justify-center overflow-hidden bg-gray-50 py-6 sm:py-12 mobile:p-2"
+        class="flex min-h-screen justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
     >
         <div class="flex flex-col w-full space-y-6 items-center">
             <div class="flex flex-row justify-center">
