@@ -1,5 +1,10 @@
 <script setup>
-const { data, error, pending, refresh, execute } = await fetchUser()
+const { data, error, pending, refresh, execute } = await useMe()
+const { setUserInfo } = useUserInfo()
+
+if (data) {
+    await setUserInfo(data.value)
+}
 </script>
 
 <template>
