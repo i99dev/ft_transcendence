@@ -1,29 +1,25 @@
 {
-  "name": "web",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "mock:server": "nodemon server.js",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "format": "prettier --write .",
-    "test": "jest"
-  },
-  "devDependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "nodemon": "^2.0.20",
-    "nuxt": "3.0.0"
-  },
-  "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.2.0",
-    "@vueuse/core": "^9.12.0",
-    "next": "^13.1.6",
-    "nuxt3": "^3.1.1-rc.0-27911047.7d812db",
-    "socket.io": "^4.6.1",
-    "socket.io-client": "^4.6.1"
-  }
+    "name": "web",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "mock:server": "nodemon server.js",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "format": "prettier --write .",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "@types/node": "^18.13.0",
+        "nodemon": "^2.0.20",
+        "nuxt": "3.3.1"
+    },
+    "dependencies": {
+        "@nuxtjs/tailwindcss": "^6.6.0",
+        "socket.io": "^4.6.1",
+        "socket.io-client": "^4.6.1"
+    }
 }

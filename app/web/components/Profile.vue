@@ -62,16 +62,12 @@
 
 <script setup>
 // props page
-const props = defineProps({
-    userData: {
-        type: Object,
-        required: true,
-    },
-})
+const { user_info, setUserInfo, setUserName } = useUserInfo()
+
 const user = ref({
-    login: props.userData.login,
-    username: props.userData.username,
-    image: props.userData.image,
+    login: user_info.value?.login,
+    username: user_info.value?.username,
+    image: user_info.value?.image,
     tmpNick: null,
     tmpImg: null,
     defaultImages: [
@@ -127,20 +123,18 @@ const selectImageNew = e => {
 }
 
 const updateProfile = async () => {
-    if (user.value.tmpNick && user.value.tmpNick.length > 0 && user.value.tmpNick.length <= 10) {
-        user.value.username = user.value.tmpNick
-        if (user.value.tmpImg != null) {
-            user.value.image = user.value.tmpImg
-        }
-        //Post req to update backend here
-        const payload = {
-            username: user.value.username,
-            image: user.value.image,
-        }
-        await useUpdateUserInfo(user.value.login, payload)
-        emit('close')
+    if (user.value.tmpNick.length > 0 && user.value.tmpNick.length < 11) {
+        setUserName(user.value.tmpNick)
     } else {
         document.getElementById('nameErrMsg').innerHTML = 'Must be between 1-10 chars'
     }
+    if (user.value.tmpImg) {
+        setUserInfo({
+            ...user_info.value,
+            image: user.value.tmpImg,
+        })
+    }
+    await useUpdateUserInfo()
+    await emit('close')
 }
 </script>
