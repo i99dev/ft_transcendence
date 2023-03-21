@@ -7,9 +7,10 @@ import {
     WebSocketServer,
     SubscribeMessage,
     WebSocketGateway,
+    ConnectedSocket,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { DefaultService } from './default.service'
+import { DefaultService } from './default.service';
 
 @WebSocketGateway({
     namespace: '/games',
@@ -22,29 +23,28 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     private logger = new Logger('DefaultGateway')
 
-    constructor(private defaultService: DefaultService, private jwtService: JwtService) {}
-
+    constructor(private gameService: DefaultService, private jwtService: JwtService) { }
     handleConnection(client: Socket, ...args: any[]) {
-        // let token = client.request.headers.authorization
-        // this.logger.log(token)
-        // token = token.split(" ")[1]
-        // const decoded = this.jwtService.decode(token)
-        // this.logger.log(decoded)
-
         this.logger.log(`Client connected: ${client.id}`)
+        let token = client.request.headers.authorization
+        token = token.split(" ")[1]
+        const decoded = this.jwtService.decode(token)
+
+        this.gameService.addToLobby(client, decoded)
+        this.gameService.checkLobby((gameId, game) => {
+            this.server.to(gameId).emit('Game-Data', game)
+          })
     }
+
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
     }
 
     @SubscribeMessage('move')
-    movePlayer(client: any, @MessageBody() payload: any) {
-        this.server.emit('move', payload)
+    movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
+        this.gameService.updatePaddlePosition(client, direction)
     }
 
-    @SubscribeMessage('gameStatus')
-    changeGameStatus(client: any, @MessageBody() payload: any) {
-        this.server.emit('gameStatus', payload)
-    }
 }
+
