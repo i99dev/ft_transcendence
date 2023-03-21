@@ -20,24 +20,23 @@ export class UserGetDto {
     friends?: UserGetDto[]
 }
 
-export class GameObjDto{
+export class GameObjDto {
     players: PlayerDto[]
     ball: BallDto
 }
 
-
-export class SetupDto{
+export class SetupDto {
     game: GameObjDto
     player: number
 }
 
-export class BallDto{
+export class BallDto {
     x: number
     y: number
     radius: number
 }
 
-export class PlayerDto{
+export class PlayerDto {
     username: string
     y: number
     score: number
@@ -45,7 +44,7 @@ export class PlayerDto{
     gameId?: string
 }
 
-export class PaddleDto{
+export class PaddleDto {
     width: number
     height: number
 }

@@ -7,4 +7,4 @@ import { DefaultService } from './default.service'
     imports: [AuthModule],
     providers: [DefaultGateway, DefaultService],
 })
-export class DefaultModule { }
+export class DefaultModule {}
