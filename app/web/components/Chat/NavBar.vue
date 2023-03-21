@@ -58,8 +58,8 @@
                                             </nav>
                                         </div>
                                     </div>
-                                    <div class="bg-white rounded-lg p-4">
-                                        <div class="chat-messages h-72 overflow-y-auto mb-2">
+                                    <div class="bg-white rounded-lg p-4 flex-auto">
+                                        <div class="chat-messages overflow-y-auto mb-2">
                                             <div
                                                 class="bg-gray-200 rounded-lg p-2 my-2"
                                                 v-for="(message, index) in messages"
@@ -153,6 +153,9 @@ const sendMessage = () => {
         }),
     })
     newMessage.value = ''
+    //scroll to bottom
+    const chatMessages = document.querySelector('.chat-messages')
+    chatMessages.scrollTop = chatMessages.scrollHeight
 }
 const open = ref(true)
 </script>
@@ -168,5 +171,9 @@ const open = ref(true)
 
 .chat-messages::-webkit-scrollbar-track {
     background: #f1f1f1;
+}
+/* screen width is less than 768px (medium) */
+.chat-messages {
+    height: 70vh;
 }
 </style>

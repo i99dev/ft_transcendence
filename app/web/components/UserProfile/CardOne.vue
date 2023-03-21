@@ -71,11 +71,17 @@ const defaultImages = [
             <div class="flex flex-col space-x-1 justify-center p-6">
                 <p class="text-3xl text-black dark:text-white">Welcome</p>
                 <!-- update username -->
-                <div class="flex flex-row justify-center items-center">
+                <div class="flex flex-row items-center w-full justify-between">
+                    <div
+                        class="text-2xl text-black dark:text-white px-2 w-32 h-8 overflow-hidden"
+                        v-if="editBoolaen"
+                    >
+                        {{ userData?.username }}
+                    </div>
                     <input
+                        v-if="!editBoolaen"
                         :disabled="editBoolaen"
-                        v-if="userData"
-                        class="border-2 border-gray-300 rounded-md p-1"
+                        class="border-2 border-gray-300 rounded-md p-1 max-w-xs w-32 h-8"
                         type="text"
                         :value="userData?.username"
                         @input="userData.username = $event.target.value"
