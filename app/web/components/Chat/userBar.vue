@@ -15,7 +15,7 @@
                     </button>
 
                     <div
-                        v-if="chatModalOpen"
+                        v-if="setChatModalOpen"
                         class="absolute right-0 mt-4 w-80 bg-white shadow-md rounded-lg p-4"
                     >
                         <h2 class="text-gray-700 font-semibold mb-2">Chat with User</h2>
@@ -52,26 +52,28 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            chatModalOpen: false,
-            messages: [],
-            newMessage: '',
-        }
-    },
-    methods: {
-        toggleChatModal() {
-            this.chatModalOpen = !this.chatModalOpen
-        },
-        sendMessage() {
-            if (this.newMessage.trim() !== '') {
-                this.messages.push(this.newMessage.trim())
-                this.newMessage = ''
-            }
-        },
-    },
-}
+const { chat_info, setChatModalOpen, send_message } = useChat()
+console.log(chat_info)
+// export default {
+//     data() {
+//         return {
+//             chatModalOpen: false,
+//             messages: [],
+//             newMessage: '',
+//         }
+//     },
+//     methods: {
+//         toggleChatModal() {
+//             this.chatModalOpen = !this.chatModalOpen
+//         },
+//         sendMessage() {
+//             if (this.newMessage.trim() !== '') {
+//                 this.messages.push(this.newMessage.trim())
+//                 this.newMessage = ''
+//             }
+//         },
+//     },
+// }
 </script>
 
 <style>

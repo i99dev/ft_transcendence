@@ -27,7 +27,7 @@
                                                 <button
                                                     type="button"
                                                     class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                                                    @click="open = false"
+                                                    @click="setChatModalOpen(false)"
                                                 >
                                                     <span class="sr-only">Close panel</span>
                                                     <XMarkIcon class="h-6 w-6" aria-hidden="true" />
@@ -118,6 +118,8 @@ import {
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
+const { chat_info, setChatModalOpen, send_message } = useChat()
+
 const messages = [
     {
         id: 1,
@@ -157,7 +159,7 @@ const sendMessage = () => {
     const chatMessages = document.querySelector('.chat-messages')
     chatMessages.scrollTop = chatMessages.scrollHeight
 }
-const open = ref(true)
+const open = computed(() => chat_info.value.chatModalOpen)
 </script>
 
 <style>

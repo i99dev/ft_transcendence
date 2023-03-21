@@ -1,5 +1,5 @@
 <template>
-    <div class="w-40 rounded shadow-lg p-6 bg-white dark:bg-gray-800">
+    <div class="w-40 rounded shadow p-6 bg-white dark:bg-gray-800">
         <div class="w-full flex items-center justify-center">
             <div class="sm:w-full w-60 relative">
                 <canvas :id="chartKey"> </canvas>
