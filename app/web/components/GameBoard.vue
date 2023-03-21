@@ -5,6 +5,8 @@
 </template>
 
 <script setup>
+  import {io}  from 'socket.io-client'
+
   let gameStatus = ref('start') // ['start', 'paused', 'play', 'end']
   let canvas = ref({})
   let ctx = ref({})
@@ -14,9 +16,7 @@
   let winner = ref({})
   let objsSizes = ref({})
 
-
-  const nuxtApp = useNuxtApp();
-  const socket = nuxtApp.socket;
+  const socket = ref();
 
   const initialize = () => {
     ctx.value = canvas.value.getContext('2d')
@@ -68,6 +68,14 @@
   };
 
   onMounted(() => {
+    socket.value = socket.value = io('http://localhost/games', {
+        withCredentials: true,
+        extraHeaders: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        path: '/socket.io',
+    })
+
     socket.value.on('gameStatus', (gameStatusData) => {
       if (gameStatus.value === 'paused' || gameStatus.value === 'start' || gameStatus.value === 'end') {
         if (gameStatus.value == 'end') {
@@ -102,6 +110,10 @@
     window.addEventListener('resize', () => redraw());
 
     draw()
+  })
+
+  onUnmounted(() => {
+    socket.value.disconnect()
   })
 
   const redraw = () => {

@@ -1,30 +1,53 @@
 <template>
-  <div class="game-options">
-      <button @click="navigateTo('/')" class="bg-slate-600 hover:bg-slate-100 border-t border-x rounded-t-xl text-slate-300 hover:text-slate-600 uppercase">
-          x
-      </button>
+    <div class="game-options">
+        <Toast />
+        <SpeedDial :model="items" :transitionDelay="80" :radius="70" showIcon="pi pi-bars" hideIcon="pi pi-times" type="semi-circle" direction="up"/>
+
   </div>
 </template>
 
 <script setup>
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
+const router = useRouter();
+
+const items = ref([
+    {
+        label: 'Add',
+        icon: 'pi pi-pencil',
+        command: () => {
+            console.log('Add')
+            toast.add({ severity: 'info', summary: 'Add', detail: 'Data Added' });
+        }
+    },
+    {
+        label: 'Update',
+        icon: 'pi pi-refresh',
+        command: () => {
+            toast.add({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
+        }
+    },
+    {
+        label: 'Delete',
+        icon: 'pi pi-trash',
+        command: () => {
+            toast.add({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
+        }
+    },
+    {
+        label: 'Upload',
+        icon: 'pi pi-upload',
+        command: () => {
+            router.push('/');
+        }
+    },
+    {
+        label: 'Exit Game',
+        icon: 'pi pi-external-link',
+        command: () => {
+            router.push('/');
+        }
+    }
+])
 </script>
-
-<style scoped>
-
-.game-options {
-    width: 8%;
-    height: 5%;
-    position: relative;
-    margin: 0;
-    padding: 0;
-}
-
-button {
-    width: 100%;
-    height: 100%;
-    font-size: 100%;
-    line-height: 100%;
-}
-
-</style>
