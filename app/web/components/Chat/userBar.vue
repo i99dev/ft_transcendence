@@ -52,28 +52,26 @@
 </template>
 
 <script>
-const { chat_info, setChatModalOpen, send_message } = useChat()
-console.log(chat_info)
-// export default {
-//     data() {
-//         return {
-//             chatModalOpen: false,
-//             messages: [],
-//             newMessage: '',
-//         }
-//     },
-//     methods: {
-//         toggleChatModal() {
-//             this.chatModalOpen = !this.chatModalOpen
-//         },
-//         sendMessage() {
-//             if (this.newMessage.trim() !== '') {
-//                 this.messages.push(this.newMessage.trim())
-//                 this.newMessage = ''
-//             }
-//         },
-//     },
-// }
+export default {
+    data() {
+        return {
+            chatModalOpen: false,
+            messages: [],
+            newMessage: '',
+        }
+    },
+    methods: {
+        toggleChatModal() {
+            this.chatModalOpen = !this.chatModalOpen
+        },
+        sendMessage() {
+            if (this.newMessage.trim() !== '') {
+                this.messages.push(this.newMessage.trim())
+                this.newMessage = ''
+            }
+        },
+    },
+}
 </script>
 
 <style>

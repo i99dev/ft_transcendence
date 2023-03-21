@@ -54,12 +54,21 @@ const defaultImages = [
 
 // messages
 const { chat_info, setChatModalOpen, send_message } = useChat()
+const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
 
-function openModel() {
+function openChatModel() {
     if (chat_info.value.chatModalOpen) {
         setChatModalOpen(false)
     } else {
         setChatModalOpen(true)
+    }
+}
+
+function openFriendsModel() {
+    if (friends_info.value.friendsModalOpen) {
+        setFriendsModalOpen(false)
+    } else {
+        setFriendsModalOpen(true)
     }
 }
 </script>
@@ -146,7 +155,7 @@ function openModel() {
                 </div>
 
                 <div class="flex flex-row space-x-6">
-                    <div class="relative" @click="openModel">
+                    <div class="relative" @click="openChatModel">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -166,7 +175,7 @@ function openModel() {
                             <p class="text-xs font-semibold text-center text-white">2</p>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div @click="openFriendsModel" class="relative cursor-pointer">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

@@ -17,6 +17,7 @@ if (data) {
         <div v-if="data">
             <!-- <Header /> -->
             <ChatNavBar />
+            <FriendsListNav />
             <slot />
         </div>
     </div>
