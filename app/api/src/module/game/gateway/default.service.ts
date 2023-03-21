@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { GameObjDto, PlayerDto } from '../dto/game.dto'
+import { GameStausDto, PlayerDto } from '../dto/game.dto'
 import { Socket } from 'socket.io'
 
 @Injectable()
 export class DefaultService {
     private players: Map<string, PlayerDto> = new Map()
-    private games: Map<string, GameObjDto> = new Map()
+    private games: Map<string, GameStausDto> = new Map()
     private lobby: Socket[] = []
 
     addToLobby(client: Socket, decoded: any): void {
@@ -25,7 +25,7 @@ export class DefaultService {
         console.log(this.players[client.id])
     }
 
-    checkLobby(gameUpdateCallback: (gameId: string, game: GameObjDto) => void): void {
+    checkLobby(gameUpdateCallback: (gameId: string, game: GameStausDto) => void): void {
         if (this.lobby.length >= 2) {
             let player1 = this.lobby.shift()
             let player2 = this.lobby.shift()
@@ -41,8 +41,8 @@ export class DefaultService {
             this.startGameLoop(gameId, gameUpdateCallback)
         }
     }
-    createGame(player1: PlayerDto, player2: PlayerDto): GameObjDto {
-        let game: GameObjDto = new GameObjDto()
+    createGame(player1: PlayerDto, player2: PlayerDto): GameStausDto {
+        let game: GameStausDto = new GameStausDto()
         game = {
             players: [player1, player2],
             ball: {
@@ -59,7 +59,7 @@ export class DefaultService {
     }
     startGameLoop(
         gameId: string,
-        gameUpdateCallback: (gameId: string, game: GameObjDto) => void,
+        gameUpdateCallback: (gameId: string, game: GameStausDto) => void,
     ): void {
         const intervalId = setInterval(() => {
             const game = this.games[gameId]
