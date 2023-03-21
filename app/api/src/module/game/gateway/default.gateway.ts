@@ -18,7 +18,7 @@ import { DefaultService } from './default.service'
 })
 export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
-    wss: Server
+    server: Server
 
     private logger = new Logger('DefaultGateway')
 
@@ -40,11 +40,11 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @SubscribeMessage('move')
     movePlayer(client: any, @MessageBody() payload: any) {
-        this.wss.emit('move', payload)
+        this.server.emit('move', payload)
     }
 
     @SubscribeMessage('gameStatus')
     changeGameStatus(client: any, @MessageBody() payload: any) {
-        this.wss.emit('gameStatus', payload)
+        this.server.emit('gameStatus', payload)
     }
 }
