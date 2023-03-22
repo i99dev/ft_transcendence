@@ -13,7 +13,6 @@ export class DefaultService {
         this.players[client.id] = player
         this.lobby.push(client)
         client.join('lobby')
-        // console.log(this.players[client.id])
     }
 
     checkLobby(gameUpdateCallback: (gameId: string, game: gameStatusDto) => void): void {

@@ -15,7 +15,7 @@ import { DefaultService } from './default.service'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
-    // path: '/api/socket.io',
+    path: '/api/socket.io',
 })
 export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
@@ -25,12 +25,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     constructor(private gameService: DefaultService, private jwtService: JwtService) {}
     handleConnection(client: Socket, ...args: any[]) {
-        // this.logger.log(`Client connected: ${client.id}`)
-        // let token = client.request.headers.authorization
-        // token = token.split(' ')[1]
-        // const decoded = this.jwtService.decode(token)
+        this.logger.log(`Client connected: ${client.id}`)
+        let token = client.request.headers.authorization
+        token = token.split(' ')[1]
+        const decoded = this.jwtService.decode(token)
 
-        this.gameService.addToLobby(client, { login: 'test' })
+        this.gameService.addToLobby(client, decoded)
         this.gameService.checkLobby((gameId, game) => {
             this.server.to(gameId).emit('Game-Data', game)
         })
