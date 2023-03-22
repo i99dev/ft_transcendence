@@ -32,6 +32,7 @@ model User {
   power_ups    PowerUp[] @relation("UserPowerUps")
   friend_to    User[]  @relation("UserFriends")
   friends      User[]  @relation("UserFriends")
+  match_history MatchHistory[]
 }
 
 model PowerUp {
@@ -39,6 +40,16 @@ model PowerUp {
   type   String @unique @default("default")
   period Int    @default(0)
   users  User[] @relation("UserPowerUps")
+}
+
+model MatchHistory {
+ id     Int   @id @default(autoincrement())
+ opponent  User   @relation(fields: [opponentId], references: [id])
+ opponentId Int
+ isWinner  Boolean @default(false)
+ at     DateTime @default(now())
+ my_score  Int   @default(0)
+ op_score  Int   @default(0)
 }
 
 model Achievement {
