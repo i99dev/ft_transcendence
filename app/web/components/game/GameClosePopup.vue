@@ -1,5 +1,6 @@
 <template>
-  <div class="fixed inset-0 z-10 overflow-y-auto transition-all duration-700 ease-in">
+    <div class="fixed inset-0 z-10 overflow-y-auto transition-all duration-700 ease-in">
+      <Toast />
       <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
         <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -17,9 +18,9 @@
                 </div>
             </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-            <button @click="exitGame" type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Exit</button>
-            <button @click="$emit('closePopup')" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+            <div class="bg-gray-50 px-4  py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button @click="$emit('GiveUp')" type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Exit</button>
+                <button @click="$emit('closePopup')" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
             </div>
         </div>
       </div>
@@ -33,7 +34,7 @@ const toast = useToast();
 const { summary, detail, confirmation } = defineProps(['summary', 'detail' , 'confirmation'])
 
 const exitGame = () => {
+    // useRouter().push('/')
     toast.add({ severity: 'error', summary: 'Exit Game', detail: 'You have lost the game', life: 3000 });
-    useRouter().push('/')
 }
 </script>

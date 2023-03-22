@@ -14,7 +14,7 @@
   let gameData = ref(undefined)
   const socket = ref();
   const emit = defineEmits(['ReadyGame'])
-  defineExpose({ socketSetup })
+  defineExpose({ socketSetup, socketDisconnect })
 
   function socketSetup() {
     socket.value = socket.value = io('http://localhost/games', {
@@ -43,8 +43,8 @@
     })
 
     
-    initialize()
     setUpCanvas()
+    initialize()
     document.addEventListener('keydown', handleKeyDown)
     window.addEventListener('resize', () => redraw());
     
@@ -53,8 +53,7 @@
 
   const initialize = () => {
     objsSizes.value = {
-      scoreSize: canvas.value.width / 10,
-      gameStatusDisSize: canvas.value.width / 30,
+      scoreSize: canvas.value.width / 20,
     }
   }
 
@@ -94,8 +93,8 @@
     socketDisconnect()
   })
 
-  const socketDisconnect = () => {
-    if (socket.value.connected)
+  function socketDisconnect() {
+    if (socket.value.connected) 
       socket.value.disconnect()
   }
 

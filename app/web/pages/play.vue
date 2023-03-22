@@ -4,6 +4,7 @@
         <GameClosePopup
             v-if="exit"
             @closePopup="switchExistStatus(false)"
+            @GiveUp="exitGame"
             summary="Exit Game"
             detail="You will be considered a LOSER since you give up in middle of the game!!"
             confirmation="Are you sure you want to exit the game?"
@@ -25,8 +26,15 @@ const startGame = () => {
     gameBoard.value.socketSetup()
 }
 
+const exitGame = () => {
+    gameBoard.value.socketDisconnect()
+    exit.value = false
+    ready.value = false
+}
+
 const switchExistStatus = (status) => {
     exit.value = status;
+
 }
 
 </script>
