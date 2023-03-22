@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div>
+        <div class="w-full px-3">
             <component :is="getComponent(activeTab)" />
 
             <DashTimeLine v-if="isActive(tabs[0])" />

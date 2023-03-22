@@ -1,9 +1,9 @@
 <template>
-  <GameBoard />
+    <GameBoard />
 </template>
 
 <style>
 body {
-  background-color: #334155;
+    background-color: #334155;
 }
 </style>
