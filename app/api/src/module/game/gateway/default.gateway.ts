@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
+import { gameResult } from '../actions/endGame'
 
 @WebSocketGateway({
     namespace: '/games',
@@ -21,6 +22,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     wss: Server
 
     private logger = new Logger('DefaultGateway')
+    private gameResult: gameResult
 
     constructor(private defaultService: DefaultService, private jwtService: JwtService) {}
 
@@ -37,7 +39,11 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
     }
-
+    @SubscribeMessage('leave')
+    leaveGame(client: any, @MessageBody() payload: any) {
+        this.gameResult = new gameResult('boo', false, 0, 0, 'You left the game')
+        this.wss.emit('end-game', this.gameResult)
+    }
     @SubscribeMessage('move')
     movePlayer(client: any, @MessageBody() payload: any) {
         this.wss.emit('move', payload)
