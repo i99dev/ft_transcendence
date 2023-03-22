@@ -1,15 +1,17 @@
 <template>
     <LoadingButton v-if="!ready" @StartGame="() => ready = true" />
-    <ClosePopup
-        v-if="exit"
-        @closePopup="switchExistStatus(false)"
-        summary="Exit Game"
-        detail="You will be considered a LOSER since you give up in middle of the game!!"
-        confirmation="Are you sure you want to exit the game?"
-    />
-    <div class="container">
-        <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
-        <GameBoard />
+    <div v-else>
+        <ClosePopup
+            v-if="exit"
+            @closePopup="switchExistStatus(false)"
+            summary="Exit Game"
+            detail="You will be considered a LOSER since you give up in middle of the game!!"
+            confirmation="Are you sure you want to exit the game?"
+        />
+        <div class="container">
+            <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
+            <GameBoard />
+        </div>
     </div>
 </template>
 
