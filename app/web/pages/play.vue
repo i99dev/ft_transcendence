@@ -1,7 +1,7 @@
 <template>
-    <LoadingButton v-if="!ready" @StartGame="() => ready = true" />
-    <div v-else>
-        <ClosePopup
+    <GameLoadingButton v-if="!ready" @StartGame="startGame"/>
+    <div>
+        <GameClosePopup
             v-if="exit"
             @closePopup="switchExistStatus(false)"
             summary="Exit Game"
@@ -10,7 +10,7 @@
         />
         <div class="container">
             <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
-            <GameBoard />
+            <GameBoard @ReadyGame="() => ready = true" ref="gameBoard" />
         </div>
     </div>
 </template>
@@ -18,7 +18,12 @@
 <script setup>
 
 let exit = ref(false);
-const ready = ref(false)
+let ready = ref(false)
+let gameBoard = ref()
+
+const startGame = () => {
+    gameBoard.value.socketSetup()
+}
 
 const switchExistStatus = (status) => {
     exit.value = status;

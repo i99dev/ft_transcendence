@@ -13,7 +13,43 @@
   let gameSetup = ref({})
   let gameData = ref(undefined)
   const socket = ref();
+  const emit = defineEmits(['ReadyGame'])
+  defineExpose({ socketSetup })
 
+  function socketSetup() {
+    socket.value = socket.value = io('http://localhost/games', {
+        withCredentials: true,
+        extraHeaders: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        path: '/socket.io',
+    })
+
+    socket.value.on('Game-Setup', (payload) => {
+      emit('ReadyGame')
+      gameSetup.value = payload
+      storeGameData(gameSetup.value.game)
+      draw()
+    })
+
+    socket.value.on('Game-Data', (payload) => {
+      storeGameData(payload)
+      draw()
+    })
+
+    socket.value.on('Game-Over', (payload) => {
+      drawWinner(payload)
+      draw()
+    })
+
+    
+    initialize()
+    setUpCanvas()
+    document.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('resize', () => redraw());
+    
+    draw()
+  }
 
   const initialize = () => {
     objsSizes.value = {
@@ -54,42 +90,14 @@
     ctx.value = canvas.value.getContext('2d')
   };
 
-  onMounted(() => {
-    socket.value = socket.value = io('http://localhost/games', {
-        withCredentials: true,
-        extraHeaders: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-        path: '/socket.io',
-    })
-
-    socket.value.on('Game-Setup', (payload) => {
-      gameSetup.value = payload
-      storeGameData(gameSetup.value.game)
-      draw()
-    })
-
-    socket.value.on('Game-Data', (payload) => {
-      storeGameData(payload)
-      draw()
-    })
-
-    socket.value.on('Game-Over', (payload) => {
-      drawWinner(payload)
-      draw()
-    })
-
-    initialize()
-    setUpCanvas()
-    document.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('resize', () => redraw());
-
-    draw()
-  })
-
   onUnmounted(() => {
-    socket.value.disconnect()
+    socketDisconnect()
   })
+
+  const socketDisconnect = () => {
+    if (socket.value.connected)
+      socket.value.disconnect()
+  }
 
   const redraw = () => {
     // Clear the canvas.

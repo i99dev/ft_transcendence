@@ -32,10 +32,6 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const { summary, detail, confirmation } = defineProps(['summary', 'detail' , 'confirmation'])
 
-const play = () => {
-    useRouter().push('/play')
-}
-
 const exitGame = () => {
     toast.add({ severity: 'error', summary: 'Exit Game', detail: 'You have lost the game', life: 3000 });
     useRouter().push('/')
