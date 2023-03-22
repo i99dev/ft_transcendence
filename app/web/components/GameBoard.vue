@@ -162,18 +162,18 @@
   }
 
   const drawScore = () => {
-    // draw : in the middle
-    drawText(`:`, objsSizes.value.scoreSize, 0, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
-
     // draw player 1 score
     let text = `${gameData.value.players[0].score}\t\t`
     let {w: w1, h: h1} = textSetup(text, objsSizes.value.scoreSize)
     drawText(text, objsSizes.value.scoreSize, -w1/2, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
-
+    
     // draw player 2 score
     text = `\t\t${gameData.value.players[1].score}`
     let {w : w2, h: h2} = textSetup(text, objsSizes.value.scoreSize)
     drawText(text, objsSizes.value.scoreSize, w2/2, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
+
+    // draw : in the middle
+    drawText(`:`, objsSizes.value.scoreSize, 0, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
   }
 
   const drawPlayersInfo = () => {
