@@ -20,19 +20,21 @@ export class UserGetDto {
     friends?: UserGetDto[]
 }
 
-export class GameStausDto {
+export class gameStatusDto {
     players: PlayerDto[]
     ball: BallDto
 }
 
 export class SetupDto {
-    game: GameStausDto
+    game: gameStatusDto
     player: number
 }
 
 export class BallDto {
     x: number
     y: number
+    dx: number
+    dy: number
     radius: number
 }
 

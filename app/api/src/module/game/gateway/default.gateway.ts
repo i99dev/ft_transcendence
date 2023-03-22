@@ -14,7 +14,7 @@ import { DefaultService } from './default.service'
 
 @WebSocketGateway({
     namespace: '/games',
-    cors: { origin: 'http://localhost/play', credentials: true },
+    cors: { origin: '*' },
     path: '/api/socket.io',
 })
 export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect {
