@@ -74,6 +74,11 @@
       draw()
     })
 
+    socket.value.on('Game-Over', (payload) => {
+      drawWinner(payload)
+      draw()
+    })
+
     initialize()
     setUpCanvas()
     document.addEventListener('keydown', handleKeyDown)
@@ -99,6 +104,7 @@
     if (!gameData.value) return
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawPlayer(gameData.value.players)
+    drawPlayersInfo()
     drawScore()
     drawBall()
   }
@@ -156,7 +162,26 @@
   }
 
   const drawScore = () => {
-    drawText(`${gameData.value.players[0].score} : ${gameData.value.players[1].score}`, objsSizes.value.scoreSize, 0, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
+    // draw : in the middle
+    drawText(`:`, objsSizes.value.scoreSize, 0, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
+
+    // draw player 1 score
+    let text = `${gameData.value.players[0].score}\t\t`
+    let {w: w1, h: h1} = textSetup(text, objsSizes.value.scoreSize)
+    drawText(text, objsSizes.value.scoreSize, -w1/2, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
+
+    // draw player 2 score
+    text = `\t\t${gameData.value.players[1].score}`
+    let {w : w2, h: h2} = textSetup(text, objsSizes.value.scoreSize)
+    drawText(text, objsSizes.value.scoreSize, w2/2, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
+  }
+
+  const drawPlayersInfo = () => {
+    // draw player 1 username
+    drawText(`${gameData.value.players[0].username}`, objsSizes.value.scoreSize, -canvas.value.width / 4, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
+    
+    // draw player 2 username
+    drawText(`${gameData.value.players[1].username}`, objsSizes.value.scoreSize, canvas.value.width / 4, -canvas.value.height / 2 + objsSizes.value.scoreSize * 2)
   }
 
   const drawText = (text, size, posx = 0, posy = 0) => {
@@ -176,12 +201,9 @@
     return {w, h}
   }
 
-  const drawWinner = () => {
-    if (player1.value.score === 11)
-      drawText(`Player 1 wins`, objsSizes.value.gameStatusSize)
-    else if (player2.value.score === 11)
-      drawText(`Player 2 wins`, objsSizes.value.gameStatusSize)
-    drawText(`Press 'Enter' to restart`, 20, 0, objsSizes.value.gameStatusDisSize)
+  const drawWinner = (winner) => {
+    drawText(`${winner.username} wins`, objsSizes.value.gameStatusSize)
+    socket.value.disconnect()
   }
 
 </script>
