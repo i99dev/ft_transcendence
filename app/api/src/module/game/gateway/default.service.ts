@@ -4,9 +4,9 @@ import { Socket } from 'socket.io'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
-const PADDLE_SPEED = 0.1
-const BALL_XSPEED = 0.0082
-const BALL_YSPEED = 0.0025
+const PADDLE_SPEED = 0.02
+const BALL_XSPEED = 0.064
+const BALL_YSPEED = 0.002
 
 @Injectable()
 export class DefaultService {
@@ -118,8 +118,8 @@ export class DefaultService {
 
     checkPlayerCollision(ball: BallDto, player: PlayerDto): boolean {
         if (
-            ball.y <= player.y + player.paddle.height / 2 &&
-            ball.y >= player.y - player.paddle.height / 2
+            ball.y - ball.radius <= player.y + player.paddle.height / 2 &&
+            ball.y + ball.radius >= player.y - player.paddle.height / 2
         ) {
             return true
         }
@@ -131,14 +131,14 @@ export class DefaultService {
 
         this.checkWallCollision(ball)
 
-        if (ball.x <= ball.radius * 2) {
+        if (ball.x <= (ball.radius + players[0].paddle.width)) {
             if (this.checkPlayerCollision(ball, players[0])) {
                 ball.dx *= -1
             } else {
                 players[1].score += 1
                 this.resetBallPosition(ball)
             }
-        } else if (ball.x >= 1 - ball.radius * 2) {
+        } else if (ball.x >= 1 - (ball.radius + players[0].paddle.width)) {
             if (this.checkPlayerCollision(ball, players[1])) {
                 ball.dx *= -1
             } else {
