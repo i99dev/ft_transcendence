@@ -11,8 +11,9 @@
         />
         <div class="container">
             <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
-            <GameBoard @ReadyGame="() => ready = true" ref="gameBoard" />
+            <GameBoard @ReadyGame="() => ready = true" @GameOver="gameOver" ref="gameBoard" />
         </div>
+        <GameResult v-if="gameResult" :gameResult="gameResultMessage"/>
     </div>
 </template>
 
@@ -20,21 +21,39 @@
 
 let exit = ref(false);
 let ready = ref(false)
+let gameResult = ref(undefined)
+let gameResultMessage = ref("winner")
 let gameBoard = ref()
+
+watch(gameResult, () => {
+    if (gameResult.value == "winner")
+        gameResultMessage.value = "you won"
+    else if (gameResult.value == "loser")
+        gameResultMessage.value = "you lost"
+})
 
 const startGame = () => {
     gameBoard.value.socketSetup()
 }
 
-const exitGame = () => {
+const gameOver = (result) => {
+    console.log('result', result)
+
+    gameResult.value = result
+
     gameBoard.value.socketDisconnect()
+
+}
+
+const exitGame = () => {
+    gameBoard.value.giveUp()
+    gameBoard.value.socketDisconnect() // should be removed
     exit.value = false
     ready.value = false
 }
 
 const switchExistStatus = (status) => {
     exit.value = status;
-
 }
 
 </script>

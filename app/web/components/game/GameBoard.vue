@@ -13,8 +13,8 @@
   let gameSetup = ref({})
   let gameData = ref(undefined)
   const socket = ref();
-  const emit = defineEmits(['ReadyGame'])
-  defineExpose({ socketSetup, socketDisconnect })
+  const emit = defineEmits(['ReadyGame', 'GameOver'])
+  defineExpose({ socketSetup, socketDisconnect, giveUp })
 
   function socketSetup() {
     socket.value = socket.value = io('http://localhost/games', {
@@ -38,11 +38,13 @@
     })
 
     socket.value.on('Game-Over', (payload) => {
-      drawWinner(payload)
-      draw()
+      if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
+        emit('GameOver', "winner")
+      else
+        emit('GameOver', "loser")
     })
 
-    
+
     setUpCanvas()
     initialize()
     document.addEventListener('keydown', handleKeyDown)
@@ -125,6 +127,10 @@
         socket.value.emit('move', 'down')
         break
     }
+  }
+
+  function giveUp() {
+    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
   }
 
   const moveUp = (player) => {
