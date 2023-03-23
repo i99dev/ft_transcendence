@@ -25,57 +25,32 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     private logger = new Logger('DefaultGateway')
     private gameResult: gameResult
-    // private prisma: PrismaService
     private prisma = new PrismaClient()
-    private user: User
 
-	// await this.prisma.user.update({
-	//     where: { login: 'aaljaber' },
-	//     data: {
-	// 		friends: {
-	// 			connect: [{ login: 'bnaji' }, { login: 'isaad' }],
-	// 		},
-	// 	},
-	// })
-	// await this.prisma.user.upsert({
-	// 	where: { login: 'aaljaber'},
-	// 	update: {
-	// 		total_wins: 15,
-	// 	},
-	// 	create: {
-	// 		login: 'aaljaber',
-	// 		username: 'aaljaber',
-	// 		email: 'ss',
-	// 		total_loses: 0,
-	// 	},
-	// });
-    constructor(private defaultService: DefaultService, private jwtService: JwtService) {}
-	public async createMatchHistory(): Promise<MatchHistory> {
-		const matchHistoryCreate = await this.prisma.matchHistory.create({
-			data: {
-			  opponent: {
-				connect: {
-				  id: 3,
-				},
-			  },
-			  isWinner: true,
-			  at: new Date(),
-			  my_score: 10,
-			  op_score: 1,
-			},
-		  });
-		  return matchHistoryCreate;
-	}
+    public async createMatchHistory(): Promise<MatchHistory> {
+        const matchHistoryCreate = await this.prisma.matchHistory.create({
+            data: {
+                opponent: {
+                    connect: [{ login: 'aaljaber' }, { login: 'mal-guna' }],
+                },
+                isWinner: true,
+                at: new Date(),
+                my_score: 10,
+                op_score: 1,
+            },
+        })
+        return matchHistoryCreate
+    }
     async addHistory(): Promise<void> {
-		const matchHistoryCreate = await this.createMatchHistory()
-		await this.prisma.user.update ({
-			where: { login: 'mal-guna'},
-			data: {
-				match_history: { 
-					connect: { id: matchHistoryCreate.id }
-				},
-			},
-		});
+        const matchHistoryCreate = await this.createMatchHistory()
+        // await this.prisma.user.update({
+        //     where: { login: 'mal-guna' },
+        //     data: {
+        //         match_history: {
+        //             connect: { id: matchHistoryCreate.id },
+        //         },
+        //     },
+        // })
     }
     handleConnection(client: Socket, ...args: any[]) {
         // let token = client.request.headers.authorization
@@ -106,3 +81,24 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.wss.emit('gameStatus', payload)
     }
 }
+
+// await this.prisma.user.update({
+//     where: { login: 'aaljaber' },
+//     data: {
+// 		friends: {
+// 			connect: [{ login: 'bnaji' }, { login: 'isaad' }],
+// 		},
+// 	},
+// })
+// await this.prisma.user.upsert({
+// 	where: { login: 'aaljaber'},
+// 	update: {
+// 		total_wins: 15,
+// 	},
+// 	create: {
+// 		login: 'aaljaber',
+// 		username: 'aaljaber',
+// 		email: 'ss',
+// 		total_loses: 0,
+// 	},
+// });
