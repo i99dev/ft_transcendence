@@ -38,10 +38,10 @@
     })
 
     socket.value.on('Game-Over', (payload) => {
-      if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
-        emit('GameOver', "winner")
-      else
-        emit('GameOver', "loser")
+      // if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
+      //   emit('GameOver', "winner")
+      // else
+      //   emit('GameOver', "loser")
     })
 
 
@@ -116,6 +116,12 @@
     drawPlayersInfo()
     drawScore()
     drawBall()
+
+    // temporary decision for winner
+    if (gameData.value.players[gameSetup.value.player - 1].score == 11) {
+      console.log('emit winner')
+      emit('GameOver')
+    }
   }
 
   const handleKeyDown = (event) => {
@@ -130,7 +136,7 @@
   }
 
   function giveUp() {
-    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
+    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
   }
 
   const moveUp = (player) => {

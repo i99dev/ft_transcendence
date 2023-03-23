@@ -43,7 +43,7 @@ export class DefaultService {
             y: 0.5,
             score: 0,
             paddle: {
-                width: 0.05,
+                width: 0.01,
                 height: 0.2,
             },
         }

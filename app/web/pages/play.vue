@@ -36,10 +36,11 @@ const startGame = () => {
     gameBoard.value.socketSetup()
 }
 
-const gameOver = (result) => {
-    console.log('result', result)
+const gameOver = () => {
+    console.log('result')
 
-    gameResult.value = result
+    gameResult.value = "winner"
+    // gameResult.value = result
 
     gameBoard.value.socketDisconnect()
 
