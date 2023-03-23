@@ -32,7 +32,7 @@
                 <div
                     class="w-full sm:w-1/4 rounded-t sm:rounded-l sm:rounded-t-none shadow bg-white dark:bg-gray-800"
                 ></div>
-                <div class="w-full sm:w-1/2 shadow bg-white dark:bg-gray-800">
+                <div class="w-full sm:w-1/2 dark:bg-gray-800">
                     <DashTab />
                 </div>
                 <div

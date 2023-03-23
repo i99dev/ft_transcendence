@@ -11,6 +11,7 @@ export default defineNuxtPlugin(nuxtApp => {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
         path: '/socket.io',
+        transports: ['websocket'],
     })
     nuxtApp.socket = socket
 })
