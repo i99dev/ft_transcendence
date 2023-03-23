@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { gameStatusDto, PlayerDto, BallDto } from '../dto/game.dto'
 import { Socket } from 'socket.io'
 
+const FRAMES_PER_SECOND = 60
+const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
+const PADDLE_SPEED = 0.02
+const BALL_XSPEED = 0.0064
+const BALL_YSPEED = 0.002
+
 @Injectable()
 export class DefaultService {
     private players: Map<string, PlayerDto> = new Map()
@@ -50,8 +56,8 @@ export class DefaultService {
             ball: {
                 x: 0.5,
                 y: 0.5,
-                dx: Math.random() > 0.5 ? 0.0064 : -0.0064,
-                dy: Math.random() > 0.5 ? 0.002 : -0.002,
+                dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
+                dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
                 radius: 0.02,
             },
         }
@@ -79,17 +85,13 @@ export class DefaultService {
         const intervalId = setInterval(() => {
             const game = this.games[gameId]
 
-            // if ("GameDone ?") {
-            //     clearInterval(intervalId)
-            //     return
-            // }
             this.updateGame(gameId) // game logic to be added here
             gameUpdateCallback(gameId, game)
             if (game.players[0].score >= 11 || game.players[1].score >= 11) {
                 clearInterval(intervalId)
                 return
             }
-        }, 1000 / 60)
+        }, FRAME_INTERVAL)
     }
 
     updateGame(gameId: string): void {
@@ -98,32 +100,49 @@ export class DefaultService {
 
     updateBall(gameId: string): void {
         const game = this.games[gameId]
-        const { ball, players } = game
 
+        this.moveBall(game.ball)
+        this.checkBallCollision(game)
+    }
+
+    moveBall(ball: BallDto): void {
         ball.x += ball.dx
         ball.y += ball.dy
-        if (ball.y < ball.radius || ball.y > 1 - ball.radius) {
+    }
+
+    checkWallCollision(ball: BallDto): void {
+        if (ball.y <= ball.radius || ball.y >= 1 - ball.radius) {
             ball.dy *= -1
         }
-        if (ball.x >= 1 - ball.radius) {
-            if (
-                ball.y <= players[1].y + players[1].paddle.height / 2 &&
-                ball.y >= players[1].y - players[1].paddle.height / 2
-            ) {
-                ball.dx *= -1
-            } else {
-                players[0].score += 1
-                this.resetBallPosition(ball)
-            }
+    }
+
+    checkPlayerCollision(ball: BallDto, player: PlayerDto): boolean {
+        if (
+            ball.y - ball.radius <= player.y + player.paddle.height / 2 &&
+            ball.y + ball.radius >= player.y - player.paddle.height / 2
+        ) {
+            return true
         }
-        if (ball.x <= 0 + ball.radius) {
-            if (
-                ball.y <= players[0].y + players[0].paddle.height / 2 &&
-                ball.y >= players[0].y - players[0].paddle.height / 2
-            ) {
+        return false
+    }
+
+    checkBallCollision(game: gameStatusDto): void {
+        const { ball, players } = game
+
+        this.checkWallCollision(ball)
+
+        if (ball.x <= (ball.radius + players[0].paddle.width)) {
+            if (this.checkPlayerCollision(ball, players[0])) {
                 ball.dx *= -1
             } else {
                 players[1].score += 1
+                this.resetBallPosition(ball)
+            }
+        } else if (ball.x >= 1 - (ball.radius + players[0].paddle.width)) {
+            if (this.checkPlayerCollision(ball, players[1])) {
+                ball.dx *= -1
+            } else {
+                players[0].score += 1
                 this.resetBallPosition(ball)
             }
         }
@@ -132,8 +151,8 @@ export class DefaultService {
     resetBallPosition(ball: BallDto): void {
         ball.x = 0.5
         ball.y = 0.5
-        ball.dx = Math.random() > 0.5 ? 0.0064 : -0.0064
-        ball.dy = Math.random() > 0.5 ? 0.002 : -0.002
+        ball.dx = Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED
+        ball.dy = Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED
     }
 
     updatePaddlePosition(client: Socket, direction: string): void {
@@ -143,9 +162,9 @@ export class DefaultService {
         if (!game) return
 
         if (direction === 'up') {
-            player.y -= 0.1
+            player.y -= PADDLE_SPEED
         } else if (direction === 'down') {
-            player.y += 0.1
+            player.y += PADDLE_SPEED
         }
 
         player.y = Math.max(
