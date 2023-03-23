@@ -5,7 +5,7 @@ import { Socket } from 'socket.io'
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 const PADDLE_SPEED = 0.02
-const BALL_XSPEED = 0.064
+const BALL_XSPEED = 0.0064
 const BALL_YSPEED = 0.002
 
 @Injectable()
