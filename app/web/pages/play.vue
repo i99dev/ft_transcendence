@@ -12,7 +12,7 @@
             confirmation="Are you sure you want to exit the game?"
         />
         <div class="container">
-            <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
+            <Button @click="switchExistStatus(true)" icon="pi pi-times" />
             <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
         </div>
         <GameResult v-if="gameResult" :gameResultMessage="gameResultMessage" @playAgain="playAgain"/>
