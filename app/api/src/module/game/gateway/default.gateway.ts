@@ -24,13 +24,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     server: Server
 
     private logger = new Logger('DefaultGateway')
-    private gameHistory = new gameHistory()
 
-    constructor(
-        private gameService: DefaultService,
-        private gameResult: gameResult,
-        private jwtService: JwtService,
-    ) {}
+    constructor(private gameService: DefaultService, private jwtService: JwtService) {}
 
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
@@ -49,19 +44,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Give-Up')
-    async giveUp(client: any, @MessageBody() player: PlayerDto) {
-        const opponent = this.gameService.gameLogic.Games[player.gameId].players.find(
-            op => op.username !== player.username,
-        )
-        this.gameResult = new gameResult(
-            player.username,
-            false,
-            player.score,
-            opponent.score,
-            'You left the game',
-        )
-        this.server.emit('Game-Over', this.gameResult)
-        await this.gameHistory.addHistory(this.gameService.gameLogic.Games[player.gameId])
+    async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
+        await this.gameService.gameLogic.endGame(client, player, 'You left the game', false)
     }
 
     @SubscribeMessage('move')
