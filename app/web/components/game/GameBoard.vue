@@ -12,6 +12,9 @@
   let objsSizes = ref(undefined)
   let gameSetup = ref(undefined)
   let gameData = ref(undefined)
+  let grabbed = ref(false)
+  let offsetY = ref(0)
+  const sensitivity = 3;
   const socket = ref();
   const emit = defineEmits(['ReadyGame', 'GameOver'])
   defineExpose({ socketSetup, gameUnmounted, giveUp })
@@ -49,9 +52,42 @@
     initialize()
     document.addEventListener('keydown', handleKeyDown)
     window.addEventListener('resize', () => redraw());
+    window.addEventListener("mousedown", holdPaddle);
+
+    window.addEventListener("mousemove", movePaddle);
+
+    window.addEventListener("mouseup", leavePaddle);
+
     
     draw()
   }
+
+  const holdPaddle = (e) => {
+    offsetY.value = e.offsetY;
+    grabbed.value = true;
+  }
+
+  const movePaddle = (e) => {
+    if (grabbed.value) {
+      if (e.offsetY < offsetY.value - sensitivity) {
+        socket.value.emit('move', 'up')
+        offsetY.value = e.offsetY;
+      }
+      else if (e.offsetY > offsetY.value + sensitivity) {
+        socket.value.emit('move', 'down')
+        offsetY.value = e.offsetY;
+      }
+    }
+  }
+
+  const leavePaddle = (e) => {
+    if (grabbed.value) {
+      offsetY.value = 0;
+      grabbed.value = false;
+    }
+  }
+
+  
 
   const initialize = () => {
     objsSizes.value = {
@@ -101,9 +137,6 @@
   }
 
   const redraw = () => {
-    // Clear the canvas.
-    ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
-
     // Draw it all again.
     setUpCanvas();
     draw();
