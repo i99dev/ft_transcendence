@@ -10,8 +10,6 @@ import {
     ConnectedSocket,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { gameResult } from '../logic/gameResult'
-import { gameHistory } from '../logic/gameHistory'
 import { DefaultService } from './default.service'
 import { PlayerDto } from '../dto/game.dto'
 @WebSocketGateway({
