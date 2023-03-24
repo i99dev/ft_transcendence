@@ -1,5 +1,7 @@
 <template>
-    <GameLoadingButton v-if="!ready && firstGameReady" @StartGame="startGame" class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700" />
+    <div  v-if="!ready && firstGameReady" class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700">
+        <GameLoadingButton @StartGame="startGame" />
+    </div>
     <div>
         <GameClosePopup
             v-if="exit"

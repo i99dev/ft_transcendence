@@ -15,6 +15,7 @@
   let grabbed = ref(false)
   let offsetY = ref(0)
   const sensitivity = 3;
+  const canvasRatio = 1.5;
   const socket = ref();
   const emit = defineEmits(['ReadyGame', 'GameOver'])
   defineExpose({ socketSetup, gameUnmounted, giveUp })
@@ -49,7 +50,6 @@
 
 
     setUpCanvas()
-    initialize()
     document.addEventListener('keydown', handleKeyDown)
     window.addEventListener('resize', () => redraw());
 
@@ -95,33 +95,6 @@
       grabbed.value = false;
     }
   }
-  // const holdPaddle = (e) => {
-  //   console.log(e.offsetY)
-  //   offsetY.value = e.offsetY;
-  //   grabbed.value = true;
-  // }
-
-  // const movePaddle = (e) => {
-  //   if (grabbed.value) {
-  //     if (e.offsetY < offsetY.value - sensitivity) {
-  //       socket.value.emit('move', 'up')
-  //       offsetY.value = e.offsetY;
-  //     }
-  //     else if (e.offsetY > offsetY.value + sensitivity) {
-  //       socket.value.emit('move', 'down')
-  //       offsetY.value = e.offsetY;
-  //     }
-  //   }
-  // }
-
-  // const leavePaddle = (e) => {
-  //   if (grabbed.value) {
-  //     offsetY.value = 0;
-  //     grabbed.value = false;
-  //   }
-  // }
-
-  
 
   const initialize = () => {
     objsSizes.value = {
@@ -150,15 +123,16 @@
   }
 
   const setUpCanvas = () => {
-
     const canvasWrapper = document.querySelector('.canvas-wrapper')
-    if (canvasWrapper.parentNode.offsetHeight * 1.5 >= canvasWrapper.parentNode.offsetWidth)
-      canvasWrapper.style.height = (canvasWrapper.offsetWidth / 1.5 / canvasWrapper.parentNode.offsetHeight * 100) + '%'
+    if (canvasWrapper.parentNode.offsetHeight * canvasRatio >= canvasWrapper.parentNode.offsetWidth)
+      canvasWrapper.style.height = (canvasWrapper.offsetWidth / canvasRatio / canvasWrapper.parentNode.offsetHeight * 100) + '%'
 
     canvas.value.height = canvasWrapper.offsetHeight;
-    canvas.value.width = canvas.value.height * 1.5;
+    canvas.value.width = canvas.value.height * canvasRatio;
 
     ctx.value = canvas.value.getContext('2d')
+
+    initialize()
   };
 
   onUnmounted(() => {
