@@ -14,6 +14,14 @@ export class DefaultService {
     private games: Map<string, gameStatusDto> = new Map()
     private lobby: Socket[] = []
 
+    public get Players(): Map<string, PlayerDto> {
+        return this.players
+    }
+
+    public get Games(): Map<string, gameStatusDto> {
+        return this.games
+    }
+
     addToLobby(client: Socket, decoded: any): void {
         const player = this.createPlayer(decoded['login'])
         this.players[client.id] = player
@@ -23,14 +31,13 @@ export class DefaultService {
 
     checkLobby(gameUpdateCallback: (gameId: string, game: gameStatusDto) => void): void {
         if (this.lobby.length >= 2) {
-            let player1 = this.lobby.shift()
-            let player2 = this.lobby.shift()
-            let gameId = this.generateRandomId()
+            const player1 = this.lobby.shift()
+            const player2 = this.lobby.shift()
+            const gameId = this.generateRandomId()
             this.players[player1.id].gameId = gameId
             this.players[player2.id].gameId = gameId
-            let game = this.createGame(this.players[player1.id], this.players[player2.id])
+            const game = this.createGame(this.players[player1.id], this.players[player2.id])
             this.games[gameId] = game
-
             this.joinPlayersToGame(player1, player2, gameId)
             this.emitGameSetup(player1, player2, game)
             this.startGameLoop(gameId, gameUpdateCallback)
@@ -131,7 +138,7 @@ export class DefaultService {
 
         this.checkWallCollision(ball)
 
-        if (ball.x <= (ball.radius + players[0].paddle.width)) {
+        if (ball.x <= ball.radius + players[0].paddle.width) {
             if (this.checkPlayerCollision(ball, players[0])) {
                 ball.dx *= -1
             } else {
