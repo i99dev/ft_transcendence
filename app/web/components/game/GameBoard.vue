@@ -52,32 +52,41 @@
     initialize()
     document.addEventListener('keydown', handleKeyDown)
     window.addEventListener('resize', () => redraw());
+
+    // Handle Mouse and Touch events
     window.addEventListener("mousedown", holdPaddle);
-
     window.addEventListener("mousemove", movePaddle);
-
     window.addEventListener("mouseup", leavePaddle);
+    window.addEventListener("touchstart", holdPaddle);
+    window.addEventListener("touchmove", movePaddle);
+    window.addEventListener("touchend", leavePaddle);
 
     
     draw()
   }
 
   const holdPaddle = (e) => {
-    offsetY.value = e.offsetY;
+    const curOffsetY = getCurrentHoldPosY(e) 
+    offsetY.value = curOffsetY;
     grabbed.value = true;
   }
 
   const movePaddle = (e) => {
+    const curOffsetY = getCurrentHoldPosY(e)
     if (grabbed.value) {
-      if (e.offsetY < offsetY.value - sensitivity) {
+      if (curOffsetY < offsetY.value - sensitivity) {
         socket.value.emit('move', 'up')
-        offsetY.value = e.offsetY;
+        offsetY.value = curOffsetY;
       }
-      else if (e.offsetY > offsetY.value + sensitivity) {
+      else if (curOffsetY > offsetY.value + sensitivity) {
         socket.value.emit('move', 'down')
-        offsetY.value = e.offsetY;
+        offsetY.value = curOffsetY;
       }
     }
+  }
+
+  const getCurrentHoldPosY = (e) => {
+    return e.changedTouches ? e.changedTouches[0].clientY : e.offsetY
   }
 
   const leavePaddle = (e) => {
@@ -86,6 +95,31 @@
       grabbed.value = false;
     }
   }
+  // const holdPaddle = (e) => {
+  //   console.log(e.offsetY)
+  //   offsetY.value = e.offsetY;
+  //   grabbed.value = true;
+  // }
+
+  // const movePaddle = (e) => {
+  //   if (grabbed.value) {
+  //     if (e.offsetY < offsetY.value - sensitivity) {
+  //       socket.value.emit('move', 'up')
+  //       offsetY.value = e.offsetY;
+  //     }
+  //     else if (e.offsetY > offsetY.value + sensitivity) {
+  //       socket.value.emit('move', 'down')
+  //       offsetY.value = e.offsetY;
+  //     }
+  //   }
+  // }
+
+  // const leavePaddle = (e) => {
+  //   if (grabbed.value) {
+  //     offsetY.value = 0;
+  //     grabbed.value = false;
+  //   }
+  // }
 
   
 
