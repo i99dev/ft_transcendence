@@ -10,8 +10,8 @@ import {
     ConnectedSocket,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { gameResult } from '../gameHistory/gameResult'
-import { gameHistory } from '../gameHistory/gameHistory'
+import { gameResult } from '../logic/gameResult'
+import { gameHistory } from '../logic/gameHistory'
 import { DefaultService } from './default.service'
 import { PlayerDto } from '../dto/game.dto'
 @WebSocketGateway({
@@ -38,8 +38,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
 
-        this.gameService.addToLobby(client, decoded)
-        this.gameService.checkLobby((gameId, game) => {
+        this.gameService.gameLogic.addToLobby(client, decoded)
+        this.gameService.gameLogic.checkLobby((gameId, game) => {
             this.server.to(gameId).emit('Game-Data', game)
         })
     }
@@ -47,9 +47,10 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
     }
+
     @SubscribeMessage('Give-Up')
     async giveUp(client: any, @MessageBody() player: PlayerDto) {
-        const opponent = this.gameService.Games[player.gameId].players.find(
+        const opponent = this.gameService.gameLogic.Games[player.gameId].players.find(
             op => op.username !== player.username,
         )
         this.gameResult = new gameResult(
@@ -60,11 +61,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
             'You left the game',
         )
         this.server.emit('Game-Over', this.gameResult)
-        await this.gameHistory.addHistory(this.gameService.Games[player.gameId])
+        await this.gameHistory.addHistory(this.gameService.gameLogic.Games[player.gameId])
     }
+
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
-        this.gameService.updatePaddlePosition(client, direction)
+        this.gameService.gameLogic.updatePaddlePosition(client, direction)
     }
 }
 
