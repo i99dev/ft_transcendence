@@ -1,6 +1,3 @@
-import { MatchHistory } from '@prisma/client'
-import { User } from '@prisma/client'
-
 export class gameResult {
     constructor(
         private _opponent: string,

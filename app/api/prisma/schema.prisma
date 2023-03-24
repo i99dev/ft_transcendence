@@ -13,26 +13,34 @@ datasource db {
 // prisma/schema.prisma
 
 model User {
-  id           Int        @id @default(autoincrement())
-  login        String     @unique
-  username     String     @unique
-  email        String     @unique
-  status       UserStatus @default(OFFLINE)
-  first_name   String?
-  last_name    String?
-  created_at   DateTime   @default(now())
-  last_login   DateTime   @default(now())
-  image        String?
-  total_wins   Int        @default(0)
-  total_loses  Int        @default(0)
-  exp_level    Int        @default(0)
-  points       Int        @default(0)
-  two_fac_auth Boolean    @default(false)
-  achievements Achievement[]  @relation("UserAchievements")
-  power_ups    PowerUp[] @relation("UserPowerUps")
-  friend_to    User[]  @relation("UserFriends")
-  friends      User[]  @relation("UserFriends")
+  id            Int            @id @default(autoincrement())
+  login         String         @unique
+  username      String         @unique
+  email         String         @unique
+  status        UserStatus     @default(OFFLINE)
+  first_name    String?
+  last_name     String?
+  created_at    DateTime       @default(now())
+  last_login    DateTime       @default(now())
+  image         String?
+  total_wins    Int            @default(0)
+  total_loses   Int            @default(0)
+  exp_level     Int            @default(0)
+  points        Int            @default(0)
+  two_fac_auth  Boolean        @default(false)
+  achievements  Achievement[]  @relation("UserAchievements")
+  power_ups     PowerUp[]      @relation("UserPowerUps")
+  friend_to     User[]         @relation("UserFriends")
+  friends       User[]         @relation("UserFriends")
+  // player       Player?       @relation("UserPlayer")
   match_history MatchHistory[] @relation("UserMatchHistory")
+}
+
+model Player {
+  id     Int @id @default(autoincrement())
+  // user          User           @relation("UserPlayer", fields: [userId], references: [id])
+  userId Int @unique
+  // match_history MatchHistory[] @relation("UserMatchHistory")
 }
 
 model PowerUp {
@@ -43,12 +51,12 @@ model PowerUp {
 }
 
 model MatchHistory {
- id     Int   @id @default(autoincrement())
- opponent  User[]   @relation("UserMatchHistory")
- isWinner  Boolean @default(false)
- at     DateTime @default(now())
- my_score  Int   @default(0)
- op_score  Int   @default(0)
+  id        Int      @id @default(autoincrement())
+  opponents User[]   @relation("UserMatchHistory")
+  // opponent Player[] @relation("UserMatchHistory")
+  winnerID  Int
+  at        DateTime @default(now())
+  score     Int[]
 }
 
 model Achievement {
@@ -56,7 +64,7 @@ model Achievement {
   type        String  @unique @default("default")
   description String?
   points      Int     @default(0)
-  users        User[]  @relation("UserAchievements")
+  users       User[]  @relation("UserAchievements")
 }
 
 enum UserStatus {

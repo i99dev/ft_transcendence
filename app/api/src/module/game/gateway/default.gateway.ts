@@ -9,11 +9,8 @@ import {
     WebSocketGateway,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { DefaultService } from './default.service'
-import { gameResult } from '../actions/endGame'
-import { PrismaService } from '@providers/prisma/prisma.service'
-import { MatchHistory, User } from '@prisma/client'
-import { PrismaClient } from '@prisma/client'
+import { gameResult } from '../gameHistory/endGame'
+import { gameHistory } from '../gameHistory/gameHistory'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: 'http://localhost/play', credentials: true },
@@ -25,33 +22,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     private logger = new Logger('DefaultGateway')
     private gameResult: gameResult
-    private prisma = new PrismaClient()
+    private gameHistory = new gameHistory()
 
-    public async createMatchHistory(): Promise<MatchHistory> {
-        const matchHistoryCreate = await this.prisma.matchHistory.create({
-            data: {
-                opponent: {
-                    connect: [{ login: 'aaljaber' }, { login: 'mal-guna' }],
-                },
-                isWinner: true,
-                at: new Date(),
-                my_score: 10,
-                op_score: 1,
-            },
-        })
-        return matchHistoryCreate
-    }
-    async addHistory(): Promise<void> {
-        const matchHistoryCreate = await this.createMatchHistory()
-        // await this.prisma.user.update({
-        //     where: { login: 'mal-guna' },
-        //     data: {
-        //         match_history: {
-        //             connect: { id: matchHistoryCreate.id },
-        //         },
-        //     },
-        // })
-    }
     handleConnection(client: Socket, ...args: any[]) {
         // let token = client.request.headers.authorization
         // this.logger.log(token)
@@ -69,7 +41,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     async leaveGame(client: any, @MessageBody() payload: any) {
         this.gameResult = new gameResult('boo', false, 0, 0, 'You left the game')
         this.wss.emit('end-game', this.gameResult)
-        await this.addHistory()
+        await this.gameHistory.addHistory('aaljaber', 'mal-guna')
     }
     @SubscribeMessage('move')
     movePlayer(client: any, @MessageBody() payload: any) {
