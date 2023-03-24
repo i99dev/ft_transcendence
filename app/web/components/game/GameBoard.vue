@@ -7,14 +7,14 @@
 <script setup>
   import {io}  from 'socket.io-client'
 
-  let canvas = ref({})
-  let ctx = ref({})
-  let objsSizes = ref({})
-  let gameSetup = ref({})
+  let canvas = ref(undefined)
+  let ctx = ref(undefined)
+  let objsSizes = ref(undefined)
+  let gameSetup = ref(undefined)
   let gameData = ref(undefined)
   const socket = ref();
   const emit = defineEmits(['ReadyGame', 'GameOver'])
-  defineExpose({ socketSetup, socketDisconnect, giveUp })
+  defineExpose({ socketSetup, gameUnmounted, giveUp })
 
   function socketSetup() {
     socket.value = socket.value = io('http://localhost/games', {
@@ -92,10 +92,10 @@
   };
 
   onUnmounted(() => {
-    socketDisconnect()
+    gameUnmounted()
   })
 
-  function socketDisconnect() {
+  function gameUnmounted() {
     if (socket.value.connected) 
       socket.value.disconnect()
   }
@@ -111,6 +111,7 @@
 
   const draw = () => {
     if (!gameData.value) return
+
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawPlayer(gameData.value.players)
     drawPlayersInfo()
@@ -118,9 +119,24 @@
     drawBall()
 
     // temporary decision for winner
-    if (gameData.value.players[gameSetup.value.player - 1].score == 11) {
-      console.log('emit winner')
-      emit('GameOver')
+    checkWinner()
+  }
+
+  const checkWinner = () => {
+    let gameFinished = false
+    for (let p = 0; p < gameData.value.players.length; p++)
+      if (gameData.value.players[p].score == 11)
+          gameFinished = true
+
+    if (gameFinished) {
+      for (let p = 0; p < gameData.value.players.length; p++) {
+        if (p == gameSetup.value.player - 1) {
+          if (gameData.value.players[p].score == 11)
+            emit('GameOver', 'you won')
+          else
+            emit('GameOver', 'you Lost')
+        }
+      }
     }
   }
 
@@ -139,28 +155,6 @@
     socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
   }
 
-  const moveUp = (player) => {
-    let posy = player.y * canvas.value.height - player.height / 2
-
-    if (posy >= player.speed)
-      posy -= player.speed
-    else if (posy > 0)
-      posy = 0
-
-    player.y = (posy + player.height / 2) / canvas.value.height
-  }
-
-  const moveDown = (player) => {
-    let posy = player.y * canvas.value.height - player.height / 2
-
-    if (posy + player.height < canvas.value.height - player.speed)
-      posy += player.speed
-    else if (posy + player.height < canvas.value.height)
-      posy = canvas.value.height - player.height
-
-    player.y = (posy + player.height / 2) / canvas.value.height
-  }
-
   const drawBall = () => {
     ctx.value.beginPath()
     ctx.value.arc(gameData.value.ball.x, gameData.value.ball.y, gameData.value.ball.radius, 0, Math.PI * 2)
@@ -174,7 +168,6 @@
       const p = players[i];
       const posy = p.y * canvas.value.height - p.paddle.height / 2
       const posx = i == 0 ? 0 : canvas.value.width - p.paddle.width
-      ctx.value.clearRect(posx, 0, p.paddle.width, canvas.value.height)
       ctx.value.fillStyle = 'white'
       ctx.value.fillRect(posx, p.y, p.paddle.width, p.paddle.height)
     }
@@ -210,7 +203,6 @@
   }
 
   const clearText = (text, size, w, h, posx = 0, posy = 0) => {
-    ctx.value.clearRect(canvas.value.width / 2 - w/2 + posx, canvas.value.height / 2 - size - h * 3/10 + posy, w, size)
   }
 
   const textSetup = (text, size) => {
@@ -218,11 +210,6 @@
     const w = ctx.value.measureText(text).width
     const h = ctx.value.measureText(text).fontBoundingBoxAscent + ctx.value.measureText(text).fontBoundingBoxDescent
     return {w, h}
-  }
-
-  const drawWinner = (winner) => {
-    drawText(`${winner.username} wins`, objsSizes.value.gameStatusSize)
-    socket.value.disconnect()
   }
 
 </script>

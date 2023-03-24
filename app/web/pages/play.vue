@@ -1,5 +1,5 @@
 <template>
-    <GameLoadingButton v-if="!ready" @StartGame="startGame"/>
+    <GameLoadingButton v-if="!ready && firstGameReady" @StartGame="startGame" class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700" />
     <div>
         <GameClosePopup
             v-if="exit"
@@ -11,9 +11,9 @@
         />
         <div class="container">
             <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
-            <GameBoard @ReadyGame="() => ready = true" @GameOver="gameOver" ref="gameBoard" />
+            <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
         </div>
-        <GameResult v-if="gameResult" :gameResult="gameResultMessage"/>
+        <GameResult v-if="gameResult" :gameResultMessage="gameResultMessage" @playAgain="playAgain"/>
     </div>
 </template>
 
@@ -21,36 +21,39 @@
 
 let exit = ref(false);
 let ready = ref(false)
-let gameResult = ref(undefined)
-let gameResultMessage = ref("winner")
+let firstGameReady = ref(true)
+let gameResult = ref(false)
+let gameResultMessage = ref("")
 let gameBoard = ref()
-
-watch(gameResult, () => {
-    if (gameResult.value == "winner")
-        gameResultMessage.value = "you won"
-    else if (gameResult.value == "loser")
-        gameResultMessage.value = "you lost"
-})
 
 const startGame = () => {
     gameBoard.value.socketSetup()
+    gameResult.value = false
 }
 
-const gameOver = () => {
-    console.log('result')
+const playAgain = () => {
+    gameBoard.value.socketSetup()
+}
 
-    gameResult.value = "winner"
-    // gameResult.value = result
-
-    gameBoard.value.socketDisconnect()
-
+const gameOver = (message) => {
+    gameBoard.value.gameUnmounted()
+    firstGameReady.value = false
+    ready.value = false
+    gameResult.value = true
+    gameResultMessage.value = message
+}
+        
+const setGameReady = () => {
+    ready.value = true
+    gameResult.value = false
 }
 
 const exitGame = () => {
     gameBoard.value.giveUp()
-    gameBoard.value.socketDisconnect() // should be removed
+    gameBoard.value.gameUnmounted()
     exit.value = false
     ready.value = false
+    gameResult.value = false
 }
 
 const switchExistStatus = (status) => {

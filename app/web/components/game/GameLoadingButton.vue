@@ -1,6 +1,6 @@
 <template>
-  <div id="Home" class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700">
-      <Button type="button" :label="name" :loading="loading" hiddenIcon="searching" @click="load" />
+  <div>
+      <Button type="button" :label="name" :loading="loading" hiddenIcon="searching" @click="load" class="p-button-lg" style="font-size: 2rem" />
   </div>
 </template>
 
@@ -15,8 +15,5 @@ const load = async () => {
     name.value = "searching for opponent"
     emit('startGame')
 };
+
 </script>
-
-<style scoped>
-
-</style>
