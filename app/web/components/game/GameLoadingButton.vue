@@ -13,13 +13,15 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 
-const loading = ref(false)
+const loading = ref(false as boolean)
+let name = ref("Play" as string)
+
+// Defines
 const emit = defineEmits(['startGame'])
-let name = ref("Play")
 
-const load = async () => {
+const load = () : void => {
     loading.value = true;
     name.value = "Searching"
     emit('startGame')

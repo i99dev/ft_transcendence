@@ -2,15 +2,13 @@
     <div class="game-options">
         <Toast />
         <SpeedDial :model="items" :transitionDelay="80" :radius="70" showIcon="pi pi-bars" hideIcon="pi pi-times" type="semi-circle" direction="up"/>
-
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
-const router = useRouter();
 
 const items = ref([
     {
@@ -39,14 +37,14 @@ const items = ref([
         label: 'Upload',
         icon: 'pi pi-upload',
         command: () => {
-            router.push('/');
+            useRouter().push('/play');
         }
     },
     {
         label: 'Exit Game',
         icon: 'pi pi-external-link',
         command: () => {
-            router.push('/');
+            useRouter().push('/');
         }
     }
 ])

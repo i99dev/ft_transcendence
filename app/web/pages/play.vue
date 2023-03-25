@@ -19,7 +19,7 @@
     </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 
 let exit = ref(false);
 let ready = ref(false)
@@ -28,37 +28,37 @@ let gameResult = ref(false)
 let gameResultMessage = ref("")
 let gameBoard = ref()
 
-const startGame = () => {
-    gameBoard.value.socketSetup()
+const startGame = () : void => {
+    gameBoard.value.setup()
     gameResult.value = false
 }
 
-const playAgain = () => {
-    gameBoard.value.socketSetup()
+const playAgain = () : void => {
+    gameBoard.value.setup()
 }
 
-const gameOver = (message) => {
-    gameBoard.value.gameUnmounted()
+const gameOver = (message: string) : void => {
+    gameBoard.value.destroy()
     firstGameReady.value = false
     ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
 }
         
-const setGameReady = () => {
+const setGameReady = () : void => {
     ready.value = true
     gameResult.value = false
 }
 
-const exitGame = () => {
+const exitGame = () : void => {
     gameBoard.value.giveUp()
-    gameBoard.value.gameUnmounted()
+    gameBoard.value.destroy()
     exit.value = false
     ready.value = false
     gameResult.value = false
 }
 
-const switchExistStatus = (status) => {
+const switchExistStatus = (status : boolean) : void => {
     exit.value = status;
 }
 
