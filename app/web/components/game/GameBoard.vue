@@ -42,10 +42,10 @@
     })
 
     socket.value.on('Game-Over', (payload) => {
-      // if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
-      //   emit('GameOver', "winner")
-      // else
-      //   emit('GameOver', "loser")
+      if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
+        emit('GameOver', 'you won')
+      else
+        emit('GameOver', 'you won')
     })
 
 
@@ -163,6 +163,7 @@
     checkWinner()
   }
 
+  // temporay function for winner. need to be removed
   const checkWinner = () => {
     let gameFinished = false
     for (let p = 0; p < gameData.value.players.length; p++)
