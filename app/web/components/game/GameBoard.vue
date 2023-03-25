@@ -158,8 +158,11 @@ const storeBallData = (ball : BallDto) : void => {
 const setUpCanvas = () : void => {
   const canvasWrapper = document.querySelector('.canvas-wrapper') as HTMLCanvasElement
   const parent = canvasWrapper.parentNode as HTMLElement
+
   if (parent && parent.offsetHeight * canvasRatio >= parent.offsetWidth)
     canvasWrapper.style.height = (canvasWrapper.offsetWidth / canvasRatio / parent.offsetHeight * 100) + '%'
+  else
+    canvasWrapper.style.height = '90%'
 
   canvas.value.height = canvasWrapper.offsetHeight;
   canvas.value.width = canvas.value.height * canvasRatio;
@@ -180,7 +183,7 @@ const redraw = () : void => {
 }
 
 const draw = () : void => {
-  if (!gameData.value) return
+  if (isObjEmpty(gameData.value)) return
 
   ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
   drawPlayer(gameData.value.players)
@@ -190,6 +193,10 @@ const draw = () : void => {
 
   // temporary decision for winner
   checkWinner()
+}
+
+const isObjEmpty = (obj : any) : boolean => {
+    return Object.values(obj).length === 0 && obj.constructor === Object;
 }
 
 // temporay function for winner. need to be removed
@@ -288,7 +295,6 @@ const textSetup = (text : string, size : number) : {w: number, h: number} => {
   justify-content: center;
   align-items: center;
   width: 90%;
-  height: 90%;
   margin: 0;
   padding: 0;
 }
