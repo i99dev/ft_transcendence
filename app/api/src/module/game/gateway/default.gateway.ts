@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
-import { PlayerDto } from '../dto/game.dto'
+
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
@@ -24,15 +24,14 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private logger = new Logger('DefaultGateway')
 
     constructor(private gameService: DefaultService, private jwtService: JwtService) {}
-
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
 
-        this.gameService.gameLogic.addToLobby(client, decoded)
-        this.gameService.gameLogic.checkLobby((gameId, game) => {
+        this.gameService.addToLobby(client, decoded)
+        this.gameService.checkLobby((gameId, game) => {
             this.server.to(gameId).emit('Game-Data', game)
         })
     }
@@ -41,34 +40,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.logger.log(`Client disconnected: ${client.id}`)
     }
 
-    @SubscribeMessage('Give-Up')
-    async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
-        await this.gameService.gameLogic.endGame(player, false)
-    }
-
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
-        this.gameService.gameLogic.updatePaddlePosition(client, direction)
+        this.gameService.updatePaddlePosition(client, direction)
     }
 }
-
-// await this.prisma.user.update({
-//     where: { login: 'aaljaber' },
-//     data: {
-// 		friends: {
-// 			connect: [{ login: 'bnaji' }, { login: 'isaad' }],
-// 		},
-// 	},
-// })
-// await this.prisma.user.upsert({
-// 	where: { login: 'aaljaber'},
-// 	update: {
-// 		total_wins: 15,
-// 	},
-// 	create: {
-// 		login: 'aaljaber',
-// 		username: 'aaljaber',
-// 		email: 'ss',
-// 		total_loses: 0,
-// 	},
-// });
