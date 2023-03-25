@@ -1,7 +1,6 @@
 import { gameStatusDto, PlayerDto, BallDto } from '../dto/game.dto'
 import { Socket } from 'socket.io'
 import { gameHistory } from './gameHistory'
-import { gameResult } from './gameResult'
 import { socketLogic } from './gameSocket'
 
 const FRAMES_PER_SECOND = 60
@@ -15,8 +14,8 @@ export class gameLogic {
     private games: Map<string, gameStatusDto> = new Map()
     private lobby: Socket[] = []
     private gameHistory = new gameHistory()
-    private gameResult: gameResult
     private socketLogic = new socketLogic()
+    private playersSocket: Socket[] = []
 
     public get Players(): Map<string, PlayerDto> {
         return this.players
@@ -36,15 +35,18 @@ export class gameLogic {
     // check if there are enough players in the lobby to start a game and create the game if so
     public checkLobby(gameUpdateCallback: (gameId: string, game: gameStatusDto) => void): void {
         if (this.lobby.length >= 2) {
-            const player1 = this.lobby.shift()
-            const player2 = this.lobby.shift()
+            this.playersSocket[0] = this.lobby.shift()
+            this.playersSocket[1] = this.lobby.shift()
             const gameId = this.generateRandomId()
-            this.players[player1.id].gameId = gameId
-            this.players[player2.id].gameId = gameId
-            const game = this.createGame(this.players[player1.id], this.players[player2.id])
+            this.players[this.playersSocket[0].id].gameId = gameId
+            this.players[this.playersSocket[1].id].gameId = gameId
+            const game = this.createGame(
+                this.players[this.playersSocket[0].id],
+                this.players[this.playersSocket[1].id],
+            )
             this.games[gameId] = game
-            this.joinPlayersToGame(player1, player2, gameId)
-            this.socketLogic.emitGameSetup(player1, player2, game)
+            this.joinPlayersToGame(gameId)
+            this.socketLogic.emitGameSetup(this.playersSocket, game)
             this.startGameLoop(gameId, gameUpdateCallback)
         }
     }
@@ -79,9 +81,9 @@ export class gameLogic {
     }
 
     // join the players to the game room
-    private joinPlayersToGame(player1: Socket, player2: Socket, gameId: string): void {
-        player1.join(`${gameId}`)
-        player2.join(`${gameId}`)
+    private joinPlayersToGame(gameId: string): void {
+        this.players[0].join(`${gameId}`)
+        this.players[1].join(`${gameId}`)
     }
 
     // generate a random id for the game
@@ -193,23 +195,15 @@ export class gameLogic {
         )
     }
 
-    public async endGame(
-        client: Socket,
-        player: PlayerDto,
-        reason: string,
-        isWinner: boolean,
-    ): Promise<void> {
+    public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
         const opponent = this.games[player.gameId].players.find(
             (op: PlayerDto) => op.username !== player.username,
         )
-        this.gameResult = new gameResult(
-            player.username,
-            isWinner,
-            player.score,
-            opponent.score,
-            reason,
+        this.socketLogic.emitEndGame(
+            this.playersSocket,
+            isWinner ? player : opponent,
+            this.games[player.gameId],
         )
-        this.socketLogic.emitEndGame(client, isWinner ? 'Game-Over' : 'End-Game', this.gameResult)
         await this.gameHistory.addHistory(this.games[player.gameId])
     }
 }

@@ -43,7 +43,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @SubscribeMessage('Give-Up')
     async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
-        await this.gameService.gameLogic.endGame(client, player, 'You left the game', false)
+        await this.gameService.gameLogic.endGame(player, false)
     }
 
     @SubscribeMessage('move')
