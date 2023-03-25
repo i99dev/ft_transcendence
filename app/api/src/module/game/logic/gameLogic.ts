@@ -18,8 +18,8 @@ import { socketLogic } from './gameSocket'
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 const PADDLE_SPEED = 0.03
-const REFLECT_ANGLE = 90
-const BALL_XSPEED = 0.005
+const REFLECT_ANGLE = 80
+const BALL_XSPEED = 0.0055
 const BALL_YSPEED = 0.0
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
@@ -107,7 +107,7 @@ export class gameLogic {
         return false
     }
 
-    // check if the ball collided with a player paddle and update the score if it is out of bounds
+    // check if the ball collided with wall or paddle and update the score if it is out of bounds
     private checkBallCollision(game: gameStatusDto): void {
         const { ball, players } = game
 
