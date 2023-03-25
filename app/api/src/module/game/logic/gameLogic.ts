@@ -165,10 +165,11 @@ export class gameLogic {
         )
     }
 
-    private clearData(): void {
-        this.players.clear()
-        this.games.clear()
-    }
+    private clearData(player: PlayerDto): void {
+        this.players.delete(this.playersSocket[0].id)
+        this.players.delete(this.playersSocket[1].id)
+        this.games.delete(player.gameId)
+    }   
 
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
         const opponent = this.games[player.gameId].players.find(
@@ -180,6 +181,6 @@ export class gameLogic {
             this.games[player.gameId],
         )
         await this.gameHistory.addHistory(this.games[player.gameId])
-        this.clearData()
+        this.clearData(player)
     }
 }
