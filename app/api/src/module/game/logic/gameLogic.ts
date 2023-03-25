@@ -5,9 +5,13 @@ import { socketLogic } from './gameSocket'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
-const PADDLE_SPEED = 0.02
-const BALL_XSPEED = 0.0064
-const BALL_YSPEED = 0.002
+const PADDLE_SPEED = 0.03
+const BALL_XSPEED = 0.0050
+const BALL_YSPEED = 0.000
+const REFLECT_ANGLE = 90
+const PADDLE_WIDTH = 0.017
+const PADDLE_HEIGHT = 0.2
+
 
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
@@ -58,8 +62,8 @@ export class gameLogic {
             y: 0.5,
             score: 0,
             paddle: {
-                width: 0.05,
-                height: 0.2,
+                width: PADDLE_WIDTH,
+                height: PADDLE_HEIGHT,
             },
         }
     }
@@ -81,9 +85,10 @@ export class gameLogic {
     }
 
     // join the players to the game room
+
     private joinPlayersToGame(gameId: string): void {
-        this.players[0].join(`${gameId}`)
-        this.players[1].join(`${gameId}`)
+        this.playersSocket[0].join(`${gameId}`)
+        this.playersSocket[1].join(`${gameId}`)
     }
 
     // generate a random id for the game
@@ -137,8 +142,8 @@ export class gameLogic {
     // check if the ball collided with a player paddle
     private checkPlayerCollision(ball: BallDto, player: PlayerDto): boolean {
         if (
-            ball.y - ball.radius <= player.y + player.paddle.height / 2 &&
-            ball.y + ball.radius >= player.y - player.paddle.height / 2
+            ball.y >= player.y - player.paddle.height / 2 - ball.radius &&
+            ball.y <= player.y + player.paddle.height / 2 + ball.radius
         ) {
             return true
         }
@@ -151,16 +156,16 @@ export class gameLogic {
 
         this.checkWallCollision(ball)
 
-        if (ball.x <= ball.radius + players[0].paddle.width) {
+        if (ball.x <= (ball.radius + players[0].paddle.width)) {
             if (this.checkPlayerCollision(ball, players[0])) {
-                ball.dx *= -1
+                this.reflectBall(ball, players[0])
             } else {
                 players[1].score += 1
                 this.resetBallPosition(ball)
             }
         } else if (ball.x >= 1 - (ball.radius + players[0].paddle.width)) {
             if (this.checkPlayerCollision(ball, players[1])) {
-                ball.dx *= -1
+                this.reflectBall(ball, players[1])
             } else {
                 players[0].score += 1
                 this.resetBallPosition(ball)
@@ -168,6 +173,15 @@ export class gameLogic {
         }
     }
 
+    // reflect the ball based on the paddle hit point
+    private reflectBall(ball: BallDto, player: PlayerDto): void {
+        ball.dx *= -1
+        const relativePos = ball.y - player.y
+        const paddleHitPoint = relativePos / (player.paddle.height / 2 + ball.radius)
+        const angle = paddleHitPoint * REFLECT_ANGLE
+        const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+        ball.dy = ballSpeed * Math.sin(angle * (Math.PI / 180))
+    }
     // reset the ball position to the center
     private resetBallPosition(ball: BallDto): void {
         ball.x = 0.5

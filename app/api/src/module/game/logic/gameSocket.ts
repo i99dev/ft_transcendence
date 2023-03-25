@@ -5,6 +5,8 @@ export class socketLogic {
     public emitGameSetup(players: Socket[], game: gameStatusDto): void {
         players[0].emit('Game-Setup', { game, player: 1 })
         players[1].emit('Game-Setup', { game, player: 2 })
+        players[0].leave('lobby')
+        players[1].leave('lobby')
     }
 
     // emit end game event to the players in case of leaving the game or winning
