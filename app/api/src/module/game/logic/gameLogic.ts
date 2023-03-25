@@ -17,9 +17,9 @@ import { socketLogic } from './gameSocket'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
-const PADDLE_SPEED = 0.03
+const PADDLE_SPEED = 0.025
 const REFLECT_ANGLE = 80
-const BALL_XSPEED = 0.0055
+const BALL_XSPEED = 0.005
 const BALL_YSPEED = 0.0
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
@@ -113,6 +113,7 @@ export class gameLogic {
 
         this.checkWallCollision(ball)
 
+        // more accurate check can be applied here by checking if there is a an overlap between the ball and the paddle.
         if (ball.x <= ball.radius + players[0].paddle.width) {
             if (this.checkPlayerCollision(ball, players[0])) {
                 this.reflectBall(ball, players[0])
