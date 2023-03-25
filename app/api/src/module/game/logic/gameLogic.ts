@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/03/25 09:02:20 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/03/25 09:37:45 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ export class gameLogic {
     ) {
         const intervalId = setInterval(async () => {
             const game = this.games[gameId]
-
             this.updateGame(gameId) // game logic to be added here
             gameUpdateCallback(gameId, game)
             if (game.players[0].score >= 11 || game.players[1].score >= 11) {
@@ -151,8 +150,7 @@ export class gameLogic {
     // update the paddle position of the player based on the direction
     public updatePaddlePosition(client: Socket, direction: string): void {
         const player = this.players[client.id]
-
-        const game = this.games[player.gameId]
+        const game = this.games[player.gameID]
         if (!game) return
 
         if (direction === 'up') {
