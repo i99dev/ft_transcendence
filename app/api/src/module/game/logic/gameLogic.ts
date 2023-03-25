@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gameLogic.ts                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
+/*   Updated: 2023/03/25 09:02:20 by aaljaber         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 import { gameStatusDto, PlayerDto, BallDto } from '../dto/game.dto'
 import { Socket } from 'socket.io'
 import { gameHistory } from './gameHistory'
@@ -6,17 +18,12 @@ import { socketLogic } from './gameSocket'
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 const PADDLE_SPEED = 0.03
-const BALL_XSPEED = 0.0050
-const BALL_YSPEED = 0.000
 const REFLECT_ANGLE = 90
-const PADDLE_WIDTH = 0.017
-const PADDLE_HEIGHT = 0.2
-
-
+const BALL_XSPEED = 0.005
+const BALL_YSPEED = 0.0
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
     private games: Map<string, gameStatusDto> = new Map()
-    private lobby: Socket[] = []
     private gameHistory = new gameHistory()
     private socketLogic = new socketLogic()
     private playersSocket: Socket[] = []
@@ -30,84 +37,35 @@ export class gameLogic {
     }
 
     public addToLobby(client: Socket, decoded: any): void {
-        const player = this.createPlayer(decoded['login'])
-        this.players[client.id] = player
-        this.lobby.push(client)
-        client.join('lobby')
+        this.socketLogic.joinLobby(client, this.players, decoded)
     }
 
     // check if there are enough players in the lobby to start a game and create the game if so
-    public checkLobby(gameUpdateCallback: (gameId: string, game: gameStatusDto) => void): void {
-        if (this.lobby.length >= 2) {
-            this.playersSocket[0] = this.lobby.shift()
-            this.playersSocket[1] = this.lobby.shift()
-            const gameId = this.generateRandomId()
-            this.players[this.playersSocket[0].id].gameId = gameId
-            this.players[this.playersSocket[1].id].gameId = gameId
-            const game = this.createGame(
-                this.players[this.playersSocket[0].id],
-                this.players[this.playersSocket[1].id],
+    public checkLobby(gameUpdateCallback: (gameId: string, game: gameStatusDto) => void) {
+        if (this.socketLogic.isEnoughPlyrinLobby()) {
+            this.startGameLoop(
+                this.socketLogic.createGameRoom(this.players, this.Games),
+                gameUpdateCallback,
             )
-            this.games[gameId] = game
-            this.joinPlayersToGame(gameId)
-            this.socketLogic.emitGameSetup(this.playersSocket, game)
-            this.startGameLoop(gameId, gameUpdateCallback)
         }
-    }
-
-    // create a new player object
-    private createPlayer(username: string): PlayerDto {
-        return {
-            username,
-            y: 0.5,
-            score: 0,
-            paddle: {
-                width: PADDLE_WIDTH,
-                height: PADDLE_HEIGHT,
-            },
-        }
-    }
-
-    // create a game status object
-    private createGame(player1: PlayerDto, player2: PlayerDto): gameStatusDto {
-        let game: gameStatusDto = new gameStatusDto()
-        game = {
-            players: [player1, player2],
-            ball: {
-                x: 0.5,
-                y: 0.5,
-                dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
-                dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
-                radius: 0.02,
-            },
-        }
-        return game
-    }
-
-    // join the players to the game room
-
-    private joinPlayersToGame(gameId: string): void {
-        this.playersSocket[0].join(`${gameId}`)
-        this.playersSocket[1].join(`${gameId}`)
-    }
-
-    // generate a random id for the game
-    private generateRandomId(): string {
-        return Math.random().toString(36) + Date.now().toString(36)
     }
 
     // start the game loop through the logic of the game and ends in case of a win
     private startGameLoop(
         gameId: string,
         gameUpdateCallback: (gameId: string, game: gameStatusDto) => void,
-    ): void {
-        const intervalId = setInterval(() => {
+    ) {
+        const intervalId = setInterval(async () => {
             const game = this.games[gameId]
 
             this.updateGame(gameId) // game logic to be added here
             gameUpdateCallback(gameId, game)
             if (game.players[0].score >= 11 || game.players[1].score >= 11) {
                 clearInterval(intervalId)
+                await this.endGame(
+                    game.players[0].score >= 11 ? game.players[0] : game.players[1],
+                    true,
+                )
                 return
             }
         }, FRAME_INTERVAL)
@@ -156,7 +114,7 @@ export class gameLogic {
 
         this.checkWallCollision(ball)
 
-        if (ball.x <= (ball.radius + players[0].paddle.width)) {
+        if (ball.x <= ball.radius + players[0].paddle.width) {
             if (this.checkPlayerCollision(ball, players[0])) {
                 this.reflectBall(ball, players[0])
             } else {
@@ -179,7 +137,7 @@ export class gameLogic {
         const relativePos = ball.y - player.y
         const paddleHitPoint = relativePos / (player.paddle.height / 2 + ball.radius)
         const angle = paddleHitPoint * REFLECT_ANGLE
-        const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+        const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2)
         ball.dy = ballSpeed * Math.sin(angle * (Math.PI / 180))
     }
     // reset the ball position to the center
@@ -209,6 +167,11 @@ export class gameLogic {
         )
     }
 
+    private clearData(): void {
+        this.players.clear()
+        this.games.clear()
+    }
+
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
         const opponent = this.games[player.gameId].players.find(
             (op: PlayerDto) => op.username !== player.username,
@@ -219,5 +182,6 @@ export class gameLogic {
             this.games[player.gameId],
         )
         await this.gameHistory.addHistory(this.games[player.gameId])
+        this.clearData()
     }
 }
