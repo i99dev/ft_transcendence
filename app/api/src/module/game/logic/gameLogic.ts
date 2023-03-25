@@ -197,10 +197,10 @@ export class gameLogic {
         client: Socket,
         player: PlayerDto,
         reason: string,
-        isWinner,
+        isWinner: boolean,
     ): Promise<void> {
         const opponent = this.games[player.gameId].players.find(
-            op => op.username !== player.username,
+            (op: PlayerDto) => op.username !== player.username,
         )
         this.gameResult = new gameResult(
             player.username,
