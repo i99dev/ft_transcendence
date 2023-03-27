@@ -43,7 +43,7 @@ services:
 
         init: true
 
-        command: ['sh', '-c', 'yarn && npx prisma migrate dev && npx prisma studio | yarn dev']
+        command: ['sh', '-c', 'yarn && npx prisma migrate && npx prisma studio | yarn dev']
 
         environment:
             - NODE_ENV=${NODE_ENV}
