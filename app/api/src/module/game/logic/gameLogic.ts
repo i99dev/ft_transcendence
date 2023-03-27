@@ -50,6 +50,41 @@ export class gameLogic {
         }
     }
 
+    public startComputerGame(client: Socket, decoded: any, gameUpdateCallback: (gameId: string, game: gameStatusDto) => void): void {
+        const gameId: string = this.socketLogic.setupComputerGame(client, this.players, this.games, decoded)
+        this.startGameLoop(
+            gameId,
+            gameUpdateCallback,
+        )
+        this.turnOnComputer(gameId)
+    }
+
+    private turnOnComputer(gameID: string): void{ 
+
+        const intervalId = setInterval(async () => {
+            this.updateComputer(this.games[gameID].ball, this.games[gameID].players[1])
+
+        }, COMPUTER_FRAME_INTERVAL)
+    }
+
+    private updateComputer(ball: BallDto, player: PlayerDto): void{
+
+        if (ball.dx < 0) return
+
+        const distance = Math.abs(1 - ball.x)
+        const timeToReachPaddle = distance / Math.abs(ball.dx)
+        const predictedBallY = ball.y + ball.dy * timeToReachPaddle
+    
+        let targetY = predictedBallY
+    
+        targetY = Math.max(player.paddle.height / 2, Math.min(1 - player.paddle.height / 2, targetY))
+    
+        if (player.y < targetY) {
+            player.y += Math.min(COMPUTER_SPEED, targetY - player.y)
+        } else if (player.y > targetY) {
+            player.y -= Math.min(COMPUTER_SPEED, player.y - targetY)
+        }
+    }
     // start the game loop through the logic of the game and ends in case of a win
     private startGameLoop(
         gameId: string,
