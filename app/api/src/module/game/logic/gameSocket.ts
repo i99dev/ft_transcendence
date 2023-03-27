@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io'
 import { gameStatusDto, PlayerDto } from '../dto/game.dto'
-const BALL_XSPEED = 0.005
+const BALL_XSPEED = 0.01
 const BALL_YSPEED = 0.0
 const PADDLE_WIDTH = 0.017
 const PADDLE_HEIGHT = 0.2

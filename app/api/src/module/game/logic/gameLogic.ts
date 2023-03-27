@@ -17,9 +17,11 @@ import { socketLogic } from './gameSocket'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
+const COMPUTER_FRAME_INTERVAL = 1000 / 60
+const COMPUTER_SPEED = 0.0045
 const PADDLE_SPEED = 0.025
 const REFLECT_ANGLE = 80
-const BALL_XSPEED = 0.005
+const BALL_XSPEED = 0.01
 const BALL_YSPEED = 0.0
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
