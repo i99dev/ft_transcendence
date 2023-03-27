@@ -32,6 +32,8 @@ model User {
   power_ups    PowerUp[] @relation("UserPowerUps")
   friend_to    User[]  @relation("UserFriends")
   friends      User[]  @relation("UserFriends")
+  chat_room    ChatRoomUser[]
+  message     Message[]
 }
 
 model PowerUp {
@@ -46,11 +48,57 @@ model Achievement {
   type        String  @unique @default("default")
   description String?
   points      Int     @default(0)
-  users        User[]  @relation("UserAchievements")
+  users       User[]  @relation("UserAchievements")
+}
+
+model ChatRoom {
+  id             Int            @id @default(autoincrement())
+  room_id        String         @unique
+  name           String?
+  image          String?
+  type           chatRoomType   @default(PUBLIC)
+  password       String?
+  created_at     DateTime       @default(now())
+  chat_room_user ChatRoomUser[]
+  messages       Message[]
+}
+
+model ChatRoomUser {
+  id           Int      @id @default(autoincrement())
+  role         ChatRoomUserRole   @default(MEMBER)
+  status       String   @default("default")
+  created_at   DateTime @default(now())
+  user_login   String
+  chat_room_id String
+  chat_room    ChatRoom @relation(fields: [chat_room_id], references: [room_id])
+  user         User     @relation(fields: [user_login], references: [login])
+  @@unique([chat_room_id, user_login], name: "chat_room_user")
+}
+
+model Message {
+  id           Int      @id @default(autoincrement())
+  content      String
+  created_at   DateTime @default(now())
+  chat_room_id String
+  sender_login String
+  chat_room    ChatRoom @relation(fields: [chat_room_id], references: [room_id])
+  sender       User     @relation(fields: [sender_login], references: [login])
 }
 
 enum UserStatus {
   OFFLINE
   ONLINE
   LIVE
+}
+
+enum chatRoomType {
+  PUBLIC
+  PRIVATE
+  PROTETED
+}
+
+enum ChatRoomUserRole {
+  OWNER
+  ADMIN
+  MEMBER
 }
