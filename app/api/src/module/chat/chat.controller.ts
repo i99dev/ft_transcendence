@@ -13,6 +13,7 @@ export class ChatController {
     @Post('/room')
     @UsePipes(ChatPostValidation)
     createRoom(@Body() data1: ChatRoomDto): boolean {
+        this.chatService.createRoom()
         return true;
     }
 }
