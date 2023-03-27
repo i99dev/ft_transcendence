@@ -34,9 +34,9 @@ model Player {
     total_loses   Int           @default(0)
     exp_level     Int           @default(0)
     points        Int           @default(0)
+    user          User          @relation("UserPlayer", fields: [userId], references: [id])
     PowerUp       PowerUp[]     @relation("PlayerPowerUps")
     Achievement   Achievement[] @relation("PlayerAchievements")
-    user          User          @relation("UserPlayer", fields: [userId], references: [id])
     friend_to     Player[]      @relation("PlayerFriends")
     friends       Player[]      @relation("PlayerFriends")
     match_history Match[]       @relation("PlayerMatchHistory")
@@ -53,8 +53,8 @@ model Match {
     result   Score[]  @relation("MatchScores")
     winner   Player   @relation("MatchWinner", fields: [winnerID], references: [id])
     opponent Player[] @relation("PlayerMatchHistory")
-    victory  Victory? @relation("MatchVictories")
-    defeat   Defeat?  @relation("MatchDefeats")
+    victory  Victory? 
+    defeat   Defeat?
 }
 
 model Victory {
@@ -62,9 +62,9 @@ model Victory {
     matchID  Int    @unique
     palyerID Int
     scoreID  Int    @unique
-    score    Score  @relation("VictoryScore", fields: [scoreID], references: [id])
+    score    Score  @relation(fields: [scoreID], references: [id])
     winner   Player @relation("PlayerVictories", fields: [palyerID], references: [id])
-    match    Match  @relation("MatchVictories", fields: [matchID], references: [id])
+    match    Match  @relation(fields: [matchID], references: [id])
 }
 
 model Defeat {
@@ -72,9 +72,9 @@ model Defeat {
     matchID  Int    @unique
     palyerID Int
     scoreID  Int    @unique
-    score    Score  @relation("DefeatScore", fields: [scoreID], references: [id])
+    score    Score  @relation(fields: [scoreID], references: [id])
     loser    Player @relation("PlayerDefeats", fields: [palyerID], references: [id])
-    match    Match  @relation("MatchDefeats", fields: [matchID], references: [id])
+    match    Match  @relation(fields: [matchID], references: [id])
 }
 
 model PowerUp {
@@ -99,8 +99,8 @@ model Score {
     score    Int
     killer   Player   @relation("PlayerScores", fields: [palyerID], references: [id])
     match    Match    @relation("MatchScores", fields: [matchID], references: [id])
-    victory  Victory? @relation("VictoryScore")
-    defeat   Defeat?  @relation("DefeatScore")
+    victory  Victory?
+    defeat   Defeat?
 }
 
 enum UserStatus {
