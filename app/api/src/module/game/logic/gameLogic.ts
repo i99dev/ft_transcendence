@@ -87,6 +87,7 @@ export class gameLogic {
             player.y -= Math.min(COMPUTER_SPEED, player.y - targetY)
         }
     }
+    
     // start the game loop through the logic of the game and ends in case of a win
     private startGameLoop(
         gameId: string,
@@ -209,7 +210,9 @@ export class gameLogic {
         this.games.delete(player.gameId)
     }   
 
+    // end the game and emit the end game event
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
+        if(this.isComputer(player)) return
         const opponent = this.games[player.gameId].players.find(
             (op: PlayerDto) => op.username !== player.username,
         )
@@ -220,5 +223,10 @@ export class gameLogic {
         )
         await this.gameHistory.addHistory(this.games[player.gameId])
         this.clearData(player)
+    }
+
+    // check if the player is a computer
+    private isComputer(player: PlayerDto): boolean {
+        return player.username === 'Computer'
     }
 }
