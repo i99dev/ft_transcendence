@@ -143,8 +143,8 @@ export class gameLogic {
         const paddleBottom = player.y + player.paddle.height / 2;
 
         return (
-            ball.y + ball.radius >= player.y - player.paddle.height / 2 &&
-            ball.y - ball.radius <= player.y + player.paddle.height / 2 &&
+            ball.y + ball.radius >= paddleTop &&
+            ball.y - ball.radius <= paddleBottom &&
             ball.x + ball.radius >= paddleLeft &&
             ball.x - ball.radius <= paddleRight
         );
