@@ -59,7 +59,7 @@ model Chat {
   type           chatType   @default(PUBLIC)
   password       String?
   created_at     DateTime       @default(now())
-  chat_user ChatUser[]
+  chat_user      ChatUser[]
   messages       Message[]
 }
 
@@ -94,7 +94,7 @@ enum UserStatus {
 enum chatType {
   PUBLIC
   PRIVATE
-  PROTETED
+  PROTECTED
 }
 
 enum ChatUserRole {

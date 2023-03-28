@@ -1,9 +1,8 @@
 import { chatType } from '@prisma/client';
 export class ChatRoomDto {
-    id?: number;
+    room_id: string;
     name?: string;
     image?: string;
     type?: chatType;
     password?: string;
-    chatRoomUser: string[];
 }

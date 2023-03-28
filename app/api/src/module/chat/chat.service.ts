@@ -7,18 +7,27 @@ import { Injectable } from '@nestjs/common'
 export class ChatService {
     constructor(private prisma: PrismaService) {}
 
-    // async createRoom(value: ChatRoomDto) {
-    //     await this.prisma.chatRoom.upsert({
-    //         where: {
-    //             id: value.id
-    //         },
-    //         update: {},
-    //         create: {
-    //             name: value.name,
-    //             image: value.image,
-    //             type: value.type,
-    //             password: value.password,
-    //         },
-    //     })
-    // }
+    async createRoom(value: ChatRoomDto) {
+        console.log(value)
+        await this.prisma.chat.upsert({
+          where: {
+            room_id: value.room_id,
+          },
+          update: {
+            room_id: value.room_id,
+            name: value?.name,
+            image: value?.image,
+            type: value?.type,
+            password: value?.password
+          },
+          create: {
+            room_id: value.room_id,
+            name: value?.name,
+            image: value?.image,
+            type: value?.type,
+            password: value?.password
+          },
+        })
+      }
+      
 }

@@ -11,9 +11,10 @@ export class ChatController {
     constructor(private readonly chatService: ChatService) {}
 
     @Post('/room')
-    @Patch('/room')
     @UsePipes(ChatPostValidation)
-    createRoom(@Body() data1: ChatRoomDto): boolean {
+    createRoom(@Body() data: ChatRoomDto): boolean {
+        console.log(data);  
+        this.chatService.createRoom(data);
         return true;
     }
 }

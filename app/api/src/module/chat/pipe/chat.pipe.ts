@@ -1,17 +1,15 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common'
 import { ChatRoomDto } from '../dto/chat.dto';
-import { validate } from 'class-validator'
-import { object } from '@hapi/joi';
 
 @Injectable()
 export class ChatPostValidation implements PipeTransform<any> {
     createAssignValue(): ChatRoomDto {
         const vari: ChatRoomDto = {
+            room_id: 'string',
             name: 'string',
             image: 'string',
             type: 'PUBLIC',
             password: 'string',
-            chatRoomUser: ['string'],
         }
         return vari
     }
@@ -25,9 +23,10 @@ export class ChatPostValidation implements PipeTransform<any> {
             if (!chatPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`);
             }
-            if (key === 'type' && value[key] !== 'PUBLIC' && value[key] !== 'PRIVATE') {
+            if (key === 'type' && value[key] !== 'PUBLIC' && value[key] !== 'PRIVATE' && value[key] !== 'PROTECTED') {
                 throw new BadRequestException(`Invalid type value`);
             }
         }
+        return value
     }
 }
