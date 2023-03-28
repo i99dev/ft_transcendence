@@ -8,30 +8,37 @@ import {
     SubscribeMessage,
     WebSocketGateway,
 } from '@nestjs/websockets'
+import { chatType } from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
 
+
 @WebSocketGateway({
     namespace: '/chat',
-    cors: { origin: 'http://localhost/play', credentials: true },
+    cors: { origin: 'ws://localhost/chat', credentials: true },
     path: '/api/socket.io',
 })
 export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     wss: Server
 
+    constructor(private chatWsService: ChatWsService, private jwtService: JwtService) {}
+    
     private logger = new Logger('ChatWsGateway')
 
-    constructor(private chatWsService: ChatWsService, private jwtService: JwtService) {}
 
-    handleConnection(client: Socket, ...args: any[]) {
-        // let token = client.request.headers.authorization
-        // this.logger.log(token)
-        // token = token.split(" ")[1]
-        // const decoded = this.jwtService.decode(token)
-        // this.logger.log(decoded)
-
+    async handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client "${client.id}" connected to chat`)
+        
+        // Authentification with JWT
+        const user : any = client.handshake.query.login         // temporary for testing
+        // const user = await this.chatWsService.extractUserFromJwt(client.request.headers.authorization)
+        // if (!user)
+        //     return this.socketError(client, 'Invalid token')
+        // this.logger.log(user)
+
+        // Joining all the rooms of the user
+        this.joinAllRooms(client, user)
     }
 
     handleDisconnect(client: Socket) {
@@ -39,8 +46,21 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('message')
-    movePlayer(client: any,@MessageBody() payload: any) {
-        this.wss.emit('move', payload)
+    async sendMessage(client: any,@MessageBody() payload: any) {
+        const { room_id, message } = await this.chatWsService.getMessageInfo(payload)
+        this.wss.to(room_id).emit('message', message)
+    }
+
+    async joinAllRooms(client: Socket, user: string) {
+        const chats = await this.chatWsService.findAllChats(user)
+        for(let i = 0; i < chats.length; i++)
+            client.join(chats[i].room_id)
+    }
+
+    socketError(client: Socket, error: string) {
+        this.logger.error(error)
+        client.emit('Invalid token')
+        return client.disconnect()
     }
 
 }

@@ -27,44 +27,82 @@ export class ChatUserSeeder {
     }
 
     async assignUsersToChats(): Promise<void> {
+
+        // Room 1
         await this.prisma.chat.update({
             where: { room_id: 'room1' },
             data: {
                 chat_user: {
-                    createMany: {
-                        data: [
-                            {
+                    upsert: {
+                        where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room1' } },
+                        update: {},
+                        create: {
                                 user_login: 'bnaji',
                                 role: ChatUserRole.OWNER,
                             },
-                            {
-                                user_login: 'aaljaber',
-                                role: ChatUserRole.ADMIN,
-                            },
-                            {
-                                user_login: 'mal-guna',
-                                role: ChatUserRole.MEMBER,
-                            },
-                            {
-                                user_login: 'oal-tena',
-                                role: ChatUserRole.ADMIN,
-                            },
-                        ]
                     }
                 },
             },
         })
         await this.prisma.chat.update({
+            where: { room_id: 'room1' },
+            data: {
+                chat_user: {
+                    upsert: {
+                        where: { chat_user: { user_login: 'aaljaber', chat_room_id: 'room1' } },
+                        update: {},
+                        create: {
+                                user_login: 'aaljaber',
+                                role: ChatUserRole.ADMIN,
+                            },
+                    }
+                },
+            },
+        })
+        await this.prisma.chat.update({
+            where: { room_id: 'room1' },
+            data: {
+                chat_user: {
+                    upsert: {
+                        where: { chat_user: { user_login: 'mal-guna', chat_room_id: 'room1' } },
+                        update: {},
+                        create: {
+                                user_login: 'mal-guna',
+                                role: ChatUserRole.MEMBER,
+                            },
+                    }
+                },
+            },
+        })
+        await this.prisma.chat.update({
+            where: { room_id: 'room1' },
+            data: {
+                chat_user: {
+                    upsert: {
+                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room1' } },
+                        update: {},
+                        create: {
+                                user_login: 'oal-tena',
+                                role: ChatUserRole.ADMIN,
+                            },
+                    }
+                },
+            },
+        })
+
+        // Room 2
+        await this.prisma.chat.update({
             where: { room_id: 'room2' },
             data: {
                 chat_user: {
-                    createMany: {
-                        data: [
+                    upsert: {
+                        where: { chat_user: { user_login: 'isaad', chat_room_id: 'room2' } },
+                        update: {},
+                        create:
                             {
                                 user_login: 'isaad',
                                 role: ChatUserRole.OWNER,
                             },
-                        ]
                     }
                 },
             },
@@ -73,15 +111,30 @@ export class ChatUserSeeder {
             where: { room_id: 'room3' },
             data: {
                 chat_user: {
-                    createMany: {
-                        data: [
+                    upsert: {
+                        where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room3' } },
+                        update: {},
+                        create:
                             {
                                 user_login: 'bnaji',
                             },
+                    }
+                },
+            },
+        })
+
+        // Room 3
+        await this.prisma.chat.update({
+            where: { room_id: 'room3' },
+            data: {
+                chat_user: {
+                    upsert: {
+                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room3' } },
+                        update: {},
+                        create:
                             {
                                 user_login: 'oal-tena',
                             },
-                        ]
                     }
                 },
             },
