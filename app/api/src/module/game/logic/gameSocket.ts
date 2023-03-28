@@ -37,7 +37,7 @@ export class socketLogic {
     }
 
     // emit the game-setup event to the players to update them with the game status
-    public emitGameSetup(players: Socket[], game: gameStatusDto): void {
+    public emitGameSetup(game: gameStatusDto): void {
         this.palyersSocket[0].emit('Game-Setup', { game, player: 1 })
         this.palyersSocket[1].emit('Game-Setup', { game, player: 2 })
         this.palyersSocket[0].leave('lobby')
@@ -45,13 +45,13 @@ export class socketLogic {
     }
 
     // emit end game event to the players in case of leaving the game or winning
-    public emitEndGame(players: Socket[], winner: PlayerDto, game: gameStatusDto): void {
+    public emitEndGame(winner: PlayerDto, game: gameStatusDto): void {
         this.palyersSocket[0].emit('Game-Over', { game, winner })
         this.palyersSocket[1].emit('Game-Over', { game, winner })
     }
 
     // join the players to the game room
-    public joinPlayersToGame(players: Socket[], gameId: string): void {
+    public joinPlayersToGame(gameId: string): void {
         this.palyersSocket[0].join(gameId)
         this.palyersSocket[1].join(gameId)
     }
@@ -75,8 +75,8 @@ export class socketLogic {
             players[this.palyersSocket[1].id],
         )
         games[gameID] = game
-        this.joinPlayersToGame(this.palyersSocket, gameID)
-        this.emitGameSetup(this.palyersSocket, game)
+        this.joinPlayersToGame(gameID)
+        this.emitGameSetup(game)
         return gameID
     }
 

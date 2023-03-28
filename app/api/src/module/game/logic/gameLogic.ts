@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/03/28 07:26:15 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/03/28 08:10:28 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,11 +222,7 @@ export class gameLogic {
         const opponent = this.games[player.gameId].players.find(
             (op: PlayerDto) => op.username !== player.username,
         )
-        this.socketLogic.emitEndGame(
-            this.playersSocket,
-            isWinner ? player : opponent,
-            this.games[player.gameId],
-        )
+        this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameId])
         const game: gameHistory = new gameHistory(this.games[player.gameId])
         game.addHistory()
         this.clearData(player)
