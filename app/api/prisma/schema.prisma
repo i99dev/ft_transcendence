@@ -32,7 +32,7 @@ model User {
   power_ups    PowerUp[] @relation("UserPowerUps")
   friend_to    User[]  @relation("UserFriends")
   friends      User[]  @relation("UserFriends")
-  chat_room    ChatRoomUser[]
+  chat    ChatUser[]
   message     Message[]
 }
 
@@ -51,28 +51,28 @@ model Achievement {
   users       User[]  @relation("UserAchievements")
 }
 
-model ChatRoom {
+model Chat {
   id             Int            @id @default(autoincrement())
   room_id        String         @unique
   name           String?
   image          String?
-  type           chatRoomType   @default(PUBLIC)
+  type           chatType   @default(PUBLIC)
   password       String?
   created_at     DateTime       @default(now())
-  chat_room_user ChatRoomUser[]
+  chat_user ChatUser[]
   messages       Message[]
 }
 
-model ChatRoomUser {
+model ChatUser {
   id           Int      @id @default(autoincrement())
-  role         ChatRoomUserRole   @default(MEMBER)
+  role         ChatUserRole   @default(MEMBER)
   status       String   @default("default")
   created_at   DateTime @default(now())
   user_login   String
-  chat_room_id String
-  chat_room    ChatRoom @relation(fields: [chat_room_id], references: [room_id])
+  chat_room_id     String
+  chat    Chat @relation(fields: [chat_room_id], references: [room_id])
   user         User     @relation(fields: [user_login], references: [login])
-  @@unique([chat_room_id, user_login], name: "chat_room_user")
+  @@unique([chat_room_id, user_login], name: "chat_user")
 }
 
 model Message {
@@ -81,7 +81,7 @@ model Message {
   created_at   DateTime @default(now())
   chat_room_id String
   sender_login String
-  chat_room    ChatRoom @relation(fields: [chat_room_id], references: [room_id])
+  chat    Chat @relation(fields: [chat_room_id], references: [room_id])
   sender       User     @relation(fields: [sender_login], references: [login])
 }
 
@@ -91,13 +91,13 @@ enum UserStatus {
   LIVE
 }
 
-enum chatRoomType {
+enum chatType {
   PUBLIC
   PRIVATE
   PROTETED
 }
 
-enum ChatRoomUserRole {
+enum ChatUserRole {
   OWNER
   ADMIN
   MEMBER
