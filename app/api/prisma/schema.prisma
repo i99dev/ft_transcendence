@@ -44,7 +44,7 @@ model Player {
 }
 
 model Match {
-    gameID   Int      @id @default(autoincrement())
+    gameID   Int      @id @unique
     start     DateTime @default(now())
     end       DateTime @default(now())
     opponents Player[] @relation("MatchOpponents")

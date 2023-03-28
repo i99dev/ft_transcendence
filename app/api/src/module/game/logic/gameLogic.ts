@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/03/25 09:37:45 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/03/28 06:11:43 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ export class gameLogic {
         this.players.delete(this.playersSocket[0].id)
         this.players.delete(this.playersSocket[1].id)
         this.games.delete(player.gameId)
-    }   
+    }
 
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
         const opponent = this.games[player.gameId].players.find(
@@ -181,7 +181,7 @@ export class gameLogic {
             isWinner ? player : opponent,
             this.games[player.gameId],
         )
-        await this.gameHistory.addHistory(this.games[player.gameId])
+        // await this.gameHistory.addHistory(this.games[player.gameId])
         this.clearData(player)
     }
 }
