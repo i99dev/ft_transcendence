@@ -95,6 +95,7 @@ enum chatType {
   PUBLIC
   PRIVATE
   PROTETED
+  DIRECT
 }
 
 enum ChatUserRole {
