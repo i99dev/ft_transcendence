@@ -16,22 +16,24 @@ export class socketLogic {
         client.join('lobby')
     }
 
-    public setupComputerGame(client: Socket, players: Map<string, PlayerDto>, games: Map<string, gameStatusDto>, decoded: any): string{
+    public setupComputerGame(
+        client: Socket,
+        players: Map<string, PlayerDto>,
+        games: Map<string, gameStatusDto>,
+        decoded: any,
+    ): string {
         const player = this.createPlayer(decoded['login'])
         const computer = this.createPlayer('Computer')
         const gameID: string = this.generateRandomId()
 
         players[client.id] = player
         players[client.id].gameID = gameID
-        const game = this.instanciateGame(
-            player,
-            computer,
-        )
-        games[gameID] = game 
-    
+        const game = this.instanciateGame(player, computer)
+        games[gameID] = game
+
         client.join(gameID)
         client.emit('Game-Setup', { game, player: 1 })
-        return gameID;
+        return gameID
     }
 
     // emit the game-setup event to the players to update them with the game status

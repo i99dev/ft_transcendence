@@ -36,7 +36,7 @@ model User {
 model Player {
     id       Int     @id @default(autoincrement())
     userID   Int     @unique
-    matchID  Int     @unique
+    matchID  String     @unique
     score    Int     @default(0)
     IsWinner Boolean @default(false)
     user     User    @relation(fields: [userID], references: [id])
@@ -44,7 +44,7 @@ model Player {
 }
 
 model Match {
-    gameID   Int      @id @unique
+    gameID   String      @id @unique
     start     DateTime @default(now())
     end       DateTime @default(now())
     opponents Player[] @relation("MatchOpponents")

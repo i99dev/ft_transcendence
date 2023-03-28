@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/03/28 06:11:43 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/03/28 07:26:15 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ const BALL_YSPEED = 0.0
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
     private games: Map<string, gameStatusDto> = new Map()
-    private gameHistory = new gameHistory()
+    // private gameHistory: gameHistory
     private socketLogic = new socketLogic()
     private playersSocket: Socket[] = []
 
@@ -52,42 +52,48 @@ export class gameLogic {
         }
     }
 
-    public startComputerGame(client: Socket, decoded: any, gameUpdateCallback: (gameId: string, game: gameStatusDto) => void): void {
-        const gameId: string = this.socketLogic.setupComputerGame(client, this.players, this.games, decoded)
-        this.startGameLoop(
-            gameId,
-            gameUpdateCallback,
+    public startComputerGame(
+        client: Socket,
+        decoded: any,
+        gameUpdateCallback: (gameId: string, game: gameStatusDto) => void,
+    ): void {
+        const gameId: string = this.socketLogic.setupComputerGame(
+            client,
+            this.players,
+            this.games,
+            decoded,
         )
+        this.startGameLoop(gameId, gameUpdateCallback)
         this.turnOnComputer(gameId)
     }
 
-    private turnOnComputer(gameID: string): void{ 
-
+    private turnOnComputer(gameID: string): void {
         const intervalId = setInterval(async () => {
             this.updateComputer(this.games[gameID].ball, this.games[gameID].players[1])
-
         }, COMPUTER_FRAME_INTERVAL)
     }
 
-    private updateComputer(ball: BallDto, player: PlayerDto): void{
-
+    private updateComputer(ball: BallDto, player: PlayerDto): void {
         if (ball.dx < 0) return
 
         const distance = Math.abs(1 - ball.x)
         const timeToReachPaddle = distance / Math.abs(ball.dx)
         const predictedBallY = ball.y + ball.dy * timeToReachPaddle
-    
+
         let targetY = predictedBallY
-    
-        targetY = Math.max(player.paddle.height / 2, Math.min(1 - player.paddle.height / 2, targetY))
-    
+
+        targetY = Math.max(
+            player.paddle.height / 2,
+            Math.min(1 - player.paddle.height / 2, targetY),
+        )
+
         if (player.y < targetY) {
             player.y += Math.min(COMPUTER_SPEED, targetY - player.y)
         } else if (player.y > targetY) {
             player.y -= Math.min(COMPUTER_SPEED, player.y - targetY)
         }
     }
-    
+
     // start the game loop through the logic of the game and ends in case of a win
     private startGameLoop(
         gameId: string,
@@ -212,7 +218,7 @@ export class gameLogic {
 
     // end the game and emit the end game event
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
-        if(this.isComputer(player)) return
+        if (this.isComputer(player)) return
         const opponent = this.games[player.gameId].players.find(
             (op: PlayerDto) => op.username !== player.username,
         )
@@ -221,7 +227,8 @@ export class gameLogic {
             isWinner ? player : opponent,
             this.games[player.gameId],
         )
-        // await this.gameHistory.addHistory(this.games[player.gameId])
+        const game: gameHistory = new gameHistory(this.games[player.gameId])
+        game.addHistory()
         this.clearData(player)
     }
 

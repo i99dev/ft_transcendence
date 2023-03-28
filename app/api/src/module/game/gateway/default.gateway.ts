@@ -30,20 +30,17 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
-        if(true)//add conditon to check if the game is vs computer
-        {
-            this.gameService.gameLogic.startComputerGame(client, decoded,
-                (gameId, game) => {
-                    this.server.to(gameId).emit('Game-Data', game)
-                })
-        }
-        else
-        {
-            this.gameService.gameLogic.addToLobby(client, decoded)
-            this.gameService.gameLogic.checkLobby((gameId, game) => {
-                this.server.to(gameId).emit('Game-Data', game)
-            })
-        }
+        // if (true) {
+        //     //add conditon to check if the game is vs computer
+        //     this.gameService.gameLogic.startComputerGame(client, decoded, (gameId, game) => {
+        //         this.server.to(gameId).emit('Game-Data', game)
+        //     })
+        // } else {
+        this.gameService.gameLogic.addToLobby(client, decoded)
+        this.gameService.gameLogic.checkLobby((gameId, game) => {
+            this.server.to(gameId).emit('Game-Data', game)
+        })
+        // }
     }
 
     handleDisconnect(client: Socket) {
@@ -60,24 +57,3 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.gameLogic.updatePaddlePosition(client, direction)
     }
 }
-
-// await this.prisma.user.update({
-//     where: { login: 'aaljaber' },
-//     data: {
-// 		friends: {
-// 			connect: [{ login: 'bnaji' }, { login: 'isaad' }],
-// 		},
-// 	},
-// })
-// await this.prisma.user.upsert({
-// 	where: { login: 'aaljaber'},
-// 	update: {
-// 		total_wins: 15,
-// 	},
-// 	create: {
-// 		login: 'aaljaber',
-// 		username: 'aaljaber',
-// 		email: 'ss',
-// 		total_loses: 0,
-// 	},
-// });
