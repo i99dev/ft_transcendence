@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { ChatRoomUserRole, ChatRoomUser, PrismaClient } from '@prisma/client'
+import { ChatUserRole, ChatUser, PrismaClient } from '@prisma/client'
 
 @Injectable()
-export class ChatRoomUserSeeder {
+export class ChatUserSeeder {
     private prisma = new PrismaClient()
-    private chatRoomUsers: ChatRoomUser[]
+    private chatUsers: ChatUser[]
 
-    async seedChatRoomUsers(): Promise<ChatRoomUser[]> {
-        this.chatRoomUsers = [
-            await this.prisma.chatRoomUser.upsert({
+    async seedChatUsers(): Promise<ChatUser[]> {
+        this.chatUsers = [
+            await this.prisma.chatUser.upsert({
                 where: {
-                    chat_room_user: {
+                    chat_user: {
                         user_login: 'bnaji',
                         chat_room_id: 'room1',
                     }
@@ -19,60 +19,60 @@ export class ChatRoomUserSeeder {
                 create: {
                     user_login: 'bnaji',
                     chat_room_id: 'room1',
-                    role: ChatRoomUserRole.OWNER,
+                    role: ChatUserRole.OWNER,
                 },
             }),
         ]
-        return this.chatRoomUsers
+        return this.chatUsers
     }
 
-    async assignUsersToChatRooms(): Promise<void> {
-        await this.prisma.chatRoom.update({
+    async assignUsersToChats(): Promise<void> {
+        await this.prisma.chat.update({
             where: { room_id: 'room1' },
             data: {
-                chat_room_user: {
+                chat_user: {
                     createMany: {
                         data: [
                             {
                                 user_login: 'bnaji',
-                                role: ChatRoomUserRole.OWNER,
+                                role: ChatUserRole.OWNER,
                             },
                             {
                                 user_login: 'aaljaber',
-                                role: ChatRoomUserRole.ADMIN,
+                                role: ChatUserRole.ADMIN,
                             },
                             {
                                 user_login: 'mal-guna',
-                                role: ChatRoomUserRole.MEMBER,
+                                role: ChatUserRole.MEMBER,
                             },
                             {
                                 user_login: 'oal-tena',
-                                role: ChatRoomUserRole.ADMIN,
+                                role: ChatUserRole.ADMIN,
                             },
                         ]
                     }
                 },
             },
         })
-        await this.prisma.chatRoom.update({
+        await this.prisma.chat.update({
             where: { room_id: 'room2' },
             data: {
-                chat_room_user: {
+                chat_user: {
                     createMany: {
                         data: [
                             {
                                 user_login: 'isaad',
-                                role: ChatRoomUserRole.OWNER,
+                                role: ChatUserRole.OWNER,
                             },
                         ]
                     }
                 },
             },
         })
-        await this.prisma.chatRoom.update({
+        await this.prisma.chat.update({
             where: { room_id: 'room3' },
             data: {
-                chat_room_user: {
+                chat_user: {
                     createMany: {
                         data: [
                             {

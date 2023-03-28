@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, PrismaClient } from '@prisma/client'
+import { Chat, PrismaClient } from '@prisma/client'
 
 @Injectable()
-export class ChatRoomSeeder {
+export class ChatSeeder {
     private prisma = new PrismaClient()
-    private chatRooms: ChatRoom[]
+    private chats: Chat[]
 
-    async seedChatRooms(): Promise<ChatRoom[]> {
-        this.chatRooms = [
-            await this.prisma.chatRoom.upsert({
+    async seedChats(): Promise<Chat[]> {
+        this.chats = [
+            await this.prisma.chat.upsert({
                 where: { room_id: 'room1' },
                 update: {},
                 create: {
@@ -16,7 +16,7 @@ export class ChatRoomSeeder {
                     name: 'Mayers',
                 },
             }),
-            await this.prisma.chatRoom.upsert({
+            await this.prisma.chat.upsert({
               where: { room_id: 'room2' },
               update: {},
               create: {
@@ -24,7 +24,7 @@ export class ChatRoomSeeder {
                     name: 'Novembers',
                 },
             }),
-            await this.prisma.chatRoom.upsert({
+            await this.prisma.chat.upsert({
               where: { room_id: 'room3' },
               update: {},
               create: {
@@ -33,6 +33,6 @@ export class ChatRoomSeeder {
                 },
             }),
         ]
-        return this.chatRooms
+        return this.chats
     }
 }

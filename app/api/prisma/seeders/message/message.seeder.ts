@@ -62,8 +62,8 @@ export class MessageSeeder {
         return this.messages
     }
 
-    async assignMessagesToChatRooms(): Promise<void> {
-        await this.prisma.chatRoom.update({
+    async assignMessagesToChats(): Promise<void> {
+        await this.prisma.chat.update({
             where: { room_id: 'room1' },
             data: {
                 messages: {
@@ -94,7 +94,7 @@ export class MessageSeeder {
                 },
             },
         })
-        await this.prisma.chatRoom.update({
+        await this.prisma.chat.update({
             where: { room_id: 'room2' },
             data: {
                 messages: {
@@ -113,7 +113,7 @@ export class MessageSeeder {
                 },
             },
         })
-        await this.prisma.chatRoom.update({
+        await this.prisma.chat.update({
             where: { room_id: 'room3' },
             data: {
                 messages: {

@@ -6,8 +6,8 @@ import { UserSeeder } from './seeders/user/user.seeder'
 import { FriendSeeder } from './seeders/friend/friend.seeder'
 import { PowerUpSeeder } from './seeders/power_up/power_up.seeder'
 import { AchievementSeeder } from './seeders/achievement/achievement.seeder'
-import { ChatRoomSeeder } from './seeders/chat_room/chat_room.seeder'
-import { ChatRoomUserSeeder } from './seeders/chat_room_user/chat_room_user.seeder'
+import { ChatSeeder } from './seeders/chat/chat.seeder'
+import { ChatUserSeeder } from './seeders/chat_user/chat_user.seeder'
 import { MessageSeeder } from './seeders/message/message.seeder'
 // import { SeederService   } from './seeders/user/user.seeder.service';
 
@@ -34,13 +34,13 @@ async function main() {
     const updateUsers = await new AchievementSeeder().assignAchievementsToUsers()
 
     // Create ChatRooms
-    const chats = await new ChatRoomSeeder().seedChatRooms()
+    const chats = await new ChatSeeder().seedChats()
 
     // Create ChatRoomUsers
-    await new ChatRoomUserSeeder().assignUsersToChatRooms()
+    await new ChatUserSeeder().assignUsersToChats()
 
     // Assign Messages to ChatRooms and Users
-    await new MessageSeeder().assignMessagesToChatRooms()
+    await new MessageSeeder().assignMessagesToChats()
 
     console.log({ users, powerUps, achievements, updateUsers, chats })
 }
