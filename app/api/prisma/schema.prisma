@@ -13,94 +13,56 @@ datasource db {
 // prisma/schema.prisma
 
 model User {
-    id           Int        @id @default(autoincrement())
-    login        String     @unique
-    username     String     @unique
-    email        String     @unique
-    status       UserStatus @default(OFFLINE)
+    id           Int           @id @default(autoincrement())
+    login        String        @unique
+    username     String        @unique
+    email        String        @unique
+    status       UserStatus    @default(OFFLINE)
     first_name   String?
     last_name    String?
-    created_at   DateTime   @default(now())
-    last_login   DateTime   @default(now())
+    created_at   DateTime      @default(now())
+    last_login   DateTime      @default(now())
     image        String?
-    two_fac_auth Boolean    @default(false)
-    player       Player?    @relation("UserPlayer")
+    exp_level    Int           @default(0)
+    points       Int           @default(0)
+    two_fac_auth Boolean       @default(false)
+    achievements Achievement[] @relation("UserAchievements")
+    power_ups    PowerUp[]     @relation("UserPowerUps")
+    friend_to    User[]        @relation("UserFriends")
+    friends      User[]        @relation("UserFriends")
+    player       Player?
 }
 
 model Player {
-    id            Int           @id @default(autoincrement())
-    userId        Int           @unique
-    total_wins    Int           @default(0)
-    total_loses   Int           @default(0)
-    exp_level     Int           @default(0)
-    points        Int           @default(0)
-    user          User          @relation("UserPlayer", fields: [userId], references: [id])
-    PowerUp       PowerUp[]     @relation("PlayerPowerUps")
-    Achievement   Achievement[] @relation("PlayerAchievements")
-    friend_to     Player[]      @relation("PlayerFriends")
-    friends       Player[]      @relation("PlayerFriends")
-    match_history Match[]       @relation("PlayerMatchHistory")
-    victories     Victory[]     @relation("PlayerVictories")
-    defeats       Defeat[]      @relation("PlayerDefeats")
-    scores        Score[]       @relation("PlayerScores")
-    matchwinner   Match[]       @relation("MatchWinner")
+    id       Int     @id @default(autoincrement())
+    userID   Int     @unique
+    matchID  Int     @unique
+    score    Int     @default(0)
+    IsWinner Boolean @default(false)
+    user     User    @relation(fields: [userID], references: [id])
+    matches  Match   @relation("MatchOpponents", fields: [matchID], references: [gameID])
 }
 
 model Match {
-    id       Int      @id @default(autoincrement())
-    at       DateTime @default(now())
-    winnerID Int      @unique
-    result   Score[]  @relation("MatchScores")
-    winner   Player   @relation("MatchWinner", fields: [winnerID], references: [id])
-    opponent Player[] @relation("PlayerMatchHistory")
-    victory  Victory? 
-    defeat   Defeat?
-}
-
-model Victory {
-    id       Int    @id @default(autoincrement())
-    matchID  Int    @unique
-    palyerID Int
-    scoreID  Int    @unique
-    score    Score  @relation(fields: [scoreID], references: [id])
-    winner   Player @relation("PlayerVictories", fields: [palyerID], references: [id])
-    match    Match  @relation(fields: [matchID], references: [id])
-}
-
-model Defeat {
-    id       Int    @id @default(autoincrement())
-    matchID  Int    @unique
-    palyerID Int
-    scoreID  Int    @unique
-    score    Score  @relation(fields: [scoreID], references: [id])
-    loser    Player @relation("PlayerDefeats", fields: [palyerID], references: [id])
-    match    Match  @relation(fields: [matchID], references: [id])
+    gameID   Int      @id @default(autoincrement())
+    start     DateTime @default(now())
+    end       DateTime @default(now())
+    opponents Player[] @relation("MatchOpponents")
 }
 
 model PowerUp {
-    id     Int      @id @default(autoincrement())
-    period Int      @default(0)
-    type   String   @unique @default("default")
-    Player Player[] @relation("PlayerPowerUps")
+    id     Int    @id @default(autoincrement())
+    type   String @unique @default("default")
+    period Int    @default(0)
+    users  User[] @relation("UserPowerUps")
 }
 
 model Achievement {
-    id          Int      @id @default(autoincrement())
-    points      Int      @default(0)
+    id          Int     @id @default(autoincrement())
+    type        String  @unique @default("default")
     description String?
-    type        String   @unique @default("default")
-    Player      Player[] @relation("PlayerAchievements")
-}
-
-model Score {
-    id       Int      @id @default(autoincrement())
-    matchID  Int      @unique
-    palyerID Int
-    score    Int
-    killer   Player   @relation("PlayerScores", fields: [palyerID], references: [id])
-    match    Match    @relation("MatchScores", fields: [matchID], references: [id])
-    victory  Victory?
-    defeat   Defeat?
+    points      Int     @default(0)
+    users       User[]  @relation("UserAchievements")
 }
 
 enum UserStatus {

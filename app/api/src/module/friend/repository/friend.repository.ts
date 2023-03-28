@@ -17,13 +17,13 @@ export class FriendRepository {
     }
 
     async UpdateUserFriends(name: string, toAdd: string): Promise<UserGetDto> {
-        let user2: UserGetDto = await this.prisma.user.findUnique({
+        const user2: UserGetDto = await this.prisma.user.findUnique({
             where: { login: toAdd },
         })
         if (!user2) {
             throw new NotFoundException(`User with name ${name} was not found`)
         }
-        let user: UserGetDto = await this.prisma.user.update({
+        const user: UserGetDto = await this.prisma.user.update({
             where: { login: name },
             include: {
                 friend_to: true,
