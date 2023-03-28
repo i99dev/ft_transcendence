@@ -39,8 +39,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('message')
-    movePlayer(client: any,@MessageBody() payload: any) {
+    movePlayer(client: any, @MessageBody() payload: any) {
         this.wss.emit('move', payload)
     }
-
 }

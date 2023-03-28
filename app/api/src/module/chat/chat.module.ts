@@ -1,4 +1,4 @@
-import { PrismaService } from '@providers/prisma/prisma.service';
+import { PrismaService } from '@providers/prisma/prisma.service'
 import { PrismaClient } from '@prisma/client'
 import { ChatService } from './chat.service'
 import { ChatController } from './chat.controller'

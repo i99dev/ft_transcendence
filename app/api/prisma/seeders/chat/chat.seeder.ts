@@ -17,17 +17,17 @@ export class ChatSeeder {
                 },
             }),
             await this.prisma.chat.upsert({
-              where: { room_id: 'room2' },
-              update: {},
-              create: {
+                where: { room_id: 'room2' },
+                update: {},
+                create: {
                     room_id: 'room2',
                     name: 'Novembers',
                 },
             }),
             await this.prisma.chat.upsert({
-              where: { room_id: 'room3' },
-              update: {},
-              create: {
+                where: { room_id: 'room3' },
+                update: {},
+                create: {
                     room_id: 'room3',
                     name: 'private bnaji&oal-tena',
                 },

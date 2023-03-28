@@ -13,7 +13,7 @@ export class ChatUserSeeder {
                     chat_user: {
                         user_login: 'bnaji',
                         chat_room_id: 'room1',
-                    }
+                    },
                 },
                 update: {},
                 create: {
@@ -49,8 +49,8 @@ export class ChatUserSeeder {
                                 user_login: 'oal-tena',
                                 role: ChatUserRole.ADMIN,
                             },
-                        ]
-                    }
+                        ],
+                    },
                 },
             },
         })
@@ -64,8 +64,8 @@ export class ChatUserSeeder {
                                 user_login: 'isaad',
                                 role: ChatUserRole.OWNER,
                             },
-                        ]
-                    }
+                        ],
+                    },
                 },
             },
         })
@@ -81,8 +81,8 @@ export class ChatUserSeeder {
                             {
                                 user_login: 'oal-tena',
                             },
-                        ]
-                    }
+                        ],
+                    },
                 },
             },
         })
