@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config'
 import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
-
+import { MatchHistoryModule } from './module/match-history/match-history.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -17,6 +17,7 @@ import { GameModule } from './module/game/game.module'
         UserModule,
         PrismaModule,
         GameModule,
+        MatchHistoryModule,
     ],
     controllers: [AppController],
     providers: [AppService],
