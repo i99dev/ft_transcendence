@@ -6,3 +6,9 @@ export class ChatRoomDto {
     type?: chatType;
     password?: string;
 }
+
+export class ChatUserDto {
+    role?: string;
+    status?: string;
+    user_login: string;
+}
