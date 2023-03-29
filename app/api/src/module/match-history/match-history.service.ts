@@ -27,11 +27,18 @@ export class MatchHistoryService {
     }
     async getMatchHistoryByResult(player: string, winning: boolean) {
         const match = await this.getPlayerMatchHistory(player)
-
-        const winningMatches = _.filter(match, m => {
-            const playerOpponent = _.find(m.opponents, { user: { login: player } })
-            return playerOpponent && playerOpponent.isWinning
+        const winningMatch = []
+        match.forEach(m => {
+            if (m.opponents[0].user.login === player) {
+                if (m.opponents[0].IsWinner === winning) {
+                    winningMatch.push(m)
+                }
+            } else {
+                if (m.opponents[1].IsWinner === winning) {
+                    winningMatch.push(m)
+                }
+            }
         })
-        return winningMatches
+        return winningMatch
     }
 }
