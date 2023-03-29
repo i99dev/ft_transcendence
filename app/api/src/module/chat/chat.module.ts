@@ -3,9 +3,10 @@ import { PrismaClient } from '@prisma/client'
 import { ChatService } from './chat.service'
 import { ChatController } from './chat.controller'
 import { Module } from '@nestjs/common'
+import { ChatWsModule } from './gateway/chatWs.module';
 
 @Module({
-    imports: [],
+    imports: [ChatWsModule],
     controllers: [ChatController],
     providers: [ChatService, PrismaClient, PrismaService],
     exports: [ChatService],

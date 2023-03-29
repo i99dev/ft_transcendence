@@ -6,7 +6,7 @@
 */
 -- AlterEnum
 BEGIN;
-CREATE TYPE "chatType_new" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
+CREATE TYPE "chatType_new" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED', 'DIRECT');
 ALTER TABLE "Chat" ALTER COLUMN "type" DROP DEFAULT;
 ALTER TABLE "Chat" ALTER COLUMN "type" TYPE "chatType_new" USING ("type"::text::"chatType_new");
 ALTER TYPE "chatType" RENAME TO "chatType_old";
