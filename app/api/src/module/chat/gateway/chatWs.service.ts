@@ -15,16 +15,6 @@ export class ChatWsService {
         return !decode ? null : decode['login']
     }
 
-    async getMessageInfo(payload: any) {
-        const load = JSON.parse(payload)
-        let room_id = load.reciever
-        if (load.type === chatType.DIRECT) {
-            const chat = await this.findDirectChat(load.sender, load.reciever)
-            room_id = chat.room_id
-        }
-        return { room_id: room_id, message: load.message }
-    }
-
     async findAllChats(login: string): Promise<any[]> {
         return this.chats = await this.prisma.chat.findMany({
             where: {
@@ -40,7 +30,7 @@ export class ChatWsService {
     }
 
     async findDirectChat(login1: string, login2: string): Promise<any> {
-        return await this.prisma.chat.findFirst({
+        return await    this.prisma.chat.findFirst({
             where: {
                 chat_user: {
                     every: {
@@ -51,7 +41,7 @@ export class ChatWsService {
                         }
                     }
                 },
-                type: 'DIRECT'
+                type: chatType.DIRECT
             }
         })
     }
@@ -62,6 +52,27 @@ export class ChatWsService {
                 chat_room_id: roomId
             }
         })
+   }
+
+   async isDirect(room_id: string) {
+         return await this.prisma.chat.findFirst({
+              where: {
+                    room_id: {
+                        equals: room_id
+                    },
+                    type: {
+                        equals: chatType.DIRECT
+                    },
+              }
+         })
+   }
+
+   async chatExist(room_id: string) {
+         return await this.prisma.chat.findFirst({
+              where: {
+                    room_id: room_id
+              }
+         })
    }
 
 }
