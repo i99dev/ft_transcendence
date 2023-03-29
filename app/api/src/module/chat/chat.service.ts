@@ -57,7 +57,7 @@ export class ChatService {
                         create: {
                             user_login: user.user_login,
                             role: 'MEMBER',
-                            status: user.status,
+                            status: user.status, // 'INVITED' or 'NORMAL' or 'MUTED' or 'BANNED'
                         },
                     },
                 },
