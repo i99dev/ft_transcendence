@@ -1,11 +1,14 @@
 import { Controller } from '@nestjs/common'
 import { Get, Param, Query } from '@nestjs/common'
-
+import { MatchHistoryService } from './match-history.service'
 @Controller('match-history')
 export class MatchHistoryController {
+    private matchHistoryService = new MatchHistoryService()
+
     @Get(':player') // /match-history/:playerId
     getPlayerMatchHistory(@Param('player') player: string) {
-        return `Match history for ${player}`
+        return this.matchHistoryService.getPlayerMatchHistory(player)
+        // return `Match history for ${player}`
     }
 
     @Get(':player') // /match-history/:playerId?winning=true&losing=false

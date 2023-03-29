@@ -20,7 +20,7 @@ const getMatchHistory = async () => {
   if (error) {
     console.error('Failed to get match history:', error)
   } else {
-    console.log('Match history:', data)
+    console.log('Match history:', data.value)
   }
 }
 
