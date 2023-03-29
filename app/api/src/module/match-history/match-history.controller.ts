@@ -17,7 +17,12 @@ export class MatchHistoryController {
         @Query('winning') winning: boolean,
         @Query('losing') losing: boolean,
     ) {
-        return `Match history for ${player} with winning=${winning} and losing=${losing}`
+        if (winning === undefined && losing === undefined)
+            return this.matchHistoryService.getPlayerMatchHistory(player)
+        else if (winning === losing) return 'You can only choose one of winning or losing'
+        else if (winning === true && losing === false)
+            return this.matchHistoryService.getMatchHistoryByResult(player, winning)
+        // return `Match history for ${player} with winning=${winning} and losing=${losing}`
     }
 
     @Get(':player') // /match-history/:playerId?sort=score_asc
