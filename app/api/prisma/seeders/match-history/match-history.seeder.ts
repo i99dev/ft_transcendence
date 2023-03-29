@@ -1,0 +1,86 @@
+import { Injectable } from '@nestjs/common'
+import { Match, PrismaClient, User } from '@prisma/client'
+
+interface Player {
+    username: string
+    score: number
+    isWinner: boolean
+    gameId: string
+}
+
+@Injectable()
+export class MatchHistorySeeder {
+    private prisma = new PrismaClient()
+
+    private async createPlayer(player: Player): Promise<number> {
+        const pl = await this.prisma.player.create({
+            data: {
+                matches: {
+                    connect: { gameID: player.gameId },
+                },
+                user: {
+                    connect: { login: player.username },
+                },
+                score: player.score,
+                IsWinner: player.isWinner,
+            },
+        })
+        return pl.id
+    }
+
+    private async createOponents(players: Player[]): Promise<any[]> {
+        const opponents = []
+        players.forEach(async player => {
+            opponents.push({ id: await this.createPlayer(player) })
+        })
+        return opponents
+    }
+
+    public async createMatch(matchID: string): Promise<void> {
+        await this.prisma.match.create({
+            data: {
+                gameID: matchID,
+            },
+        })
+    }
+
+    public async assignOponents(matchID: string, players: Player[]): Promise<void> {
+        await this.prisma.match.update({
+            where: {
+                gameID: matchID,
+            },
+            data: {
+                opponents: {
+                    connect: await this.createOponents(players),
+                },
+            },
+        })
+    }
+
+    public async seedMatchHistory(): Promise<void> {
+        let gameid = '1ss8'
+        await this.createMatch(gameid)
+        await this.assignOponents(gameid, [
+            { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
+            { username: 'oal-tena', score: 4, isWinner: false, gameId: gameid },
+        ])
+        gameid = '33s4'
+        await this.createMatch(gameid)
+        await this.assignOponents(gameid, [
+            { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
+            { username: 'mal-guna', score: 0, isWinner: false, gameId: gameid },
+        ])
+        gameid = '23se'
+        await this.createMatch(gameid)
+        await this.assignOponents(gameid, [
+            { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
+            { username: 'bnaji', score: 0, isWinner: false, gameId: gameid },
+        ])
+        gameid = 'dwsed'
+        await this.createMatch(gameid)
+        await this.assignOponents(gameid, [
+            { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
+            { username: 'isaad', score: 0, isWinner: false, gameId: gameid },
+        ])
+    }
+}

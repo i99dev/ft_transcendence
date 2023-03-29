@@ -30,16 +30,17 @@ model User {
     power_ups    PowerUp[]     @relation("UserPowerUps")
     friend_to    User[]        @relation("UserFriends")
     friends      User[]        @relation("UserFriends")
-    player       Player?
+    player       Player[] 	  @relation("player")
+
 }
 
 model Player {
     id       Int     @id @default(autoincrement())
-    userID   Int     @unique
-    matchID  String     @unique
+    userID   Int
+    matchID  String
     score    Int     @default(0)
     IsWinner Boolean @default(false)
-    user     User    @relation(fields: [userID], references: [id])
+    user     User    @relation("player", fields: [userID], references: [id])
     matches  Match   @relation("MatchOpponents", fields: [matchID], references: [gameID])
 }
 

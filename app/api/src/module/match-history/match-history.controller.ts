@@ -3,11 +3,6 @@ import { Get, Param, Query } from '@nestjs/common'
 
 @Controller('match-history')
 export class MatchHistoryController {
-    @Get('')
-    getMatchHistory() {
-        return 'Match history'
-    }
-
     @Get(':player') // /match-history/:playerId
     getPlayerMatchHistory(@Param('player') player: string) {
         return `Match history for ${player}`
