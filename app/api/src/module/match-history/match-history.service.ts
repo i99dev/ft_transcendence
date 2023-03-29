@@ -29,16 +29,20 @@ export class MatchHistoryService {
         const match = await this.getPlayerMatchHistory(player)
         const winningMatch = []
         match.forEach(m => {
-            if (m.opponents[0].user.login === player) {
-                if (m.opponents[0].IsWinner === winning) {
-                    winningMatch.push(m)
-                }
-            } else {
-                if (m.opponents[1].IsWinner === winning) {
-                    winningMatch.push(m)
-                }
+            if (m.opponents[0].user.login === player && m.opponents[0].IsWinner === winning) {
+                winningMatch.push(m)
+            } else if (
+                m.opponents[1].user.login === player &&
+                m.opponents[1].IsWinner === winning
+            ) {
+                winningMatch.push(m)
             }
         })
         return winningMatch
+    }
+    async getMatchHistoryBySort(player: string, sort: 'asc' | 'desc') {
+        const match = await this.getPlayerMatchHistory(player)
+        const sortedMatch = []
+        return sortedMatch
     }
 }
