@@ -15,9 +15,7 @@ if (data) {
         <div v-if="error">Error: {{ error.message }}</div>
         <!-- success -->
         <div v-if="data">
-            <!-- <Header /> -->
-            <ChatNavBar />
-            <FriendsListNav />
+            <!-- <Header :user="data" /> -->
             <slot />
         </div>
     </div>
