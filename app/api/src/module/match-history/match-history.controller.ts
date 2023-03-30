@@ -6,29 +6,28 @@ export class MatchHistoryController {
     private matchHistoryService = new MatchHistoryService()
 
     @Get(':player') // /match-history/:playerId
-    getPlayerMatchHistory(@Param('player') player: string) {
-        return this.matchHistoryService.getPlayerMatchHistory(player)
+    async getPlayerMatchHistory(@Param('player') player: string) {
+        return await this.matchHistoryService.getPlayerMatchHistory(player)
         // return `Match history for ${player}`
     }
 
     @Get(':player/result') // /match-history/:playerId/result?winning=true&losing=false
-    getMatchHistoryByResult(
+    async getMatchHistoryByResult(
         @Param('player') player: string,
         @Query('winning') winning: string,
         @Query('losing') losing: string,
     ) {
         if (winning === undefined && losing === undefined)
-            return this.matchHistoryService.getPlayerMatchHistory(player)
+            return await this.matchHistoryService.getPlayerMatchHistory(player)
         else if (winning === 'true')
-            return this.matchHistoryService.getMatchHistoryByResult(player, true)
+            return await this.matchHistoryService.getMatchHistoryByResult(player, true)
         else if (losing === 'true')
-            return this.matchHistoryService.getMatchHistoryByResult(player, false)
+            return await this.matchHistoryService.getMatchHistoryByResult(player, false)
         // return `Match history for ${player} with winning=${winning} and losing=${losing}`
     }
 
     @Get(':player/score') // /match-history/:playerId/score?sort=asc&sort=desc
     getMatchHistoryBySort(@Param('player') player: string, @Query('sort') sort: 'asc' | 'desc') {
-        
-		// return `Match history for ${player} sorted by ${sort}`
+        // return `Match history for ${player} sorted by ${sort}`
     }
 }
