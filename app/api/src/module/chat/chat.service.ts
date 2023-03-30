@@ -56,7 +56,7 @@ export class ChatService {
                     chat_user: {
                         create: {
                             user_login: user.user_login,
-                            role: 'MEMBER',
+                            role: user.role,
                             status: user.status, // 'INVITED' or 'NORMAL' or 'MUTED' or 'BANNED'
                         },
                     },
@@ -67,4 +67,72 @@ export class ChatService {
             console.log(error)
         }
     }
+
+    async removeUserFromRoom(room_id: string, user_id: number) {
+        try {
+            const chat = await this.prisma.chat.update({
+                where: {
+                    room_id: room_id,
+                },
+                data: {
+                    chat_user: {
+                        delete: {
+                            id: user_id,
+                        }
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async updateChatUser(user_id: number, room_id: string, user: ChatUserDto) {
+        try {
+            const chat = await this.prisma.chat.update({
+                where: {
+                    room_id: room_id,
+                },
+                data: {
+                    chat_user: {
+                        update: {
+                            where: {
+                                id: user_id,
+                            },
+                            data: {
+                                role: user.role,
+                                status: user.status,
+                            },
+                        },
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getChatUsers(room_id: string, user_id: number) {
+        try {
+            const chat = await this.prisma.chat.findUnique({
+                where: {
+                    room_id: room_id,
+                },
+                include: {
+                    chat_user: {
+                        where: {
+                            id: user_id,
+                        }
+                    }
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // createMessage(user_id: number, room_id: string, message: string)
 }

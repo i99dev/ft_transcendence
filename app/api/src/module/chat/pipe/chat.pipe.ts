@@ -43,6 +43,7 @@ export class UserPostValidation implements PipeTransform<any> {
         const vari: ChatUserDto = {
             status: 'string',
             user_login: 'string',
+            role: 'ADMIN',
         }
         return vari
     }
