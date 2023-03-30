@@ -120,12 +120,71 @@ export class MessageSeeder {
                     createMany: {
                         data: [
                             {
-                                content: 'Hello I bassam',
+                                content: 'Hello I am bassam',
                                 sender_login: "bnaji",
                             },
                             {
                                 content: 'Is this the direct chat?',
                                 sender_login: "oal-tena",
+                            },
+                        ]
+                    }
+                },
+            },
+        })
+
+        // Direct Chat
+        await this.prisma.chatRoom.update({
+            where: { room_id: 'direct_room1' },
+            data: {
+                messages: {
+                    createMany: {
+                        data: [
+                            {
+                                content: 'Hello I am bassam',
+                                sender_login: "bnaji",
+                            },
+                            {
+                                content: 'Is this the direct chat?',
+                                sender_login: "oal-tena",
+                            },
+                        ]
+                    }
+                },
+            },
+        })
+        await this.prisma.chatRoom.update({
+            where: { room_id: 'direct_room2' },
+            data: {
+                messages: {
+                    createMany: {
+                        data: [
+                            {
+                                content: 'Hello I am abrar',
+                                sender_login: "aaljaber",
+                            },
+                            {
+                                content: 'Is this the direct chat?',
+                                sender_login: "bnaji",
+                            },
+                        ]
+                    }
+                },
+            },
+        })
+        await this.prisma.chatRoom.update({
+            where: { room_id: 'direct_room3' },
+            data: {
+                messages: {
+                    createMany: {
+                        data: [
+                            {
+                                content: 'Hello I am isaad',
+                                sender_login: "isaad",
+                            },
+                            {
+                                content: 'Is this the direct chat?',
+                                sender_login: "mal-guna",
                             },
                         ]
                     }
