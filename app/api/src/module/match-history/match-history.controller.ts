@@ -27,7 +27,11 @@ export class MatchHistoryController {
     }
 
     @Get(':player/score') // /match-history/:playerId/score?sort=asc&sort=desc
-    getMatchHistoryBySort(@Param('player') player: string, @Query('sort') sort: 'asc' | 'desc') {
+    async getMatchHistoryBySort(
+        @Param('player') player: string,
+        @Query('sort') sort: 'asc' | 'desc',
+    ) {
+        return await this.matchHistoryService.getMatchHistoryBySort(player, sort)
         // return `Match history for ${player} sorted by ${sort}`
     }
 }

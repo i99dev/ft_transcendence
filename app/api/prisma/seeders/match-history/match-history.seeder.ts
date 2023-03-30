@@ -36,10 +36,11 @@ export class MatchHistorySeeder {
         return opponents
     }
 
-    public async createMatch(matchID: string): Promise<void> {
+    public async createMatch(matchID: string, time: Date): Promise<void> {
         await this.prisma.match.create({
             data: {
                 gameID: matchID,
+                start: time,
             },
         })
     }
@@ -59,25 +60,25 @@ export class MatchHistorySeeder {
 
     public async seedMatchHistory(): Promise<void> {
         let gameid = '1ss8'
-        await this.createMatch(gameid)
+        await this.createMatch(gameid, new Date('2023-05-12T06:30:15.000Z'))
         await this.assignOponents(gameid, [
             { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
             { username: 'oal-tena', score: 4, isWinner: false, gameId: gameid },
         ])
         gameid = '33s4'
-        await this.createMatch(gameid)
+        await this.createMatch(gameid, new Date('2052-12-31T23:59:59.000Z'))
         await this.assignOponents(gameid, [
-            { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
+            { username: 'aaljaber', score: 18, isWinner: true, gameId: gameid },
             { username: 'mal-guna', score: 0, isWinner: false, gameId: gameid },
         ])
         gameid = '23se'
-        await this.createMatch(gameid)
+        await this.createMatch(gameid, new Date('2032-11-31T23:59:59.000Z'))
         await this.assignOponents(gameid, [
-            { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
+            { username: 'aaljaber', score: 19, isWinner: true, gameId: gameid },
             { username: 'bnaji', score: 0, isWinner: false, gameId: gameid },
         ])
         gameid = 'dwsed'
-        await this.createMatch(gameid)
+        await this.createMatch(gameid, new Date('2022-12-31T23:59:59.000Z'))
         await this.assignOponents(gameid, [
             { username: 'aaljaber', score: 11, isWinner: true, gameId: gameid },
             { username: 'isaad', score: 0, isWinner: false, gameId: gameid },

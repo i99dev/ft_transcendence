@@ -8,6 +8,12 @@
 	<div>
         <button @click="getDefeats">Defeats</button>
     </div>
+	<div>
+        <button @click="getHighScore">High Scores</button>
+    </div>
+	<div>
+        <button @click="getLowScore">Low Scores</button>
+    </div>
 </template>
 
 <script setup>
@@ -64,4 +70,41 @@ const getDefeats = async () => {
         console.log('Defeats:', data.value)
     }
 }
+
+const getLowScore = async () => {
+    const api = useRuntimeConfig().API_URL
+    const playerId = 'aaljaber' // Replace with actual player ID
+    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}/score?sort=asc`, {
+        method: 'GET',
+        baseURL: api,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    const error = errorRef.value
+    if (error) {
+        console.error('Failed to get match history:', error)
+    } else {
+        console.log('Defeats:', data.value)
+    }
+}
+
+const getHighScore = async () => {
+    const api = useRuntimeConfig().API_URL
+    const playerId = 'aaljaber' // Replace with actual player ID
+    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}/score?sort=desc`, {
+        method: 'GET',
+        baseURL: api,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    const error = errorRef.value
+    if (error) {
+        console.error('Failed to get match history:', error)
+    } else {
+        console.log('Defeats:', data.value)
+    }
+}
+
 </script>
