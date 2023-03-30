@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Chat, chatType } from '@prisma/client';
+import { ChatRoom, chatType, GroupChat } from '@prisma/client';
 import { decode } from 'punycode';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 
 @Injectable()
 export class ChatWsService {
     constructor(private prisma: PrismaService, private jwtService: JwtService) {}
-    private chats : Chat[];
+    private groupChats : GroupChat[];
     
     extractUserFromJwt(jwt: string) {
         jwt = jwt.split(" ")[1]
@@ -26,7 +26,7 @@ export class ChatWsService {
     }
 
     async findAllChats(login: string): Promise<any[]> {
-        return this.chats = await this.prisma.chat.findMany({
+        return this.groupChats = await this.prisma.groupChat.findMany({
             where: {
                 chat_user: {
                     some: {
@@ -40,7 +40,7 @@ export class ChatWsService {
     }
 
     async findDirectChat(login1: string, login2: string): Promise<any> {
-        return await this.prisma.chat.findFirst({
+        return await this.prisma.groupChat.findFirst({
             where: {
                 chat_user: {
                     every: {
