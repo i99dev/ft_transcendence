@@ -16,6 +16,7 @@ export class UserDto {
     two_fac_auth: boolean
     friend_to?: UserDto[]
     friends?: UserDto[]
+    player?: PlayerDto[]
 }
 
 export class PlayerDto {
@@ -23,7 +24,7 @@ export class PlayerDto {
     score: number
     IsWinner: boolean
     user: UserDto
-    matche: MatchHistoryDto
+    // matches: MatchHistoryDto
 }
 
 export class MatchHistoryDto {

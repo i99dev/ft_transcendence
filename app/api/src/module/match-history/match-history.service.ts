@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import _ from 'lodash'
+import { Match } from '@prisma/client'
+import { User } from '@prisma/client'
+import { MatchHistoryDto } from './dto/match-history.dto'
 @Injectable()
 export class MatchHistoryService {
     private prisma = new PrismaClient()
-    async getPlayerMatchHistory(player: string) {
+    async getPlayerMatchHistory(player: string): Promise<MatchHistoryDto[]> {
         const match = await this.prisma.match.findMany({
             where: {
                 opponents: {
@@ -25,7 +28,7 @@ export class MatchHistoryService {
         })
         return match
     }
-    async getMatchHistoryByResult(player: string, winning: boolean) {
+    async getMatchHistoryByResult(player: string, winning: boolean): Promise<MatchHistoryDto[]> {
         const match = await this.getPlayerMatchHistory(player)
         const winningMatch = []
         match.forEach(m => {
@@ -40,7 +43,7 @@ export class MatchHistoryService {
         })
         return winningMatch
     }
-    async getMatchHistoryBySort(player: string, sort: 'asc' | 'desc') {
+    async getMatchHistoryBySort(player: string, sort: 'asc' | 'desc'): Promise<MatchHistoryDto[]> {
         const match = await this.getPlayerMatchHistory(player)
         match.sort((a, b) => {
             const userOpponentsA = a.opponents.filter(opponent => opponent.user.login === player)
