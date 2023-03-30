@@ -19,10 +19,11 @@ const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 const COMPUTER_FRAME_INTERVAL = 1000 / 60
 const COMPUTER_SPEED = 0.0045
-const PADDLE_SPEED = 0.025
+const PADDLE_SPEED = 0.03
 const REFLECT_ANGLE = 80
 const BALL_XSPEED = 0.01
 const BALL_YSPEED = 0.0
+
 export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
     private games: Map<string, gameStatusDto> = new Map()
@@ -135,36 +136,43 @@ export class gameLogic {
     }
 
     // check if the ball collided with a player paddle
-    private checkPlayerCollision(ball: BallDto, player: PlayerDto): boolean {
-        if (
-            ball.y >= player.y - player.paddle.height / 2 - ball.radius &&
-            ball.y <= player.y + player.paddle.height / 2 + ball.radius
-        ) {
-            return true
-        }
-        return false
+    private checkPlayerCollision(ball: BallDto, player: PlayerDto, playerIndex: number): boolean {
+        const paddleLeft = playerIndex === 0 ? player.x : player.x - player.paddle.width;
+        const paddleRight = playerIndex === 0 ? player.x + player.paddle.width : player.x;
+        const paddleTop = player.y - player.paddle.height / 2;
+        const paddleBottom = player.y + player.paddle.height / 2;
+
+        return (
+            ball.y + ball.radius >= paddleTop &&
+            ball.y - ball.radius <= paddleBottom &&
+            ball.x + ball.radius >= paddleLeft &&
+            ball.x - ball.radius <= paddleRight
+        );
     }
 
     // check if the ball collided with wall or paddle and update the score if it is out of bounds
     private checkBallCollision(game: gameStatusDto): void {
-        const { ball, players } = game
-
-        this.checkWallCollision(ball)
-
-        // more accurate check can be applied here by checking if there is a an overlap between the ball and the paddle.
-        if (ball.x <= ball.radius + players[0].paddle.width) {
-            if (this.checkPlayerCollision(ball, players[0])) {
-                this.reflectBall(ball, players[0])
-            } else {
-                players[1].score += 1
-                this.resetBallPosition(ball)
+        const { ball, players } = game;
+    
+        this.checkWallCollision(ball);
+    
+        // Check if the ball is within the horizontal range of the left paddle
+        if (ball.x <= players[0].x + players[0].paddle.width && ball.dx < 0) {
+            if (this.checkPlayerCollision(ball, players[0], 0)) {
+                this.reflectBall(ball, players[0]);
+            } else if (ball.x < 0) { // Ball crossed the left boundary
+                players[1].score += 1;
+                this.resetBallPosition(ball);
             }
-        } else if (ball.x >= 1 - (ball.radius + players[0].paddle.width)) {
-            if (this.checkPlayerCollision(ball, players[1])) {
-                this.reflectBall(ball, players[1])
-            } else {
-                players[0].score += 1
-                this.resetBallPosition(ball)
+        }
+        // Check if the ball is within the horizontal range of the right paddle
+        else if (ball.x >= players[1].x - players[1].paddle.width && ball.dx > 0) {
+
+            if (this.checkPlayerCollision(ball, players[1], 1)) {
+                this.reflectBall(ball, players[1]);
+            } else if (ball.x > 1) { // Ball crossed the right boundary
+                players[0].score += 1;
+                this.resetBallPosition(ball);
             }
         }
     }
