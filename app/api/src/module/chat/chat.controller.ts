@@ -1,4 +1,3 @@
-import { ChatRoomDto } from './dto/chat.dto'
 import { Patch, Post, UsePipes, Get, Param } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
@@ -6,7 +5,7 @@ import { Body } from '@nestjs/common'
 import { ChatPostValidation, UserPostValidation } from './pipe/chat.pipe'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
-
+import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 @Controller('/chat')
 export class ChatController {
     constructor(private readonly chatService: ChatService) {}
@@ -29,4 +28,12 @@ export class ChatController {
     async addUserToRoom(@Param('room_id') room_id: string, @Body() data, @Req() req) {
         return await this.chatService.addUserToRoom(room_id, data)
     }
+
+    // @Get('/room/test')
+    // async test(@Body() data: ChatRoomDto) {
+    //     console.log('chat');
+    //     return 'tcfvgybhuijnkojihugf';
+    //     // const chat = await this.chatService.createRoom(data, 'isaad');
+    //     // return chat
+    // }
 }
