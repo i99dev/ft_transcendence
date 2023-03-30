@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Chat, chatType } from '@prisma/client';
+import { ChatRoom, chatType, GroupChat } from '@prisma/client';
 import { decode } from 'punycode';
 import { PrismaService } from '../../../providers/prisma/prisma.service';
 
 @Injectable()
 export class ChatWsService {
     constructor(private prisma: PrismaService, private jwtService: JwtService) {}
-    private chats : Chat[];
+    private chatRooms : ChatRoom[];
     
     extractUserFromJwt(jwt: string) {
         jwt = jwt.split(" ")[1]
@@ -18,29 +18,44 @@ export class ChatWsService {
     async getMessageInfo(payload: any) {
         const load = JSON.parse(payload)
         let room_id = load.reciever
-        if (load.type === chatType.DIRECT) {
-            const chat = await this.findDirectChat(load.sender, load.reciever)
-            room_id = chat.room_id
-        }
+        // if (load.type === chatType.DIRECT) {
+        //     const chat = await this.findDirectChat(load.sender, load.reciever)
+        //     room_id = chat.chat_room_id
+        // }
         return { room_id: room_id, message: load.message }
     }
 
     async findAllChats(login: string): Promise<any[]> {
-        return this.chats = await this.prisma.chat.findMany({
+        return this.chatRooms = await this.prisma.chatRoom.findMany({
             where: {
-                chat_user: {
-                    some: {
-                        user: {
-                            login: login
+                OR: [
+                    {
+                        group_chat: {
+                            chat_user: {
+                                some: {
+                                    user: {
+                                        login: login
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        direct_chat: {
+                            users: {
+                                some: {
+                                    login: login
+                                }
+                            }
                         }
                     }
-                }
+                ]
             }
         });
     }
 
     async findDirectChat(login1: string, login2: string): Promise<any> {
-        return await this.prisma.chat.findFirst({
+        return await this.prisma.groupChat.findFirst({
             where: {
                 chat_user: {
                     every: {

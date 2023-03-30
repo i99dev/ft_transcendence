@@ -1,36 +1,36 @@
 import { Injectable } from '@nestjs/common'
-import { Chat, chatType, PrismaClient } from '@prisma/client'
+import { GroupChat, chatType, PrismaClient } from '@prisma/client'
 
 @Injectable()
-export class ChatSeeder {
+export class GroupChatSeeder {
     private prisma = new PrismaClient()
-    private chats: Chat[]
+    private chats: GroupChat[]
 
-    async seedChats(): Promise<Chat[]> {
+    async seedGroupChats(): Promise<GroupChat[]> {
         this.chats = [
-            await this.prisma.chat.upsert({
-                where: { room_id: 'room1' },
+            await this.prisma.groupChat.upsert({
+                where: { chat_room_id: 'room1' },
                 update: {},
                 create: {
-                    room_id: 'room1',
+                    chat_room_id: 'room1',
                     name: 'Mayers',
                     type: chatType.PUBLIC,
                 },
             }),
-            await this.prisma.chat.upsert({
-              where: { room_id: 'room2' },
+            await this.prisma.groupChat.upsert({
+              where: { chat_room_id: 'room2' },
               update: {},
               create: {
-                    room_id: 'room2',
+                    chat_room_id: 'room2',
                     name: 'Novembers',
                     type: chatType.PRIVATE,
                 },
             }),
-            await this.prisma.chat.upsert({
-              where: { room_id: 'room3' },
+            await this.prisma.groupChat.upsert({
+              where: { chat_room_id: 'room3' },
               update: {},
               create: {
-                    room_id: 'room3',
+                    chat_room_id: 'room3',
                     name: 'bnaji - oal-tena',
                     type: chatType.DIRECT,
                 },
