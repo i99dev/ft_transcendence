@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Headers } from '@nestjs/common'
+import { Controller, Get, Query, Headers } from '@nestjs/common'
 import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
 @Controller('match-history')
@@ -12,7 +12,6 @@ export class MatchHistoryController {
         return await this.matchHistoryService.getPlayerMatchHistory(
             await this.matchHistoryService.getLoginFromToken(authHeader),
         )
-        // return `Match history for ${player}`
     }
 
     @Get('result') // /match-history/result?winning=true&losing=false
@@ -28,7 +27,6 @@ export class MatchHistoryController {
             return await this.matchHistoryService.getMatchHistoryByResult(player, true)
         else if (losing === 'true')
             return await this.matchHistoryService.getMatchHistoryByResult(player, false)
-        // return `Match history for ${player} with winning=${winning} and losing=${losing}`
     }
 
     @Get('score') // /match-history/score?sort=asc&sort=desc
@@ -40,6 +38,5 @@ export class MatchHistoryController {
             await this.matchHistoryService.getLoginFromToken(authHeader),
             sort,
         )
-        // return `Match history for ${player} sorted by ${sort}`
     }
 }
