@@ -13,7 +13,7 @@ export class ChatUserSeeder {
                     chat_user: {
                         user_login: 'bnaji',
                         chat_room_id: 'room1',
-                    }
+                    },
                 },
                 update: {},
                 create: {
@@ -29,8 +29,8 @@ export class ChatUserSeeder {
     async assignUsersToChats(): Promise<void> {
 
         // Room 1
-        await this.prisma.chat.update({
-            where: { room_id: 'room1' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room1' },
             data: {
                 chat_user: {
                     upsert: {
@@ -44,8 +44,8 @@ export class ChatUserSeeder {
                 },
             },
         })
-        await this.prisma.chat.update({
-            where: { room_id: 'room1' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room1' },
             data: {
                 chat_user: {
                     upsert: {
@@ -59,8 +59,8 @@ export class ChatUserSeeder {
                 },
             },
         })
-        await this.prisma.chat.update({
-            where: { room_id: 'room1' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room1' },
             data: {
                 chat_user: {
                     upsert: {
@@ -74,8 +74,8 @@ export class ChatUserSeeder {
                 },
             },
         })
-        await this.prisma.chat.update({
-            where: { room_id: 'room1' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room1' },
             data: {
                 chat_user: {
                     upsert: {
@@ -91,8 +91,8 @@ export class ChatUserSeeder {
         })
 
         // Room 2
-        await this.prisma.chat.update({
-            where: { room_id: 'room2' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room2' },
             data: {
                 chat_user: {
                     upsert: {
@@ -107,8 +107,8 @@ export class ChatUserSeeder {
                 },
             },
         })
-        await this.prisma.chat.update({
-            where: { room_id: 'room3' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room3' },
             data: {
                 chat_user: {
                     upsert: {
@@ -124,8 +124,8 @@ export class ChatUserSeeder {
         })
 
         // Room 3
-        await this.prisma.chat.update({
-            where: { room_id: 'room3' },
+        await this.prisma.groupChat.update({
+            where: { chat_room_id: 'room3' },
             data: {
                 chat_user: {
                     upsert: {

@@ -49,61 +49,56 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.logger.log(`Client "${client.id}" disconnected from chat`)
     }
 
-    @SubscribeMessage('Join')
+    @SubscribeMessage('join')
     async joinChatUser(client: any,@MessageBody(new SocketValidationPipe()) payload: MainInfoDto) {
         if (!(await this.chatWsService.chatExist(payload.reciever))) return this.socketError('Invalid reciever')
 
-        this.wss.to(payload.reciever).emit('Join', `${payload.sender} joined`)
+        this.wss.to(payload.reciever).emit('join', `${payload.sender} joined`)
     }
 
-    @SubscribeMessage('Exit')
+    @SubscribeMessage('exit')
     async exitChatUser(client: any,@MessageBody(new SocketValidationPipe()) payload: MainInfoDto) {
-        if (!(await this.chatWsService.chatExist(payload.reciever))) return this.socketError('Invalid reciever')
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError('Invalid reciever')
 
-        this.wss.to(payload.reciever).emit('Exit', `${payload.sender} left`)
+        this.wss.to(payload.reciever).emit('exit', `${payload.sender} left`)
     }
 
-    @SubscribeMessage('Add-User')
+    @SubscribeMessage('add-user')
     async addChatUser(client: any,@MessageBody(new SocketValidationPipe()) payload: AddUserDto) {
-        if (!(await this.chatWsService.chatExist(payload.reciever))) return this.socketError('Invalid reciever')
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError('Invalid reciever')
 
-        this.wss.to(payload.reciever).emit('Add-User', `${payload.sender} added '${payload.user}'`)
+        this.wss.to(payload.reciever).emit('add-user', `${payload.sender} added '${payload.user}'`)
     }
 
-    @SubscribeMessage('Kick-User')
+    @SubscribeMessage('kick-user')
     async kickChatUser(client: any,@MessageBody(new SocketValidationPipe()) payload: AddUserDto) {
-        if (!(await this.chatWsService.chatExist(payload.reciever))) return this.socketError('Invalid reciever')
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError('Invalid reciever')
 
-        this.wss.to(payload.reciever).emit('Add-User', `${payload.sender} kicked '${payload.user}'`)
+        this.wss.to(payload.reciever).emit('kick-user', `${payload.sender} kicked '${payload.user}'`)
     }
 
-    @SubscribeMessage('Update')
+    @SubscribeMessage('update')
     async UpdateChatInfo(client: any,@MessageBody(new SocketValidationPipe()) payload: UpdateChatDto) {
-        if (!(await this.chatWsService.chatExist(payload.reciever))) return this.socketError('Invalid reciever')
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError('Invalid reciever')
 
         if (payload.name)
-            this.wss.to(payload.reciever).emit('Update', `${payload.sender} updated the chat name to ${payload.name}`)
+            this.wss.to(payload.reciever).emit('update', `${payload.sender} updated the chat name to ${payload.name}`)
         if (payload.image)
-            this.wss.to(payload.reciever).emit('Update', `${payload.sender} updated the chat profile`)
+            this.wss.to(payload.reciever).emit('update', `${payload.sender} updated the chat profile`)
     }
 
-    @SubscribeMessage('Set-User')
+    @SubscribeMessage('set-user')
     async setChatUser(client: any,@MessageBody(new SocketValidationPipe()) payload: SetUserDto) {
-        if (!(await this.chatWsService.chatExist(payload.reciever))) return this.socketError('Invalid reciever')
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError('Invalid reciever')
 
-        this.wss.to(payload.reciever).emit('Set-User', `${payload.sender} has ${payload.action} '${payload.user}'`)
+        this.wss.to(payload.reciever).emit('set-user', `${payload.sender} has ${payload.action} '${payload.user}'`)
     }
 
-    @SubscribeMessage('Message')
+    @SubscribeMessage('message')
     async sendMessage(client: Socket,@MessageBody(new SocketValidationPipe()) payload: MessageDto) {
-        if (!(await this.chatWsService.chatExist(payload.reciever))) {
-            const chat = await this.chatWsService.findDirectChat(payload.sender, payload.reciever)
-            if (!chat)
-                return this.socketError("Invalid reciever")
-            this.wss.to(chat.room_id).emit('Message', payload.message)
-        }
-        else
-            this.wss.to(payload.reciever).emit('Message', payload.message)
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError("Invalid reciever")
+        
+        this.wss.to(payload.reciever).emit('message', payload.message)
     }
 
     async joinAllRooms(client: Socket, user: string) {
@@ -116,5 +111,4 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.logger.error(error)
         throw new WsException(error)
     }
-
 }
