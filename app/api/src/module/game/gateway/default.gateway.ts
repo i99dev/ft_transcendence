@@ -7,31 +7,33 @@ import {
     WebSocketServer,
     SubscribeMessage,
     WebSocketGateway,
+    ConnectedSocket,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
 
 @WebSocketGateway({
     namespace: '/games',
-    cors: { origin: 'http://localhost/play', credentials: true },
+    cors: { origin: '*' },
     path: '/api/socket.io',
 })
 export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
-    wss: Server
+    server: Server
 
     private logger = new Logger('DefaultGateway')
 
-    constructor(private defaultService: DefaultService, private jwtService: JwtService) {}
-
+    constructor(private gameService: DefaultService, private jwtService: JwtService) {}
     handleConnection(client: Socket, ...args: any[]) {
-        // let token = client.request.headers.authorization
-        // this.logger.log(token)
-        // token = token.split(" ")[1]
-        // const decoded = this.jwtService.decode(token)
-        // this.logger.log(decoded)
-
         this.logger.log(`Client connected: ${client.id}`)
+        let token = client.request.headers.authorization
+        token = token.split(' ')[1]
+        const decoded = this.jwtService.decode(token)
+
+        this.gameService.addToLobby(client, decoded)
+        this.gameService.checkLobby((gameId, game) => {
+            this.server.to(gameId).emit('Game-Data', game)
+        })
     }
 
     handleDisconnect(client: Socket) {
@@ -39,12 +41,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('move')
-    movePlayer(client: any, @MessageBody() payload: any) {
-        this.wss.emit('move', payload)
-    }
-
-    @SubscribeMessage('gameStatus')
-    changeGameStatus(client: any, @MessageBody() payload: any) {
-        this.wss.emit('gameStatus', payload)
+    movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
+        this.gameService.updatePaddlePosition(client, direction)
     }
 }

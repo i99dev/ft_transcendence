@@ -32,6 +32,7 @@ model User {
   power_ups    PowerUp[] @relation("UserPowerUps")
   friend_to    User[]  @relation("UserFriends")
   friends      User[]  @relation("UserFriends")
+  direct_chats DirectChat[] @relation("DirectChatUsers")
   chat    ChatUser[]
   message     Message[]
 }
@@ -51,16 +52,31 @@ model Achievement {
   users       User[]  @relation("UserAchievements")
 }
 
-model Chat {
+model ChatRoom {
   id             Int            @id @default(autoincrement())
   room_id        String         @unique
+  created_at     DateTime       @default(now())
+  direct_chat    DirectChat?
+  group_chat    GroupChat?
+  messages       Message[]
+}
+
+model DirectChat {
+  id            Int            @id @default(autoincrement())
+  chat_room_id  String @unique
+  chat_room      ChatRoom       @relation(fields: [chat_room_id], references: [room_id])
+  users         User[]        @relation("DirectChatUsers")
+}
+
+model GroupChat {
+  id             Int            @id @default(autoincrement())
   name           String?
   image          String?
   type           chatType   @default(PUBLIC)
   password       String?
-  created_at     DateTime       @default(now())
-  chat_user      ChatUser[]
-  messages       Message[]
+  chat_user ChatUser[]
+  chat_room_id   String @unique
+  chat_room      ChatRoom       @relation(fields: [chat_room_id], references: [room_id])
 }
 
 model ChatUser {
@@ -70,7 +86,7 @@ model ChatUser {
   created_at   DateTime @default(now())
   user_login   String
   chat_room_id     String
-  chat    Chat @relation(fields: [chat_room_id], references: [room_id])
+  chat    GroupChat @relation(fields: [chat_room_id], references: [chat_room_id])
   user         User     @relation(fields: [user_login], references: [login])
   @@unique([chat_room_id, user_login], name: "chat_user")
 }
@@ -81,7 +97,7 @@ model Message {
   created_at   DateTime @default(now())
   chat_room_id String
   sender_login String
-  chat    Chat @relation(fields: [chat_room_id], references: [room_id])
+  chat_room ChatRoom @relation(fields: [chat_room_id], references: [room_id])
   sender       User     @relation(fields: [sender_login], references: [login])
 }
 

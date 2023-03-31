@@ -6,9 +6,11 @@ import { UserSeeder } from './seeders/user/user.seeder'
 import { FriendSeeder } from './seeders/friend/friend.seeder'
 import { PowerUpSeeder } from './seeders/power_up/power_up.seeder'
 import { AchievementSeeder } from './seeders/achievement/achievement.seeder'
-import { ChatSeeder } from './seeders/chat/chat.seeder'
+import { GroupChatSeeder } from './seeders/chat/chat.seeder'
 import { ChatUserSeeder } from './seeders/chat_user/chat_user.seeder'
 import { MessageSeeder } from './seeders/message/message.seeder'
+import { DirectChatSeeder } from './seeders/direct_chat/direct_chat.seeder'
+import { ChatRoomSeeder } from './seeders/chatRoom/chat_room.seeder'
 // import { SeederService   } from './seeders/user/user.seeder.service';
 
 // initialize Prisma Client
@@ -34,7 +36,13 @@ async function main() {
     const updateUsers = await new AchievementSeeder().assignAchievementsToUsers()
 
     // Create ChatRooms
-    const chats = await new ChatSeeder().seedChats()
+    const chatRooms = await new ChatRoomSeeder().seedChatRooms()
+    
+    // Create DirectChatRooms
+    const directChats = await new DirectChatSeeder().seedDirectChats()
+
+    //
+    const groupChats = await new GroupChatSeeder().seedGroupChats()
 
     // Create ChatRoomUsers
     await new ChatUserSeeder().assignUsersToChats()
@@ -42,7 +50,7 @@ async function main() {
     // Assign Messages to ChatRooms and Users
     await new MessageSeeder().assignMessagesToChats()
 
-    console.log({ users, powerUps, achievements, updateUsers, chats })
+    console.log({ users, powerUps, achievements, updateUsers, groupChats, directChats, chatRooms })
 }
 
 // execute the main function
