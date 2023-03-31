@@ -20,7 +20,7 @@
 const getMatchHistory = async () => {
     const api = useRuntimeConfig().API_URL
     const playerId = 'aaljaber' // Replace with actual player ID
-    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}`, {
+    const { data, error: errorRef } = await useFetch(`/match-history`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -38,7 +38,7 @@ const getMatchHistory = async () => {
 const getVictories = async () => {
     const api = useRuntimeConfig().API_URL
     const playerId = 'aaljaber' // Replace with actual player ID
-    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}/result?winning=true&losing=false`, {
+    const { data, error: errorRef } = await useFetch(`/match-history/result?winning=true&losing=false`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -56,7 +56,7 @@ const getVictories = async () => {
 const getDefeats = async () => {
     const api = useRuntimeConfig().API_URL
     const playerId = 'aaljaber' // Replace with actual player ID
-    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}/result?winning=false&losing=true`, {
+    const { data, error: errorRef } = await useFetch(`/match-history/result?winning=false&losing=true`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -74,7 +74,7 @@ const getDefeats = async () => {
 const getLowScore = async () => {
     const api = useRuntimeConfig().API_URL
     const playerId = 'aaljaber' // Replace with actual player ID
-    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}/score?sort=asc`, {
+    const { data, error: errorRef } = await useFetch(`/match-history/score?sort=asc`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -92,7 +92,7 @@ const getLowScore = async () => {
 const getHighScore = async () => {
     const api = useRuntimeConfig().API_URL
     const playerId = 'aaljaber' // Replace with actual player ID
-    const { data, error: errorRef } = await useFetch(`/match-history/${playerId}/score?sort=desc`, {
+    const { data, error: errorRef } = await useFetch(`/match-history/score?sort=desc`, {
         method: 'GET',
         baseURL: api,
         headers: {

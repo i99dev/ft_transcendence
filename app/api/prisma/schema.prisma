@@ -30,7 +30,7 @@ model User {
     power_ups    PowerUp[]     @relation("UserPowerUps")
     friend_to    User[]        @relation("UserFriends")
     friends      User[]        @relation("UserFriends")
-    player       Player[] 	  @relation("player")
+    player       Player[]      @relation("player")
 }
 
 model Player {
@@ -44,7 +44,7 @@ model Player {
 }
 
 model Match {
-    gameID   String      @id @unique
+    gameID    String   @id @unique
     start     DateTime @default(now())
     end       DateTime @default(now())
     opponents Player[] @relation("MatchOpponents")

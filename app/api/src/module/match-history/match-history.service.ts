@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
-import _ from 'lodash'
-import { Match } from '@prisma/client'
-import { User } from '@prisma/client'
 import { MatchHistoryDto } from './dto/match-history.dto'
+import { JwtService } from '@nestjs/jwt'
 @Injectable()
 export class MatchHistoryService {
     private prisma = new PrismaClient()
+    constructor(private jwtService: JwtService) {}
+
+    async getLoginFromToken(authHeader: string): Promise<string> {
+        const token = authHeader.split(' ')[1]
+        return await this.jwtService.decode(token)['login']
+    }
     async getPlayerMatchHistory(player: string): Promise<MatchHistoryDto[]> {
         const match = await this.prisma.match.findMany({
             where: {
