@@ -14,7 +14,7 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @UsePipes(ChatPostValidation)
     async createRoom(@Body() data: ChatRoomDto, @Req() req) {
-        return await this.chatService.createRoom(data, req.user.login)
+        return await this.chatService.createGroupChat(data, req.user.login)
     }
 
     @Get('/room/:room_id')

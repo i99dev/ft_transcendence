@@ -8,11 +8,11 @@ import { Injectable } from '@nestjs/common'
 export class ChatService {
     constructor(private prisma: PrismaService) {}
 
-    async createRoom(value: ChatRoomDto, user_login: string) {
+    async createGroupChat(value: ChatRoomDto, user_login: string) {
         try {
-            const chat = await this.prisma.chat.create({
+            const chat = await this.prisma.groupChat.create({
                 data: {
-                    room_id: value.room_id,
+                    chat_room_id: value.room_id,
                     name: value?.name,
                     image: value?.image,
                     type: value?.type,
@@ -35,9 +35,9 @@ export class ChatService {
 
     async getRoom(room_id: string) {
         try {
-            const chat = await this.prisma.chat.findUnique({
+            const chat = await this.prisma.groupChat.findUnique({
                 where: {
-                    room_id: room_id,
+                    chat_room_id: room_id,
                 },
             })
             return chat
@@ -48,9 +48,9 @@ export class ChatService {
 
     async addUserToRoom(room_id: string, user: ChatUserDto) {
         try {
-            const chat = await this.prisma.chat.update({
+            const chat = await this.prisma.groupChat.update({
                 where: {
-                    room_id: room_id,
+                    chat_room_id: room_id,
                 },
                 data: {
                     chat_user: {
@@ -70,9 +70,9 @@ export class ChatService {
 
     async removeUserFromRoom(room_id: string, user_id: number) {
         try {
-            const chat = await this.prisma.chat.update({
+            const chat = await this.prisma.groupChat.update({
                 where: {
-                    room_id: room_id,
+                    chat_room_id: room_id,
                 },
                 data: {
                     chat_user: {
@@ -90,9 +90,9 @@ export class ChatService {
 
     async updateChatUser(user_id: number, room_id: string, user: ChatUserDto) {
         try {
-            const chat = await this.prisma.chat.update({
+            const chat = await this.prisma.groupChat.update({
                 where: {
-                    room_id: room_id,
+                    chat_room_id: room_id,
                 },
                 data: {
                     chat_user: {
@@ -116,9 +116,9 @@ export class ChatService {
 
     async getChatUsers(room_id: string, user_id: number) {
         try {
-            const chat = await this.prisma.chat.findUnique({
+            const chat = await this.prisma.groupChat.findUnique({
                 where: {
-                    room_id: room_id,
+                    chat_room_id: room_id,
                 },
                 include: {
                     chat_user: {
@@ -136,7 +136,7 @@ export class ChatService {
 
     async createMessage(user_login: string, room_id: string, message: string) {
         try {
-            const chat = await this.prisma.chat.update({
+            const chat = await this.prisma.chatRoom.update({
                 where: {
                     room_id: room_id,
                 },
@@ -157,16 +157,9 @@ export class ChatService {
 
     async deleteMessage(user_id: number, room_id: string, message_id: number){
         try {
-            const chat = await this.prisma.chat.update({
+            const chat = await this.prisma.message.delete({
                 where: {
-                    room_id: room_id,
-                },
-                data: {
-                    messages: {
-                        delete: {
-                            id: message_id,
-                        },
-                    },
+                    id: message_id,
                 },
             })
             return chat;
