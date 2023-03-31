@@ -1,6 +1,6 @@
 import { IsString, IsEnum, IsOptional, IsBoolean, IsNumber } from 'class-validator'
 
-export class MessageDto {
+export class AddMessageDto {
   // info: chatMainInfo
   @IsString()
   sender: string
@@ -10,6 +10,18 @@ export class MessageDto {
 
   @IsString()
   message: string
+}
+
+export class DeleteMessageDto {
+  // info: chatMainInfo
+  @IsString()
+  sender: string
+
+  @IsString()
+  reciever: string
+
+  @IsNumber()
+  message_id: number
 }
 
 export class MainInfoDto {

@@ -11,9 +11,10 @@ import {
 import { chatType } from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
-import { AddUserDto, MainInfoDto, MessageDto, SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
+import { AddUserDto, MainInfoDto, AddMessageDto, SetUserDto, UpdateChatDto, DeleteMessageDto } from './dto/chatWs.dto'
 import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
+import { ChatService } from '../chat.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -24,7 +25,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     wss: Server
 
-    constructor(private chatWsService: ChatWsService, private jwtService: JwtService) {}
+    constructor(private chatWsService: ChatWsService, private chatService: ChatService, private jwtService: JwtService) {}
 
     private logger = new Logger('ChatWsGateway')
 
@@ -94,11 +95,22 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.wss.to(payload.reciever).emit('set-user', `${payload.sender} has ${payload.action} '${payload.user}'`)
     }
 
-    @SubscribeMessage('message')
-    async sendMessage(client: Socket,@MessageBody(new SocketValidationPipe()) payload: MessageDto) {
+    @SubscribeMessage('add-message')
+    async sendMessage(client: Socket,@MessageBody(new SocketValidationPipe()) payload: AddMessageDto) {
         if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError("Invalid reciever")
         
-        this.wss.to(payload.reciever).emit('message', payload.message)
+        this.chatService.createMessage(payload.sender, payload.reciever, payload.message)
+
+        this.wss.to(payload.reciever).emit('add-message', payload.message)
+    }
+
+    @SubscribeMessage('delete-message')
+    async deleteMessage(client: Socket,@MessageBody(new SocketValidationPipe()) payload: DeleteMessageDto) {
+        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender))) return this.socketError("Invalid reciever")
+
+        this.chatService.deleteMessage(payload.sender, payload.reciever, payload.message_id)
+
+        this.wss.to(payload.reciever).emit('delete-message', payload.message_id)
     }
 
     async joinAllRooms(client: Socket, user: string) {
