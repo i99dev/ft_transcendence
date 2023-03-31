@@ -27,7 +27,6 @@ export class ChatUserSeeder {
     }
 
     async assignUsersToChats(): Promise<void> {
-
         // Room 1
         await this.prisma.groupChat.update({
             where: { chat_room_id: 'room1' },
@@ -37,10 +36,10 @@ export class ChatUserSeeder {
                         where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                                user_login: 'bnaji',
-                                role: ChatUserRole.OWNER,
-                            },
-                    }
+                            user_login: 'bnaji',
+                            role: ChatUserRole.OWNER,
+                        },
+                    },
                 },
             },
         })
@@ -52,10 +51,10 @@ export class ChatUserSeeder {
                         where: { chat_user: { user_login: 'aaljaber', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                                user_login: 'aaljaber',
-                                role: ChatUserRole.ADMIN,
-                            },
-                    }
+                            user_login: 'aaljaber',
+                            role: ChatUserRole.ADMIN,
+                        },
+                    },
                 },
             },
         })
@@ -67,10 +66,10 @@ export class ChatUserSeeder {
                         where: { chat_user: { user_login: 'mal-guna', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                                user_login: 'mal-guna',
-                                role: ChatUserRole.MEMBER,
-                            },
-                    }
+                            user_login: 'mal-guna',
+                            role: ChatUserRole.MEMBER,
+                        },
+                    },
                 },
             },
         })
@@ -82,10 +81,10 @@ export class ChatUserSeeder {
                         where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                                user_login: 'oal-tena',
-                                role: ChatUserRole.ADMIN,
-                            },
-                    }
+                            user_login: 'oal-tena',
+                            role: ChatUserRole.ADMIN,
+                        },
+                    },
                 },
             },
         })
@@ -98,12 +97,11 @@ export class ChatUserSeeder {
                     upsert: {
                         where: { chat_user: { user_login: 'isaad', chat_room_id: 'room2' } },
                         update: {},
-                        create:
-                            {
-                                user_login: 'isaad',
-                                role: ChatUserRole.OWNER,
-                            },
-                    }
+                        create: {
+                            user_login: 'isaad',
+                            role: ChatUserRole.OWNER,
+                        },
+                    },
                 },
             },
         })
@@ -114,11 +112,10 @@ export class ChatUserSeeder {
                     upsert: {
                         where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room3' } },
                         update: {},
-                        create:
-                            {
-                                user_login: 'bnaji',
-                            },
-                    }
+                        create: {
+                            user_login: 'bnaji',
+                        },
+                    },
                 },
             },
         })
@@ -131,11 +128,10 @@ export class ChatUserSeeder {
                     upsert: {
                         where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room3' } },
                         update: {},
-                        create:
-                            {
-                                user_login: 'oal-tena',
-                            },
-                    }
+                        create: {
+                            user_login: 'oal-tena',
+                        },
+                    },
                 },
             },
         })

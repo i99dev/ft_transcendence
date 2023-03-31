@@ -131,7 +131,7 @@ export class DefaultService {
 
         this.checkWallCollision(ball)
 
-        if (ball.x <= (ball.radius + players[0].paddle.width)) {
+        if (ball.x <= ball.radius + players[0].paddle.width) {
             if (this.checkPlayerCollision(ball, players[0])) {
                 ball.dx *= -1
             } else {

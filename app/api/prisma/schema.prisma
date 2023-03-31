@@ -82,7 +82,7 @@ model GroupChat {
 model ChatUser {
   id           Int      @id @default(autoincrement())
   role         ChatUserRole   @default(MEMBER)
-  status       String   @default("default")
+  status       ChatUserStatus @default(NORMAL)
   created_at   DateTime @default(now())
   user_login   String
   chat_room_id     String
@@ -95,6 +95,7 @@ model Message {
   id           Int      @id @default(autoincrement())
   content      String
   created_at   DateTime @default(now())
+  type         MessageType @default(NORMAL)
   chat_room_id String
   sender_login String
   chat_room ChatRoom @relation(fields: [chat_room_id], references: [room_id])
@@ -118,4 +119,16 @@ enum ChatUserRole {
   OWNER
   ADMIN
   MEMBER
+}
+
+enum MessageType {
+  NORMAL
+  SPECIAL
+}
+
+enum ChatUserStatus {
+  NORMAL
+  MUTE
+  BAN
+  OUT
 }

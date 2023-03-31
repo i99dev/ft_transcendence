@@ -19,7 +19,7 @@ import { GameModule } from './module/game/game.module'
         PrismaModule,
         ChatModule,
         GameModule,
-        ChatModule
+        ChatModule,
     ],
     controllers: [AppController],
     providers: [AppService],

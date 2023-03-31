@@ -1,5 +1,5 @@
 import { chatType } from '@prisma/client'
-import { ChatUserRole } from '@prisma/client'
+import { ChatUserRole, ChatUserStatus } from '@prisma/client'
 export class ChatRoomDto {
     room_id: string
     name?: string
@@ -9,7 +9,7 @@ export class ChatRoomDto {
 }
 
 export class ChatUserDto {
-    status?: string
+    status?: ChatUserStatus
     user_login: string
-    role: ChatUserRole
+    role?: ChatUserRole
 }

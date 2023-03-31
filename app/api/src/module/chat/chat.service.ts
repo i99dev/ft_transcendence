@@ -3,6 +3,8 @@ import { object } from '@hapi/joi'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
+import { ChatRoom, MessageType } from '@prisma/client'
+import { UpdateChatUserInterface } from './interface/chat.interface'
 
 @Injectable()
 export class ChatService {
@@ -10,24 +12,29 @@ export class ChatService {
 
     async createGroupChat(value: ChatRoomDto, user_login: string) {
         try {
-            const chat = await this.prisma.groupChat.create({
+            const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
                 data: {
-                    chat_room_id: value.room_id,
-                    name: value?.name,
-                    image: value?.image,
-                    type: value?.type,
-                    password: value?.password,
-                    chat_user: {
-                        createMany: {
-                            data: {
-                                user_login: user_login,
-                                role: 'OWNER',
+                    room_id: value.room_id,
+                    group_chat: {
+                        create: {
+                            name: value?.name,
+                            image: value?.image,
+                            type: value?.type,
+                            password: value?.password,
+                            chat_user: {
+                                createMany: {
+                                    data: {
+                                        user_login: user_login,
+                                        role: 'OWNER',
+                                        status: 'NORMAL',
+                                    },
+                                },
                             },
                         },
                     },
                 },
             })
-            return chat
+            return chatRoom
         } catch (error) {
             console.log(error)
         }
@@ -54,10 +61,15 @@ export class ChatService {
                 },
                 data: {
                     chat_user: {
-                        create: {
-                            user_login: user.user_login,
-                            role: user.role,
-                            status: user.status, // 'INVITED' or 'NORMAL' or 'MUTED' or 'BANNED'
+                        upsert: {
+                            where: {
+                                chat_user: {
+                                    chat_room_id: room_id,
+                                    user_login: user.user_login,
+                                },
+                            },
+                            update: user,
+                            create: user,
                         },
                     },
                 },
@@ -78,7 +90,7 @@ export class ChatService {
                     chat_user: {
                         delete: {
                             id: user_id,
-                        }
+                        },
                     },
                 },
             })
@@ -88,27 +100,19 @@ export class ChatService {
         }
     }
 
-    async updateChatUser(user_id: number, room_id: string, user: ChatUserDto) {
+    async updateChatUser(user_login: string, room_id: string, user: UpdateChatUserInterface) {
         try {
-            const chat = await this.prisma.groupChat.update({
+            const chatUser = await this.prisma.chatUser.update({
                 where: {
-                    chat_room_id: room_id,
-                },
-                data: {
                     chat_user: {
-                        update: {
-                            where: {
-                                id: user_id,
-                            },
-                            data: {
-                                role: user.role,
-                                status: user.status,
-                            },
-                        },
+                        chat_room_id: room_id,
+                        user_login: user_login,
                     },
                 },
+                data: user,
             })
-            return chat
+
+            return chatUser
         } catch (error) {
             console.log(error)
         }
@@ -124,27 +128,6 @@ export class ChatService {
                     chat_user: {
                         where: {
                             id: user_id,
-                        }
-                    }
-                },
-            })
-            return chat
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async createMessage(user_login: string, room_id: string, message: string) {
-        try {
-            const chat = await this.prisma.chatRoom.update({
-                where: {
-                    room_id: room_id,
-                },
-                data: {
-                    messages: {
-                        create: {
-                            content: message,
-                            sender_login: user_login,
                         },
                     },
                 },
@@ -155,16 +138,42 @@ export class ChatService {
         }
     }
 
-    async deleteMessage(user_login: string, room_id: string, message_id: number){
+    async createMessage(
+        user_login: string,
+        room_id: string,
+        message: string,
+        type: MessageType = MessageType.NORMAL,
+    ) {
+        try {
+            const chat = await this.prisma.chatRoom.update({
+                where: {
+                    room_id: room_id,
+                },
+                data: {
+                    messages: {
+                        create: {
+                            content: message,
+                            sender_login: user_login,
+                            type: type,
+                        },
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async deleteMessage(user_login: string, room_id: string, message_id: number) {
         try {
             const chat = await this.prisma.message.delete({
                 where: {
                     id: message_id,
                 },
             })
-            return chat;
-        }
-        catch (error) {
+            return chat
+        } catch (error) {
             console.log(error)
         }
     }

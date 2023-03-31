@@ -1,22 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ChatRoom, chatType, GroupChat } from '@prisma/client';
-import { decode } from 'punycode';
-import { PrismaService } from '../../../providers/prisma/prisma.service';
+import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { WsException } from '@nestjs/websockets'
+import { ChatRoom, chatType, GroupChat } from '@prisma/client'
+import { decode } from 'punycode'
+import { PrismaService } from '../../../providers/prisma/prisma.service'
+import { ChatService } from '../chat.service'
 
 @Injectable()
 export class ChatWsService {
-    constructor(private prisma: PrismaService, private jwtService: JwtService) {}
-    private chatRooms : ChatRoom[];
-    
+    constructor(
+        private prisma: PrismaService,
+        private chatService: ChatService,
+        private jwtService: JwtService,
+    ) {}
+    private chatRooms: ChatRoom[]
+
     extractUserFromJwt(jwt: string) {
-        jwt = jwt.split(" ")[1]
+        jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
         return !decode ? null : decode['login']
     }
 
     async findAllChats(login: string): Promise<any[]> {
-        return this.chatRooms = await this.prisma.chatRoom.findMany({
+        return (this.chatRooms = await this.prisma.chatRoom.findMany({
             where: {
                 OR: [
                     {
@@ -24,24 +30,24 @@ export class ChatWsService {
                             chat_user: {
                                 some: {
                                     user: {
-                                        login: login
-                                    }
-                                }
-                            }
-                        }
+                                        login: login,
+                                    },
+                                },
+                            },
+                        },
                     },
                     {
                         direct_chat: {
                             users: {
                                 some: {
-                                    login: login
-                                }
-                            }
-                        }
-                    }
-                ]
-            }
-        });
+                                    login: login,
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
+        }))
     }
 
     async findDirectChat(login1: string, login2: string): Promise<any> {
@@ -51,25 +57,25 @@ export class ChatWsService {
                     every: {
                         user: {
                             login: {
-                                in: [login1, login2]
-                            }
-                        }
-                    }
+                                in: [login1, login2],
+                            },
+                        },
+                    },
                 },
-                type: chatType.DIRECT
-            }
+                type: chatType.DIRECT,
+            },
         })
     }
 
-   async findAllChatUsers(roomId: string): Promise<any[]>  {
+    async findAllChatUsers(roomId: string): Promise<any[]> {
         return await this.prisma.chatUser.findMany({
             where: {
-                chat_room_id: roomId
-            }
+                chat_room_id: roomId,
+            },
         })
-   }
+    }
 
-   async isDirect(room_id: string) {
+    async isDirect(room_id: string) {
         //  return await this.prisma.chat.findFirst({
         //       where: {
         //             room_id: {
@@ -80,9 +86,9 @@ export class ChatWsService {
         //             },
         //       }
         //  })
-   }
+    }
 
-   async validateChatRoom(room_id: string, user_login: string) {
+    async validateChatRoom(room_id: string, user_login: string) {
         return await this.prisma.chatRoom.findFirst({
             where: {
                 room_id: room_id,
@@ -92,32 +98,50 @@ export class ChatWsService {
                             chat_user: {
                                 some: {
                                     user: {
-                                        login: user_login
-                                    }
-                                }
-                            }
-                        }
+                                        login: user_login,
+                                    },
+                                },
+                            },
+                        },
                     },
                     {
                         direct_chat: {
                             users: {
                                 some: {
-                                    login: user_login
-                                }
-                            }
-                        }
-                    }
-                ]
-            }
+                                    login: user_login,
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
         })
-   }
+    }
 
-   async chatExist(room_id: string) {
-         return await this.prisma.chatRoom.findFirst({
-              where: {
-                    room_id: room_id
-              }
-         })
-   }
+    async chatExist(room_id: string) {
+        return await this.prisma.chatRoom.findFirst({
+            where: {
+                room_id: room_id,
+            },
+        })
+    }
 
+    async setupGroupChat(payload: any) {
+        if (payload.type === chatType.PROTECTED && payload.password === undefined)
+            throw new WsException('No password provided')
+
+        const room_id = crypto.randomUUID()
+        await this.chatService.createGroupChat(
+            {
+                room_id: room_id,
+                name: payload.name,
+                image: payload.image,
+                type: payload.type,
+                password: payload.password,
+            },
+            payload.sender,
+        )
+
+        return room_id
+    }
 }

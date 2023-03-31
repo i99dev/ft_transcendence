@@ -1,6 +1,7 @@
 import { ChatUserDto } from './../dto/chat.dto'
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common'
 import { ChatRoomDto } from '../dto/chat.dto'
+import { ChatUserStatus } from '@prisma/client'
 
 @Injectable()
 export class ChatPostValidation implements PipeTransform<any> {
@@ -41,7 +42,7 @@ export class ChatPostValidation implements PipeTransform<any> {
 export class UserPostValidation implements PipeTransform<any> {
     createAssignValue(): ChatUserDto {
         const vari: ChatUserDto = {
-            status: 'string',
+            status: ChatUserStatus.NORMAL,
             user_login: 'string',
             role: 'ADMIN',
         }

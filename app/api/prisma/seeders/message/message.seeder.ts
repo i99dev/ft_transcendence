@@ -12,8 +12,8 @@ export class MessageSeeder {
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am bnaji',
-                    sender_login: "bnaji",
-                    chat_room_id: "room1",
+                    sender_login: 'bnaji',
+                    chat_room_id: 'room1',
                 },
             }),
             await this.prisma.message.create({
@@ -121,7 +121,7 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am bassam',
-                                sender_login: "bnaji",
+                                sender_login: 'bnaji',
                             },
                             {
                                 content: 'Is this the direct chat?',
@@ -142,14 +142,14 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am bassam',
-                                sender_login: "bnaji",
+                                sender_login: 'bnaji',
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: "oal-tena",
+                                sender_login: 'oal-tena',
                             },
-                        ]
-                    }
+                        ],
+                    },
                 },
             },
         })
@@ -161,14 +161,14 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am abrar',
-                                sender_login: "aaljaber",
+                                sender_login: 'aaljaber',
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: "bnaji",
+                                sender_login: 'bnaji',
                             },
-                        ]
-                    }
+                        ],
+                    },
                 },
             },
         })
@@ -180,14 +180,14 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am isaad',
-                                sender_login: "isaad",
+                                sender_login: 'isaad',
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: "mal-guna",
+                                sender_login: 'mal-guna',
                             },
-                        ]
-                    }
+                        ],
+                    },
                 },
             },
         })

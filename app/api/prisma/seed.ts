@@ -37,7 +37,7 @@ async function main() {
 
     // Create ChatRooms
     const chatRooms = await new ChatRoomSeeder().seedChatRooms()
-    
+
     // Create DirectChatRooms
     const directChats = await new DirectChatSeeder().seedDirectChats()
 
