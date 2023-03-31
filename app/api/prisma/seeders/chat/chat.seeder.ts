@@ -18,18 +18,18 @@ export class GroupChatSeeder {
                 },
             }),
             await this.prisma.groupChat.upsert({
-              where: { chat_room_id: 'room2' },
-              update: {},
-              create: {
+                where: { chat_room_id: 'room2' },
+                update: {},
+                create: {
                     chat_room_id: 'room2',
                     name: 'Novembers',
                     type: chatType.PRIVATE,
                 },
             }),
             await this.prisma.groupChat.upsert({
-              where: { chat_room_id: 'room3' },
-              update: {},
-              create: {
+                where: { chat_room_id: 'room3' },
+                update: {},
+                create: {
                     chat_room_id: 'room3',
                     name: 'bnaji - oal-tena',
                     type: chatType.DIRECT,
