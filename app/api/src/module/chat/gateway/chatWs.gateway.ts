@@ -187,13 +187,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} added ${payload.user}`)
         } 
         else if (payload.action === 'kick') {
-            await this.chatWsService.kickUser(payload.reciever, payload.user)
+            await this.chatWsService.kickUser(payload.reciever, payload.user, payload.sender)
             const clientSocket = this.getSocket(payload.user)
             await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} kicked ${payload.user}`)
             if (clientSocket) clientSocket.leave(payload.reciever)
         }
         else if (payload.action === 'invite') {
-            await this.chatWsService.inviteUser(payload.reciever, payload.user);
+            await this.chatWsService.inviteUser(payload.reciever, payload.user, payload.sender);
             const clientSocket = this.getSocket(payload.user)
             if (clientSocket) {
                 clientSocket.join(payload.reciever);

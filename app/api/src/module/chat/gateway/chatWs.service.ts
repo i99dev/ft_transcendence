@@ -74,6 +74,7 @@ export class ChatWsService {
     async canChangeAdmin(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+        return false
     }
 
     async handleAdminSetup(payload: SetUserDto) {
@@ -129,7 +130,10 @@ export class ChatWsService {
         })
     }
 
-    async inviteUser(room_id: string, user_login: string) {
+    async inviteUser(room_id: string, user_login: string, sender: string) {
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
         const room = await this.chatService.getGroupRoom(room_id)
         if (room.type !== chatType.PRIVATE)
             throw new WsException('Room is not protected')
@@ -158,7 +162,11 @@ export class ChatWsService {
         this.joinGroupChat(room_id, user_login)
     }
     
-    async kickUser(room_id: string, user_login: string) {
+    async kickUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
         if (await this.isUserOutsideChatRoom(room_id, user_login)) 
             throw new WsException('User is already outside the chat room')
 
