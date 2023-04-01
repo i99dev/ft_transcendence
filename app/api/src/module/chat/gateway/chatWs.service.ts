@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
-import { ChatRoom, chatType, ChatUserStatus } from '@prisma/client'
+import { ChatRoom, chatType, ChatUserRole, ChatUserStatus } from '@prisma/client'
 import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
+import { SetUserDto } from './dto/chatWs.dto'
 
 @Injectable()
 export class ChatWsService {
@@ -41,7 +42,38 @@ export class ChatWsService {
     }
 
     async isUserOutsideChatRoom(room_id: string, user_login: string) {
-        const groupChat = await this.chatService.getChatUsers(room_id, user_login)
-        if (groupChat.chat_user.find((chatUser) => chatUser.user_login === user_login).status === ChatUserStatus.OUT) return true
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.status === ChatUserStatus.OUT) return true
     }
+
+    async isUserAllowed(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+    }
+
+    async handleAdminSetup(payload: SetUserDto) {
+        if (payload.action === 'upgrade')
+            await this.makeAdmin(payload.reciever, payload.user)
+        else if (payload.action === 'downgrade')
+            await this.removeAdmin(payload.reciever, payload.user)
+    }
+
+    async makeAdmin(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.MEMBER) {
+            await this.chatService.updateChatUser(room_id, user_login, {
+                role: ChatUserRole.ADMIN,
+            })
+        }
+    }
+    
+    async removeAdmin(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.ADMIN) {
+            await this.chatService.updateChatUser(room_id, user_login, {
+                role: ChatUserRole.MEMBER,
+            })
+        }
+    }
+    
 }
