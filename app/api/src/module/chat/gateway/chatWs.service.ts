@@ -60,8 +60,10 @@ export class ChatWsService {
 
     async makeAdmin(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.ADMIN) throw new WsException('User is already admin')
+
         if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.MEMBER) {
-            await this.chatService.updateChatUser(room_id, user_login, {
+            await this.chatService.updateChatUser(user_login, room_id, {
                 role: ChatUserRole.ADMIN,
             })
         }
@@ -69,8 +71,10 @@ export class ChatWsService {
     
     async removeAdmin(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.MEMBER) throw new WsException('User is not admin')
+
         if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.ADMIN) {
-            await this.chatService.updateChatUser(room_id, user_login, {
+            await this.chatService.updateChatUser(user_login, room_id, {
                 role: ChatUserRole.MEMBER,
             })
         }
