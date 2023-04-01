@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
-import { ChatRoom, chatType, GroupChat } from '@prisma/client'
+import { ChatRoom, chatType, ChatUserRole, ChatUserStatus } from '@prisma/client'
 import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
+import { SetUserDto } from './dto/chatWs.dto'
 
 @Injectable()
 export class ChatWsService {
@@ -19,111 +20,6 @@ export class ChatWsService {
         jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
         return !decode ? null : decode['login']
-    }
-
-    async findAllChats(login: string): Promise<any[]> {
-        return (this.chatRooms = await this.prisma.chatRoom.findMany({
-            where: {
-                OR: [
-                    {
-                        group_chat: {
-                            chat_user: {
-                                some: {
-                                    user: {
-                                        login: login,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                    {
-                        direct_chat: {
-                            users: {
-                                some: {
-                                    login: login,
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
-        }))
-    }
-
-    async findDirectChat(login1: string, login2: string): Promise<any> {
-        return await this.prisma.groupChat.findFirst({
-            where: {
-                chat_user: {
-                    every: {
-                        user: {
-                            login: {
-                                in: [login1, login2],
-                            },
-                        },
-                    },
-                },
-                type: chatType.DIRECT,
-            },
-        })
-    }
-
-    async findAllChatUsers(roomId: string): Promise<any[]> {
-        return await this.prisma.chatUser.findMany({
-            where: {
-                chat_room_id: roomId,
-            },
-        })
-    }
-
-    async isDirect(room_id: string) {
-        //  return await this.prisma.chat.findFirst({
-        //       where: {
-        //             room_id: {
-        //                 equals: room_id
-        //             },
-        //             type: {
-        //                 equals: chatType.DIRECT
-        //             },
-        //       }
-        //  })
-    }
-
-    async validateChatRoom(room_id: string, user_login: string) {
-        return await this.prisma.chatRoom.findFirst({
-            where: {
-                room_id: room_id,
-                OR: [
-                    {
-                        group_chat: {
-                            chat_user: {
-                                some: {
-                                    user: {
-                                        login: user_login,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                    {
-                        direct_chat: {
-                            users: {
-                                some: {
-                                    login: user_login,
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
-        })
-    }
-
-    async chatExist(room_id: string) {
-        return await this.prisma.chatRoom.findFirst({
-            where: {
-                room_id: room_id,
-            },
-        })
     }
 
     async setupGroupChat(payload: any) {
@@ -144,4 +40,40 @@ export class ChatWsService {
 
         return room_id
     }
+
+    async isUserOutsideChatRoom(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.status === ChatUserStatus.OUT) return true
+    }
+
+    async isUserAllowed(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+    }
+
+    async handleAdminSetup(payload: SetUserDto) {
+        if (payload.action === 'upgrade')
+            await this.makeAdmin(payload.reciever, payload.user)
+        else if (payload.action === 'downgrade')
+            await this.removeAdmin(payload.reciever, payload.user)
+    }
+
+    async makeAdmin(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.MEMBER) {
+            await this.chatService.updateChatUser(room_id, user_login, {
+                role: ChatUserRole.ADMIN,
+            })
+        }
+    }
+    
+    async removeAdmin(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.ADMIN) {
+            await this.chatService.updateChatUser(room_id, user_login, {
+                role: ChatUserRole.MEMBER,
+            })
+        }
+    }
+    
 }
