@@ -83,7 +83,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
     ) {
-        if (!(await this.chatWsService.chatExist(payload.reciever)))
+        if (!(await this.chatService.chatExist(payload.reciever)))
             return this.socketError('Invalid reciever')
 
         await this.chatService.addUserToRoom(payload.reciever, {
@@ -101,7 +101,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         await this.chatService.updateChatUser(payload.sender, payload.reciever, {
@@ -117,7 +117,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: AddUserDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         this.wss.to(payload.reciever).emit('add-user', `${payload.sender} added '${payload.user}'`)
@@ -128,7 +128,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: AddUserDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         this.wss
@@ -141,7 +141,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: UpdateChatDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         if (payload.name)
@@ -159,7 +159,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: SetUserDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         this.wss
@@ -172,7 +172,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         this.chatService.createMessage(payload.sender, payload.reciever, payload.message)
@@ -187,7 +187,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: DeleteMessageDto,
     ) {
-        if (!(await this.chatWsService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
         this.chatService.deleteMessage(payload.sender, payload.reciever, payload.message_id)
@@ -196,7 +196,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     async joinAllRooms(client: Socket, user: string) {
-        const chats = await this.chatWsService.findAllChats(user)
+        const chats = await this.chatService.findAllChats(user)
         for (let i = 0; i < chats.length; i++)
             if (chats[i].status !== ChatUserStatus.OUT) client.join(chats[i].room_id)
     }
