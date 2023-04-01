@@ -149,12 +149,10 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User not found')
         if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
-        if (!(await this.chatWsService.isUserAllowed(payload.reciever, payload.sender)))
+        if (!(await this.chatWsService.canChangeAdmin(payload.reciever, payload.sender)))
             return this.socketError('User is neither admin nor owner')
         
-        await this.chatWsService.handleAdminSetup(payload) // 'set' , 'unset' , 'add' , 'kick' , 'ban', 'mute' , 'normal'
-
-        await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} ${payload.action} ${payload.user}`)
+        await this.chatWsService.handleAdminSetup(payload) // 'upgrade' , 'downgrade'
     }
 
     @SubscribeMessage('add-message')

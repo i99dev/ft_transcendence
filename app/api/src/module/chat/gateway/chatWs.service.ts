@@ -46,7 +46,7 @@ export class ChatWsService {
         if (chatUser.status === ChatUserStatus.OUT) return true
     }
 
-    async isUserAllowed(room_id: string, user_login: string) {
+    async canChangeAdmin(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
     }
