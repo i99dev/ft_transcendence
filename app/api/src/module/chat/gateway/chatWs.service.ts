@@ -204,6 +204,19 @@ export class ChatWsService {
         })
     }
 
+    async muteUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        if (await this.isUserNormal(room_id, user_login)) 
+            throw new WsException('User is already outside the chat room')
+
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.MUTE,
+        })
+    }
+
     async validateUserInRoom(room_id: string, user_login: string) {
         const room = await this.chatService.getGroupRoom(room_id)
         if (room.type !== chatType.PRIVATE)
