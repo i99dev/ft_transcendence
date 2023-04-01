@@ -1,20 +1,29 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "Player" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
 
-  - You are about to drop the column `opponentId` on the `MatchHistory` table. All the data in the column will be lost.
+    CONSTRAINT "Player_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "MatchHistory" DROP CONSTRAINT "MatchHistory_opponentId_fkey";
+-- CreateTable
+CREATE TABLE "MatchHistory" (
+    "id" SERIAL NOT NULL,
+    "winnerID" INTEGER NOT NULL,
+    "at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "score" INTEGER[],
 
--- AlterTable
-ALTER TABLE "MatchHistory" DROP COLUMN "opponentId";
+    CONSTRAINT "MatchHistory_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "_UserMatchHistory" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Player_userId_key" ON "Player"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_UserMatchHistory_AB_unique" ON "_UserMatchHistory"("A", "B");

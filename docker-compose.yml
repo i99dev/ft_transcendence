@@ -40,7 +40,12 @@ services:
 
         volumes:
             - ./app/api:/usr/src/app
-        command: ['sh', '-c', 'yarn && ./db_init.sh && yarn dev']
+        command:
+            [
+                'sh',
+                '-c',
+                'yarn && npx prisma migrate reset --force && npx prisma migrate dev && yarn dev',
+            ]
 
         environment:
             - NODE_ENV=${NODE_ENV}
