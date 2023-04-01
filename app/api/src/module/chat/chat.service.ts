@@ -76,6 +76,32 @@ export class ChatService {
 
     async getRoom(room_id: string) {
         try {
+            const chat = await this.prisma.chatRoom.findUnique({
+                where: {
+                    room_id: room_id,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getGroupRoom(room_id: string) {
+        try {
+            const chat = await this.prisma.directChat.findUnique({
+                where: {
+                    chat_room_id: room_id,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getDMRoom(room_id: string) {
+        try {
             const chat = await this.prisma.groupChat.findUnique({
                 where: {
                     chat_room_id: room_id,

@@ -7,6 +7,15 @@ CREATE TYPE "chatType" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED', 'DIRECT');
 -- CreateEnum
 CREATE TYPE "ChatUserRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
 
+-- CreateEnum
+CREATE TYPE "MessageType" AS ENUM ('NORMAL', 'SPECIAL');
+
+-- CreateEnum
+CREATE TYPE "ChatUserStatus" AS ENUM ('NORMAL', 'MUTE', 'BAN', 'OUT');
+
+-- CreateEnum
+CREATE TYPE "ChatRoomType" AS ENUM ('DM', 'GROUP');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -52,6 +61,7 @@ CREATE TABLE "ChatRoom" (
     "id" SERIAL NOT NULL,
     "room_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "type" "ChatRoomType" NOT NULL,
 
     CONSTRAINT "ChatRoom_pkey" PRIMARY KEY ("id")
 );
@@ -80,7 +90,7 @@ CREATE TABLE "GroupChat" (
 CREATE TABLE "ChatUser" (
     "id" SERIAL NOT NULL,
     "role" "ChatUserRole" NOT NULL DEFAULT 'MEMBER',
-    "status" TEXT NOT NULL DEFAULT 'default',
+    "status" "ChatUserStatus" NOT NULL DEFAULT 'NORMAL',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_login" TEXT NOT NULL,
     "chat_room_id" TEXT NOT NULL,
@@ -93,6 +103,7 @@ CREATE TABLE "Message" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "type" "MessageType" NOT NULL DEFAULT 'NORMAL',
     "chat_room_id" TEXT NOT NULL,
     "sender_login" TEXT NOT NULL,
 
