@@ -48,6 +48,7 @@ export class MainInfoDto {
     @IsString()
     reciever: string
 
+    @IsOptional()
     @IsString()
     password?: string
 }
