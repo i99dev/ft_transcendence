@@ -5,7 +5,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "roomType" AS ENUM ('DM', 'GROUP');
+CREATE TYPE "ChatRoomType" AS ENUM ('DM', 'GROUP');
 
 -- AlterTable
-ALTER TABLE "ChatRoom" ADD COLUMN     "type" "roomType" NOT NULL;
+ALTER TABLE "ChatRoom" ADD COLUMN     "type" "ChatRoomType" NOT NULL;

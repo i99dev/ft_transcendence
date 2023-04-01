@@ -13,28 +13,28 @@ datasource db {
 // prisma/schema.prisma
 
 model User {
-  id           Int        @id @default(autoincrement())
-  login        String     @unique
-  username     String     @unique
-  email        String     @unique
-  status       UserStatus @default(OFFLINE)
+  id           Int           @id @default(autoincrement())
+  login        String        @unique
+  username     String        @unique
+  email        String        @unique
+  status       UserStatus    @default(OFFLINE)
   first_name   String?
   last_name    String?
-  created_at   DateTime   @default(now())
-  last_login   DateTime   @default(now())
+  created_at   DateTime      @default(now())
+  last_login   DateTime      @default(now())
   image        String?
-  total_wins   Int        @default(0)
-  total_loses  Int        @default(0)
-  exp_level    Int        @default(0)
-  points       Int        @default(0)
-  two_fac_auth Boolean    @default(false)
-  achievements Achievement[]  @relation("UserAchievements")
-  power_ups    PowerUp[] @relation("UserPowerUps")
-  friend_to    User[]  @relation("UserFriends")
-  friends      User[]  @relation("UserFriends")
-  direct_chats DirectChat[] @relation("DirectChatUsers")
-  chat    ChatUser[]
-  message     Message[]
+  total_wins   Int           @default(0)
+  total_loses  Int           @default(0)
+  exp_level    Int           @default(0)
+  points       Int           @default(0)
+  two_fac_auth Boolean       @default(false)
+  achievements Achievement[] @relation("UserAchievements")
+  power_ups    PowerUp[]     @relation("UserPowerUps")
+  friend_to    User[]        @relation("UserFriends")
+  friends      User[]        @relation("UserFriends")
+  direct_chats DirectChat[]  @relation("DirectChatUsers")
+  chat         ChatUser[]
+  message      Message[]
 }
 
 model PowerUp {
@@ -53,54 +53,55 @@ model Achievement {
 }
 
 model ChatRoom {
-  id             Int            @id @default(autoincrement())
-  room_id        String         @unique
-  created_at     DateTime       @default(now())
-  type           roomType
-  direct_chat    DirectChat?
-  group_chat     GroupChat?
-  messages       Message[]
+  id          Int          @id @default(autoincrement())
+  room_id     String       @unique
+  created_at  DateTime     @default(now())
+  type        ChatRoomType
+  direct_chat DirectChat?
+  group_chat  GroupChat?
+  messages    Message[]
 }
 
 model DirectChat {
-  id            Int            @id @default(autoincrement())
-  chat_room_id  String @unique
-  chat_room      ChatRoom       @relation(fields: [chat_room_id], references: [room_id])
-  users         User[]        @relation("DirectChatUsers")
+  id           Int      @id @default(autoincrement())
+  chat_room_id String   @unique
+  chat_room    ChatRoom @relation(fields: [chat_room_id], references: [room_id])
+  users        User[]   @relation("DirectChatUsers")
 }
 
 model GroupChat {
-  id             Int            @id @default(autoincrement())
-  name           String?
-  image          String?
-  type           chatType   @default(PUBLIC)
-  password       String?
-  chat_user ChatUser[]
-  chat_room_id   String @unique
-  chat_room      ChatRoom       @relation(fields: [chat_room_id], references: [room_id])
+  id           Int        @id @default(autoincrement())
+  name         String?
+  image        String?
+  type         chatType   @default(PUBLIC)
+  password     String?
+  chat_user    ChatUser[]
+  chat_room_id String     @unique
+  chat_room    ChatRoom   @relation(fields: [chat_room_id], references: [room_id])
 }
 
 model ChatUser {
-  id           Int      @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   role         ChatUserRole   @default(MEMBER)
   status       ChatUserStatus @default(NORMAL)
-  created_at   DateTime @default(now())
+  created_at   DateTime       @default(now())
   user_login   String
-  chat_room_id     String
-  chat    GroupChat @relation(fields: [chat_room_id], references: [chat_room_id])
-  user         User     @relation(fields: [user_login], references: [login])
+  chat_room_id String
+  chat         GroupChat      @relation(fields: [chat_room_id], references: [chat_room_id])
+  user         User           @relation(fields: [user_login], references: [login])
+
   @@unique([chat_room_id, user_login], name: "chat_user")
 }
 
 model Message {
-  id           Int      @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   content      String
-  created_at   DateTime @default(now())
+  created_at   DateTime    @default(now())
   type         MessageType @default(NORMAL)
   chat_room_id String
   sender_login String
-  chat_room ChatRoom @relation(fields: [chat_room_id], references: [room_id])
-  sender       User     @relation(fields: [sender_login], references: [login])
+  chat_room    ChatRoom    @relation(fields: [chat_room_id], references: [room_id])
+  sender       User        @relation(fields: [sender_login], references: [login])
 }
 
 enum UserStatus {
@@ -134,7 +135,7 @@ enum ChatUserStatus {
   OUT
 }
 
-enum roomType {
+enum ChatRoomType {
   DM
   GROUP
 }
