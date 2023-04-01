@@ -56,6 +56,10 @@ export class ChatWsService {
             await this.makeAdmin(payload.reciever, payload.user)
         else if (payload.action === 'downgrade')
             await this.removeAdmin(payload.reciever, payload.user)
+        else if (payload.action === 'owner')
+            await this.makeOwner(payload.reciever, payload.user, payload.sender)
+        else 
+            throw new WsException('Invalid action')
     }
 
     async makeAdmin(room_id: string, user_login: string) {
@@ -80,4 +84,57 @@ export class ChatWsService {
         }
     }
     
+    async makeOwner(room_id: string, user_login: string, owner: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role !== ChatUserRole.OWNER) throw new WsException('User is not the owner')
+
+        await this.chatService.updateChatUser(owner, room_id, {role: ChatUserRole.ADMIN})
+        await this.chatService.updateChatUser(user_login, room_id, {role: ChatUserRole.OWNER})
+    }
+
+    async joinGroupChat(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser && chatUser.status !== ChatUserStatus.OUT)
+            throw new WsException('User is already in chat room')
+
+        await this.chatService.addUserToRoom(room_id, {
+            user_login: user_login,
+            role: ChatUserRole.MEMBER,
+            status: ChatUserStatus.NORMAL,
+        })
+    }
+
+    async leaveGroupChat(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.OWNER) throw new WsException('Owner cannot leave chat room')
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.OUT,
+        })
+    }
+
+    async addUser(room_id: string, user_login: string) {
+        console.log(room_id, user_login)
+        this.joinGroupChat(room_id, user_login)
+    }
+    
+    async kickUser(room_id: string, user_login: string) {
+        if (await this.isUserOutsideChatRoom(room_id, user_login)) 
+            throw new WsException('User is already outside the chat room')
+
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.OUT,
+        })
+    }
+    
+    // async banUser(room_id: string, user_login: string) {
+
+    // }
+    
+    // async muteUser(room_id: string, user_login: string) {
+
+    // }
+    
+    // async resetUser(room_id: string, user_login: string) {
+
+    // }
 }
