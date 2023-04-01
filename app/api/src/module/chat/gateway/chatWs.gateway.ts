@@ -104,7 +104,10 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.chatService.chatExist(payload.reciever)))
             return this.socketError('Invalid reciever')
 
-        await this.chatWsService.joinGroupChat(payload.reciever, payload.sender)
+        if (await this.chatWsService.validatePassword(payload.reciever, payload.password))
+            await this.chatWsService.joinGroupChat(payload.reciever, payload.sender)
+        else
+            return this.socketError('Invalid password')
         client.join(payload.reciever)
 
         await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} joined`)

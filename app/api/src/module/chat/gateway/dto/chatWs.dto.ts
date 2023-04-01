@@ -47,6 +47,9 @@ export class MainInfoDto {
 
     @IsString()
     reciever: string
+
+    @IsString()
+    password?: string
 }
 
 export class AddUserDto {
