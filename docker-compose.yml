@@ -35,15 +35,18 @@ services:
     # backend (Nestjs)
     api:
         container_name: ft_transcendence_api
-
+        stdin_open: true
+        tty: true
         build: ./app/api
 
         volumes:
             - ./app/api:/usr/src/app
-
-        init: true
-
-        command: ['sh', '-c', 'yarn && ./db_init.sh && npx prisma studio | yarn dev']
+        command:
+            [
+                'sh',
+                '-c',
+                'yarn && npx prisma migrate reset --force && npx prisma migrate dev && yarn dev',
+            ]
 
         environment:
             - NODE_ENV=${NODE_ENV}
