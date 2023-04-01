@@ -2,73 +2,71 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 // prisma/schema.prisma
 
 model User {
-  id            Int            @id @default(autoincrement())
-  login         String         @unique
-  username      String         @unique
-  email         String         @unique
-  status        UserStatus     @default(OFFLINE)
-  first_name    String?
-  last_name     String?
-  created_at    DateTime       @default(now())
-  last_login    DateTime       @default(now())
-  image         String?
-  total_wins    Int            @default(0)
-  total_loses   Int            @default(0)
-  exp_level     Int            @default(0)
-  points        Int            @default(0)
-  two_fac_auth  Boolean        @default(false)
-  achievements  Achievement[]  @relation("UserAchievements")
-  power_ups     PowerUp[]      @relation("UserPowerUps")
-  friend_to     User[]         @relation("UserFriends")
-  friends       User[]         @relation("UserFriends")
-  // player       Player?       @relation("UserPlayer")
-  match_history MatchHistory[] @relation("UserMatchHistory")
+    id           Int           @id @default(autoincrement())
+    login        String        @unique
+    username     String        @unique
+    email        String        @unique
+    status       UserStatus    @default(OFFLINE)
+    first_name   String?
+    last_name    String?
+    created_at   DateTime      @default(now())
+    last_login   DateTime      @default(now())
+    image        String?
+    exp_level    Int           @default(0)
+    points       Int           @default(0)
+    two_fac_auth Boolean       @default(false)
+    achievements Achievement[] @relation("UserAchievements")
+    power_ups    PowerUp[]     @relation("UserPowerUps")
+    friend_to    User[]        @relation("UserFriends")
+    friends      User[]        @relation("UserFriends")
+    player       Player[]      @relation("player")
 }
 
 model Player {
-  id     Int @id @default(autoincrement())
-  // user          User           @relation("UserPlayer", fields: [userId], references: [id])
-  userId Int @unique
-  // match_history MatchHistory[] @relation("UserMatchHistory")
+    id       Int     @id @default(autoincrement())
+    userID   Int
+    matchID  String
+    score    Int     @default(0)
+    IsWinner Boolean @default(false)
+    user     User    @relation("player", fields: [userID], references: [id])
+    matches  Match   @relation("MatchOpponents", fields: [matchID], references: [gameID])
+}
+
+model Match {
+    gameID    String   @id @unique
+    start     DateTime @default(now())
+    end       DateTime @default(now())
+    opponents Player[] @relation("MatchOpponents")
 }
 
 model PowerUp {
-  id     Int    @id @default(autoincrement())
-  type   String @unique @default("default")
-  period Int    @default(0)
-  users  User[] @relation("UserPowerUps")
-}
-
-model MatchHistory {
-  id        Int      @id @default(autoincrement())
-  opponents User[]   @relation("UserMatchHistory")
-  // opponent Player[] @relation("UserMatchHistory")
-  winnerID  Int
-  at        DateTime @default(now())
-  score     Int[]
+    id     Int    @id @default(autoincrement())
+    type   String @unique @default("default")
+    period Int    @default(0)
+    users  User[] @relation("UserPowerUps")
 }
 
 model Achievement {
-  id          Int     @id @default(autoincrement())
-  type        String  @unique @default("default")
-  description String?
-  points      Int     @default(0)
-  users       User[]  @relation("UserAchievements")
+    id          Int     @id @default(autoincrement())
+    type        String  @unique @default("default")
+    description String?
+    points      Int     @default(0)
+    users       User[]  @relation("UserAchievements")
 }
 
 enum UserStatus {
-  OFFLINE
-  ONLINE
-  LIVE
+    OFFLINE
+    ONLINE
+    LIVE
 }

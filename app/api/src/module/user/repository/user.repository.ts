@@ -20,7 +20,7 @@ export class UserRepository {
     }
 
     CreateUserObject(data: Me): NewUser {
-        let user: NewUser = {
+        const user: NewUser = {
             login: data.login,
             username: data.login,
             first_name: data.first_name,

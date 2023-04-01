@@ -44,7 +44,7 @@ export class UserController {
         @Query('sort') sort: string,
         @Query('order') order: string,
     ): Promise<UserGetDto[]> {
-        let type = { [sort]: order }
+        const type = { [sort]: order }
         return await this.UserService.SortMany(type)
     }
 

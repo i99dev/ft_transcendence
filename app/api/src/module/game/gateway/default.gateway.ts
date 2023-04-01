@@ -45,24 +45,3 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.updatePaddlePosition(client, direction)
     }
 }
-
-// await this.prisma.user.update({
-//     where: { login: 'aaljaber' },
-//     data: {
-// 		friends: {
-// 			connect: [{ login: 'bnaji' }, { login: 'isaad' }],
-// 		},
-// 	},
-// })
-// await this.prisma.user.upsert({
-// 	where: { login: 'aaljaber'},
-// 	update: {
-// 		total_wins: 15,
-// 	},
-// 	create: {
-// 		login: 'aaljaber',
-// 		username: 'aaljaber',
-// 		email: 'ss',
-// 		total_loses: 0,
-// 	},
-// });

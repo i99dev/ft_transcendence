@@ -16,26 +16,28 @@ export class socketLogic {
         client.join('lobby')
     }
 
-    public setupComputerGame(client: Socket, players: Map<string, PlayerDto>, games: Map<string, gameStatusDto>, decoded: any): string{
+    public setupComputerGame(
+        client: Socket,
+        players: Map<string, PlayerDto>,
+        games: Map<string, gameStatusDto>,
+        decoded: any,
+    ): string {
         const player = this.createPlayer(decoded['login'], 1)
         const computer = this.createPlayer('Computer', 2)
         const gameID: string = this.generateRandomId()
 
         players[client.id] = player
         players[client.id].gameID = gameID
-        const game = this.instanciateGame(
-            player,
-            computer,
-        )
-        games[gameID] = game 
-    
+        const game = this.instanciateGame(player, computer)
+        games[gameID] = game
+
         client.join(gameID)
         client.emit('Game-Setup', { game, player: 1 })
-        return gameID;
+        return gameID
     }
 
     // emit the game-setup event to the players to update them with the game status
-    public emitGameSetup(players: Socket[], game: gameStatusDto): void {
+    public emitGameSetup(game: gameStatusDto): void {
         this.PlayersSocket[0].emit('Game-Setup', { game, player: 1 })
         this.PlayersSocket[1].emit('Game-Setup', { game, player: 2 })
         this.PlayersSocket[0].leave('lobby')
@@ -43,13 +45,13 @@ export class socketLogic {
     }
 
     // emit end game event to the players in case of leaving the game or winning
-    public emitEndGame(players: Socket[], winner: PlayerDto, game: gameStatusDto): void {
+    public emitEndGame(winner: PlayerDto, game: gameStatusDto): void {
         this.PlayersSocket[0].emit('Game-Over', { game, winner })
         this.PlayersSocket[1].emit('Game-Over', { game, winner })
     }
 
     // join the players to the game room
-    public joinPlayersToGame(players: Socket[], gameId: string): void {
+    public joinPlayersToGame(gameId: string): void {
         this.PlayersSocket[0].join(gameId)
         this.PlayersSocket[1].join(gameId)
     }
@@ -68,15 +70,15 @@ export class socketLogic {
         this.PlayersSocket[1] = this.lobby.shift()
         players[this.PlayersSocket[0].id].gameID = gameID
         players[this.PlayersSocket[1].id].gameID = gameID
-                
+
         this.assignPlayerSide(players)
         const game = this.instanciateGame(
             players[this.PlayersSocket[0].id],
             players[this.PlayersSocket[1].id],
         )
         games[gameID] = game
-        this.joinPlayersToGame(this.PlayersSocket, gameID)
-        this.emitGameSetup(this.PlayersSocket, game)
+        this.joinPlayersToGame(gameID)
+        this.emitGameSetup(game)
         return gameID
     }
 
@@ -111,7 +113,7 @@ export class socketLogic {
         return {
             username,
             y: 0.5,
-            x: side == 1 ? PADDLE_WIDTH/2 : 1 - PADDLE_WIDTH/2,
+            x: side == 1 ? PADDLE_WIDTH / 2 : 1 - PADDLE_WIDTH / 2,
             score: 0,
             paddle: {
                 width: PADDLE_WIDTH,

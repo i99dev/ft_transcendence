@@ -13,13 +13,31 @@ CREATE TABLE "User" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "last_login" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "image" TEXT,
-    "total_wins" INTEGER NOT NULL DEFAULT 0,
-    "total_loses" INTEGER NOT NULL DEFAULT 0,
     "exp_level" INTEGER NOT NULL DEFAULT 0,
     "points" INTEGER NOT NULL DEFAULT 0,
     "two_fac_auth" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Player" (
+    "id" SERIAL NOT NULL,
+    "userID" INTEGER NOT NULL,
+    "matchID" TEXT NOT NULL,
+    "score" INTEGER NOT NULL DEFAULT 0,
+    "IsWinner" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Player_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Match" (
+    "gameID" TEXT NOT NULL,
+    "start" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "end" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Match_pkey" PRIMARY KEY ("gameID")
 );
 
 -- CreateTable
@@ -69,6 +87,9 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Match_gameID_key" ON "Match"("gameID");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "PowerUp_type_key" ON "PowerUp"("type");
 
 -- CreateIndex
@@ -91,6 +112,12 @@ CREATE UNIQUE INDEX "_UserAchievements_AB_unique" ON "_UserAchievements"("A", "B
 
 -- CreateIndex
 CREATE INDEX "_UserAchievements_B_index" ON "_UserAchievements"("B");
+
+-- AddForeignKey
+ALTER TABLE "Player" ADD CONSTRAINT "Player_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Player" ADD CONSTRAINT "Player_matchID_fkey" FOREIGN KEY ("matchID") REFERENCES "Match"("gameID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserFriends" ADD CONSTRAINT "_UserFriends_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

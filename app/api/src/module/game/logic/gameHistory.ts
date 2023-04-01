@@ -1,9 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-import { MatchHistory } from '@prisma/client'
+// import { MatchHistory } from '@prisma/client'
 import { gameStatusDto, PlayerDto } from '../dto/game.dto'
 
 export class gameHistory {
     private prisma = new PrismaClient()
+    private game: gameStatusDto
+
+    constructor(game: gameStatusDto) {
+        this.game = game
+    }
 
     public async findID(login: string): Promise<number> {
         const user = await this.prisma.user.findUnique({
@@ -14,26 +19,67 @@ export class gameHistory {
         return user.id
     }
 
-    private findWinner(game: gameStatusDto): PlayerDto {
-        return game.players[0].score > game.players[1].score ? game.players[0] : game.players[1]
+    private IsWinner(player: PlayerDto): boolean {
+        let isWinner = false
+        this.game.players.forEach(pl => {
+            if (pl.username !== player.username) {
+                if (pl.score > player.score) {
+                    isWinner = true
+                } else {
+                    isWinner = false
+                }
+            }
+        })
+        return isWinner
     }
 
-    public async create(game: gameStatusDto): Promise<void> {
-        await this.prisma.matchHistory.create({
+    public async addHistory(): Promise<void> {
+        await this.createGame()
+        await this.assignOponents()
+    }
+
+    private async assignOponents(): Promise<void> {
+        await this.prisma.match.update({
+            where: {
+                gameID: this.game.players[0].gameId,
+            },
             data: {
                 opponents: {
-                    connect: [
-                        { login: game.players[0].username },
-                        { login: game.players[1].username },
-                    ],
+                    connect: await this.createOponents(),
                 },
-                winnerID: await this.findID(this.findWinner(game).username),
-                at: new Date(),
-                score: [game.players[0].score, game.players[1].score],
             },
         })
     }
-    public async addHistory(game: gameStatusDto): Promise<void> {
-        await this.create(game)
+
+    private async createPlayer(player: PlayerDto): Promise<number> {
+        const pl = await this.prisma.player.create({
+            data: {
+                matches: {
+                    connect: { gameID: player.gameId },
+                },
+                user: {
+                    connect: { login: player.username },
+                },
+                score: player.score,
+                IsWinner: this.IsWinner(player),
+            },
+        })
+        return pl.id
+    }
+
+    private async createOponents(): Promise<any[]> {
+        const players = []
+        this.game.players.forEach(async player => {
+            players.push({ id: await this.createPlayer(player) })
+        })
+        return players
+    }
+
+    public async createGame(): Promise<void> {
+        await this.prisma.match.create({
+            data: {
+                gameID: this.game.players[0].gameId,
+            },
+        })
     }
 }
