@@ -101,8 +101,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)))
             return this.socketError('User not found')
+
         if (!(await this.chatService.chatExist(payload.reciever)))
             return this.socketError('Invalid reciever')
+
+        if (await this.chatWsService.isUserBanned(payload.reciever, payload.sender))
+            return this.socketError('User is banned')
+
         if (await this.chatWsService.validateInvitation(payload.reciever, payload.sender))
             return await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} joined`)
 
@@ -205,7 +210,10 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             // await this.chatWsService.muteUser(payload.reciever, payload.reciever)
         }
         else if (payload.action === 'ban') {
-            // await this.chatWsService.banUser(payload.reciever, payload.reciever)
+            await this.chatWsService.banUser(payload.reciever, payload.reciever, payload.sender)
+            const clientSocket = this.getSocket(payload.user)
+            await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} banned ${payload.user}`)
+            if (clientSocket) clientSocket.leave(payload.reciever)
         }
         else if (payload.action === 'reset') {
             // await this.chatWsService.resetUser(payload.reciever, payload.reciever)
@@ -224,6 +232,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
+        if (!(await this.chatWsService.isUserNormal(payload.reciever, payload.sender)))
+            return this.socketError('User is not in the chat room')
+        
         this.chatService.createMessage(payload.sender, payload.reciever, payload.message)
 
         this.wss

@@ -69,6 +69,19 @@ export class ChatWsService {
     async isUserOutsideChatRoom(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser.status === ChatUserStatus.OUT) return true
+        return false
+    }
+
+    async isUserBanned(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.status === ChatUserStatus.BAN) return true
+        return false
+    }
+
+    async isUserNormal(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.status === ChatUserStatus.NORMAL) return true
+        return false
     }
 
     async canChangeAdmin(room_id: string, user_login: string) {
@@ -172,6 +185,22 @@ export class ChatWsService {
 
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
+        })
+    }
+    
+    async banUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        if (await this.isUserOutsideChatRoom(room_id, user_login)) 
+            throw new WsException('User is already outside the chat room')
+
+        if (await this.isUserBanned(room_id, user_login))
+            throw new WsException('User is already banned')
+
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.BAN,
         })
     }
 
