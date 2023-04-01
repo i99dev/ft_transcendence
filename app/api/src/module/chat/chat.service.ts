@@ -20,6 +20,7 @@ export class ChatService {
             const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
                 data: {
                     room_id: value.room_id,
+                    type: 'GROUP',
                     group_chat: {
                         create: {
                             name: value?.name,
@@ -35,6 +36,34 @@ export class ChatService {
                                     },
                                 },
                             },
+                        },
+                    },
+                },
+            })
+            return chatRoom
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async createDMChat(value: ChatRoomDto, user_login: string, user_login2: string) {
+        try {
+            const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
+                data: {
+                    room_id: value.room_id,
+                    type: 'DM',
+                    direct_chat: {
+                        create: {
+                            users: {
+                                connect: [
+                                    {
+                                        login: user_login,
+                                    },
+                                    {
+                                        login: user_login2,
+                                    },
+                                ],
+                            }
                         },
                     },
                 },
@@ -324,5 +353,19 @@ export class ChatService {
                 room_id: room_id,
             },
         })
+    }
+
+    async getUserRoom(room_id: string, user_login: string) {
+        try {
+            const userChat = await this.prisma.chatUser.findFirst({
+                where: {
+                    chat_room_id: room_id,
+                    user_login: user_login,
+                },
+            })
+            return userChat;
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

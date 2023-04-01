@@ -13,6 +13,7 @@ export class ChatRoomSeeder {
                 update: {},
                 create: {
                     room_id: 'room1',
+                    type: 'DM'
                 },
             }),
             await this.prisma.chatRoom.upsert({
@@ -20,6 +21,7 @@ export class ChatRoomSeeder {
                 update: {},
                 create: {
                     room_id: 'room2',
+                    type: 'DM'
                 },
             }),
             await this.prisma.chatRoom.upsert({
@@ -27,6 +29,7 @@ export class ChatRoomSeeder {
                 update: {},
                 create: {
                     room_id: 'room3',
+                    type: 'DM'
                 },
             }),
             await this.prisma.chatRoom.upsert({
@@ -34,6 +37,7 @@ export class ChatRoomSeeder {
                 update: {},
                 create: {
                     room_id: 'direct_room1',
+                    type: 'DM'
                 },
             }),
             await this.prisma.chatRoom.upsert({
@@ -41,6 +45,7 @@ export class ChatRoomSeeder {
                 update: {},
                 create: {
                     room_id: 'direct_room2',
+                    type: 'DM'
                 },
             }),
             await this.prisma.chatRoom.upsert({
@@ -48,6 +53,7 @@ export class ChatRoomSeeder {
                 update: {},
                 create: {
                     room_id: 'direct_room3',
+                    type: 'DM'
                 },
             }),
         ]
