@@ -24,40 +24,25 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private logger = new Logger('DefaultGateway')
 
     constructor(private gameService: DefaultService, private jwtService: JwtService) {}
-
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
-        if(true)//add conditon to check if the game is vs computer
-        {
-            this.gameService.gameLogic.startComputerGame(client, decoded,
-                (gameId, game) => {
-                    this.server.to(gameId).emit('Game-Data', game)
-                })
-        }
-        else
-        {
-            this.gameService.gameLogic.addToLobby(client, decoded)
-            this.gameService.gameLogic.checkLobby((gameId, game) => {
-                this.server.to(gameId).emit('Game-Data', game)
-            })
-        }
+
+        this.gameService.addToLobby(client, decoded)
+        this.gameService.checkLobby((gameId, game) => {
+            this.server.to(gameId).emit('Game-Data', game)
+        })
     }
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
     }
 
-    @SubscribeMessage('Give-Up')
-    async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
-        await this.gameService.gameLogic.endGame(player, false)
-    }
-
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
-        this.gameService.gameLogic.updatePaddlePosition(client, direction)
+        this.gameService.updatePaddlePosition(client, direction)
     }
 }
 
