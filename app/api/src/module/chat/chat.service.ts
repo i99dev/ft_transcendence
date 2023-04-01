@@ -3,7 +3,7 @@ import { object } from '@hapi/joi'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, MessageType } from '@prisma/client'
+import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
 
 @Injectable()
@@ -170,6 +170,44 @@ export class ChatService {
             const chat = await this.prisma.message.delete({
                 where: {
                     id: message_id,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async updateUserStatus(user_id: string, room_id: string, status: ChatUserStatus) {
+        try {
+            const chat = await this.prisma.chatUser.update({
+                where: {
+                    chat_user: {
+                        chat_room_id: room_id,
+                        user_login: user_id,
+                    },
+                },
+                data: {
+                    status: status,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async updateUserRole(user_id: string, room_id: string, role: ChatUserRole) {
+        try {
+            const chat = await this.prisma.chatUser.update({
+                where: {
+                    chat_user: {
+                        chat_room_id: room_id,
+                        user_login: user_id,
+                    },
+                },
+                data: {
+                    role: role,
                 },
             })
             return chat
