@@ -133,6 +133,7 @@ enum ChatUserStatus {
   MUTE
   BAN
   OUT
+  INVITED
 }
 
 enum ChatRoomType {

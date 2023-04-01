@@ -103,6 +103,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User not found')
         if (!(await this.chatService.chatExist(payload.reciever)))
             return this.socketError('Invalid reciever')
+        if (await this.chatWsService.validateInvitation(payload.reciever, payload.sender))
+            return await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} joined`)
 
         if (await this.chatWsService.validatePassword(payload.reciever, payload.password))
             await this.chatWsService.joinGroupChat(payload.reciever, payload.sender)
@@ -189,6 +191,15 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const clientSocket = this.getSocket(payload.user)
             await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} kicked ${payload.user}`)
             if (clientSocket) clientSocket.leave(payload.reciever)
+        }
+        else if (payload.action === 'invite') {
+            await this.chatWsService.inviteUser(payload.reciever, payload.user);
+            const clientSocket = this.getSocket(payload.user)
+            if (clientSocket) {
+                clientSocket.join(payload.reciever);
+                const room = await this.chatService.getGroupRoom(payload.reciever);
+                clientSocket.emit('add-message', { content: `you got invited to ${room.name}`, type: MessageType.SPECIAL })
+            }
         }
         else if (payload.action === 'mute') {
             // await this.chatWsService.muteUser(payload.reciever, payload.reciever)

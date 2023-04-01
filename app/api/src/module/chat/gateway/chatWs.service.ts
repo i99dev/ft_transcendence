@@ -129,6 +129,22 @@ export class ChatWsService {
         })
     }
 
+    async inviteUser(room_id: string, user_login: string) {
+        const room = await this.chatService.getGroupRoom(room_id)
+        if (room.type !== chatType.PRIVATE)
+            throw new WsException('Room is not protected')
+
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser && chatUser.status !== ChatUserStatus.OUT && chatUser.status !== ChatUserStatus.BAN)
+            throw new WsException('User is already in chat room, kicked or banned')
+
+        await this.chatService.addUserToRoom(room_id, {
+            user_login: user_login,
+            role: ChatUserRole.MEMBER,
+            status: ChatUserStatus.INVITED,
+        })
+    }
+
     async leaveGroupChat(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser.role === ChatUserRole.OWNER) throw new WsException('Owner cannot leave chat room')
@@ -149,6 +165,28 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
         })
+    }
+
+    async validateUserInRoom(room_id: string, user_login: string) {
+        const room = await this.chatService.getGroupRoom(room_id)
+        if (room.type !== chatType.PRIVATE)
+            return false;
+
+        const chatUser = await this.chatService.getChatUser(room_id, user_login);
+
+        if (chatUser && chatUser.status === 'INVITED')
+            return true;
+        else
+            throw new WsException('User is not invited to this room');
+    }
+
+    async validateInvitation(room_id: string, user_login: string) {
+        if (await this.validateUserInRoom(room_id, user_login))
+        {
+            this.chatService.updateUserStatus(user_login, room_id, 'NORMAL');
+            return true;
+        }
+        else return false;
     }
     
     // async banUser(room_id: string, user_login: string) {
