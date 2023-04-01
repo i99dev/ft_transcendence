@@ -152,7 +152,7 @@ export class ChatService {
         }
     }
 
-    async getChatUsers(room_id: string, user_id: number) {
+    async getChatUsers(room_id: string, user_login: string) {
         try {
             const chat = await this.prisma.groupChat.findUnique({
                 where: {
@@ -161,7 +161,7 @@ export class ChatService {
                 include: {
                     chat_user: {
                         where: {
-                            id: user_id,
+                            user_login: user_login,
                         },
                     },
                 },

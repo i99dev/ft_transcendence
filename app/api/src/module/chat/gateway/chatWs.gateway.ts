@@ -24,6 +24,7 @@ import {
 import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
 import { ChatService } from '../chat.service'
+import { UserService } from '../../user/user.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -37,6 +38,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private chatWsService: ChatWsService,
         private chatService: ChatService,
+        private userService: UserService,
         private jwtService: JwtService,
     ) {}
 
@@ -67,6 +69,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: CreateGroupChatDto,
     ) {
+        if (!(await this.userService.getUser(payload.sender)))
+            return this.socketError('User not found')
         const room_id = await this.chatWsService.setupGroupChat(payload)
 
         client.join(room_id)
@@ -83,6 +87,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
     ) {
+        if (!(await this.userService.getUser(payload.sender)))
+            return this.socketError('User not found')
         if (!(await this.chatService.chatExist(payload.reciever)))
             return this.socketError('Invalid reciever')
 
@@ -101,8 +107,12 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
     ) {
+        if (!(await this.userService.getUser(payload.sender)))
+            return this.socketError('User not found')
         if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
+        if (await this.chatWsService.isUserOutsideChatRoom(payload.reciever, payload.sender)) 
+            return this.socketError('User is already outside the chat room')
 
         await this.chatService.updateChatUser(payload.sender, payload.reciever, {
             status: ChatUserStatus.OUT,
@@ -169,9 +179,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('add-message')
     async sendMessage(
-        client: Socket,
+        @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
     ) {
+        if (!(await this.userService.getUser(payload.sender)))
+            return this.socketError('User not found')
         if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 
@@ -184,9 +196,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('delete-message')
     async deleteMessage(
-        client: Socket,
+        @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: DeleteMessageDto,
     ) {
+        if (!(await this.userService.getUser(payload.sender)))
+            return this.socketError('User not found')
         if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
 

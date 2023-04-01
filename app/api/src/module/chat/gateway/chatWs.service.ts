@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
-import { ChatRoom, chatType, GroupChat } from '@prisma/client'
+import { ChatRoom, chatType, ChatUserStatus } from '@prisma/client'
 import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
@@ -38,5 +38,10 @@ export class ChatWsService {
         )
 
         return room_id
+    }
+
+    async isUserOutsideChatRoom(room_id: string, user_login: string) {
+        const groupChat = await this.chatService.getChatUsers(room_id, user_login)
+        if (groupChat.chat_user.find((chatUser) => chatUser.user_login === user_login).status === ChatUserStatus.OUT) return true
     }
 }
