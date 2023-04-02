@@ -218,7 +218,12 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 clientSocket.leave(payload.reciever)
         }
         else if (payload.action === 'reset') {
-            // await this.chatWsService.resetUser(payload.reciever, payload.reciever)
+            await this.chatWsService.resetUser(payload.reciever, payload.user, payload.sender)
+            const clientSocket = this.getSocket(payload.user)
+            if (clientSocket) {
+                const room = await this.chatService.getGroupRoom(payload.reciever);
+                clientSocket.emit('add-message', { content: `you got back to normal in ${room.name} chat`, type: MessageType.SPECIAL })
+            }
         }
         else
             return this.socketError('Invalid action')   

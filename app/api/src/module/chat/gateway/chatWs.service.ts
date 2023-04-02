@@ -209,11 +209,24 @@ export class ChatWsService {
         if (!(await this.canChangeAdmin(room_id, sender)))
             throw new WsException('Request failed, not a admin')
 
-        if (await this.isUserNormal(room_id, user_login)) 
+        if (!(await this.isUserNormal(room_id, user_login))) 
             throw new WsException('User is already outside the chat room')
 
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.MUTE,
+        })
+    }
+
+    async resetUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        if (await this.isUserNormal(room_id, user_login)) 
+            throw new WsException('User is already normal')
+
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.NORMAL,
         })
     }
 
