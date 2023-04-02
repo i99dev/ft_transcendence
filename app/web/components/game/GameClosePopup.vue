@@ -27,14 +27,8 @@
   </div>
 </template>
 
-<script setup>
-import { useToast } from "primevue/usetoast";
+<script lang="ts" setup>
 
-const toast = useToast();
 const { summary, detail, confirmation } = defineProps(['summary', 'detail' , 'confirmation'])
 
-const exitGame = () => {
-    // useRouter().push('/')
-    toast.add({ severity: 'error', summary: 'Exit Game', detail: 'You have lost the game', life: 3000 });
-}
 </script>

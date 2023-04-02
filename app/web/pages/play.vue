@@ -1,5 +1,7 @@
 <template>
-    <GameLoadingButton v-if="!ready" @StartGame="startGame"/>
+    <div  v-if="!ready && firstGameReady" class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700">
+        <GameLoadingButton @StartGame="startGame" />
+    </div>
     <div>
         <GameClosePopup
             v-if="exit"
@@ -10,31 +12,54 @@
             confirmation="Are you sure you want to exit the game?"
         />
         <div class="container">
-            <Button @click="switchExistStatus(true)" icon="pi pi-times" severity="success" rounded />
-            <GameBoard @ReadyGame="() => ready = true" ref="gameBoard" />
+            <Button @click="switchExistStatus(true)" icon="pi pi-times" />
+            <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
         </div>
+        <GameResult v-if="gameResult" :gameResultMessage="gameResultMessage" @playAgain="playAgain"/>
     </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 
 let exit = ref(false);
 let ready = ref(false)
+let firstGameReady = ref(true)
+let gameResult = ref(false)
+let gameResultMessage = ref("")
 let gameBoard = ref()
 
-const startGame = () => {
-    gameBoard.value.socketSetup()
+const startGame = () : void => {
+    gameBoard.value.setup()
+    gameResult.value = false
 }
 
-const exitGame = () => {
-    gameBoard.value.socketDisconnect()
+const playAgain = () : void => {
+    gameBoard.value.setup()
+}
+
+const gameOver = (message: string) : void => {
+    gameBoard.value.destroy()
+    firstGameReady.value = false
+    ready.value = false
+    gameResult.value = true
+    gameResultMessage.value = message
+}
+        
+const setGameReady = () : void => {
+    ready.value = true
+    gameResult.value = false
+}
+
+const exitGame = () : void => {
+    gameBoard.value.giveUp()
+    gameBoard.value.destroy()
     exit.value = false
     ready.value = false
+    gameResult.value = false
 }
 
-const switchExistStatus = (status) => {
+const switchExistStatus = (status : boolean) : void => {
     exit.value = status;
-
 }
 
 </script>

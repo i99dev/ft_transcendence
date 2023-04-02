@@ -43,8 +43,7 @@ services:
 
         init: true
 
-        command: ['sh', '-c', 'yarn && npx prisma migrate && npx prisma studio | yarn dev']
-
+        command: ['sh', '-c', 'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio | yarn dev']
         environment:
             - NODE_ENV=${NODE_ENV}
             - CLIENT_ID=${CLIENT_ID}
