@@ -1,4 +1,4 @@
-import { GroupService } from './group.service';
+import { GroupService } from './groupChat.service';
 import { Patch, Post, UsePipes, Get, Param } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
@@ -15,6 +15,19 @@ export class ChatController {
     @Get('/:room_id')
     async getRoom(@Param('room_id') room_id: string) {
         return await this.groupService.getRoom(room_id)
+    }
+
+    @Get('/rooms')
+    async getChatRooms() {
+        return await this.groupService.getChatRooms()
+    }
+
+    @Get('/rooms/:type')
+    async getChatRoomsByType(@Param('type') type: string) {
+        if (type === 'GROUP')
+            return await this.groupService.getGroupChatRooms()
+        else if (type === 'DM')
+            return await this.groupService.getDirectChatRooms()
     }
 
     @Get('/:room_id/users')
