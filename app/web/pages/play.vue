@@ -11,8 +11,9 @@
             detail="You will be considered a LOSER since you give up in middle of the game!!"
             confirmation="Are you sure you want to exit the game?"
         />
-        <div class="container">
-            <Button @click="switchExistStatus(true)" icon="pi pi-times" />
+		     <div class="container">
+			<Button @click="switchExistStatus(true)" icon="pi pi-times" />
+			<Button class="button-wrapper" @click="powerup" />
             <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
         </div>
         <GameResult v-if="gameResult" :gameResultMessage="gameResultMessage" @playAgain="playAgain"/>
@@ -58,6 +59,11 @@ const exitGame = () : void => {
     gameResult.value = false
 }
 
+const powerup = () : void => {
+	console.log("powerup")
+	gameBoard.value.powerup()
+}
+
 const switchExistStatus = (status : boolean) : void => {
     exit.value = status;
 }
@@ -82,5 +88,24 @@ body {
     position: relative;
     height: 100vh;
 }
+
+.button-wrapper {
+	position: relative;
+	top: 100px;
+	right: 750px;
+	background-color: #ccc;
+	color: #fff;
+	border: none;
+	padding: 10px 70px;
+	cursor: pointer;
+ }
+  
+  .button-wrapper:hover {
+	background-color: #999;
+  }
+  
+  .button-wrapper:active {
+	background-color: #666;
+  }
 
 </style>

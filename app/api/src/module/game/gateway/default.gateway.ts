@@ -52,6 +52,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         await this.gameService.gameLogic.endGame(player, false)
     }
 
+    @SubscribeMessage('powerup')
+    PowerupStart(@ConnectedSocket() client: any, @MessageBody() action: string) {
+        console.log('powerup: start')
+        this.gameService.gameLogic.powerup(client, action)
+    }
+
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
         this.gameService.gameLogic.updatePaddlePosition(client, direction)
