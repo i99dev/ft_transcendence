@@ -211,7 +211,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} muted ${payload.user}`)
         }
         else if (payload.action === 'ban') {
-            await this.chatWsService.banUser(payload.reciever, payload.reciever, payload.sender)
+            await this.chatWsService.banUser(payload.reciever, payload.user, payload.sender)
             const clientSocket = this.getSocket(payload.user)
             await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} banned ${payload.user}`)
             if (clientSocket)

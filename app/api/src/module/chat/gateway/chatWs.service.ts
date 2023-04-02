@@ -68,25 +68,25 @@ export class ChatWsService {
 
     async isUserOutsideChatRoom(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.status === ChatUserStatus.OUT) return true
+        if (chatUser && chatUser.status === ChatUserStatus.OUT) return true
         return false
     }
 
     async isUserBanned(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.status === ChatUserStatus.BAN) return true
+        if (chatUser && chatUser.status === ChatUserStatus.BAN) return true
         return false
     }
 
     async isUserNormal(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.status === ChatUserStatus.NORMAL) return true
+        if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
         return false
     }
 
     async canChangeAdmin(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+        if (chatUser && chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
         return false
     }
 
@@ -199,9 +199,7 @@ export class ChatWsService {
         if (await this.isUserBanned(room_id, user_login))
             throw new WsException('User is already banned')
 
-        await this.chatService.updateChatUser(user_login, room_id, {
-            status: ChatUserStatus.BAN,
-        })
+        this.chatService.updateUserStatus(user_login, room_id, 'BAN');
     }
 
     async muteUser(room_id: string, user_login: string, sender: string) {
