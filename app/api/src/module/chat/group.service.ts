@@ -145,4 +145,39 @@ export class GroupService {
         }
     }
 
+    async getChatRooms() {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany()
+            return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getGroupChatRooms() {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany({
+                where: {
+                    type: 'GROUP',
+                },
+            })
+            return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getDirectChatRooms() {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany({
+                where: {
+                    type: 'DM',
+                },
+            })
+            return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 }
