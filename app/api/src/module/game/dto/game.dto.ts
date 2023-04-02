@@ -41,10 +41,10 @@ export class BallDto {
 export class PlayerDto {
     username: string
     y: number
-    x?: number
+    x: number
+    score: number
     paddle: PaddleDto
     gameId?: string
-    score: number
 }
 
 export class PaddleDto {

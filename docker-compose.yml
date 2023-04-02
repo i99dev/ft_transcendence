@@ -40,8 +40,16 @@ services:
 
         volumes:
             - ./app/api:/usr/src/app
-        command: ['sh', '-c', 'yarn && npx prisma db push --force-reset && yarn dev']
 
+        init: true
+
+        command:
+            [
+                'sh',
+                '-c',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio
+                | yarn dev',
+            ]
         environment:
             - NODE_ENV=${NODE_ENV}
             - CLIENT_ID=${CLIENT_ID}

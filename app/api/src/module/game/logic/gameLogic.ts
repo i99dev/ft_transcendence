@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/03/30 09:18:49 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/04/02 09:44:33 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,17 @@ export class gameLogic {
                 players[0].score += 1
                 this.resetBallPosition(ball)
             }
+        }
+    }
+
+    public powerup(client, action: string): void {
+        const player = this.players[client.id]
+        if (action === 'start') {
+            player.paddle.width *= 2
+            player.paddle.height *= 2
+        } else if (action === 'end') {
+            player.paddle.width /= 2
+            player.paddle.height /= 2
         }
     }
 
