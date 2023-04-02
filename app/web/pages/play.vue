@@ -1,28 +1,31 @@
 <template>
-    <div
-        v-if="!ready && firstGameReady"
-        class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
-    >
-        <GameLoadingButton @StartGame="startGame" />
-    </div>
     <div>
-        <GameClosePopup
-            v-if="exit"
-            @closePopup="switchExistStatus(false)"
-            @GiveUp="exitGame"
-            summary="Exit Game"
-            detail="You will be considered a LOSER since you give up in middle of the game!!"
-            confirmation="Are you sure you want to exit the game?"
-        />
-        <div class="container">
-            <Button @click="switchExistStatus(true)" icon="pi pi-times" />
-            <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+        <div
+            v-if="!ready && firstGameReady"
+            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
+        >
+            <GameLoadingButton @StartGame="startGame" />
         </div>
-        <GameResult
-            v-if="gameResult"
-            :gameResultMessage="gameResultMessage"
-            @playAgain="playAgain"
-        />
+        <div>
+            <GameClosePopup
+                v-if="exit"
+                @closePopup="switchExistStatus(false)"
+                @GiveUp="exitGame"
+                summary="Exit Game"
+                detail="You will be considered a LOSER since you give up in middle of the game!!"
+                confirmation="Are you sure you want to exit the game?"
+            />
+            <div class="container">
+                <Button @click="switchExistStatus(true)" icon="pi pi-times" />
+                <Button class="button-wrapper" @click="powerup" />
+                <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+            </div>
+            <GameResult
+                v-if="gameResult"
+                :gameResultMessage="gameResultMessage"
+                @playAgain="playAgain"
+            />
+        </div>
     </div>
 </template>
 
@@ -64,6 +67,11 @@ const exitGame = (): void => {
     gameResult.value = false
 }
 
+const powerup = (): void => {
+    console.log('powerup')
+    gameBoard.value.powerup()
+}
+
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
@@ -85,5 +93,24 @@ body {
     min-width: 100vw;
     position: relative;
     height: 100vh;
+}
+
+.button-wrapper {
+    position: relative;
+    top: 100px;
+    right: 750px;
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    padding: 10px 70px;
+    cursor: pointer;
+}
+
+.button-wrapper:hover {
+    background-color: #999;
+}
+
+.button-wrapper:active {
+    background-color: #666;
 }
 </style>

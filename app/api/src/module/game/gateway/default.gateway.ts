@@ -30,17 +30,17 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
-        // if (true) {
-        //     //add conditon to check if the game is vs computer
-        //     this.gameService.gameLogic.startComputerGame(client, decoded, (gameId, game) => {
-        //         this.server.to(gameId).emit('Game-Data', game)
-        //     })
-        // } else {
-        this.gameService.gameLogic.addToLobby(client, decoded)
-        this.gameService.gameLogic.checkLobby((gameId, game) => {
-            this.server.to(gameId).emit('Game-Data', game)
-        })
-        // }
+        if (true) {
+            //add conditon to check if the game is vs computer
+            this.gameService.gameLogic.startComputerGame(client, decoded, (gameId, game) => {
+                this.server.to(gameId).emit('Game-Data', game)
+            })
+        } else {
+            this.gameService.gameLogic.addToLobby(client, decoded)
+            this.gameService.gameLogic.checkLobby((gameId, game) => {
+                this.server.to(gameId).emit('Game-Data', game)
+            })
+        }
     }
 
     handleDisconnect(client: Socket) {
@@ -50,6 +50,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @SubscribeMessage('Give-Up')
     async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
         await this.gameService.gameLogic.endGame(player, false)
+    }
+
+    @SubscribeMessage('powerup')
+    PowerupStart(@ConnectedSocket() client: any, @MessageBody() action: string) {
+        console.log('powerup: start')
+        this.gameService.gameLogic.powerup(client, action)
     }
 
     @SubscribeMessage('move')
