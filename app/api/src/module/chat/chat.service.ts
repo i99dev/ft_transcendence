@@ -295,7 +295,7 @@ export class ChatService {
                 where: {
                     room_id: room_id,
                 },
-                include: {
+                select: {
                     messages: {
                         where: {
                             sender_login: user_login,
