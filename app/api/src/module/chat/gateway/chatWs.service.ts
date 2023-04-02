@@ -47,7 +47,6 @@ export class ChatWsService {
         let group;
         if (room.type === ChatRoomType.GROUP) {
             group = await this.chatService.getGroupRoom(room_id);
-            console.log(group)
             if (group.type === chatType.PROTECTED)
                 return group.password
             else

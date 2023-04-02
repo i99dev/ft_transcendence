@@ -11,28 +11,28 @@ import { ChatRoomType } from '@prisma/client'
 export class ChatController {
     constructor(private readonly chatService: ChatService) {}
 
-    @Get('/room/:room_id')
+    @Get('/:room_id')
     async getRoom(@Param('room_id') room_id: string) {
         return await this.chatService.getRoom(room_id)
     }
 
-    @Get('/room/:room_id/users')
+    @Get('/:room_id/users')
     async getRoomUsers(@Param('room_id') room_id: string) {
         const room = await this.chatService.getRoom(room_id);
         if (room.type === ChatRoomType.DM)
-            return await this.chatService.getDirectRoomUsers(room_id);
+            return await this.chatService.getDirectChatUsers(room_id);
         else
-            return await this.chatService.getGroupRoomUsers(room_id);
+            return await this.chatService.getGroupChatUsers(room_id);
     }
 
-    @Get('/room/:room_id/messages')
+    @Get('/:room_id/messages')
     async getRoomMessages(@Param('room_id') room_id: string) {
-        return await this.chatService.getRoomMessages(room_id);
+        return await this.chatService.getChatRoomMessages(room_id);
     }
 
-    @Get('/room/:room_id/messages/:user')
+    @Get('/:room_id/messages/:user')
     async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
-        return await this.chatService.getUserMessages(room_id, user);
+        return await this.chatService.getChatUserMessages(room_id, user);
     }
 
 }

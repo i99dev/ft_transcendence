@@ -377,7 +377,7 @@ export class ChatService {
         })
     }
 
-    async getUserRoom(room_id: string, user_login: string) {
+    async getChatUserInRoom(room_id: string, user_login: string) {
         try {
             const userChat = await this.prisma.chatUser.findFirst({
                 where: {
@@ -391,7 +391,7 @@ export class ChatService {
         }
     }
 
-    async getUserMessages(room_id: string, user_login: string) {
+    async getChatUserMessages(room_id: string, user_login: string) {
         try {
             const chat = await this.prisma.chatRoom.findUnique({
                 where: {
@@ -411,7 +411,7 @@ export class ChatService {
         }
     }
 
-    async getRoomMessages(room_id: string) {
+    async getChatRoomMessages(room_id: string) {
         try {
             const chat = await this.prisma.chatRoom.findUnique({
                 where: {
@@ -427,7 +427,7 @@ export class ChatService {
         }
     }
 
-    async getGroupRoomUsers(room_id: string) {
+    async getGroupChatUsers(room_id: string) {
         try {
             const chat = await this.prisma.groupChat.findUnique({
                 where: {
@@ -443,7 +443,7 @@ export class ChatService {
         }
     }
 
-    async getDirectRoomUsers(room_id: string) {
+    async getDirectChatUsers(room_id: string) {
         try {
             const chat = await this.prisma.directChat.findUnique({
                 where: {
