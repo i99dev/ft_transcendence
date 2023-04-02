@@ -22,6 +22,8 @@
 
 <script lang="ts" setup>
 
+import { ref, defineEmits, defineExpose } from 'vue'
+
 let exit = ref(false);
 let ready = ref(false)
 let firstGameReady = ref(true)
