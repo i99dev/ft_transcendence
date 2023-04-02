@@ -11,4 +11,4 @@ data/*
 
 # build directory
 .vscode
-.DS_Store 
+.DS_Store
