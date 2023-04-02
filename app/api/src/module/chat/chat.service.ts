@@ -89,7 +89,7 @@ export class ChatService {
 
     async getGroupRoom(room_id: string) {
         try {
-            const chat = await this.prisma.directChat.findUnique({
+            const chat = await this.prisma.groupChat.findUnique({
                 where: {
                     chat_room_id: room_id,
                 },
@@ -390,4 +390,5 @@ export class ChatService {
             console.log(error)
         }
     }
+
 }

@@ -47,6 +47,7 @@ export class ChatWsService {
         let group;
         if (room.type === ChatRoomType.GROUP) {
             group = await this.chatService.getGroupRoom(room_id);
+            console.log(group)
             if (group.type === chatType.PROTECTED)
                 return group.password
             else
@@ -67,12 +68,26 @@ export class ChatWsService {
 
     async isUserOutsideChatRoom(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.status === ChatUserStatus.OUT) return true
+        if (chatUser && chatUser.status === ChatUserStatus.OUT) return true
+        return false
+    }
+
+    async isUserBanned(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser && chatUser.status === ChatUserStatus.BAN) return true
+        return false
+    }
+
+    async isUserNormal(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
+        return false
     }
 
     async canChangeAdmin(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+        if (chatUser && chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+        return false
     }
 
     async handleAdminSetup(payload: SetUserDto) {
@@ -128,6 +143,25 @@ export class ChatWsService {
         })
     }
 
+    async inviteUser(room_id: string, user_login: string, sender: string) {
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        const room = await this.chatService.getGroupRoom(room_id)
+        if (room.type !== chatType.PRIVATE)
+            throw new WsException('Room is not protected')
+
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser && chatUser.status !== ChatUserStatus.OUT && chatUser.status !== ChatUserStatus.BAN)
+            throw new WsException('User is already in chat room, kicked or banned')
+
+        await this.chatService.addUserToRoom(room_id, {
+            user_login: user_login,
+            role: ChatUserRole.MEMBER,
+            status: ChatUserStatus.INVITED,
+        })
+    }
+
     async leaveGroupChat(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser.role === ChatUserRole.OWNER) throw new WsException('Owner cannot leave chat room')
@@ -141,13 +175,79 @@ export class ChatWsService {
         this.joinGroupChat(room_id, user_login)
     }
     
-    async kickUser(room_id: string, user_login: string) {
+    async kickUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
         if (await this.isUserOutsideChatRoom(room_id, user_login)) 
             throw new WsException('User is already outside the chat room')
 
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
         })
+    }
+    
+    async banUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        if (await this.isUserOutsideChatRoom(room_id, user_login)) 
+            throw new WsException('User is already outside the chat room')
+
+        if (await this.isUserBanned(room_id, user_login))
+            throw new WsException('User is already banned')
+
+        this.chatService.updateUserStatus(user_login, room_id, 'BAN');
+    }
+
+    async muteUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        if (!(await this.isUserNormal(room_id, user_login))) 
+            throw new WsException('User is already outside the chat room')
+
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.MUTE,
+        })
+    }
+
+    async resetUser(room_id: string, user_login: string, sender: string) {
+        
+        if (!(await this.canChangeAdmin(room_id, sender)))
+            throw new WsException('Request failed, not a admin')
+
+        if (await this.isUserNormal(room_id, user_login)) 
+            throw new WsException('User is already normal')
+
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.NORMAL,
+        })
+    }
+
+    async validateUserInRoom(room_id: string, user_login: string) {
+        const room = await this.chatService.getGroupRoom(room_id)
+        if (room.type !== chatType.PRIVATE)
+            return false;
+
+        const chatUser = await this.chatService.getChatUser(room_id, user_login);
+
+        if (chatUser && chatUser.status === 'INVITED')
+            return true;
+        else
+            throw new WsException('User is not invited to this room');
+    }
+
+    async validateInvitation(room_id: string, user_login: string) {
+        if (await this.validateUserInRoom(room_id, user_login))
+        {
+            this.chatService.updateUserStatus(user_login, room_id, 'NORMAL');
+            return true;
+        }
+        else return false;
     }
     
     // async banUser(room_id: string, user_login: string) {
