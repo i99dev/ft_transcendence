@@ -15,7 +15,7 @@ export class GroupService {
     constructor(private prisma: PrismaService) {}
     private chatRooms: ChatRoom[]
 
-    async createGroupChat(value: ChatRoomDto, user_login: string) {
+    async createGroupChatRoom(value: ChatRoomDto, user_login: string) {
         try {
             const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
                 data: {
@@ -46,7 +46,7 @@ export class GroupService {
         }
     }
 
-    async getGroupRoom(room_id: string) {
+    async getGroupChatRoom(room_id: string) {
         try {
             const chat = await this.prisma.groupChat.findUnique({
                 where: {
@@ -59,7 +59,7 @@ export class GroupService {
         }
     }
 
-    async addUserToRoom(room_id: string, user: ChatUserDto) {
+    async addUserToGroupChat(room_id: string, user: ChatUserDto) {
         try {
             const chat = await this.prisma.groupChat.update({
                 where: {
@@ -132,7 +132,7 @@ export class GroupService {
         }
     }
 
-    async getRoom(room_id: string) {
+    async getChatRoom(room_id: string) {
         try {
             const chat = await this.prisma.chatRoom.findUnique({
                 where: {
@@ -154,24 +154,11 @@ export class GroupService {
         }
     }
 
-    async getGroupChatRooms() {
+    async getChatRoomsForGroups() {
         try {
             const chatRooms = await this.prisma.chatRoom.findMany({
                 where: {
                     type: 'GROUP',
-                },
-            })
-            return chatRooms
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async getDirectChatRooms() {
-        try {
-            const chatRooms = await this.prisma.chatRoom.findMany({
-                where: {
-                    type: 'DM',
                 },
             })
             return chatRooms
