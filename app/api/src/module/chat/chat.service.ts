@@ -391,4 +391,72 @@ export class ChatService {
         }
     }
 
+    async getUserMessages(room_id: string, user_login: string) {
+        try {
+            const chat = await this.prisma.chatRoom.findUnique({
+                where: {
+                    room_id: room_id,
+                },
+                include: {
+                    messages: {
+                        where: {
+                            sender_login: user_login,
+                        },
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getRoomMessages(room_id: string) {
+        try {
+            const chat = await this.prisma.chatRoom.findUnique({
+                where: {
+                    room_id: room_id,
+                },
+                select: {
+                    messages: true,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getGroupRoomUsers(room_id: string) {
+        try {
+            const chat = await this.prisma.groupChat.findUnique({
+                where: {
+                    chat_room_id: room_id,
+                },
+                select: {
+                    chat_user: true,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getDirectRoomUsers(room_id: string) {
+        try {
+            const chat = await this.prisma.directChat.findUnique({
+                where: {
+                    chat_room_id: room_id,
+                },
+                select: {
+                    users: true,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 }
