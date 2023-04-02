@@ -1,3 +1,4 @@
+import { GroupService } from './group.service';
 import { Patch, Post, UsePipes, Get, Param } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
@@ -9,30 +10,35 @@ import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { ChatRoomType } from '@prisma/client'
 @Controller('/chat')
 export class ChatController {
-    constructor(private readonly chatService: ChatService) {}
+    constructor(private readonly chatService: ChatService, private readonly groupService: GroupService) {}
 
-    @Get('/room/:room_id')
+    @Get('/:room_id')
     async getRoom(@Param('room_id') room_id: string) {
-        return await this.chatService.getRoom(room_id)
+        return await this.groupService.getRoom(room_id)
     }
 
-    @Get('/room/:room_id/users')
+    @Get('/:room_id/users')
     async getRoomUsers(@Param('room_id') room_id: string) {
-        const room = await this.chatService.getRoom(room_id);
+        const room = await this.groupService.getRoom(room_id);
         if (room.type === ChatRoomType.DM)
-            return await this.chatService.getDirectRoomUsers(room_id);
+            return await this.chatService.getDirectChatUsers(room_id);
         else
-            return await this.chatService.getGroupRoomUsers(room_id);
+            return await this.groupService.getGroupChatUsers(room_id);
     }
 
-    @Get('/room/:room_id/messages')
+    @Get('/:room_id/messages')
     async getRoomMessages(@Param('room_id') room_id: string) {
-        return await this.chatService.getRoomMessages(room_id);
+        return await this.groupService.getChatRoomMessages(room_id);
     }
 
-    @Get('/room/:room_id/messages/:user')
+    @Get('/:room_id/messages/:user')
     async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
-        return await this.chatService.getUserMessages(room_id, user);
+        return await this.chatService.getChatUserMessagesInChatRoom(room_id, user);
+    }
+
+    @Get('/messages/:user')
+    async getMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
+        return await this.chatService.getChatUserMessages(user);
     }
 
 }
