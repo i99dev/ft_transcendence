@@ -44,10 +44,12 @@ declare global {
   
   interface PlayerDto {
       username: string
+	  x: number
       y: number
       score: number
       paddle: PaddleDto
       gameId?: string
+	  powerUp?: boolean
   }
   
   interface PaddleDto {

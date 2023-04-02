@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/04/02 09:44:33 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/04/02 19:51:29 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,12 +185,19 @@ export class gameLogic {
 
     public powerup(client, action: string): void {
         const player = this.players[client.id]
+        if (
+            (player.powerup === true && action === 'start') ||
+            (player.powerup === false && action === 'end')
+        )
+            return
         if (action === 'start') {
             player.paddle.width *= 2
             player.paddle.height *= 2
+            player.powerup = true
         } else if (action === 'end') {
             player.paddle.width /= 2
             player.paddle.height /= 2
+            player.powerup = false
         }
     }
 

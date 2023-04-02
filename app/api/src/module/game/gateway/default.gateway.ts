@@ -53,7 +53,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @SubscribeMessage('powerup')
     PowerupStart(@ConnectedSocket() client: any, @MessageBody() action: string) {
-        console.log('powerup: start')
+        console.log('powerup', action)
         this.gameService.gameLogic.powerup(client, action)
     }
 

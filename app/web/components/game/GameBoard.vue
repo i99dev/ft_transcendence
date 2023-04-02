@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { io, Socket } from 'socket.io-client'
-
+import { ref, defineEmits, defineExpose } from 'vue'
 // refs
 let canvas = ref({} as HTMLCanvasElement)
 let ctx = ref({} as CanvasRenderingContext2D)
@@ -19,6 +19,7 @@ let gameData = ref({} as gameStatusDto)
 let grabbed = ref(false as boolean)
 let offsetY = ref(0 as number)
 const socket = ref({} as Socket)
+let poweredUp = ref(false as boolean)
 
 // game settings
 const sensitivity = 3 // for mouse movements or touch movements
@@ -48,10 +49,15 @@ function destroy(): void {
 }
 
 function powerup(): void {
-    socket.value.emit('powerup', 'start')
-    setTimeout(() => {
-        socket.value.emit('powerup', 'end')
-    }, 10000)
+	if (poweredUp.value == false) 
+	{
+		socket.value.emit('powerup', 'start')
+		poweredUp.value = true
+		   setTimeout(() => {
+			   socket.value.emit('powerup', 'end')
+			   poweredUp.value = false
+		   }, 10000)
+	}   
 }
 
 function giveUp(): void {
