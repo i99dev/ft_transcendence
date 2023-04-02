@@ -1,22 +1,31 @@
 <template>
-    <div  v-if="!ready && firstGameReady" class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700">
-        <GameLoadingButton @StartGame="startGame" />
-    </div>
     <div>
-        <GameClosePopup
-            v-if="exit"
-            @closePopup="switchExistStatus(false)"
-            @GiveUp="exitGame"
-            summary="Exit Game"
-            detail="You will be considered a LOSER since you give up in middle of the game!!"
-            confirmation="Are you sure you want to exit the game?"
-        />
-		     <div class="container">
-			<Button @click="switchExistStatus(true)" icon="pi pi-times" />
-			<Button class="button-wrapper" @click="powerup" />
-            <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+        <div
+            v-if="!ready && firstGameReady"
+            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
+        >
+            <GameLoadingButton @StartGame="startGame" />
         </div>
-        <GameResult v-if="gameResult" :gameResultMessage="gameResultMessage" @playAgain="playAgain"/>
+        <div>
+            <GameClosePopup
+                v-if="exit"
+                @closePopup="switchExistStatus(false)"
+                @GiveUp="exitGame"
+                summary="Exit Game"
+                detail="You will be considered a LOSER since you give up in middle of the game!!"
+                confirmation="Are you sure you want to exit the game?"
+            />
+            <div class="container">
+                <Button @click="switchExistStatus(true)" icon="pi pi-times" />
+                <Button class="button-wrapper" @click="powerup" />
+                <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+            </div>
+            <GameResult
+                v-if="gameResult"
+                :gameResultMessage="gameResultMessage"
+                @playAgain="playAgain"
+            />
+        </div>
     </div>
 </template>
 
@@ -28,32 +37,32 @@ let exit = ref(false);
 let ready = ref(false)
 let firstGameReady = ref(true)
 let gameResult = ref(false)
-let gameResultMessage = ref("")
+let gameResultMessage = ref('')
 let gameBoard = ref()
 
-const startGame = () : void => {
+const startGame = (): void => {
     gameBoard.value.setup()
     gameResult.value = false
 }
 
-const playAgain = () : void => {
+const playAgain = (): void => {
     gameBoard.value.setup()
 }
 
-const gameOver = (message: string) : void => {
+const gameOver = (message: string): void => {
     gameBoard.value.destroy()
     firstGameReady.value = false
     ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
 }
-        
-const setGameReady = () : void => {
+
+const setGameReady = (): void => {
     ready.value = true
     gameResult.value = false
 }
 
-const exitGame = () : void => {
+const exitGame = (): void => {
     gameBoard.value.giveUp()
     gameBoard.value.destroy()
     exit.value = false
@@ -61,19 +70,17 @@ const exitGame = () : void => {
     gameResult.value = false
 }
 
-const powerup = () : void => {
-	console.log("powerup")
-	gameBoard.value.powerup()
+const powerup = (): void => {
+    console.log('powerup')
+    gameBoard.value.powerup()
 }
 
-const switchExistStatus = (status : boolean) : void => {
-    exit.value = status;
+const switchExistStatus = (status: boolean): void => {
+    exit.value = status
 }
-
 </script>
 
 <style>
-
 body {
     background-color: #334155;
 }
@@ -82,7 +89,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column; 
+    flex-direction: column;
     margin: 0vh;
     padding: 0;
     min-height: 100vh;
@@ -92,22 +99,21 @@ body {
 }
 
 .button-wrapper {
-	position: relative;
-	top: 100px;
-	right: 750px;
-	background-color: #ccc;
-	color: #fff;
-	border: none;
-	padding: 10px 70px;
-	cursor: pointer;
- }
-  
-  .button-wrapper:hover {
-	background-color: #999;
-  }
-  
-  .button-wrapper:active {
-	background-color: #666;
-  }
+    position: relative;
+    top: 100px;
+    right: 750px;
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    padding: 10px 70px;
+    cursor: pointer;
+}
 
+.button-wrapper:hover {
+    background-color: #999;
+}
+
+.button-wrapper:active {
+    background-color: #666;
+}
 </style>

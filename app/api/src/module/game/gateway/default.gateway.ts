@@ -24,7 +24,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private logger = new Logger('DefaultGateway')
 
     constructor(private gameService: DefaultService, private jwtService: JwtService) {}
-
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
