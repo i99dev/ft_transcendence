@@ -8,13 +8,26 @@ import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { ChatRoomType } from '@prisma/client'
-@Controller('/chat')
+@Controller('/chats')
 export class ChatController {
     constructor(private readonly chatService: ChatService, private readonly groupService: GroupService) {}
 
     @Get('/:room_id')
     async getRoom(@Param('room_id') room_id: string) {
-        return await this.groupService.getRoom(room_id)
+        return await this.groupService.getChatRoom(room_id)
+    }
+
+    @Get('')
+    async getChatRooms() {
+        return await this.groupService.getChatRooms()
+    }
+
+    @Get('/:type')
+    async getChatRoomsByType(@Param('type') type: string) {
+        if (type === 'GROUP')
+            return await this.groupService.getChatRoomsForGroups()
+        else if (type === 'DM')
+            return await this.chatService.getDirectChatRooms()
     }
 
     @Get('/rooms')
@@ -32,7 +45,7 @@ export class ChatController {
 
     @Get('/:room_id/users')
     async getRoomUsers(@Param('room_id') room_id: string) {
-        const room = await this.groupService.getRoom(room_id);
+        const room = await this.groupService.getChatRoom(room_id);
         if (room.type === ChatRoomType.DM)
             return await this.chatService.getDirectChatUsers(room_id);
         else
@@ -47,11 +60,6 @@ export class ChatController {
     @Get('/:room_id/messages/:user')
     async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
         return await this.chatService.getChatUserMessagesInChatRoom(room_id, user);
-    }
-
-    @Get('/messages/:user')
-    async getMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
-        return await this.chatService.getChatUserMessages(user);
     }
 
 }

@@ -204,7 +204,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const clientSocket = this.getSocket(payload.user)
             if (clientSocket) {
                 clientSocket.join(payload.reciever);
-                const room = await this.groupService.getGroupRoom(payload.reciever);
+                const room = await this.groupService.getGroupChatRoom(payload.reciever);
                 clientSocket.emit('add-message', { content: `you got invited to ${room.name}`, type: MessageType.SPECIAL })
             }
         }
@@ -223,7 +223,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.chatWsService.resetUser(payload.reciever, payload.user, payload.sender)
             const clientSocket = this.getSocket(payload.user)
             if (clientSocket) {
-                const room = await this.groupService.getGroupRoom(payload.reciever);
+                const room = await this.groupService.getGroupChatRoom(payload.reciever);
                 clientSocket.emit('add-message', { content: `you got back to normal in ${room.name} chat`, type: MessageType.SPECIAL })
             }
         }

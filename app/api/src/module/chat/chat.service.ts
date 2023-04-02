@@ -338,4 +338,18 @@ export class ChatService {
         }
     }
 
+
+    async getDirectChatRooms() {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany({
+                where: {
+                    type: 'DM',
+                },
+            })
+            return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 }
