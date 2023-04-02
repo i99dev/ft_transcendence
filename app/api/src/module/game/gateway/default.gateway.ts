@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
-
+import { PlayerDto } from '../dto/game.dto'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
@@ -29,19 +29,36 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
-
-        this.gameService.addToLobby(client, decoded)
-        this.gameService.checkLobby((gameId, game) => {
-            this.server.to(gameId).emit('Game-Data', game)
-        })
+        if (true) {
+            //add conditon to check if the game is vs computer
+            this.gameService.gameLogic.startComputerGame(client, decoded, (gameId, game) => {
+                this.server.to(gameId).emit('Game-Data', game)
+            })
+        } else {
+            this.gameService.gameLogic.addToLobby(client, decoded)
+            this.gameService.gameLogic.checkLobby((gameId, game) => {
+                this.server.to(gameId).emit('Game-Data', game)
+            })
+        }
     }
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
     }
 
+    @SubscribeMessage('Give-Up')
+    async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
+        await this.gameService.gameLogic.endGame(player, false)
+    }
+
+    @SubscribeMessage('powerup')
+    PowerupStart(@ConnectedSocket() client: any, @MessageBody() action: string) {
+        console.log('powerup: start')
+        this.gameService.gameLogic.powerup(client, action)
+    }
+
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
-        this.gameService.updatePaddlePosition(client, direction)
+        this.gameService.gameLogic.updatePaddlePosition(client, direction)
     }
 }

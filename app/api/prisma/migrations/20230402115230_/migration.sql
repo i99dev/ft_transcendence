@@ -2,7 +2,7 @@
 CREATE TYPE "UserStatus" AS ENUM ('OFFLINE', 'ONLINE', 'LIVE');
 
 -- CreateEnum
-CREATE TYPE "chatType" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED', 'DIRECT');
+CREATE TYPE "chatType" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
 
 -- CreateEnum
 CREATE TYPE "ChatUserRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
@@ -11,7 +11,7 @@ CREATE TYPE "ChatUserRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
 CREATE TYPE "MessageType" AS ENUM ('NORMAL', 'SPECIAL');
 
 -- CreateEnum
-CREATE TYPE "ChatUserStatus" AS ENUM ('NORMAL', 'MUTE', 'BAN', 'OUT');
+CREATE TYPE "ChatUserStatus" AS ENUM ('NORMAL', 'MUTE', 'BAN', 'OUT', 'INVITED');
 
 -- CreateEnum
 CREATE TYPE "ChatRoomType" AS ENUM ('DM', 'GROUP');

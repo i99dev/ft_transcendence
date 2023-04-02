@@ -1,3 +1,4 @@
+import { GroupService } from './groupChat.service';
 import { Patch, Post, UsePipes, Get, Param } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
@@ -6,34 +7,59 @@ import { ChatPostValidation, UserPostValidation } from './pipe/chat.pipe'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
-@Controller('/chat')
+import { ChatRoomType } from '@prisma/client'
+@Controller('/chats')
 export class ChatController {
-    constructor(private readonly chatService: ChatService) {}
+    constructor(private readonly chatService: ChatService, private readonly groupService: GroupService) {}
 
-    @Post('/room')
-    @UseGuards(JwtAuthGuard)
-    @UsePipes(ChatPostValidation)
-    async createRoom(@Body() data: ChatRoomDto, @Req() req) {
-        return await this.chatService.createGroupChat(data, req.user.login)
-    }
-
-    @Get('/room/:room_id')
+    @Get('/:room_id')
     async getRoom(@Param('room_id') room_id: string) {
-        return await this.chatService.getRoom(room_id)
+        return await this.groupService.getChatRoom(room_id)
     }
 
-    @Post('/room/:room_id')
-    @UseGuards(JwtAuthGuard)
-    @UsePipes(UserPostValidation)
-    async addUserToRoom(@Param('room_id') room_id: string, @Body() data, @Req() req) {
-        return await this.chatService.addUserToRoom(room_id, data)
+    @Get('')
+    async getChatRooms() {
+        return await this.groupService.getChatRooms()
     }
 
-    // @Get('/room/test')
-    // async test(@Body() data: ChatRoomDto) {
-    //     console.log('chat');
-    //     return 'tcfvgybhuijnkojihugf';
-    //     // const chat = await this.chatService.createRoom(data, 'isaad');
-    //     // return chat
-    // }
+    @Get('/:type')
+    async getChatRoomsByType(@Param('type') type: string) {
+        if (type === 'GROUP')
+            return await this.groupService.getChatRoomsForGroups()
+        else if (type === 'DM')
+            return await this.chatService.getDirectChatRooms()
+    }
+
+    @Get('/rooms')
+    async getChatRooms() {
+        return await this.groupService.getChatRooms()
+    }
+
+    @Get('/rooms/:type')
+    async getChatRoomsByType(@Param('type') type: string) {
+        if (type === 'GROUP')
+            return await this.groupService.getGroupChatRooms()
+        else if (type === 'DM')
+            return await this.groupService.getDirectChatRooms()
+    }
+
+    @Get('/:room_id/users')
+    async getRoomUsers(@Param('room_id') room_id: string) {
+        const room = await this.groupService.getChatRoom(room_id);
+        if (room.type === ChatRoomType.DM)
+            return await this.chatService.getDirectChatUsers(room_id);
+        else
+            return await this.groupService.getGroupChatUsers(room_id);
+    }
+
+    @Get('/:room_id/messages')
+    async getRoomMessages(@Param('room_id') room_id: string) {
+        return await this.groupService.getChatRoomMessages(room_id);
+    }
+
+    @Get('/:room_id/messages/:user')
+    async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
+        return await this.chatService.getChatUserMessagesInChatRoom(room_id, user);
+    }
+
 }

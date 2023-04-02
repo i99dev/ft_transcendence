@@ -32,7 +32,7 @@ export class GroupChatSeeder {
                 create: {
                     chat_room_id: 'room3',
                     name: 'bnaji - oal-tena',
-                    type: chatType.DIRECT,
+                    type: chatType.PUBLIC,
                 },
             }),
         ]
