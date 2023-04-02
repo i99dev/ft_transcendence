@@ -391,7 +391,7 @@ export class ChatService {
         }
     }
 
-    async getChatUserMessages(room_id: string, user_login: string) {
+    async getChatUserMessagesInChatRoom(room_id: string, user_login: string) {
         try {
             const chat = await this.prisma.chatRoom.findUnique({
                 where: {
@@ -458,5 +458,19 @@ export class ChatService {
             console.log(error)
         }
     }
+
+    async getChatUserMessages(user_login: string) {
+        try {
+            const chat = await this.prisma.message.findMany({
+                where: {
+                    sender_login: user_login,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
 }

@@ -32,7 +32,12 @@ export class ChatController {
 
     @Get('/:room_id/messages/:user')
     async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
-        return await this.chatService.getChatUserMessages(room_id, user);
+        return await this.chatService.getChatUserMessagesInChatRoom(room_id, user);
+    }
+
+    @Get('/messages/:user')
+    async getMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
+        return await this.chatService.getChatUserMessages(user);
     }
 
 }
