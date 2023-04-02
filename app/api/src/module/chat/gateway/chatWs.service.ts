@@ -6,7 +6,7 @@ import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto } from './dto/chatWs.dto'
-import { GroupService } from '../group.service'
+import { GroupService } from '../groupChat.service'
 
 
 @Injectable()

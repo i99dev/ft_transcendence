@@ -25,7 +25,7 @@ import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
 import { ChatService } from '../chat.service'
 import { UserService } from '../../user/user.service'
-import { GroupService } from '../group.service'
+import { GroupService } from '../groupChat.service'
 
 @WebSocketGateway({
     namespace: '/chat',

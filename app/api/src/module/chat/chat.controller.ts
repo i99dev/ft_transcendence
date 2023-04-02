@@ -1,4 +1,4 @@
-import { GroupService } from './group.service';
+import { GroupService } from './groupChat.service';
 import { Patch, Post, UsePipes, Get, Param } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'

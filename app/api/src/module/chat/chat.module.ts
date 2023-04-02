@@ -4,7 +4,7 @@ import { ChatService } from './chat.service'
 import { ChatController } from './chat.controller'
 import { forwardRef, Module } from '@nestjs/common'
 import { ChatWsModule } from './gateway/chatWs.module'
-import { GroupService } from './group.service'
+import { GroupService } from './groupChat.service'
 
 @Module({
     imports: [forwardRef(() => ChatWsModule)],
