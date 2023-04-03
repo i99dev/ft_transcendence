@@ -30,19 +30,6 @@ export class ChatController {
             return await this.chatService.getDirectChatRooms()
     }
 
-    @Get('/rooms')
-    async getChatRooms() {
-        return await this.groupService.getChatRooms()
-    }
-
-    @Get('/rooms/:type')
-    async getChatRoomsByType(@Param('type') type: string) {
-        if (type === 'GROUP')
-            return await this.groupService.getGroupChatRooms()
-        else if (type === 'DM')
-            return await this.groupService.getDirectChatRooms()
-    }
-
     @Get('/:room_id/users')
     async getRoomUsers(@Param('room_id') room_id: string) {
         const room = await this.groupService.getChatRoom(room_id);
