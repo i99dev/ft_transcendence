@@ -92,4 +92,12 @@ export class UpdateChatDto {
     @IsOptional()
     @IsString()
     image?: string
+
+    @IsOptional()
+    @IsString()
+    password?: string
+
+    @IsOptional()
+    @IsString()
+    type?: chatType
 }

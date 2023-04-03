@@ -5,7 +5,7 @@ import { ChatRoom, chatType, GroupChat, ChatRoomType, ChatUserRole, ChatUserStat
 import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
-import { SetUserDto } from './dto/chatWs.dto'
+import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
 import { GroupService } from '../groupChat.service'
 
 
@@ -249,6 +249,12 @@ export class ChatWsService {
             return true;
         }
         else return false;
+    }
+
+    async updateGroupChatRoom(room: UpdateChatDto) {
+        if (!this.canChangeAdmin(room.reciever, room.sender))
+            throw new WsException('Request failed, not a admin');
+        await this.groupService.updateGroupChat(room)
     }
     
     // async banUser(room_id: string, user_login: string) {

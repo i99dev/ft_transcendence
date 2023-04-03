@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
 import { chatType, GroupChat } from '@prisma/client'
 import { decode } from 'punycode'
+import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 
 @Injectable()
 export class GroupService {
@@ -162,6 +163,24 @@ export class GroupService {
                 },
             })
             return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async updateGroupChat(info: UpdateChatDto) {
+        try {
+            this.prisma.groupChat.update({
+                where: {
+                    chat_room_id: info.reciever,
+                },
+                data: {
+                    image: info?.image,
+                    type: info?.type,
+                    password: info?.password,
+                    name: info?.name
+                }
+            })
         } catch (error) {
             console.log(error)
         }

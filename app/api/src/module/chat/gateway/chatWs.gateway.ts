@@ -146,17 +146,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: UpdateChatDto,
     ) {
+        if (!(await this.userService.getUser(payload.sender)))
+            return this.socketError('User not found')
         if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
             return this.socketError('Invalid reciever')
-
-        if (payload.name)
-            this.wss
-                .to(payload.reciever)
-                .emit('update', `${payload.sender} updated the chat name to ${payload.name}`)
-        if (payload.image)
-            this.wss
-                .to(payload.reciever)
-                .emit('update', `${payload.sender} updated the chat profile`)
+        this.chatWsService.updateGroupChatRoom(payload);
     }
 
     @SubscribeMessage('admin-group-chat')
