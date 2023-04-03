@@ -93,11 +93,11 @@ export class ChatWsService {
 
     async handleAdminSetup(payload: SetUserDto) {
         if (payload.action === 'upgrade')
-            await this.makeAdmin(payload.reciever, payload.user)
+            await this.makeAdmin(payload.room_id, payload.user)
         else if (payload.action === 'downgrade')
-            await this.removeAdmin(payload.reciever, payload.user)
+            await this.removeAdmin(payload.room_id, payload.user)
         else if (payload.action === 'owner')
-            await this.makeOwner(payload.reciever, payload.user, payload.sender)
+            await this.makeOwner(payload.room_id, payload.user, payload.sender)
         else 
             throw new WsException('Invalid action')
     }
@@ -252,7 +252,7 @@ export class ChatWsService {
     }
 
     async updateGroupChatRoom(room: UpdateChatDto) {
-        if (!this.canChangeAdmin(room.reciever, room.sender))
+        if (!this.canChangeAdmin(room.room_id, room.sender))
             throw new WsException('Request failed, not a admin');
         await this.groupService.updateGroupChat(room)
     }

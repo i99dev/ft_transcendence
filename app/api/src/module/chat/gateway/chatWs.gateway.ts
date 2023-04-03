@@ -104,22 +104,22 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.userService.getUser(payload.sender)))
             return this.socketError('User not found')
 
-        if (!(await this.chatService.chatExist(payload.reciever)))
+        if (!(await this.chatService.chatExist(payload.room_id)))
             return this.socketError('Invalid reciever')
 
-        if (await this.chatWsService.isUserBanned(payload.reciever, payload.sender))
+        if (await this.chatWsService.isUserBanned(payload.room_id, payload.sender))
             return this.socketError('User is banned')
 
-        if (await this.chatWsService.validateInvitation(payload.reciever, payload.sender))
-            return await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} joined`)
+        if (await this.chatWsService.validateInvitation(payload.room_id, payload.sender))
+            return await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} joined`)
 
-        if (await this.chatWsService.validatePassword(payload.reciever, payload.password))
-            await this.chatWsService.joinGroupChat(payload.reciever, payload.sender)
+        if (await this.chatWsService.validatePassword(payload.room_id, payload.password))
+            await this.chatWsService.joinGroupChat(payload.room_id, payload.sender)
         else
             return this.socketError('Invalid password')
-        client.join(payload.reciever)
+        client.join(payload.room_id)
 
-        await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} joined`)
+        await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} joined`)
     }
 
     @SubscribeMessage('exit-group-chat')
@@ -129,16 +129,16 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)))
             return this.socketError('User not found')
-        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.room_id, payload.sender)))
             return this.socketError('Invalid reciever')
-        if (await this.chatWsService.isUserOutsideChatRoom(payload.reciever, payload.sender)) 
+        if (await this.chatWsService.isUserOutsideChatRoom(payload.room_id, payload.sender)) 
             return this.socketError('User is already outside the chat room')
 
-        await this.chatWsService.leaveGroupChat(payload.reciever, payload.sender)
+        await this.chatWsService.leaveGroupChat(payload.room_id, payload.sender)
 
-        await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} left`)
+        await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} left`)
 
-        client.leave(payload.reciever)
+        client.leave(payload.room_id)
     }
 
     @SubscribeMessage('update')
@@ -148,9 +148,15 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)))
             return this.socketError('User not found')
-        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.room_id, payload.sender)))
             return this.socketError('Invalid reciever')
-        this.chatWsService.updateGroupChatRoom(payload);
+        await this.chatWsService.updateGroupChatRoom(payload);
+
+        await this.setupSpecialMessage(
+            payload.sender,
+            payload.room_id,
+            `${payload.sender} updated a group chat`,
+        )
     }
 
     @SubscribeMessage('admin-group-chat')
@@ -160,9 +166,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)) || !(await this.userService.getUser(payload.user)))
             return this.socketError('User not found')
-        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.room_id, payload.sender)))
             return this.socketError('Invalid reciever')
-        if (!(await this.chatWsService.canChangeAdmin(payload.reciever, payload.sender)))
+        if (!(await this.chatWsService.canChangeAdmin(payload.room_id, payload.sender)))
             return this.socketError('User is neither admin nor owner')
         
         await this.chatWsService.handleAdminSetup(payload) // 'upgrade' , 'downgrade', 'owner'
@@ -175,49 +181,49 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)) || !(await this.userService.getUser(payload.user)))
             return this.socketError('User not found')
-        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.room_id, payload.sender)))
             return this.socketError('Invalid reciever')
-        if (!(await this.chatWsService.canChangeAdmin(payload.reciever, payload.sender)))
+        if (!(await this.chatWsService.canChangeAdmin(payload.room_id, payload.sender)))
             return this.socketError('User is neither admin nor owner')
         
 
         if (payload.action === 'add') {
-            await this.chatWsService.addUser(payload.reciever, payload.user)
+            await this.chatWsService.addUser(payload.room_id, payload.user)
             const clientSocket = this.getSocket(payload.user)
-            if (clientSocket) clientSocket.join(payload.reciever)
-            await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} added ${payload.user}`)
+            if (clientSocket) clientSocket.join(payload.room_id)
+            await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} added ${payload.user}`)
         } 
         else if (payload.action === 'kick') {
-            await this.chatWsService.kickUser(payload.reciever, payload.user, payload.sender)
+            await this.chatWsService.kickUser(payload.room_id, payload.user, payload.sender)
             const clientSocket = this.getSocket(payload.user)
-            await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} kicked ${payload.user}`)
-            if (clientSocket) clientSocket.leave(payload.reciever)
+            await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} kicked ${payload.user}`)
+            if (clientSocket) clientSocket.leave(payload.room_id)
         }
         else if (payload.action === 'invite') {
-            await this.chatWsService.inviteUser(payload.reciever, payload.user, payload.sender);
+            await this.chatWsService.inviteUser(payload.room_id, payload.user, payload.sender);
             const clientSocket = this.getSocket(payload.user)
             if (clientSocket) {
-                clientSocket.join(payload.reciever);
-                const room = await this.groupService.getGroupChatRoom(payload.reciever);
+                clientSocket.join(payload.room_id);
+                const room = await this.groupService.getGroupChatRoom(payload.room_id);
                 clientSocket.emit('add-message', { content: `you got invited to ${room.name}`, type: MessageType.SPECIAL })
             }
         }
         else if (payload.action === 'mute') {
-            await this.chatWsService.muteUser(payload.reciever, payload.user, payload.sender);
-            await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} muted ${payload.user}`)
+            await this.chatWsService.muteUser(payload.room_id, payload.user, payload.sender);
+            await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} muted ${payload.user}`)
         }
         else if (payload.action === 'ban') {
-            await this.chatWsService.banUser(payload.reciever, payload.user, payload.sender)
+            await this.chatWsService.banUser(payload.room_id, payload.user, payload.sender)
             const clientSocket = this.getSocket(payload.user)
-            await this.setupSpecialMessage(payload.sender, payload.reciever, `${payload.sender} banned ${payload.user}`)
+            await this.setupSpecialMessage(payload.sender, payload.room_id, `${payload.sender} banned ${payload.user}`)
             if (clientSocket)
-                clientSocket.leave(payload.reciever)
+                clientSocket.leave(payload.room_id)
         }
         else if (payload.action === 'reset') {
-            await this.chatWsService.resetUser(payload.reciever, payload.user, payload.sender)
+            await this.chatWsService.resetUser(payload.room_id, payload.user, payload.sender)
             const clientSocket = this.getSocket(payload.user)
             if (clientSocket) {
-                const room = await this.groupService.getGroupChatRoom(payload.reciever);
+                const room = await this.groupService.getGroupChatRoom(payload.room_id);
                 clientSocket.emit('add-message', { content: `you got back to normal in ${room.name} chat`, type: MessageType.SPECIAL })
             }
         }
@@ -232,16 +238,16 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)))
             return this.socketError('User not found')
-        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.room_id, payload.sender)))
             return this.socketError('Invalid reciever')
 
-        if (!(await this.chatWsService.isUserNormal(payload.reciever, payload.sender)))
+        if (!(await this.chatWsService.isUserNormal(payload.room_id, payload.sender)))
             return this.socketError('User is not normal in the chat room')
         
-        this.chatService.createMessage(payload.sender, payload.reciever, payload.message)
+        this.chatService.createMessage(payload.sender, payload.room_id, payload.message)
 
         this.wss
-            .to(payload.reciever)
+            .to(payload.room_id)
             .emit('add-message', { message: payload.message, type: MessageType.NORMAL })
     }
 
@@ -252,15 +258,15 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.userService.getUser(payload.sender)))
             return this.socketError('User not found')
-        if (!(await this.chatService.validateChatRoom(payload.reciever, payload.sender)))
+        if (!(await this.chatService.validateChatRoom(payload.room_id, payload.sender)))
             return this.socketError('Invalid reciever')
 
-        if (!(await this.chatWsService.isUserNormal(payload.reciever, payload.sender)))
+        if (!(await this.chatWsService.isUserNormal(payload.room_id, payload.sender)))
             return this.socketError('User is not normal in the chat room')
 
-        this.chatService.deleteMessage(payload.sender, payload.reciever, payload.message_id)
+        this.chatService.deleteMessage(payload.sender, payload.room_id, payload.message_id)
 
-        this.wss.to(payload.reciever).emit('delete-message', payload.message_id)
+        this.wss.to(payload.room_id).emit('delete-message', payload.message_id)
     }
 
     async joinAllRooms(client: Socket, user: string) {

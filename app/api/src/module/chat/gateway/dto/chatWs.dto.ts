@@ -24,7 +24,7 @@ export class AddMessageDto {
     sender: string
 
     @IsString()
-    reciever: string
+    room_id: string
 
     @IsString()
     message: string
@@ -35,7 +35,7 @@ export class DeleteMessageDto {
     sender: string
 
     @IsString()
-    reciever: string
+    room_id: string
 
     @IsNumber()
     message_id: number
@@ -46,7 +46,7 @@ export class MainInfoDto {
     sender: string
 
     @IsString()
-    reciever: string
+    room_id: string
 
     @IsOptional()
     @IsString()
@@ -58,7 +58,7 @@ export class AddUserDto {
     sender: string
 
     @IsString()
-    reciever: string
+    room_id: string
 
     @IsString()
     user: string
@@ -69,7 +69,7 @@ export class SetUserDto {
     sender: string
 
     @IsString()
-    reciever: string
+    room_id: string
 
     @IsString()
     user: string
@@ -83,7 +83,7 @@ export class UpdateChatDto {
     sender: string
 
     @IsString()
-    reciever: string
+    room_id: string
 
     @IsOptional()
     @IsString()

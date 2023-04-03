@@ -170,9 +170,9 @@ export class GroupService {
 
     async updateGroupChat(info: UpdateChatDto) {
         try {
-            this.prisma.groupChat.update({
+            await this.prisma.groupChat.update({
                 where: {
-                    chat_room_id: info.reciever,
+                    chat_room_id: info.room_id,
                 },
                 data: {
                     image: info?.image,
