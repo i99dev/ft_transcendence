@@ -2,8 +2,6 @@ import { chatType } from '@prisma/client'
 import { IsString, IsEnum, IsOptional, IsBoolean, IsNumber } from 'class-validator'
 
 export class CreateGroupChatDto {
-    @IsString()
-    sender: string
 
     @IsString()
     name: string
@@ -20,8 +18,6 @@ export class CreateGroupChatDto {
 }
 
 export class AddMessageDto {
-    @IsString()
-    sender: string
 
     @IsString()
     room_id: string
@@ -31,8 +27,6 @@ export class AddMessageDto {
 }
 
 export class DeleteMessageDto {
-    @IsString()
-    sender: string
 
     @IsString()
     room_id: string
@@ -42,8 +36,6 @@ export class DeleteMessageDto {
 }
 
 export class MainInfoDto {
-    @IsString()
-    sender: string
 
     @IsString()
     room_id: string
@@ -54,8 +46,6 @@ export class MainInfoDto {
 }
 
 export class AddUserDto {
-    @IsString()
-    sender: string
 
     @IsString()
     room_id: string
@@ -65,22 +55,18 @@ export class AddUserDto {
 }
 
 export class SetUserDto {
-    @IsString()
-    sender: string
 
     @IsString()
     room_id: string
 
     @IsString()
-    user: string
+    user_id: number
 
     @IsString()
     action: string
 }
 
 export class UpdateChatDto {
-    @IsString()
-    sender: string
 
     @IsString()
     room_id: string

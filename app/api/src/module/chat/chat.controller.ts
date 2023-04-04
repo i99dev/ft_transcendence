@@ -44,8 +44,9 @@ export class ChatController {
         return await this.groupService.getChatRoomMessages(room_id);
     }
 
-    @Get('/:room_id/messages/:user')
-    async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user') user: string) {
+    @Get('/:room_id/messages/:user_id')
+    async getRoomMessagesByUser(@Param('room_id') room_id: string, @Param('user_id') user_id: string) {
+        const user = parseInt(user_id);
         return await this.chatService.getChatUserMessagesInChatRoom(room_id, user);
     }
 

@@ -16,7 +16,7 @@ export class GroupService {
     constructor(private prisma: PrismaService) {}
     private chatRooms: ChatRoom[]
 
-    async createGroupChatRoom(value: ChatRoomDto, user_login: string) {
+    async createGroupChatRoom(value: ChatRoomDto, user_id: number) {
         try {
             const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
                 data: {
@@ -31,7 +31,7 @@ export class GroupService {
                             chat_user: {
                                 createMany: {
                                     data: {
-                                        user_login: user_login,
+                                        user_id: user_id,
                                         role: 'OWNER',
                                         status: 'NORMAL',
                                     },
@@ -72,7 +72,7 @@ export class GroupService {
                             where: {
                                 chat_user: {
                                     chat_room_id: room_id,
-                                    user_login: user.user_login,
+                                    user_id: user.user_id,
                                 },
                             },
                             update: user,
@@ -87,12 +87,12 @@ export class GroupService {
         }
     }
 
-    async getChatUserInRoom(room_id: string, user_login: string) {
+    async getChatUserInRoom(room_id: string, user_id) {
         try {
             const userChat = await this.prisma.chatUser.findFirst({
                 where: {
                     chat_room_id: room_id,
-                    user_login: user_login,
+                    user_id: user_id,
                 },
             })
             return userChat;

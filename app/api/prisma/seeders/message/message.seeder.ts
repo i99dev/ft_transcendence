@@ -12,49 +12,49 @@ export class MessageSeeder {
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am bnaji',
-                    sender_login: 'bnaji',
+                    sender_id: 1,
                     chat_room_id: 'room1',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: "It's been 2 years in 42, Aren't we done yet?",
-                    sender_login: 'bnaji',
+                    sender_id: 1,
                     chat_room_id: 'room1',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am aaljaber',
-                    sender_login: 'aaljaber',
+                    sender_id: 5,
                     chat_room_id: 'room1',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am mal-guna',
-                    sender_login: 'mal-guna',
+                    sender_id: 3,
                     chat_room_id: 'room1',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am oal-tena',
-                    sender_login: 'oal-tena',
+                    sender_id: 2,
                     chat_room_id: 'room1',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am isaad',
-                    sender_login: 'isaad',
+                    sender_id: 4,
                     chat_room_id: 'room2',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Why am I here?',
-                    sender_login: 'isaad',
+                    sender_id: 4,
                     chat_room_id: 'room2',
                 },
             }),
@@ -71,23 +71,23 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am bnaji',
-                                sender_login: 'bnaji',
+                                sender_id: 1,
                             },
                             {
                                 content: "It's been 2 years in 42, Aren't we done yet?",
-                                sender_login: 'bnaji',
+                                sender_id: 1,
                             },
                             {
                                 content: 'Hello I am aaljaber',
-                                sender_login: 'aaljaber',
+                                sender_id: 5,
                             },
                             {
                                 content: 'Hello I am mal-guna',
-                                sender_login: 'mal-guna',
+                                sender_id: 3,
                             },
                             {
                                 content: 'Hello I am oal-tena',
-                                sender_login: 'oal-tena',
+                                sender_id: 2,
                             },
                         ],
                     },
@@ -102,11 +102,11 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am isaad',
-                                sender_login: 'isaad',
+                                sender_id: 4,
                             },
                             {
                                 content: 'Why am I here?',
-                                sender_login: 'isaad',
+                                sender_id: 4,
                             },
                         ],
                     },
@@ -121,11 +121,11 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am bassam',
-                                sender_login: 'bnaji',
+                                sender_id: 1,
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: 'oal-tena',
+                                sender_id: 2,
                             },
                         ],
                     },
@@ -142,11 +142,11 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am bassam',
-                                sender_login: 'bnaji',
+                                sender_id: 1,
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: 'oal-tena',
+                                sender_id: 2,
                             },
                         ],
                     },
@@ -161,11 +161,11 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am abrar',
-                                sender_login: 'aaljaber',
+                                sender_id: 5,
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: 'bnaji',
+                                sender_id: 1,
                             },
                         ],
                     },
@@ -180,11 +180,11 @@ export class MessageSeeder {
                         data: [
                             {
                                 content: 'Hello I am isaad',
-                                sender_login: 'isaad',
+                                sender_id: 4,
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_login: 'mal-guna',
+                                sender_id: 3,
                             },
                         ],
                     },
