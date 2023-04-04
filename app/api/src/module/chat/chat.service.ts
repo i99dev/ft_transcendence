@@ -199,32 +199,37 @@ export class ChatService {
     }
 
     async findAllChats(login): Promise<any[]> {
-        return (this.chatRooms = await this.prisma.chatRoom.findMany({
-            where: {
-                OR: [
-                    {
-                        group_chat: {
-                            chat_user: {
-                                some: {
-                                    user: {
+        try {
+                this.chatRooms = await this.prisma.chatRoom.findMany({
+                where: {
+                    OR: [
+                        {
+                            group_chat: {
+                                chat_user: {
+                                    some: {
+                                        user: {
+                                            id: login,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            direct_chat: {
+                                users: {
+                                    some: {
                                         id: login,
                                     },
                                 },
                             },
                         },
-                    },
-                    {
-                        direct_chat: {
-                            users: {
-                                some: {
-                                    id: login,
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
-        }))
+                    ],
+                },
+            })
+            return this.chatRooms
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
     async findDirectChat(login1: string, login2: string): Promise<any> {
