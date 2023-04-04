@@ -113,6 +113,21 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: CreateDirectChatDto,
     ) {
+        if (!(await this.chatService.getUser(this.query_id)))
+            return this.socketError('User not found')
+
+        if (!(await this.userService.getUser(payload.user)))
+            return this.socketError('Reciever not found')
+
+        const room_id = await this.chatWsService.createDirectChat(this.query_id, payload.user)
+
+        client.join(room_id)
+
+        await this.setupSpecialMessage(
+            this.query_id,
+            room_id,
+            `${client.handshake.query.user_id} created a direct chat`,
+        )
     }
 
     @SubscribeMessage('join-group-chat')
@@ -121,7 +136,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
     ) {
         if (!(await this.chatService.getUser(this.query_id)))
-            // keep it as string login
             return this.socketError('User not found')
 
         if (!(await this.chatService.chatExist(payload.room_id)))
@@ -207,7 +221,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: UpdateChatDto,
     ) {
         if (!(await this.chatService.getUser(this.query_id)))
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -239,7 +252,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )) ||
             !(await this.chatService.getUser(payload.user_id))
         )
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -273,7 +285,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )) ||
             !(await this.chatService.getUser(payload.user_id))
         )
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -374,7 +385,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
     ) {
         if (!(await this.chatService.getUser(this.query_id)))
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -409,7 +419,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: DeleteMessageDto,
     ) {
         if (!(await this.chatService.getUser(this.query_id)))
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
