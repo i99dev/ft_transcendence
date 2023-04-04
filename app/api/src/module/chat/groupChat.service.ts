@@ -95,7 +95,7 @@ export class GroupService {
                     user_id: user_id,
                 },
             })
-            return userChat;
+            return userChat
         } catch (error) {
             console.log(error)
         }
@@ -178,12 +178,11 @@ export class GroupService {
                     image: info?.image,
                     type: info?.type,
                     password: info?.password,
-                    name: info?.name
-                }
+                    name: info?.name,
+                },
             })
         } catch (error) {
             console.log(error)
         }
     }
-
 }

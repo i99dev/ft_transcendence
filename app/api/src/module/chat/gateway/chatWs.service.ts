@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
-import { ChatRoom, chatType, GroupChat, ChatRoomType, ChatUserRole, ChatUserStatus } from '@prisma/client'
+import {
+    ChatRoom,
+    chatType,
+    GroupChat,
+    ChatRoomType,
+    ChatUserRole,
+    ChatUserStatus,
+} from '@prisma/client'
 import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
 import { GroupService } from '../groupChat.service'
-
 
 @Injectable()
 export class ChatWsService {
@@ -26,7 +32,10 @@ export class ChatWsService {
     }
 
     async setupGroupChat(payload: any, user_id) {
-        if (payload.type === chatType.PROTECTED && (payload.password === undefined || payload.password === null || payload.password === ''))
+        if (
+            payload.type === chatType.PROTECTED &&
+            (payload.password === undefined || payload.password === null || payload.password === '')
+        )
             throw new WsException('No password provided')
 
         const room_id = crypto.randomUUID()
@@ -45,27 +54,20 @@ export class ChatWsService {
     }
 
     async getPassword(room_id: string) {
-        const room = await this.groupService.getChatRoom(room_id);
-        let group;
+        const room = await this.groupService.getChatRoom(room_id)
+        let group
         if (room.type === ChatRoomType.GROUP) {
-            group = await this.groupService.getGroupChatRoom(room_id);
-            if (group.type === chatType.PROTECTED)
-                return group.password
-            else
-                return null
-        }
-        else
-            return null
+            group = await this.groupService.getGroupChatRoom(room_id)
+            if (group.type === chatType.PROTECTED) return group.password
+            else return null
+        } else return null
     }
 
     async validatePassword(room_id: string, password: string): Promise<boolean> {
-        const pass = await this.getPassword(room_id);
-        if (pass === null)
-            return true
-        else
-            return pass === password
+        const pass = await this.getPassword(room_id)
+        if (pass === null) return true
+        else return pass === password
     }
-
 
     async isUserOutsideChatRoom(room_id: string, user_id) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
@@ -87,19 +89,21 @@ export class ChatWsService {
 
     async canChangeAdmin(room_id: string, user_id) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
-        if (chatUser && chatUser.role === ChatUserRole.ADMIN || chatUser.role === ChatUserRole.OWNER) return true
+        if (
+            (chatUser && chatUser.role === ChatUserRole.ADMIN) ||
+            chatUser.role === ChatUserRole.OWNER
+        )
+            return true
         return false
     }
 
     async handleAdminSetup(payload: SetUserDto, user_id) {
-        if (payload.action === 'upgrade')
-            await this.makeAdmin(payload.room_id, payload.user_id)
+        if (payload.action === 'upgrade') await this.makeAdmin(payload.room_id, payload.user_id)
         else if (payload.action === 'downgrade')
             await this.removeAdmin(payload.room_id, payload.user_id)
         else if (payload.action === 'owner')
             await this.makeOwner(payload.room_id, payload.user_id, user_id)
-        else 
-            throw new WsException('Invalid action')
+        else throw new WsException('Invalid action')
     }
 
     async makeAdmin(room_id: string, user_id: number) {
@@ -112,7 +116,7 @@ export class ChatWsService {
             })
         }
     }
-    
+
     async removeAdmin(room_id: string, user_id: number) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
         if (chatUser.role === ChatUserRole.MEMBER) throw new WsException('User is not admin')
@@ -123,13 +127,13 @@ export class ChatWsService {
             })
         }
     }
-    
+
     async makeOwner(room_id: string, user_id: number, owner: number) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
         if (chatUser.role !== ChatUserRole.OWNER) throw new WsException('User is not the owner')
 
-        await this.chatService.updateChatUser(owner, room_id, {role: ChatUserRole.ADMIN})
-        await this.chatService.updateChatUser(user_id, room_id, {role: ChatUserRole.OWNER})
+        await this.chatService.updateChatUser(owner, room_id, { role: ChatUserRole.ADMIN })
+        await this.chatService.updateChatUser(user_id, room_id, { role: ChatUserRole.OWNER })
     }
 
     async joinGroupChat(room_id: string, user_id) {
@@ -149,11 +153,14 @@ export class ChatWsService {
             throw new WsException('Request failed, not a admin')
 
         const room = await this.groupService.getGroupChatRoom(room_id)
-        if (room.type !== chatType.PRIVATE)
-            throw new WsException('Room is not protected')
+        if (room.type !== chatType.PRIVATE) throw new WsException('Room is not protected')
 
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
-        if (chatUser && chatUser.status !== ChatUserStatus.OUT && chatUser.status !== ChatUserStatus.BAN)
+        if (
+            chatUser &&
+            chatUser.status !== ChatUserStatus.OUT &&
+            chatUser.status !== ChatUserStatus.BAN
+        )
             throw new WsException('User is already in chat room, kicked or banned')
 
         await this.groupService.addUserToGroupChat(room_id, {
@@ -165,7 +172,8 @@ export class ChatWsService {
 
     async leaveGroupChat(room_id: string, user_id) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
-        if (chatUser.role === ChatUserRole.OWNER) throw new WsException('Owner cannot leave chat room')
+        if (chatUser.role === ChatUserRole.OWNER)
+            throw new WsException('Owner cannot leave chat room')
         await this.chatService.updateChatUser(user_id, room_id, {
             status: ChatUserStatus.OUT,
         })
@@ -175,40 +183,37 @@ export class ChatWsService {
         console.log(room_id, user_id)
         this.joinGroupChat(room_id, user_id)
     }
-    
+
     async kickUser(room_id: string, user_id: number, sender) {
-        
         if (!(await this.canChangeAdmin(room_id, sender)))
             throw new WsException('Request failed, not a admin')
 
-        if (await this.isUserOutsideChatRoom(room_id, user_id)) 
+        if (await this.isUserOutsideChatRoom(room_id, user_id))
             throw new WsException('User is already outside the chat room')
 
         await this.chatService.updateChatUser(user_id, room_id, {
             status: ChatUserStatus.OUT,
         })
     }
-    
+
     async banUser(room_id: string, user_id: number, sender) {
-        
         if (!(await this.canChangeAdmin(room_id, sender)))
             throw new WsException('Request failed, not a admin')
 
-        if (await this.isUserOutsideChatRoom(room_id, user_id)) 
+        if (await this.isUserOutsideChatRoom(room_id, user_id))
             throw new WsException('User is already outside the chat room')
 
         if (await this.isUserBanned(room_id, user_id))
             throw new WsException('User is already banned')
 
-        this.chatService.updateUserStatus(user_id, room_id, 'BAN');
+        this.chatService.updateUserStatus(user_id, room_id, 'BAN')
     }
 
     async muteUser(room_id: string, user_id: number, sender) {
-        
         if (!(await this.canChangeAdmin(room_id, sender)))
             throw new WsException('Request failed, not a admin')
 
-        if (!(await this.isUserNormal(room_id, user_id))) 
+        if (!(await this.isUserNormal(room_id, user_id)))
             throw new WsException('User is already outside the chat room')
 
         await this.chatService.updateChatUser(user_id, room_id, {
@@ -217,11 +222,10 @@ export class ChatWsService {
     }
 
     async resetUser(room_id: string, user_id: number, sender) {
-        
         if (!(await this.canChangeAdmin(room_id, sender)))
             throw new WsException('Request failed, not a admin')
 
-        if (await this.isUserNormal(room_id, user_id)) 
+        if (await this.isUserNormal(room_id, user_id))
             throw new WsException('User is already normal')
 
         await this.chatService.updateChatUser(user_id, room_id, {
@@ -231,53 +235,49 @@ export class ChatWsService {
 
     async validateUserInRoom(room_id: string, user_id: number) {
         const room = await this.groupService.getGroupChatRoom(room_id)
-        if (room.type !== chatType.PRIVATE)
-            return false;
+        if (room.type !== chatType.PRIVATE) return false
 
-        const chatUser = await this.chatService.getChatUser(room_id, user_id);
+        const chatUser = await this.chatService.getChatUser(room_id, user_id)
 
-        if (chatUser && chatUser.status === 'INVITED')
-            return true;
-        else
-            throw new WsException('User is not invited to this room');
+        if (chatUser && chatUser.status === 'INVITED') return true
+        else throw new WsException('User is not invited to this room')
     }
 
     async validateInvitation(room_id: string, user_id) {
-        if (await this.validateUserInRoom(room_id, user_id))
-        {
-            this.chatService.updateUserStatus(user_id, room_id, 'NORMAL');
-            return true;
-        }
-        else return false;
+        if (await this.validateUserInRoom(room_id, user_id)) {
+            this.chatService.updateUserStatus(user_id, room_id, 'NORMAL')
+            return true
+        } else return false
     }
 
     async updateGroupChatRoom(room: UpdateChatDto, user_id) {
         if (!this.canChangeAdmin(room.room_id, user_id))
-            throw new WsException('Request failed, not a admin');
+            throw new WsException('Request failed, not a admin')
         const oldRoom = await this.groupService.getGroupChatRoom(room.room_id)
-        if (oldRoom.type !== chatType.PROTECTED && room.type === chatType.PROTECTED && (room.password === '' || room.password === undefined || room.password === null))
+        if (
+            oldRoom.type !== chatType.PROTECTED &&
+            room.type === chatType.PROTECTED &&
+            (room.password === '' || room.password === undefined || room.password === null)
+        )
             throw new WsException('Password cannot be empty')
         await this.groupService.updateGroupChat(room)
     }
 
     async validateGroupChat(room_id: string) {
         const room = await this.groupService.getChatRoom(room_id)
-        if (room.type === ChatRoomType.GROUP)
-            return true;
-        else
-            return false;
+        if (room.type === ChatRoomType.GROUP) return true
+        else return false
     }
-    
+
     // async banUser(room_id: string, user_login: string) {
 
     // }
-    
+
     // async muteUser(room_id: string, user_login: string) {
 
     // }
-    
+
     // async resetUser(room_id: string, user_login: string) {
 
     // }
-
 }

@@ -15,7 +15,6 @@ export class ChatService {
     constructor(private prisma: PrismaService) {}
     private chatRooms: ChatRoom[]
 
-
     async getUser(id) {
         try {
             const user = await this.prisma.user.findUnique({
@@ -38,11 +37,8 @@ export class ChatService {
                     direct_chat: {
                         create: {
                             users: {
-                                connect: [
-                                    { login: user_login },
-                                    { login: user_login2 },
-                                ],
-                            }
+                                connect: [{ login: user_login }, { login: user_login2 }],
+                            },
                         },
                     },
                 },
@@ -111,8 +107,8 @@ export class ChatService {
                     chat_user: {
                         chat_room_id: room_id,
                         user_id: user_id,
-                    }
-                }
+                    },
+                },
             })
             return chatUser
         } catch (error) {
@@ -200,7 +196,7 @@ export class ChatService {
 
     async findAllChats(login): Promise<any[]> {
         try {
-                this.chatRooms = await this.prisma.chatRoom.findMany({
+            this.chatRooms = await this.prisma.chatRoom.findMany({
                 where: {
                     OR: [
                         {
@@ -357,7 +353,6 @@ export class ChatService {
         }
     }
 
-
     async getDirectChatRooms() {
         try {
             const chatRooms = await this.prisma.chatRoom.findMany({
@@ -370,5 +365,4 @@ export class ChatService {
             console.log(error)
         }
     }
-
 }
