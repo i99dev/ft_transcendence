@@ -276,7 +276,7 @@ export class ChatWsService {
         if (user_id === user_id2)
             throw new WsException('Cannot create DM with yourself')
         const room_check = await this.chatService.checkDirectRoomExist(user_id, user_id2)
-        if (room_check.length > 0)
+        if (room_check)
             throw new WsException('Already created DM with this user')
         const room_id = crypto.randomUUID()
         await this.chatService.createDMChat(room_id, user_id, user_id2)

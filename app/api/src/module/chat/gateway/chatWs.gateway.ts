@@ -386,21 +386,24 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         if (!(await this.chatService.getUser(this.query_id)))
             return this.socketError('User not found')
+            let type_check;
         if (
-            !(await this.chatService.validateChatRoom(
+            !(type_check = await this.chatService.validateChatRoom(
                 payload.room_id,
                 this.query_id,
             ))
         )
             return this.socketError('Invalid reciever')
 
-        if (
-            !(await this.chatWsService.isUserNormal(
-                payload.room_id,
-                this.query_id,
-            ))
-        )
-            return this.socketError('User is not normal in the chat room')
+        if (type_check === 'GROUP') {
+            if (
+                !(await this.chatWsService.isUserNormal(
+                    payload.room_id,
+                    this.query_id,
+                ))
+            )
+                return this.socketError('User is not normal in the chat room')
+        }
 
         this.chatService.createMessage(
             this.query_id,

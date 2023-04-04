@@ -373,7 +373,7 @@ export class ChatService {
                     type: 'DM',
                     direct_chat: {
                         users: {
-                            every: {
+                            some: {
                                 AND: [
                                     {
                                         id: user_id,
@@ -387,6 +387,7 @@ export class ChatService {
                     },
                 }
             })
+            console.log(chatRooms)
             return chatRooms
         } catch (error) {
             console.log(error)
