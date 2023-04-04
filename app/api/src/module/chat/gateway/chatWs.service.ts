@@ -26,7 +26,7 @@ export class ChatWsService {
     }
 
     async setupGroupChat(payload: any) {
-        if (payload.type === chatType.PROTECTED && payload.password === undefined)
+        if (payload.type === chatType.PROTECTED && (payload.password === undefined || payload.password === null || payload.password === ''))
             throw new WsException('No password provided')
 
         const room_id = crypto.randomUUID()
@@ -254,6 +254,9 @@ export class ChatWsService {
     async updateGroupChatRoom(room: UpdateChatDto) {
         if (!this.canChangeAdmin(room.room_id, room.sender))
             throw new WsException('Request failed, not a admin');
+        const oldRoom = await this.groupService.getGroupChatRoom(room.room_id)
+        if (oldRoom.type !== chatType.PROTECTED && room.type === chatType.PROTECTED && (room.password === '' || room.password === undefined || room.password === null))
+            throw new WsException('Password cannot be empty')
         await this.groupService.updateGroupChat(room)
     }
     
