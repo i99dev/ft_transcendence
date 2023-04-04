@@ -10,12 +10,16 @@
                 confirmation="Are you sure you want to exit the game?"
             />
             <div class="container">
-                <Button @click="switchExistStatus(true)" icon="pi pi-times" />
-                <Button class="button-wrapper" @click="powerup" />
+                <div class="w-1/3 flex justify-between">
+                    <button class="bg-slate-400 text-sm p-2 rounded-t-md" @click="powerup" >PowerUp</button>
+                    <Button @click="switchExistStatus(true)" icon="pi pi-times" />
+                    <button class="bg-slate-400 text-xs p-2 rounded-t-md" @click="powerup" >PowerUp</button>
+                </div>
                 <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
             <GameResult
                 v-if="gameResult"
+                @vnode-mounted="exit = false"
                 :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain"
             />
@@ -26,7 +30,6 @@
 <script lang="ts" setup>
 let exit = ref(false)
 let ready = ref(false)
-// let firstGameReady = ref(true)
 let gameResult = ref(false)
 let gameResultMessage = ref('')
 let gameBoard = ref()
@@ -43,7 +46,6 @@ const playAgain = (): void => {
 
 const gameOver = (message: string): void => {
     gameBoard.value.destroy()
-    // firstGameReady.value = false
     ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
@@ -64,7 +66,6 @@ const exitGame = (): void => {
 }
 
 const powerup = (): void => {
-    console.log('powerup')
     gameBoard.value.powerup()
 }
 
@@ -91,22 +92,5 @@ body {
     height: 100vh;
 }
 
-.button-wrapper {
-    position: relative;
-    top: 100px;
-    right: 750px;
-    background-color: #ccc;
-    color: #fff;
-    border: none;
-    padding: 10px 70px;
-    cursor: pointer;
-}
 
-.button-wrapper:hover {
-    background-color: #999;
-}
-
-.button-wrapper:active {
-    background-color: #666;
-}
 </style>
