@@ -90,6 +90,7 @@ body {
     min-width: 100vw;
     position: relative;
     height: 100vh;
+    /* overflow-y: hidden; */
 }
 
 
