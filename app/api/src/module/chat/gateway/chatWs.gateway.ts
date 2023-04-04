@@ -20,6 +20,7 @@ import {
     UpdateChatDto,
     DeleteMessageDto,
     CreateGroupChatDto,
+    CreateDirectChatDto,
 } from './dto/chatWs.dto'
 import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
@@ -104,6 +105,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             room_id,
             `${client.handshake.query.user_id} created a group chat`,
         )
+    }
+
+    @SubscribeMessage('create-direct-chat')
+    async createDirectChat(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new SocketValidationPipe()) payload: CreateDirectChatDto,
+    ) {
     }
 
     @SubscribeMessage('join-group-chat')
