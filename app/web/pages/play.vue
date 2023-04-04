@@ -1,11 +1,5 @@
 <template>
     <div>
-        <div
-            v-if="!ready && firstGameReady"
-            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
-        >
-            <GameLoadingButton @StartGame="startGame" />
-        </div>
         <div>
             <GameClosePopup
                 v-if="exit"
@@ -32,15 +26,16 @@
 <script lang="ts" setup>
 let exit = ref(false)
 let ready = ref(false)
-let firstGameReady = ref(true)
+// let firstGameReady = ref(true)
 let gameResult = ref(false)
 let gameResultMessage = ref('')
 let gameBoard = ref()
 
-const startGame = (): void => {
+onMounted(() => {
     gameBoard.value.setup()
     gameResult.value = false
-}
+})
+
 
 const playAgain = (): void => {
     gameBoard.value.setup()
@@ -48,7 +43,7 @@ const playAgain = (): void => {
 
 const gameOver = (message: string): void => {
     gameBoard.value.destroy()
-    firstGameReady.value = false
+    // firstGameReady.value = false
     ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
@@ -65,6 +60,7 @@ const exitGame = (): void => {
     exit.value = false
     ready.value = false
     gameResult.value = false
+    navigateTo('/')
 }
 
 const powerup = (): void => {
