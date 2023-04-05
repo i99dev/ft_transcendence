@@ -366,26 +366,22 @@ export class ChatService {
         }
     }
 
-    async checkDirectRoomExist(user_id: number, user_id2: number) {
+    async checkCommonDirectChat(user_id: number, user_id2: number) {
         try {
             const chatRooms = await this.prisma.chatRoom.findMany({
                 where: {
                     type: 'DM',
                     direct_chat: {
                         users: {
-                            some: {
-                                AND: [
-                                    {
-                                        id: user_id,
-                                    },
-                                    {
-                                        id: user_id2,
-                                    },
-                                ]
+                            every: {
+                                OR: [
+                                    {id: user_id},
+                                    {id: user_id2},
+                                ],
                             },
                         },
                     },
-                }
+                },
             })
             console.log(chatRooms)
             return chatRooms
