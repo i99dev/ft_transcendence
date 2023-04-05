@@ -116,6 +116,31 @@ export class ChatService {
         }
     }
 
+    async getDirectChatUser(room_id: string, user_id: number) {
+        try {
+            const chatUser = await this.prisma.directChat.findUnique({
+                where: {
+                    chat_room_id: room_id,
+                },
+                include: {
+                    users: true,
+                },
+            })
+            let check = false
+            chatUser.users.map((user) => {
+                if (user.id === user_id) {
+                    console.log(user.id)
+                    console.log(user_id)
+                    check = true
+                    return user
+                }
+            })
+            return check
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     async createMessage(
         user_id,
         room_id: string,

@@ -282,4 +282,23 @@ export class ChatWsService {
         await this.chatService.createDMChat(room_id, user_id, user_id2)
         return room_id
     }
+
+    async checkUserInRoom1(room_id: string, user_id: number) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_id)
+        console.log(chatUser)
+        console.log(room_id, user_id)
+        console.log('1')
+        if (chatUser) return true
+        else return false
+    }
+
+    async checkUserInRoom2(room_id: string, user_id: number) {
+        console.log(user_id)
+        const chatUser = await this.chatService.getDirectChatUser(room_id, user_id)
+        console.log(chatUser)
+        console.log(room_id, user_id)
+        console.log('2')
+        if (chatUser) return true
+        else return false
+    }
 }
