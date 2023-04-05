@@ -10,6 +10,6 @@ export class ChatRoomDto {
 
 export class ChatUserDto {
     status?: ChatUserStatus
-    user_login: string
+    user_id: number
     role?: ChatUserRole
 }

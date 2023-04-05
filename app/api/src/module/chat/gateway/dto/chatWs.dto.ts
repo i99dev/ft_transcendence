@@ -3,9 +3,6 @@ import { IsString, IsEnum, IsOptional, IsBoolean, IsNumber } from 'class-validat
 
 export class CreateGroupChatDto {
     @IsString()
-    sender: string
-
-    @IsString()
     name: string
 
     @IsString()
@@ -21,10 +18,7 @@ export class CreateGroupChatDto {
 
 export class AddMessageDto {
     @IsString()
-    sender: string
-
-    @IsString()
-    reciever: string
+    room_id: string
 
     @IsString()
     message: string
@@ -32,10 +26,7 @@ export class AddMessageDto {
 
 export class DeleteMessageDto {
     @IsString()
-    sender: string
-
-    @IsString()
-    reciever: string
+    room_id: string
 
     @IsNumber()
     message_id: number
@@ -43,10 +34,7 @@ export class DeleteMessageDto {
 
 export class MainInfoDto {
     @IsString()
-    sender: string
-
-    @IsString()
-    reciever: string
+    room_id: string
 
     @IsOptional()
     @IsString()
@@ -55,10 +43,7 @@ export class MainInfoDto {
 
 export class AddUserDto {
     @IsString()
-    sender: string
-
-    @IsString()
-    reciever: string
+    room_id: string
 
     @IsString()
     user: string
@@ -66,13 +51,10 @@ export class AddUserDto {
 
 export class SetUserDto {
     @IsString()
-    sender: string
+    room_id: string
 
     @IsString()
-    reciever: string
-
-    @IsString()
-    user: string
+    user_id: number
 
     @IsString()
     action: string
@@ -80,10 +62,7 @@ export class SetUserDto {
 
 export class UpdateChatDto {
     @IsString()
-    sender: string
-
-    @IsString()
-    reciever: string
+    room_id: string
 
     @IsOptional()
     @IsString()
@@ -92,4 +71,12 @@ export class UpdateChatDto {
     @IsOptional()
     @IsString()
     image?: string
+
+    @IsOptional()
+    @IsString()
+    password?: string
+
+    @IsOptional()
+    @IsString()
+    type?: chatType
 }
