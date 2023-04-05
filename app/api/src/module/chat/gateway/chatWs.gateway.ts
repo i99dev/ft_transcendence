@@ -39,7 +39,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     private clients: Map<number, string> = new Map()
     private sockets: Map<string, Socket> = new Map()
-    private query_id: any;
+    private query_id: any
 
     constructor(
         private chatWsService: ChatWsService,
@@ -119,7 +119,10 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.userService.getUser(payload.user)))
             return this.socketError('Reciever not found')
 
-        const room_id = await this.chatWsService.createDirectChat(parseInt(client.handshake.query.user_id.toString()), payload.user)
+        const room_id = await this.chatWsService.createDirectChat(
+            parseInt(client.handshake.query.user_id.toString()),
+            payload.user,
+        )
 
         client.join(room_id)
 
@@ -387,7 +390,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         console.log(parseInt(client.handshake.query.user_id.toString()))
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
             return this.socketError('User not found')
-            let type_check;
+        let type_check
         if (
             !(type_check = await this.chatService.validateChatRoom(
                 payload.room_id,
@@ -404,11 +407,20 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 ))
             )
                 return this.socketError('User is not normal in the chat room')
-            if (!(await this.chatWsService.checkUserInRoom1(payload.room_id, parseInt(client.handshake.query.user_id.toString()))))
+            if (
+                !(await this.chatWsService.checkUserInRoom1(
+                    payload.room_id,
+                    parseInt(client.handshake.query.user_id.toString()),
+                ))
+            )
                 return this.socketError('User is not in channel')
-        }
-        else {
-            if (!(await this.chatWsService.checkUserInRoom2(payload.room_id, parseInt(client.handshake.query.user_id.toString()))))
+        } else {
+            if (
+                !(await this.chatWsService.checkUserInRoom2(
+                    payload.room_id,
+                    parseInt(client.handshake.query.user_id.toString()),
+                ))
+            )
                 return this.socketError('This user can not interfer in this DM')
         }
 

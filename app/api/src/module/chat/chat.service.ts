@@ -127,7 +127,7 @@ export class ChatService {
                 },
             })
             let check = false
-            chatUser.users.map((user) => {
+            chatUser.users.map(user => {
                 if (user.id === user_id) {
                     console.log(user.id)
                     console.log(user_id)
@@ -399,10 +399,7 @@ export class ChatService {
                     direct_chat: {
                         users: {
                             every: {
-                                OR: [
-                                    {id: user_id},
-                                    {id: user_id2},
-                                ],
+                                OR: [{ id: user_id }, { id: user_id2 }],
                             },
                         },
                     },
