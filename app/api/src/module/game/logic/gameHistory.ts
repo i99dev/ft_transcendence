@@ -41,7 +41,7 @@ export class gameHistory {
     private async assignOponents(): Promise<void> {
         await this.prisma.match.update({
             where: {
-                gameID: this.game.players[0].gameId,
+                gameID: this.game.players[0].gameID,
             },
             data: {
                 opponents: {
@@ -55,7 +55,7 @@ export class gameHistory {
         const pl = await this.prisma.player.create({
             data: {
                 matches: {
-                    connect: { gameID: player.gameId },
+                    connect: { gameID: player.gameID },
                 },
                 user: {
                     connect: { login: player.username },
@@ -78,7 +78,7 @@ export class gameHistory {
     public async createGame(): Promise<void> {
         await this.prisma.match.create({
             data: {
-                gameID: this.game.players[0].gameId,
+                gameID: this.game.players[0].gameID,
             },
         })
     }

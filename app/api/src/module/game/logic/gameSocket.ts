@@ -51,9 +51,9 @@ export class socketLogic {
     }
 
     // join the players to the game room
-    public joinPlayersToGame(gameId: string): void {
-        this.PlayersSocket[0].join(gameId)
-        this.PlayersSocket[1].join(gameId)
+    public joinPlayersToGame(gameID: string): void {
+        this.PlayersSocket[0].join(gameID)
+        this.PlayersSocket[1].join(gameID)
     }
 
     // generate a random id for the game

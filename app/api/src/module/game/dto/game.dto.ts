@@ -44,7 +44,7 @@ export class PlayerDto {
     y: number
     score: number
     paddle: PaddleDto
-    gameId?: string
+    gameID?: string
     powerUp?: boolean
 }
 
