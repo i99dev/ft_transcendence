@@ -28,16 +28,16 @@ export class ChatService {
         }
     }
 
-    async createDMChat(value: ChatRoomDto, user_login: string, user_login2: string) {
+    async createDMChat(value: string, user_id: number, user_id2: number) {
         try {
             const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
                 data: {
-                    room_id: value.room_id,
+                    room_id: value,
                     type: 'DM',
                     direct_chat: {
                         create: {
                             users: {
-                                connect: [{ login: user_login }, { login: user_login2 }],
+                                connect: [{ id: user_id }, { id: user_id2 }],
                             },
                         },
                     },
@@ -111,6 +111,31 @@ export class ChatService {
                 },
             })
             return chatUser
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getDirectChatUser(room_id: string, user_id: number) {
+        try {
+            const chatUser = await this.prisma.directChat.findUnique({
+                where: {
+                    chat_room_id: room_id,
+                },
+                include: {
+                    users: true,
+                },
+            })
+            let check = false
+            chatUser.users.map(user => {
+                if (user.id === user_id) {
+                    console.log(user.id)
+                    console.log(user_id)
+                    check = true
+                    return user
+                }
+            })
+            return check
         } catch (error) {
             console.log(error)
         }
@@ -360,6 +385,27 @@ export class ChatService {
                     type: 'DM',
                 },
             })
+            return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async checkCommonDirectChat(user_id: number, user_id2: number) {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany({
+                where: {
+                    type: 'DM',
+                    direct_chat: {
+                        users: {
+                            every: {
+                                OR: [{ id: user_id }, { id: user_id2 }],
+                            },
+                        },
+                    },
+                },
+            })
+            console.log(chatRooms)
             return chatRooms
         } catch (error) {
             console.log(error)

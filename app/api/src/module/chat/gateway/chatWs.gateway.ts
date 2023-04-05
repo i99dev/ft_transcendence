@@ -20,6 +20,7 @@ import {
     UpdateChatDto,
     DeleteMessageDto,
     CreateGroupChatDto,
+    CreateDirectChatDto,
 } from './dto/chatWs.dto'
 import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
@@ -38,7 +39,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     private clients: Map<number, string> = new Map()
     private sockets: Map<string, Socket> = new Map()
-    private query_id: any;
+    private query_id: any
 
     constructor(
         private chatWsService: ChatWsService,
@@ -90,7 +91,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: CreateGroupChatDto,
     ) {
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            // keep it as string login
             return this.socketError('User not found')
         const room_id = await this.chatWsService.setupGroupChat(
             payload,
@@ -106,13 +106,37 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
     }
 
+    @SubscribeMessage('create-direct-chat')
+    async createDirectChat(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new SocketValidationPipe()) payload: CreateDirectChatDto,
+    ) {
+        if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
+            return this.socketError('User not found')
+
+        if (!(await this.userService.getUser(payload.user)))
+            return this.socketError('Reciever not found')
+
+        const room_id = await this.chatWsService.createDirectChat(
+            parseInt(client.handshake.query.user_id.toString()),
+            payload.user,
+        )
+
+        client.join(room_id)
+
+        await this.setupSpecialMessage(
+            parseInt(client.handshake.query.user_id.toString()),
+            room_id,
+            `${client.handshake.query.user_id} created a direct chat`,
+        )
+    }
+
     @SubscribeMessage('join-group-chat')
     async joinChatUser(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
     ) {
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            // keep it as string login
             return this.socketError('User not found')
 
         if (!(await this.chatService.chatExist(payload.room_id)))
@@ -198,7 +222,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: UpdateChatDto,
     ) {
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -230,7 +253,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )) ||
             !(await this.chatService.getUser(payload.user_id))
         )
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -264,7 +286,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )) ||
             !(await this.chatService.getUser(payload.user_id))
         )
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(
@@ -365,23 +386,40 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
     ) {
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            // keep it as string login
             return this.socketError('User not found')
+        let type_check
         if (
-            !(await this.chatService.validateChatRoom(
+            !(type_check = await this.chatService.validateChatRoom(
                 payload.room_id,
                 parseInt(client.handshake.query.user_id.toString()),
             ))
         )
             return this.socketError('Invalid reciever')
 
-        if (
-            !(await this.chatWsService.isUserNormal(
-                payload.room_id,
-                parseInt(client.handshake.query.user_id.toString()),
-            ))
-        )
-            return this.socketError('User is not normal in the chat room')
+        if (type_check.type === 'GROUP') {
+            if (
+                !(await this.chatWsService.isUserNormal(
+                    payload.room_id,
+                    parseInt(client.handshake.query.user_id.toString()),
+                ))
+            )
+                return this.socketError('User is not normal in the chat room')
+            if (
+                !(await this.chatWsService.checkUserInRoom1(
+                    payload.room_id,
+                    parseInt(client.handshake.query.user_id.toString()),
+                ))
+            )
+                return this.socketError('User is not in channel')
+        } else {
+            if (
+                !(await this.chatWsService.checkUserInRoom2(
+                    payload.room_id,
+                    parseInt(client.handshake.query.user_id.toString()),
+                ))
+            )
+                return this.socketError('This user can not interfer in this DM')
+        }
 
         this.chatService.createMessage(
             parseInt(client.handshake.query.user_id.toString()),
@@ -400,7 +438,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: DeleteMessageDto,
     ) {
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            // keep it as string login
             return this.socketError('User not found')
         if (
             !(await this.chatService.validateChatRoom(

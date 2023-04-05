@@ -1,3 +1,4 @@
+import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
@@ -22,6 +23,7 @@ export class ChatWsService {
         private chatService: ChatService,
         private groupService: GroupService,
         private jwtService: JwtService,
+        private userService: UserService,
     ) {}
     private chatRooms: ChatRoom[]
 
@@ -269,15 +271,32 @@ export class ChatWsService {
         else return false
     }
 
-    // async banUser(room_id: string, user_login: string) {
+    async createDirectChat(user_id: number, sender: string) {
+        const user_id2 = (await this.userService.getUser(sender)).id
+        if (user_id === user_id2) throw new WsException('Cannot create DM with yourself')
+        const room_check = await this.chatService.checkCommonDirectChat(user_id, user_id2)
+        if (room_check.length > 0) throw new WsException('Already created DM with this user')
+        const room_id = crypto.randomUUID()
+        await this.chatService.createDMChat(room_id, user_id, user_id2)
+        return room_id
+    }
 
-    // }
+    async checkUserInRoom1(room_id: string, user_id: number) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_id)
+        console.log(chatUser)
+        console.log(room_id, user_id)
+        console.log('1')
+        if (chatUser) return true
+        else return false
+    }
 
-    // async muteUser(room_id: string, user_login: string) {
-
-    // }
-
-    // async resetUser(room_id: string, user_login: string) {
-
-    // }
+    async checkUserInRoom2(room_id: string, user_id: number) {
+        console.log(user_id)
+        const chatUser = await this.chatService.getDirectChatUser(room_id, user_id)
+        console.log(chatUser)
+        console.log(room_id, user_id)
+        console.log('2')
+        if (chatUser) return true
+        else return false
+    }
 }

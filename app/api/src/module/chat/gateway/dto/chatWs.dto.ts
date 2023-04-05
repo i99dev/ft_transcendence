@@ -16,6 +16,11 @@ export class CreateGroupChatDto {
     password?: string
 }
 
+export class CreateDirectChatDto {
+    @IsString()
+    user: string
+}
+
 export class AddMessageDto {
     @IsString()
     room_id: string
