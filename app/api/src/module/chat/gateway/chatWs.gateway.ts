@@ -60,7 +60,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.logger.error('Invalid token')
             return client.disconnect()
         }
-        this.query_id = parseInt(user_string)
         // const user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
         // if (!user) {
         // this.logger.error('Invalid token')
@@ -92,7 +91,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody(new SocketValidationPipe()) payload: CreateGroupChatDto,
     ) {
         if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            // keep it as string login
             return this.socketError('User not found')
         const room_id = await this.chatWsService.setupGroupChat(
             payload,
