@@ -77,12 +77,12 @@ function openFriendsModel() {
     <div>
         <div class="">
             <div
-                class="flex flex-col mobile:flex-col items-center shadow bg-white dark:bg-gray-800 space-y-4 p-6"
+                class="flex flex-col mobile:flex-col items-center shadow bg-white dark:bg-gray-800 space-y-4 sm:p-6 p-1 w-full"
             >
-                <div class="flex flex-row">
+                <div class="flex sm:flex-row flex-col items-center">
                     <img
                         v-if="userData"
-                        class="rounded-full border-2 h-32 w-32 object-cover"
+                        class="rounded-full border-2 sm:h-32 h-20 sm:w-32 w-20 object-cover"
                         :src="
                             userData?.image ||
                             defaultImages[Math.floor(Math.random() * defaultImages.length)]
@@ -90,12 +90,12 @@ function openFriendsModel() {
                         alt="logo"
                     />
 
-                    <div class="flex flex-col space-x-1 justify-center p-6">
-                        <p class="text-3xl text-black dark:text-white">Welcome</p>
+                    <div class="flex sm:flex-col justify-center sm:p-6">
+                        <p class="sm:text-3xl text-lg text-black dark:text-white">Welcome</p>
                         <!-- update username -->
                         <div class="flex flex-row items-center w-full justify-between">
                             <div
-                                class="text-2xl text-black dark:text-white px-2 w-32 h-8 overflow-hidden"
+                                class="sm:text-2xl text-lg text-black dark:text-white px-2 w-32 h-8 overflow-hidden"
                                 v-if="editBoolaen"
                             >
                                 {{ userData?.username }}
@@ -103,7 +103,7 @@ function openFriendsModel() {
                             <input
                                 v-if="!editBoolaen"
                                 :disabled="editBoolaen"
-                                class="border-2 border-gray-300 rounded-md p-1 max-w-xs w-32 h-8"
+                                class="border-2 border-gray-300 rounded-md p-1 max-w-xs w-32 h-8 mx-2"
                                 type="text"
                                 :value="userData?.username"
                                 @input="userData.username = $event.target.value"
@@ -120,7 +120,7 @@ function openFriendsModel() {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    class="w-6 h-6"
+                                    class="w-8 h-8"
                                 >
                                     <path
                                         stroke-linecap="round"
@@ -141,7 +141,7 @@ function openFriendsModel() {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    class="w-6 h-6 bg-green-300"
+                                    class="min-w-full h-8 bg-green-300"
                                 >
                                     <path
                                         stroke-linecap="round"
@@ -162,7 +162,7 @@ function openFriendsModel() {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-6 h-6"
+                            class="w-8 h-8"
                         >
                             <path
                                 stroke-linecap="round"
@@ -171,7 +171,9 @@ function openFriendsModel() {
                             />
                         </svg>
                         <!-- badge online -->
-                        <div class="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-green-500">
+                        <div
+                            class="absolute -top-1 -right-1 bg-green-500 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
+                        >
                             <p class="text-xs font-semibold text-center text-white">2</p>
                         </div>
                     </div>
@@ -182,7 +184,7 @@ function openFriendsModel() {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-6 h-6"
+                            class="w-8 h-8"
                         >
                             <path
                                 stroke-linecap="round"
@@ -191,8 +193,10 @@ function openFriendsModel() {
                             />
                         </svg>
                         <!-- badge offline -->
-                        <div class="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-gray-500">
-                            <p class="text-xs font-semibold text-center text-white">1</p>
+                        <div
+                            class="absolute -top-1 -right-1 bg-gray-500 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
+                        >
+                            <div class="text-xs font-semibold text-center text-white">10</div>
                         </div>
                     </div>
                 </div>
