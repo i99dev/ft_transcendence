@@ -28,7 +28,6 @@ export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
     private games: Map<string, gameStatusDto> = new Map()
     private socketLogic = new socketLogic()
-    private playersSocket: Socket[] = []
 
     public get Players(): Map<string, PlayerDto> {
         return this.players
@@ -237,8 +236,6 @@ export class gameLogic {
     }
 
     private clearData(player: PlayerDto): void {
-        this.players.delete(this.playersSocket[0].id)
-        this.players.delete(this.playersSocket[1].id)
         this.games.delete(player.gameID)
     }
 

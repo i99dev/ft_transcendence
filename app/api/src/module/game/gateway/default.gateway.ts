@@ -29,7 +29,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
-        if (true) {
+        if (false) {
             //add conditon to check if the game is vs computer
             this.gameService.gameLogic.startComputerGame(client, decoded, (gameId, game) => {
                 this.server.to(gameId).emit('Game-Data', game)
