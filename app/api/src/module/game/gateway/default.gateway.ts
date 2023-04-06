@@ -22,20 +22,25 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     server: Server
 
     private logger = new Logger('DefaultGateway')
+    private decoded: any
 
     constructor(private gameService: DefaultService, private jwtService: JwtService) {}
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
-        const decoded = this.jwtService.decode(token)
-        if (true) {
+        this.decoded = this.jwtService.decode(token)
+    }
+
+    @SubscribeMessage('Join-game')
+    Join(@ConnectedSocket() client: any, @MessageBody() gameMode: string) {
+        if (gameMode == 'solo') {
             //add conditon to check if the game is vs computer
-            this.gameService.gameLogic.startComputerGame(client, decoded, (gameId, game) => {
+            this.gameService.gameLogic.startComputerGame(client, this.decoded, (gameId, game) => {
                 this.server.to(gameId).emit('Game-Data', game)
             })
-        } else {
-            this.gameService.gameLogic.addToLobby(client, decoded)
+        } else if (gameMode == 'duo') {
+            this.gameService.gameLogic.addToLobby(client, this.decoded)
             this.gameService.gameLogic.checkLobby((gameId, game) => {
                 this.server.to(gameId).emit('Game-Data', game)
             })

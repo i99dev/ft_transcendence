@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 const loading = ref(false as boolean)
-let name = ref('Play' as string)
+let name = ref('Dou' as string)
 
 // Defines
 const emit = defineEmits(['startGame'])
