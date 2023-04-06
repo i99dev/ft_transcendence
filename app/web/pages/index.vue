@@ -8,6 +8,7 @@
                 <UserProfileCardOne class="w-full" />
                 <ButtonGame />
             </div>
+            <GameLoadingButton @StartGame="() => navigateTo('/play')" />
             <div class="grid grid-flow-col-dense sm:flex gap-4 w-full justify-center"></div>
 
             <div class="flex flex-wrap sm:flex-no-wrap items-center justify-between w-full">
