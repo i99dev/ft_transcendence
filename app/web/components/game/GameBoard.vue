@@ -18,7 +18,8 @@ let gameSetup = ref({} as SetupDto)
 let gameData = ref({} as gameStatusDto)
 let grabbed = ref(false as boolean)
 let offsetY = ref(0 as number)
-const socket = ref({} as Socket)
+const nuxtApp = useNuxtApp()
+const socket = ref(nuxtApp.socket as Socket)
 
 // game settings
 const sensitivity = 3 // for mouse movements or touch movements
@@ -60,13 +61,6 @@ function giveUp(): void {
 }
 
 const socketSetup = (mode:string): void => {
-    socket.value = socket.value = io('http://localhost/games', {
-        withCredentials: true,
-        extraHeaders: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-        path: '/socket.io',
-    })
 	socket.value.emit('Join-game', mode)
 }
 

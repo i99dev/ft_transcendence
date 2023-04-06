@@ -18,5 +18,5 @@ export default defineNuxtConfig({
         transpile: ['primevue']
     },
     modules: ['@nuxtjs/tailwindcss'],
-    // plugins: ['~/plugins/socket-io.ts'],
+    plugins: ['~/plugins/socket-io.ts'],
 })
