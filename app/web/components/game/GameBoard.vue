@@ -9,7 +9,8 @@
 
 <script lang="ts" setup>
 import { io, Socket } from 'socket.io-client'
-import { ref, defineEmits, defineExpose } from 'vue'
+import { ref, defineEmits, defineExpose, onUnmounted } from 'vue'
+
 // refs
 let canvas = ref({} as HTMLCanvasElement)
 let ctx = ref({} as CanvasRenderingContext2D)
