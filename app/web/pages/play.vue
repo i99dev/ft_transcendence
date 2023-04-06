@@ -52,7 +52,9 @@
 
 <script lang="ts" setup>
 
-let exit = ref(false)
+import { ref, defineEmits, defineExpose } from 'vue'
+
+let exit = ref(false);
 let ready = ref(false)
 let firstGameReady = ref(true)
 let gameResult = ref(false)

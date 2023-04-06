@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/04/02 09:44:33 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/04/02 19:51:29 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
     private games: Map<string, gameStatusDto> = new Map()
     private socketLogic = new socketLogic()
-    private playersSocket: Socket[] = []
 
     public get Players(): Map<string, PlayerDto> {
         return this.players
@@ -43,7 +42,7 @@ export class gameLogic {
     }
 
     // check if there are enough players in the lobby to start a game and create the game if so
-    public checkLobby(gameUpdateCallback: (gameId: string, game: gameStatusDto) => void) {
+    public checkLobby(gameUpdateCallback: (gameID: string, game: gameStatusDto) => void) {
         if (this.socketLogic.isEnoughPlyrinLobby()) {
             this.startGameLoop(
                 this.socketLogic.createGameRoom(this.players, this.Games),
@@ -55,16 +54,16 @@ export class gameLogic {
     public startComputerGame(
         client: Socket,
         decoded: any,
-        gameUpdateCallback: (gameId: string, game: gameStatusDto) => void,
+        gameUpdateCallback: (gameID: string, game: gameStatusDto) => void,
     ): void {
-        const gameId: string = this.socketLogic.setupComputerGame(
+        const gameID: string = this.socketLogic.setupComputerGame(
             client,
             this.players,
             this.games,
             decoded,
         )
-        this.startGameLoop(gameId, gameUpdateCallback)
-        this.turnOnComputer(gameId)
+        this.startGameLoop(gameID, gameUpdateCallback)
+        this.turnOnComputer(gameID)
     }
 
     private turnOnComputer(gameID: string): void {
@@ -96,13 +95,13 @@ export class gameLogic {
 
     // start the game loop through the logic of the game and ends in case of a win
     private startGameLoop(
-        gameId: string,
-        gameUpdateCallback: (gameId: string, game: gameStatusDto) => void,
+        gameID: string,
+        gameUpdateCallback: (gameID: string, game: gameStatusDto) => void,
     ) {
         const intervalId = setInterval(async () => {
-            const game = this.games[gameId]
-            this.updateGame(gameId) // game logic to be added here
-            gameUpdateCallback(gameId, game)
+            const game = this.games[gameID]
+            this.updateGame(gameID) // game logic to be added here
+            gameUpdateCallback(gameID, game)
             if (game.players[0].score >= 11 || game.players[1].score >= 11) {
                 clearInterval(intervalId)
                 await this.endGame(
@@ -115,13 +114,13 @@ export class gameLogic {
     }
 
     // update the game by updating the ball position and checking for collisions
-    private updateGame(gameId: string): void {
-        this.updateBall(gameId)
+    private updateGame(gameID: string): void {
+        this.updateBall(gameID)
     }
 
     // update the ball position and check for collisions
-    private updateBall(gameId: string): void {
-        const game = this.games[gameId]
+    private updateBall(gameID: string): void {
+        const game = this.games[gameID]
 
         this.moveBall(game.ball)
         this.checkBallCollision(game)
@@ -185,12 +184,19 @@ export class gameLogic {
 
     public powerup(client, action: string): void {
         const player = this.players[client.id]
+        if (
+            (player.powerup === true && action === 'start') ||
+            (player.powerup === false && action === 'end')
+        )
+            return
         if (action === 'start') {
             player.paddle.width *= 2
             player.paddle.height *= 2
+            player.powerup = true
         } else if (action === 'end') {
             player.paddle.width /= 2
             player.paddle.height /= 2
+            player.powerup = false
         }
     }
 
@@ -230,19 +236,17 @@ export class gameLogic {
     }
 
     private clearData(player: PlayerDto): void {
-        this.players.delete(this.playersSocket[0].id)
-        this.players.delete(this.playersSocket[1].id)
-        this.games.delete(player.gameId)
+        this.games.delete(player.gameID)
     }
 
     // end the game and emit the end game event
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
         if (this.isComputer(player)) return
-        const opponent = this.games[player.gameId].players.find(
+        const opponent = this.games[player.gameID].players.find(
             (op: PlayerDto) => op.username !== player.username,
         )
-        this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameId])
-        const game: gameHistory = new gameHistory(this.games[player.gameId])
+        this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameID])
+        const game: gameHistory = new gameHistory(this.games[player.gameID])
         game.addHistory()
         this.clearData(player)
     }

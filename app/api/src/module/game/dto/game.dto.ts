@@ -40,11 +40,12 @@ export class BallDto {
 
 export class PlayerDto {
     username: string
-    y: number
     x: number
+    y: number
     score: number
     paddle: PaddleDto
-    gameId?: string
+    gameID?: string
+    powerUp?: boolean
 }
 
 export class PaddleDto {
