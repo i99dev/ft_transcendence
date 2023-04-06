@@ -1,3 +1,4 @@
+import { ChatModule } from './module/chat/chat.module'
 import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -16,7 +17,9 @@ import { MatchHistoryModule } from './module/match-history/match-history.module'
         AuthModule,
         UserModule,
         PrismaModule,
+        ChatModule,
         GameModule,
+        ChatModule,
         MatchHistoryModule,
     ],
     controllers: [AppController],

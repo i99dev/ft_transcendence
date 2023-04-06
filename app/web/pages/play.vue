@@ -81,7 +81,6 @@ const switchExistStatus = (status: boolean): void => {
 body {
     background-color: #334155;
 }
-
 .container {
     display: flex;
     justify-content: center;
@@ -94,7 +93,6 @@ body {
     position: relative;
     height: 100vh;
 }
-
 .button-wrapper {
     position: relative;
     top: 100px;
@@ -105,11 +103,9 @@ body {
     padding: 10px 70px;
     cursor: pointer;
 }
-
 .button-wrapper:hover {
     background-color: #999;
 }
-
 .button-wrapper:active {
     background-color: #666;
 }

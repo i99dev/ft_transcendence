@@ -25,7 +25,9 @@
         "docker:test:unit": "docker exec -it ft_transcendence_api npm run test:unit",
         "docker:migrate:dev": "docker exec -it ft_transcendence_api npx prisma migrate dev",
         "docker:db:seed": "docker exec -it ft_transcendence_api npx prisma db seed",
-        "docker:migrate:reset": "docker exec -it ft_transcendence_api npx prisma migrate reset"
+        "docker:db:pull": "docker exec -it ft_transcendence_api npx prisma db pull",
+        "docker:migrate:reset": "docker exec -it ft_transcendence_api npx prisma migrate reset",
+        "docker:prisma:generate": "docker exec -it ft_transcendence_api npx prisma generate"
     },
     "dependencies": {
         "@hapi/joi": "^17.1.1",
@@ -44,6 +46,7 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
         "dotenv": "^16.0.3",
+        "joi": "^17.9.1",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",
         "reflect-metadata": "^0.1.13",
