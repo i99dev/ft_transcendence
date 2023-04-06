@@ -1,12 +1,29 @@
 <template>
-    <div>
-        <div
-            v-if="!ready && firstGameReady"
-            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
-        >
-            <GameLoadingButton @StartGame="startGame" />
-        </div>
-        <div>
+	<div>
+		<div
+		  v-if="!ready && firstGameReady"
+		  class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
+		>
+		  <div class="flex flex-col items-center">
+			<div class="text-center mb-4">
+			  <h1 class="text-4xl font-bold">Game Mode</h1>
+			  <p class="text-lg">Choose the mode of your next game !</p>
+			</div>
+			<div class="flex justify-between w-10">
+			  <button
+				@click="startGame('solo')"
+				type="button"
+				class="h-full w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center cursor-pointer"
+				style="margin-right: 20px;"
+			  >
+				Solo
+			  </button>
+			  <GameLoadingButton @StartGame="startGame('duo')" />
+			</div>
+		  </div>
+		</div>
+	
+		<div>
             <GameClosePopup
                 v-if="exit"
                 @closePopup="switchExistStatus(false)"
@@ -30,6 +47,7 @@
 </template>
 
 <script lang="ts" setup>
+
 let exit = ref(false)
 let ready = ref(false)
 let firstGameReady = ref(true)
@@ -37,8 +55,8 @@ let gameResult = ref(false)
 let gameResultMessage = ref('')
 let gameBoard = ref()
 
-const startGame = (): void => {
-    gameBoard.value.setup()
+const startGame = (mode: string): void => {
+    gameBoard.value.setup(mode)
     gameResult.value = false
 }
 
