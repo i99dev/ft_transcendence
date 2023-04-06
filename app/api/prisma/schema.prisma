@@ -31,6 +31,9 @@ model User {
     friend_to    User[]        @relation("UserFriends")
     friends      User[]        @relation("UserFriends")
     player       Player[]      @relation("player")
+    direct_chats DirectChat[]  @relation("DirectChatUsers")
+    chat         ChatUser[]
+    message      Message[]
 }
 
 model Player {
@@ -58,15 +61,96 @@ model PowerUp {
 }
 
 model Achievement {
-    id          Int     @id @default(autoincrement())
-    type        String  @unique @default("default")
-    description String?
-    points      Int     @default(0)
-    users       User[]  @relation("UserAchievements")
+  id          Int     @id @default(autoincrement())
+  type        String  @unique @default("default")
+  description String?
+  points      Int     @default(0)
+  users       User[]  @relation("UserAchievements")
+}
+
+model ChatRoom {
+  id          Int          @id @default(autoincrement())
+  room_id     String       @unique
+  created_at  DateTime     @default(now())
+  type        ChatRoomType
+  direct_chat DirectChat?
+  group_chat  GroupChat?
+  messages    Message[]
+}
+
+model DirectChat {
+  id           Int      @id @default(autoincrement())
+  chat_room_id String   @unique
+  chat_room    ChatRoom @relation(fields: [chat_room_id], references: [room_id])
+  users        User[]   @relation("DirectChatUsers")
+}
+
+model GroupChat {
+  id           Int        @id @default(autoincrement())
+  name         String?
+  image        String?
+  type         chatType   @default(PUBLIC)
+  password     String?
+  chat_user    ChatUser[]
+  chat_room_id String     @unique
+  chat_room    ChatRoom   @relation(fields: [chat_room_id], references: [room_id])
+}
+
+model ChatUser {
+  id           Int            @id @default(autoincrement())
+  role         ChatUserRole   @default(MEMBER)
+  status       ChatUserStatus @default(NORMAL)
+  created_at   DateTime       @default(now())
+  user_id      Int
+  chat_room_id String
+  chat         GroupChat      @relation(fields: [chat_room_id], references: [chat_room_id])
+  user         User           @relation(fields: [user_id], references: [id])
+  @@unique([chat_room_id, user_id], name: "chat_user")
+}
+
+model Message {
+  id           Int         @id @default(autoincrement())
+  content      String
+  created_at   DateTime    @default(now())
+  type         MessageType @default(NORMAL)
+  chat_room_id String
+  sender_id Int
+  chat_room    ChatRoom    @relation(fields: [chat_room_id], references: [room_id])
+  sender       User        @relation(fields: [sender_id], references: [id])
 }
 
 enum UserStatus {
     OFFLINE
     ONLINE
     LIVE
+}
+
+enum chatType {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+}
+
+enum ChatUserRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum MessageType {
+  NORMAL
+  SPECIAL
+}
+
+enum ChatUserStatus {
+  NORMAL
+  MUTE
+  BAN
+  OUT
+  INVITED
+}
+
+enum ChatRoomType {
+  DM
+  GROUP
 }
