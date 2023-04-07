@@ -19,55 +19,88 @@ export const useGame = () => {
     return { game_info, setGameModalOpen, setGame }
 }
 
-export const useGameHistory = () => {
-    const game_history = useState<any | null>('game_history', () => {
-        return {
-            games: [
-                {
-                    id: 1,
-                    player1: {
-                        user: {
-                            username: 'i99dev',
-                            result: 'Win',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 2,
-                    },
-                    player2: {
-                        user: {
-                            username: 'i88dev',
-                            result: 'Lose',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 0,
-                    },
-                },
-                {
-                    id: 2,
-                    player1: {
-                        user: {
-                            username: 'i88dev',
-                            result: 'Win',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 5,
-                    },
-                    player2: {
-                        user: {
-                            username: 'i99dev',
-                            result: 'Lose',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 2,
-                    },
-                },
-            ],
-        }
+export async function useGameHistory(): Promise<MatchHistoryDto[] | null> {
+    const api = useRuntimeConfig().API_URL
+    const { data, error: errorRef } = await useFetch<MatchHistoryDto[]>('/match-history', {
+        method: 'GET',
+        baseURL: api,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
     })
-
-    const setGames = (games: any) => {
-        game_history.value.games = games
+    const error = errorRef.value
+    if (error) {
+        console.error('Failed to get match history:', error)
+    } else {
+        console.log('Match history:', data.value)
     }
-
-    return { game_history, setGames }
+    return data.value
 }
+
+
+// export const useGameHistory = () => {
+//     const game_history = useState<MatchHistoryDto[] | null>('game_history')
+
+//     const setGames = (games: MatchHistoryDto[] | null) => {
+//         game_history.value = games
+//     }
+
+//     const getMatchHistory = async () => {
+//         const api = useRuntimeConfig().API_URL
+//         const { data, error: errorRef } = await useFetch<Array<MatchHistoryDto>>('/match-history', {
+//             method: 'GET',
+//             baseURL: api,
+//             headers: {
+//                 Authorization: `Bearer ${useCookie('access_token').value}`,
+//             },
+//         })
+//         const error = errorRef.value
+//         if (error) {
+//             console.error('Failed to get match history:', error)
+//         } else {
+//             setGames(data.value)
+//             console.log('Match history:', data.value)
+//         }
+//     }
+
+//     return { game_history, setGames, getMatchHistory }
+
+// }
+
+export interface UserDto {
+    id: number
+    login: string
+    username: string
+    email: string
+    status: UserStatus
+    first_name: string
+    last_name: string
+    created_at: Date
+    last_login: Date
+    image: string
+    exp_level: number
+    points: number
+    two_fac_auth: boolean
+    friend_to?: UserDto[]
+    friends?: UserDto[]
+    player?: PlayerDto[]
+}
+
+export interface PlayerDto {
+    id: number
+    score: number
+    IsWinner: boolean
+    user: UserDto
+    // matches: MatchHistoryDto
+}
+
+export interface MatchHistoryDto {
+    gameID: string
+    start: Date
+    end: Date
+    opponents: PlayerDto[]
+}
+
+
+
+
