@@ -19,7 +19,8 @@ let gameSetup = ref({} as SetupDto)
 let gameData = ref({} as gameStatusDto)
 let grabbed = ref(false as boolean)
 let offsetY = ref(0 as number)
-const socket = ref({} as Socket)
+const nuxtApp = useNuxtApp()
+const socket = ref(nuxtApp.socket as Socket)
 let poweredUp = ref(false as boolean)
 
 // game settings
@@ -30,9 +31,10 @@ const canvasRatio = 1.5 // board width / board height
 const emit = defineEmits(['ReadyGame', 'GameOver'])
 defineExpose({ setup, destroy, giveUp, powerup })
 
-function setup(): void {
+function setup(mode: string): void {
     // setup socket connection and events
-    socketSetup()
+
+    socketSetup(mode)
     socketEvents()
 
     // setup canvas values
@@ -65,18 +67,12 @@ function giveUp(): void {
     socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
 }
 
-const socketSetup = (): void => {
-    socket.value = socket.value = io('http://localhost/games', {
-        withCredentials: true,
-        extraHeaders: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-        path: '/socket.io',
-    })
+const socketSetup = (mode:string): void => {
+	socket.value.emit('Join-game', mode)
 }
 
 const socketEvents = (): void => {
-    socket.value.on('Game-Setup', (payload: SetupDto) => {
+	socket.value.on('Game-Setup', (payload: SetupDto) => {
         emit('ReadyGame')
         gameSetup.value = payload
         storeGameData(gameSetup.value.game)
