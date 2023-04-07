@@ -28,9 +28,10 @@ export class ChatWsService {
     private chatRooms: ChatRoom[]
 
     extractUserFromJwt(jwt: string) {
+        if (jwt === undefined || jwt === null) return null
         jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
-        return !decode ? null : decode['login']
+        return !decode ? null : decode['id']
     }
 
     async setupGroupChat(payload: any, user_id) {

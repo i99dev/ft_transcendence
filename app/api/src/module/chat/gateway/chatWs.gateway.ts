@@ -55,32 +55,38 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.logger.log(`Client "${client.id}" connected to chat`)
 
         // Authentification with JWT
-        const user_string: any = client.handshake.query.user_id // temporary for testing
-        if (!user_string) {
-            this.logger.error('Invalid token')
-            return client.disconnect()
+        let user : number
+        if (client.handshake.query.user_id)
+            user = parseInt(client.handshake.query.user_id.toString()) // temporary for testing
+        if (!user) {
+            console.log(client.handshake.headers.authorization)
+            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+            console.log(user)
+            if (!user) {
+                this.logger.error('Invalid token')
+                return client.disconnect()
+            }
         }
-        // const user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
-        // if (!user) {
-        // this.logger.error('Invalid token')
-        // return client.disconnect()
-        // }
-        // this.logger.log(user)
+        this.logger.log(user)
 
         // store the client in the maps
-        this.clients.set(parseInt(client.handshake.query.user_id.toString()), client.id)
+        this.clients.set(user, client.id)
         this.sockets.set(client.id, client)
-
+        
         // Joining all the rooms of the user
-        this.joinAllRooms(client, parseInt(client.handshake.query.user_id.toString()))
+        this.joinAllRooms(client, user)
     }
 
-    handleDisconnect(client: Socket) {
+    async handleDisconnect(client: Socket) {
         this.logger.log(`Client "${client.id}" disconnected from chat`)
 
         // remove the client from the maps
-        const user_login: string = client.handshake.query.user_id.toString()
-        const user = parseInt(user_login)
+        let user
+        if (client.handshake.query.user_id)
+            user = parseInt(client.handshake.query.user_id.toString()) // temporary for testing
+        if (!user) {
+            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+        }
         this.clients.delete(user)
         this.sockets.delete(client.id)
     }
