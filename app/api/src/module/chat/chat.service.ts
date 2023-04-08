@@ -408,4 +408,24 @@ export class ChatService {
             console.log(error)
         }
     }
+
+    async getDirectChatForUser(userId) {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany({
+                where: {
+                    type: 'DM',
+                    direct_chat: {
+                        users: {
+                            some: {
+                                id: userId,
+                            },
+                        },
+                    },
+                },
+            })
+            return chatRooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
