@@ -28,6 +28,7 @@ export class ChatWsService {
     private chatRooms: ChatRoom[]
 
     extractUserFromJwt(jwt: string) {
+        if (!jwt) return null
         jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
         return !decode ? null : decode['login']
@@ -270,7 +271,7 @@ export class ChatWsService {
         else return false
     }
 
-    async createDirectChat(user_id: number, sender: string) {
+    async createDirectChat(user_id, sender: string) {
         const user_id2 = (await this.userService.getUser(sender)).id
         if (user_id === user_id2) throw new WsException('Cannot create DM with yourself')
         const room_check = await this.chatService.checkCommonDirectChat(user_id, user_id2)
@@ -280,13 +281,13 @@ export class ChatWsService {
         return room_id
     }
 
-    async checkUserInRoom1(room_id: string, user_id: number) {
+    async checkUserInRoom1(room_id: string, user_id) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
         if (chatUser) return true
         else return false
     }
 
-    async checkUserInRoom2(room_id: string, user_id: number) {
+    async checkUserInRoom2(room_id: string, user_id) {
         const chatUser = await this.chatService.getDirectChatUser(room_id, user_id)
         if (chatUser) return true
         else return false

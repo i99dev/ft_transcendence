@@ -53,26 +53,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     async handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client "${client.id}" connected to chat`)
-
-        // Authentification with JWT
-        const user_string: any = client.handshake.query.user_id // temporary for testing
-        if (!user_string) {
-            this.logger.error('Invalid token')
-            return client.disconnect()
-        }
-        // const user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
-        // if (!user) {
-        // this.logger.error('Invalid token')
-        // return client.disconnect()
-        // }
-        // this.logger.log(user)
-
-        // store the client in the maps
-        this.clients.set(parseInt(client.handshake.query.user_id.toString()), client.id)
+        this.clients.set(((this.getID(client) as unknown) as number), client.id)
         this.sockets.set(client.id, client)
-
-        // Joining all the rooms of the user
-        this.joinAllRooms(client, parseInt(client.handshake.query.user_id.toString()))
+        this.joinAllRooms(client, this.getID(client))
     }
 
     handleDisconnect(client: Socket) {
@@ -490,10 +473,15 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     async getID(client: Socket) {
-        const user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+        let user : number
+        if (client.handshake.query.user_id)
+            user = parseInt(client.handshake.query.user_id.toString()) // temporary for testing
         if (!user) {
-            return parseInt(client.handshake.query.user_id.toString()))
+            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+            if (!user) {
+                this.logger.error('Invalid token')
+                return client.disconnect()
+            }
         }
-        return user.id
     }
 }
