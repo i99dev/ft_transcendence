@@ -87,7 +87,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             room_id,
             `${client.handshake.query.user_id} created a group chat`,
         )
-        client.emit('new-group', await this.groupService.getGroupChatForUser(await this.getID(client)))
+        client.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
     }
 
     @SubscribeMessage('create-direct-chat')
@@ -113,7 +113,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             room_id,
             `${client.handshake.query.user_id} created a direct chat`,
         )
-        client.emit('new-direct', await this.chatService.getDirectChatForUser(await this.getID(client)))
+        client.emit('new-direct-list', await this.chatService.getDirectChatForUser(await this.getID(client)))
     }
 
     @SubscribeMessage('join-group-chat')
@@ -163,6 +163,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.room_id,
             `${client.handshake.query.user_id} joined`,
         )
+        client.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
     }
 
     @SubscribeMessage('exit-group-chat')
@@ -198,6 +199,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${client.handshake.query.user_id} left`,
         )
 
+        client.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
         client.leave(payload.room_id)
     }
 
@@ -291,6 +293,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.chatWsService.addUser(payload.room_id, payload.user_id)
             const clientSocket = this.getSocket(payload.user_id)
             if (clientSocket) clientSocket.join(payload.room_id)
+            clientSocket.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
             await this.setupSpecialMessage(
                 await this.getID(client),
                 payload.room_id,
