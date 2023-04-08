@@ -18,18 +18,15 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Get('')
     async getChatRooms(@Query('type') type: string, @Req() req) {
-        if (!type)
-            return await this.groupService.getChatRooms()
-        else if (type === 'GROUP')
-            return await this.groupService.getChatRoomsForGroups()
-        else if (type === 'DM')
-            return await this.chatService.getDirectChatRooms()
+        if (!type) return await this.groupService.getChatRooms()
+        else if (type === 'GROUP') return await this.groupService.getChatRoomsForGroups()
+        else if (type === 'DM') return await this.chatService.getDirectChatRooms()
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/:room_id')
     async getRoom(@Param('room_id') room_id: string, @Req() req) {
-        return await this.groupService.getChatRoom(room_id);
+        return await this.groupService.getChatRoom(room_id)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -48,10 +45,7 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/:room_id/messages/me')
-    async getRoomMessagesByUser(
-        @Param('room_id') room_id: string,
-        @Req() req,
-    ) {
+    async getRoomMessagesByUser(@Param('room_id') room_id: string, @Req() req) {
         return await this.chatService.getChatUserMessagesInChatRoom(room_id, req.user.login)
     }
 }

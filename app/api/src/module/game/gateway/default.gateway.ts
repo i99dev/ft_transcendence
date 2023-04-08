@@ -8,6 +8,7 @@ import {
     SubscribeMessage,
     WebSocketGateway,
     ConnectedSocket,
+    WsException,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
@@ -28,6 +29,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
+        if (!token) return new WsException('No token provided') && client.disconnect()
         const decoded = this.jwtService.decode(token)
         if (true) {
             //add conditon to check if the game is vs computer
