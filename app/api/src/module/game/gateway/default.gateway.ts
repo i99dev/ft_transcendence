@@ -28,8 +28,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
-        token = token.split(' ')[1]
         if (!token) return new WsException('No token provided') && client.disconnect()
+        token = token.split(' ')[1]
         const decoded = this.jwtService.decode(token)
         if (true) {
             //add conditon to check if the game is vs computer
