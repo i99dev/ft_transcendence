@@ -483,5 +483,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 return client.disconnect()
             }
         }
+        return user
     }
 }
