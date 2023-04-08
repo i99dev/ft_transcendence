@@ -101,14 +101,17 @@ export class GroupService {
         }
     }
 
-    async getChatRoomMessages(room_id: string) {
+    async getChatRoomMessages(room_id: string, page: number) {
         try {
             const chat = await this.prisma.chatRoom.findUnique({
                 where: {
                     room_id: room_id,
                 },
                 select: {
-                    messages: true,
+                    messages: {
+                        skip: (page - 1) * 20,
+                        take: 20,
+                    },
                 },
             })
             return chat
