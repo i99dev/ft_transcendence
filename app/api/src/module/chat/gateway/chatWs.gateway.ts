@@ -492,8 +492,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async getID(client: Socket) {
         const user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
         if (!user) {
-            this.logger.error('Invalid token')
-            return this.getID(client)
+            return parseInt(client.handshake.query.user_id.toString()))
         }
         return user.id
     }
