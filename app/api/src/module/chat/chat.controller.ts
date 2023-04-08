@@ -15,20 +15,27 @@ export class ChatController {
         private readonly groupService: GroupService,
     ) {}
 
-    @Get('/:room_id')
-    async getRoom(@Param('room_id') room_id: string) {
-        return await this.groupService.getChatRoom(room_id)
-    }
 
     @Get('')
     async getChatRooms() {
         return await this.groupService.getChatRooms()
     }
 
-    @Get('/:type')
-    async getChatRoomsByType(@Param('type') type: string) {
-        if (type === 'GROUP') return await this.groupService.getChatRoomsForGroups()
-        else if (type === 'DM') return await this.chatService.getDirectChatRooms()
+    @Get('/group')
+    @UseGuards(JwtAuthGuard)
+    async getGroupChats(@Req() req, @Param('type') type: string) {
+        return await this.groupService.getChatRoomsForGroups(req.user)
+    }
+
+    @Get('/dm')
+    @UseGuards(JwtAuthGuard)
+    async getDirectChats(@Req() req, @Param('type') type: string) {
+        return await this.chatService.getDirectChatRooms(req.user)
+    }
+
+    @Get('/:room_id')
+    async getRoom(@Param('room_id') room_id: string) {
+        return await this.groupService.getChatRoom(room_id)
     }
 
     @Get('/:room_id/users')

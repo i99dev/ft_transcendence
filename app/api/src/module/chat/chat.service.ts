@@ -378,14 +378,21 @@ export class ChatService {
         }
     }
 
-    async getDirectChatRooms() {
+    async getDirectChatRooms(user) {
         try {
-            const chatRooms = await this.prisma.chatRoom.findMany({
+            const directChats = await this.prisma.directChat.findMany({
                 where: {
-                    type: 'DM',
+                    users: {
+                        some: {
+                            id: user.id
+                        }
+                    }
                 },
+                include: {
+                    users: true
+                }
             })
-            return chatRooms
+            return directChats
         } catch (error) {
             console.log(error)
         }

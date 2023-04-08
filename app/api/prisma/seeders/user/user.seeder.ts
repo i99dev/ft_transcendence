@@ -44,7 +44,7 @@ export class UserSeeder {
                     first_name: 'Abrar',
                     last_name: 'Aljaberi',
                     status: 'LIVE',
-                    image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    image: 'https://cdn.intra.42.fr/users/e0b789be87c05be51ec0a8ea161a20af/aaljaber.jpg',
                 },
             }),
             await this.prisma.user.upsert({
@@ -57,7 +57,7 @@ export class UserSeeder {
                     first_name: 'Moatasem',
                     last_name: 'Al Gunaid',
                     status: 'LIVE',
-                    image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    image: 'https://cdn.intra.42.fr/users/0799c94954ead5be4dec31c1516bf6c7/mal-guna.jpg',
                 },
             }),
             await this.prisma.user.upsert({
@@ -70,7 +70,7 @@ export class UserSeeder {
                     first_name: 'Obaid',
                     last_name: 'Al Tenaiji',
                     status: 'LIVE',
-                    image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    image: 'https://cdn.intra.42.fr/users/12ebc19c2030866129ff5d1931695f4f/oal-tena.jpg',
                 },
             }),
         ]

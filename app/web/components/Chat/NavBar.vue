@@ -35,30 +35,36 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="border-b border-gray-200">
-                                        <div class="px-6">
+                                    <div v-if="chatListView" class="border-y mt-2 border-gray-200 h-full">
+                                        <div class="px-6 overflow-y-auto" style="max-height: 92vh; height: 92vh;">
+                                            <!-- chat list -->
                                             <nav
-                                                class="-mb-px flex space-x-6"
+                                                class="flex flex-col"
                                                 x-descriptions="Tab component"
                                             >
-                                                <button
-                                                    @click="toggleChatModal"
-                                                    class="p-2 rounded-full bg-white relative"
+
+                                                <!-- chat item -->
+                                                <button v-for="item in directChats"
+                                                    @click="() => chatListView = false"
+                                                    class="p-2 rounded-3xl mt-2 bg-slate-200 hover:bg-slate-100 relative"
                                                 >
                                                     <img
-                                                        src="https://via.placeholder.com/40"
+                                                        :src="item.users[1].image"
                                                         alt="User Photo"
-                                                        class="rounded-full w-10 h-10"
+                                                        class="rounded-full w-10 h-10 object-cover"
                                                     />
                                                     <!-- online badge -->
                                                     <span
-                                                        class="absolute bottom-2 right-1 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
+                                                    class="absolute bottom-2 left-9 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
                                                     />
+                                                    <div class="absolute top-2 left-16 block text-slate-700">{{ item.users[1].login }}</div>
                                                 </button>
+                                            
                                             </nav>
                                         </div>
                                     </div>
-                                    <div class="bg-white rounded-lg p-4 flex-auto">
+                                    <div v-else class="bg-white rounded-lg p-4 flex-auto">
+                                        
                                         <div class="chat-messages overflow-y-auto mb-2">
                                             <div
                                                 class="bg-gray-200 rounded-lg p-2 my-2"
@@ -119,6 +125,15 @@ import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
+
+const { data, error, pending, refresh, execute } = await useDirectChats()
+
+const directChats = ref()
+const chatListView = ref(true)
+
+if (data) {
+    directChats.value = data.value
+}
 
 const messages = [
     {
