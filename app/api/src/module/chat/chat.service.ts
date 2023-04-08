@@ -148,21 +148,15 @@ export class ChatService {
         type: MessageType = MessageType.NORMAL,
     ) {
         try {
-            const chat = await this.prisma.chatRoom.update({
-                where: {
-                    room_id: room_id,
-                },
+            const chatRoomMessage = await this.prisma.message.create({
                 data: {
-                    messages: {
-                        create: {
-                            content: message,
-                            sender_id: user_id,
-                            type: type,
-                        },
-                    },
-                },
+                    chat_room_id: room_id,
+                    content: message,
+                    sender_id: user_id,
+                    type: type
+                }
             })
-            return chat
+            return chatRoomMessage
         } catch (error) {
             console.log(error)
         }

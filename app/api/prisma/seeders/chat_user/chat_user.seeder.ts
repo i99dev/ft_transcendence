@@ -114,6 +114,7 @@ export class ChatUserSeeder {
                         update: {},
                         create: {
                             user_id: 1,
+                            role: ChatUserRole.ADMIN,
                         },
                     },
                 },
@@ -130,6 +131,7 @@ export class ChatUserSeeder {
                         update: {},
                         create: {
                             user_id: 2,
+                            role: ChatUserRole.OWNER,
                         },
                     },
                 },

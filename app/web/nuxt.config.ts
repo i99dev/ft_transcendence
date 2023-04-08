@@ -18,5 +18,5 @@ export default defineNuxtConfig({
             autoprefixer: {},
         },
     },
-    // plugins: ['~/plugins/socket-io.ts'],
+    plugins: ['~/plugins/chat-socket.ts'],
 })

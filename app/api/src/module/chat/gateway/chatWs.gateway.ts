@@ -30,7 +30,7 @@ import { GroupService } from '../groupChat.service'
 
 @WebSocketGateway({
     namespace: '/chat',
-    cors: { origin: 'ws://localhost/chat', credentials: true },
+    cors: { origin: '*' },
     path: '/api/socket.io',
 })
 export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -388,29 +388,33 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
     ) {
-        if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            return this.socketError('User not found')
+        let user
+        if (client.handshake.query.user_id)
+            user = parseInt(client.handshake.query.user_id.toString())
+        else
+            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
         let type_check
         if (
             !(type_check = await this.chatService.validateChatRoom(
                 payload.room_id,
-                parseInt(client.handshake.query.user_id.toString()),
+                user,
             ))
         )
             return this.socketError('Invalid reciever')
-
+        
+        
         if (type_check.type === 'GROUP') {
             if (
                 !(await this.chatWsService.isUserNormal(
                     payload.room_id,
-                    parseInt(client.handshake.query.user_id.toString()),
+                    user,
                 ))
             )
                 return this.socketError('User is not normal in the chat room')
             if (
                 !(await this.chatWsService.checkUserInRoom1(
                     payload.room_id,
-                    parseInt(client.handshake.query.user_id.toString()),
+                    user,
                 ))
             )
                 return this.socketError('User is not in channel')
@@ -418,21 +422,22 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             if (
                 !(await this.chatWsService.checkUserInRoom2(
                     payload.room_id,
-                    parseInt(client.handshake.query.user_id.toString()),
+                    user,
                 ))
             )
                 return this.socketError('This user can not interfer in this DM')
         }
 
-        this.chatService.createMessage(
-            parseInt(client.handshake.query.user_id.toString()),
+
+        const message = await this.chatService.createMessage(
+            user,
             payload.room_id,
             payload.message,
         )
 
         this.wss
             .to(payload.room_id)
-            .emit('add-message', { message: payload.message, type: MessageType.NORMAL })
+            .emit('add-message', message)
     }
 
     @SubscribeMessage('delete-message')

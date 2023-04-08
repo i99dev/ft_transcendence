@@ -19,7 +19,7 @@
                         >
                             <DialogPanel class="pointer-events-auto w-screen max-w-md">
                                 <div
-                                    class="flex min-h-screen flex-col overflow-y-scroll bg-white shadow-xl"
+                                    class="flex justify-between min-h-screen flex-col overflow-y-scroll bg-white shadow-xl"
                                 >
                                     <div class="pt-2">
                                         <div class="flex items-start justify-between">
@@ -36,7 +36,7 @@
                                         </div>
                                     </div>
                                     <div v-if="chatListView" class="border-y mt-2 border-gray-200 h-full">
-                                        <div class="px-6 overflow-y-auto" style="max-height: 92vh; height: 92vh;">
+                                        <div class=" overflow-y-auto" style="max-height: 92vh; height: 92vh;">
                                             <!-- chat list -->
                                             <nav
                                                 class="flex flex-col"
@@ -45,8 +45,8 @@
 
                                                 <!-- chat item -->
                                                 <button v-for="item in directChats"
-                                                    @click="() => chatListView = false"
-                                                    class="p-2 rounded-3xl mt-2 bg-slate-200 hover:bg-slate-100 relative"
+                                                    @click="() => switchChatView(item)"
+                                                    class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
                                                 >
                                                     <img
                                                         :src="item.users[1].image"
@@ -57,46 +57,76 @@
                                                     <span
                                                     class="absolute bottom-2 left-9 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
                                                     />
-                                                    <div class="absolute top-2 left-16 block text-slate-700">{{ item.users[1].login }}</div>
+                                                    <div class="absolute top-2 left-16 block text-slate-700">{{ item.users[1].username }}</div>
                                                 </button>
                                             
                                             </nav>
                                         </div>
                                     </div>
-                                    <div v-else class="bg-white rounded-lg p-4 flex-auto">
-                                        
-                                        <div class="chat-messages overflow-y-auto mb-2">
-                                            <div
-                                                class="bg-gray-200 rounded-lg p-2 my-2"
-                                                v-for="(message, index) in messages"
-                                                :key="index"
-                                            >
-                                                <div class="text-gray-700 font-semibold">
-                                                    {{ message.user }}
-                                                </div>
-                                                <div class="text-gray-600 text-sm">
-                                                    {{ message.time }}
-                                                </div>
-                                                <div>
-                                                    {{ message.message }}
+
+                                    <!-- Chat view -->
+                                    <div v-else class="bg-slate-200 rounded-lg">
+                                        <div
+                                            class="p-2 bg-slate-200 relative flex"
+                                        >
+                                            <button @click="switchChatView()">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M5 12l14 0"></path>
+                                                    <path d="M5 12l6 6"></path>
+                                                    <path d="M5 12l6 -6"></path>
+                                                </svg>
+                                            </button>
+                                            
+                                            <img
+                                                :src="curdirectChat.users[1].image"
+                                                alt="User Photo"
+                                                class="rounded-full w-10 h-10 object-cover mx-1"
+                                            />
+                                            <!-- online badge -->
+                                            <span
+                                            class="absolute bottom-2 left-16 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
+                                            />
+                                            <div class="text-slate-700 ml-2 text-xl py-1">{{ curdirectChat.users[1].username }}</div>
+                                        </div>
+                                        <div class="flex flex-col justify-between" style="height: 90vh;">
+                                            <div id="chat-messages" class="overflow-y-scroll flex flex-col bg-white" style="height: 80vh;">
+                                                <div
+                                                    class="bg-gray-200 rounded-lg p-2 mx-2 my-2 w-3/4 "
+                                                    v-for="(message, index) in messages"
+                                                    :key="index"
+                                                    :class="{ 'bg-green-200': message.sender_id === user_info.id, 'self-end': message.sender_id === user_info.id}"
+                                                >
+                                                    <div class="">
+                                                        {{ message.content }}
+                                                    </div>
+                                                    <div class="text-gray-600 text-sm flex justify-end">
+                                                        <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
+                                                        {{ new Date(message.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) }}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <form @submit.prevent="sendMessage">
-                                                <input
-                                                    v-model="newMessage"
-                                                    type="text"
-                                                    placeholder="Type your message..."
-                                                    class="w-full p-2 border-2 border-gray-300 rounded"
-                                                />
-                                                <button
-                                                    type="submit"
-                                                    class="mt-2 bg-blue-500 text-white py-2 px-4 rounded"
-                                                >
-                                                    Send
-                                                </button>
-                                            </form>
+                                            <div>
+                                                <form @submit.prevent="sendMessage">
+                                                    <input
+                                                        v-model="newMessage"
+                                                        type="text"
+                                                        placeholder="Message"
+                                                        class="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-400 mb-2"
+                                                        style="outline: none;"
+                                                    />
+                                                    <button
+                                                        type="submit"
+                                                        class=" bg-blue-500 text-white py-2 px-2 -ml-10 mt-4 rounded-full h-full"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M10 14l11 -11"></path>
+                                                            <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -130,49 +160,46 @@ const { data, error, pending, refresh, execute } = await useDirectChats()
 
 const directChats = ref()
 const chatListView = ref(true)
+const curdirectChat = ref()
+const messages = ref()
+const { user_info, setUserName, setUserAvatar } = useUserInfo()
+const defaultMessageColor = 'text-gray-600'
+const nuxtApp = useNuxtApp()
+const chatSocket = nuxtApp.chatSocket
+onMounted(() => {
+    chatSocket.value.on('add-message', (payload) => {
+        messages.value.push(payload)
+        const chatMessages = document.getElementById('chat-messages')
+        //scroll to bottom
+        setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+    })
+})
 
 if (data) {
     directChats.value = data.value
 }
 
-const messages = [
-    {
-        id: 1,
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-        message: 'Hey, what are you up to?',
-        time: '2:30 PM',
-    },
-    // More messages...
-]
+const switchChatView = async (chat) => {
+    if (chat) {
+        chatListView.value = false
+        curdirectChat.value = chat
+        const { data, error, pending, refresh, execute } = await useChatMessages(chat.chat_room_id)
+        if (data) {
+            messages.value = data.value.messages   
+        }
+    }
+    else {
+        chatListView.value = true
+        curdirectChat.value = null
+    }
+}
 
 const newMessage = ref('')
 
 const sendMessage = () => {
-    messages.push({
-        id: messages.length + 1,
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-        message: newMessage.value,
-        //pm and am time
-        time: new Date().toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true,
-        }),
-    })
+    // chatSocket.value.emit('add-message')
+    chatSocket.value.emit('add-message', {room_id: 'direct_room1', message: "first message from client"})
     newMessage.value = ''
-    //scroll to bottom
-    const chatMessages = document.querySelector('.chat-messages')
-    chatMessages.scrollTop = chatMessages.scrollHeight
 }
 const open = computed(() => chat_info.value.chatModalOpen)
 </script>

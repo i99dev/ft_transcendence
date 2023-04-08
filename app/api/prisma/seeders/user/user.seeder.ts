@@ -13,7 +13,7 @@ export class UserSeeder {
                 update: {},
                 create: {
                     login: 'bnaji',
-                    username: 'BN',
+                    username: 'bnaji',
                     email: 'bnaji@student.42abudhabi.ae',
                     status: 'ONLINE',
                     first_name: 'Bassam',
@@ -26,7 +26,7 @@ export class UserSeeder {
                 update: {},
                 create: {
                     login: 'isaad',
-                    username: 'IS',
+                    username: 'isaad',
                     email: 'isaad@student.42abudhabi.ae',
                     first_name: 'Imad',
                     last_name: 'Saad',
@@ -39,7 +39,7 @@ export class UserSeeder {
                 update: {},
                 create: {
                     login: 'aaljaber',
-                    username: 'AA',
+                    username: 'aaljaber',
                     email: 'aaljaber@student.42abudhabi.ae',
                     first_name: 'Abrar',
                     last_name: 'Aljaberi',
@@ -52,7 +52,7 @@ export class UserSeeder {
                 update: {},
                 create: {
                     login: 'mal-guna',
-                    username: 'MG',
+                    username: 'mal-guna',
                     email: 'mal-guna@student.42abudhabi.ae',
                     first_name: 'Moatasem',
                     last_name: 'Al Gunaid',
@@ -65,7 +65,7 @@ export class UserSeeder {
                 update: {},
                 create: {
                     login: 'oal-tena',
-                    username: 'OT',
+                    username: 'oal-tena',
                     email: 'oal-tena@student.42abudhabi.ae',
                     first_name: 'Obaid',
                     last_name: 'Al Tenaiji',

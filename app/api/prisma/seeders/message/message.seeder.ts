@@ -146,7 +146,7 @@ export class MessageSeeder {
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_id: 2,
+                                sender_id: 3,
                             },
                         ],
                     },
@@ -179,12 +179,12 @@ export class MessageSeeder {
                     createMany: {
                         data: [
                             {
-                                content: 'Hello I am isaad',
+                                content: 'Hello I am mal-guna',
                                 sender_id: 4,
                             },
                             {
                                 content: 'Is this the direct chat?',
-                                sender_id: 3,
+                                sender_id: 2,
                             },
                         ],
                     },
