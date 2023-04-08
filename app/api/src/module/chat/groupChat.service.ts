@@ -188,4 +188,24 @@ export class GroupService {
             console.log(error)
         }
     }
+
+    async getGroupChatForUser(user_id) {
+        try {
+            const chat = await this.prisma.chatRoom.findMany({
+                where: {
+                    type: 'GROUP',
+                    group_chat: {
+                        chat_user: {
+                            some: {
+                                user_id: user_id,
+                            }
+                        }
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
