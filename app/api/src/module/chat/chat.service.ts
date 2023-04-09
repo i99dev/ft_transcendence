@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
 import { chatType, GroupChat } from '@prisma/client'
 import { decode } from 'punycode'
+import { MESSAGES } from '@nestjs/core/constants'
+import { take } from 'rxjs'
 
 @Injectable()
 export class ChatService {
@@ -411,13 +413,25 @@ export class ChatService {
 
     async getDirectChatForUser(userId) {
         try {
-            const chatRooms = await this.prisma.directChat.findMany({
+            const chatRooms = await this.prisma.chatRoom.findMany({
                 where: {
-                    users: {
-                        some: {
-                            id: userId,
+                    type: 'DM',
+                    direct_chat: {
+                        users: {
+                            some: {
+                                id: userId,
+                            },
                         },
                     },
+                },
+                select: {
+                    direct_chat: true,
+                    messages: {
+                        orderBy: {
+                            created_at: 'desc',
+                        },
+                        take: 1,
+                    }
                 },
             })
             return chatRooms

@@ -10,6 +10,7 @@ import { WsException } from '@nestjs/websockets'
 import { chatType, GroupChat } from '@prisma/client'
 import { decode } from 'punycode'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
+import { take } from 'rxjs'
 
 @Injectable()
 export class GroupService {
@@ -191,14 +192,26 @@ export class GroupService {
 
     async getGroupChatForUser(user_id) {
         try {
-            const chat = await this.prisma.groupChat.findMany({
+            const chat = await this.prisma.chatRoom.findMany({
                 where: {
-                    chat_user: {
-                        some: {
-                            user_id: user_id,
+                    type: 'GROUP',
+                    group_chat: {
+                        chat_user: {
+                            some: {
+                                user_id: user_id,
+                            }
                         }
-                    }
+                    },
                 },
+                select: {
+                    group_chat: true,
+                    messages: {
+                        orderBy: {
+                            created_at: 'desc',
+                        },
+                        take: 1,
+                    }
+                }
             })
             return chat
         } catch (error) {
