@@ -2,6 +2,7 @@ import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
+import * as bcrypt from 'bcrypt'
 import {
     ChatRoom,
     chatType,
@@ -28,6 +29,7 @@ export class ChatWsService {
     private chatRooms: ChatRoom[]
 
     extractUserFromJwt(jwt: string) {
+        if (!jwt) return null
         jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
         return !decode ? null : decode['login']
@@ -40,6 +42,8 @@ export class ChatWsService {
         )
             throw new WsException('No password provided')
 
+        const salt = bcrypt.genSaltSync(10)
+
         const room_id = crypto.randomUUID()
         await this.groupService.createGroupChatRoom(
             {
@@ -47,7 +51,7 @@ export class ChatWsService {
                 name: payload.name,
                 image: payload.image,
                 type: payload.type,
-                password: payload.password,
+                password: bcrypt.hashSync(payload.password, salt),
             },
             user_login,
         )
@@ -68,7 +72,7 @@ export class ChatWsService {
     async validatePassword(room_id: string, password: string): Promise<boolean> {
         const pass = await this.getPassword(room_id)
         if (pass === null) return true
-        else return pass === password
+        else return bcrypt.compareSync(password, pass)
     }
 
     async isUserOutsideChatRoom(room_id: string, user_login: string) {
@@ -182,7 +186,6 @@ export class ChatWsService {
     }
 
     async addUser(room_id: string, user_login: string) {
-        console.log(room_id, user_login)
         this.joinGroupChat(room_id, user_login)
     }
 
@@ -272,6 +275,7 @@ export class ChatWsService {
     }
 
     async createDirectChat(user_login: string, sender: string) {
+        const user_id2 = (await this.userService.getUser(sender)).id
         if (user_login === sender) throw new WsException('Cannot create DM with yourself')
         const room_check = await this.chatService.checkCommonDirectChat(user_login, sender)
         if (room_check.length > 0) throw new WsException('Already created DM with this user')
