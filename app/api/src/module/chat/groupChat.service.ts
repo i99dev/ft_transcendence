@@ -190,7 +190,7 @@ export class GroupService {
         }
     }
 
-    async getGroupChatForUser(user_id) {
+    async getGroupChatForUser(user_login: string) {
         try {
             const chat = await this.prisma.chatRoom.findMany({
                 where: {
@@ -198,7 +198,7 @@ export class GroupService {
                     group_chat: {
                         chat_user: {
                             some: {
-                                user_id: user_id,
+                                user_login: user_login,
                             },
                         },
                     },
