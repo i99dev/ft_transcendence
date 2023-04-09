@@ -104,7 +104,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             (await this.getID(client)) as string,
             payload.user,
         )
-        const target_id = (await this.userService.getUser(payload.user)).id
+        const target_id = (await this.userService.getUser(payload.user)).login
         const clientSocket = this.getSocket(target_id)
         clientSocket.join(room_id)
         client.join(room_id)
@@ -119,7 +119,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             type: MessageType.SPECIAL,
         })
         client.emit('new-direct-list', {
-            content: await this.chatService.getDirectChatForUser((await this.getID(client))),
+            content: await this.chatService.getDirectChatForUser((await this.getID(client)) as string),
             type: MessageType.SPECIAL,
         })
     }

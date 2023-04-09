@@ -11,6 +11,7 @@ import { chatType, GroupChat } from '@prisma/client'
 import { decode } from 'punycode'
 import { MESSAGES } from '@nestjs/core/constants'
 import { take } from 'rxjs'
+import { use } from 'passport'
 
 @Injectable()
 export class ChatService {
@@ -413,7 +414,7 @@ export class ChatService {
         }
     }
 
-    async getDirectChatForUser(userId) {
+    async getDirectChatForUser(user_login: string) {
         try {
             const chatRooms = await this.prisma.chatRoom.findMany({
                 where: {
@@ -421,7 +422,7 @@ export class ChatService {
                     direct_chat: {
                         users: {
                             some: {
-                                id: userId,
+                                login: user_login,
                             },
                         },
                     },
