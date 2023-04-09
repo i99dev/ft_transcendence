@@ -50,4 +50,16 @@ export class ChatController {
     async getRoomMessagesByUser(@Param('room_id') room_id: string, @Req() req) {
         return await this.chatService.getChatUserMessagesInChatRoom(room_id, req.user.login)
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/groupChat/me')
+    async getGroupChat(@Req() req) {
+        return await this.groupService.getGroupChatForUser(req.user.login)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/directChat/me')
+    async getDirectChat(@Req() req) {
+        return await this.chatService.getDirectChatForUser(req.user.login)
+    }
 }

@@ -192,26 +192,26 @@ export class GroupService {
 
     async getGroupChatForUser(user_login: string) {
         try {
-            const chat = await this.prisma.chatRoom.findMany({
+            const chat = await this.prisma.groupChat.findMany({
                 where: {
-                    type: 'GROUP',
-                    group_chat: {
-                        chat_user: {
-                            some: {
-                                user_login: user_login,
-                            },
+                    chat_user: {
+                        some: {
+                            user_login: user_login,
                         },
                     },
                 },
-                select: {
-                    group_chat: true,
-                    messages: {
-                        orderBy: {
-                            created_at: 'desc',
-                        },
-                        take: 1,
-                    },
-                },
+                include: {
+                    chat_room: {
+                        select: {
+                            messages: {
+                                orderBy: {
+                                    created_at: 'desc',
+                                },
+                                take: 1,
+                            }
+                        }
+                    }
+                }
             })
             return chat
         } catch (error) {
