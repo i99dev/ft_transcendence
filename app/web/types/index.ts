@@ -60,4 +60,28 @@ declare global {
       size: number
     }
   }
+
+  interface chatMessage {
+    id: number,
+    content: string,
+    created_at: string,
+    type: string,
+    chat_room_id: string,
+    sender_id: number
+  }
+
+  interface groupChat {
+    id:           number;
+    name:         string;
+    image:        null;
+    type:         string;
+    password:     null;
+    chat_room_id: string;
+  }
+
+  interface directChat {
+    id:           number;
+    chat_room_id: string;
+    users:        UserGetDto[];
+}
 }

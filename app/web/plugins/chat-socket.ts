@@ -1,8 +1,8 @@
-import io from 'socket.io-client'
+import { io, Socket} from 'socket.io-client'
 
 import { defineNuxtPlugin } from '#app'
 
-const chatSocket = ref()
+const chatSocket = ref({} as Socket)
 
 export default defineNuxtPlugin((nuxtApp) => {
     chatSocket.value = io('http://localhost/chat', {

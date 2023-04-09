@@ -64,25 +64,28 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { Socket } from 'socket.io-client';
+
 const { user_info } = useUserInfo()
-const nuxtApp = useNuxtApp()
-const chatSocket = nuxtApp.chatSocket
+
+const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const messages = ref()
 const newMessage = ref('')
+
 const { currentChat } = defineProps(['currentChat'])
 
 onMounted(async () => {
-    chatSocket.value.on('add-message', (payload) => {
+    chatSocket.value.on('add-message', (payload : chatMessage) => {
         messages.value.push(payload)
         
         //scroll to bottom
-        const chatMessages = document.getElementById('chat-messages')
+        const chatMessages = document.getElementById('chat-messages') as HTMLElement
         setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
     })
 
 
-    const { data, error, pending, refresh, execute } = await useChatMessages(currentChat.chat_room_id)
+    const { data } = await useChatMessages(currentChat.chat_room_id)
     if (data) {
         messages.value = data.value.messages   
     }

@@ -35,36 +35,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div v-if="chatListView" class="border-y mt-2 border-gray-200 h-full">
-                                        <div class=" overflow-y-auto" style="max-height: 92vh; height: 92vh;">
-                                            <div
-                                                class="flex flex-col"
-                                                x-descriptions="Tab component"
-                                            >
-
-                                                <button v-for="item in directChats"
-                                                    @click="() => switchChatView(item)"
-                                                    class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
-                                                >
-                                                    <img
-                                                        :src="item.users[1].image"
-                                                        alt="User Photo"
-                                                        class="rounded-full w-10 h-10 object-cover"
-                                                    />
-                                                    <span
-                                                    class="absolute bottom-2 left-9 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
-                                                    />
-                                                    <div class="absolute top-2 left-16 block text-slate-700">{{ item.users[1].username }}</div>
-                                                </button>
-                                            
-                                            </div>
-                                        </div>
-                                    </div> -->
-                                    <ChatList v-if="chatListView" @selectChat="switchChatView" />
-                                    <!-- Chat view -->
+                                    <ChatList v-if="chatListView"
+                                        @selectChat="switchChatView"
+                                    />
                                     <Chat v-else
                                         :currentChat="currentChat"
-                                        @exitChat="switchChatView()"
+                                        @exitChat="switchChatView"
                                     />
                                 </div>
                             </DialogPanel>
@@ -76,7 +52,7 @@
     </TransitionRoot>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
     Dialog,
     DialogPanel,
@@ -96,7 +72,7 @@ const { chat_info, setChatModalOpen, send_message } = useChat()
 const chatListView = ref(true)
 const currentChat = ref()
 
-const switchChatView = async (chat) => {
+const switchChatView = async (chat: directChat | groupChat) => {
     if (chat) {
         chatListView.value = false
         currentChat.value = chat
