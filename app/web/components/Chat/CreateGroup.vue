@@ -56,6 +56,24 @@
                           aria-label="Group Name"
                           required
                         >
+                        
+                      </div>
+
+                      <!-- users -->
+                      <div v-for="user in users"
+                        class="flex flex-row ">
+                        <button class="border rounded-full bg-slate-400 hover:bg-slate-200 ease-in-out transition duration-200 mx-2"
+                          @click="removeUser(user)"
+                        >
+                          <img class="rounded-full w-8 h-8 object-cover"
+                            :src="user.image"
+                            :alt="user.username"
+                          >
+                        </button>
+                      </div>
+                      <UserProfileList @selectUser="selectUser" />
+
+                      <div class="flex justify-end mt-4">
                         <button class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded" type="button">
                           Create
                         </button>
@@ -66,8 +84,6 @@
                           Cancel
                         </button>
                       </div>
-                      <!-- users -->
-                      <UserProfileList />
                     </form>
 
 
@@ -81,7 +97,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
   TransitionRoot,
   TransitionChild,
@@ -91,5 +107,17 @@ import {
 } from '@headlessui/vue'
 
 const {isOpen} = defineProps(['isOpen'])
+const users = ref([] as UserGetDto[])
+
+const selectUser = (user: UserGetDto) => {
+  if (users.value.find((u) => u.id === user.id)) {
+    return
+  }
+  users.value.push(user)
+}
+
+const removeUser = (user: UserGetDto) => {
+  users.value = users.value.filter((u) => u.id !== user.id)
+}
 
 </script>

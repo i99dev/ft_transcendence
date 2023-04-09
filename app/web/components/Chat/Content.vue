@@ -72,6 +72,7 @@
 
 <script lang="ts" setup>
 import { Socket } from 'socket.io-client';
+import chat from '~/plugins/chat-socket'
 
 const { user_info } = useUserInfo()
 
@@ -99,6 +100,7 @@ onMounted(async () => {
 
 const sendMessage = () => {
     chatSocket.value.emit('add-message', {room_id: 'direct_room1', message: "first message from client"})
+    console.log('emit')
     newMessage.value = ''
 }
 

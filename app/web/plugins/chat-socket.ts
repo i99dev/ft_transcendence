@@ -5,7 +5,7 @@ import { defineNuxtPlugin } from '#app'
 const chatSocket = ref({} as Socket)
 
 export default defineNuxtPlugin((nuxtApp) => {
-    chatSocket.value = io('http://localhost/chat', {
+    chatSocket.value = io('ws://localhost/chat', {
         withCredentials: true,
         extraHeaders: {
             Authorization: `Bearer ${useCookie('access_token').value}`,

@@ -388,6 +388,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
     ) {
+        console.log('---------------------------------------------------------------------')
+        console.log('add-message')
+        console.log('---------------------------------------------------------------------')
         let user
         if (client.handshake.query.user_id)
             user = parseInt(client.handshake.query.user_id.toString())

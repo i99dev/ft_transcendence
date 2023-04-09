@@ -36,6 +36,7 @@
           x-descriptions="Tab component"
       >
           <button
+              @click="$emit('selectUser', user)"
               class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
           >
           <img
