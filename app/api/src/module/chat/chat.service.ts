@@ -411,14 +411,11 @@ export class ChatService {
 
     async getDirectChatForUser(userId) {
         try {
-            const chatRooms = await this.prisma.chatRoom.findMany({
+            const chatRooms = await this.prisma.directChat.findMany({
                 where: {
-                    type: 'DM',
-                    direct_chat: {
-                        users: {
-                            some: {
-                                id: userId,
-                            },
+                    users: {
+                        some: {
+                            id: userId,
                         },
                     },
                 },
