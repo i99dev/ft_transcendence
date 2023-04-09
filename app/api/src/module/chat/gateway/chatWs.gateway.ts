@@ -87,7 +87,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             room_id,
             `${client.handshake.query.user_id} created a group chat`,
         )
-        client.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
+        client.emit('new-group-list', {content: await this.groupService.getGroupChatForUser(await this.getID(client)), type: MessageType.SPECIAL,})
     }
 
     @SubscribeMessage('create-direct-chat')
@@ -105,7 +105,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.getID(client),
             payload.user,
         )
-
+        const target_id = (await this.userService.getUser(payload.user)).id
+        const clientSocket = this.getSocket(target_id)
+        clientSocket.join(room_id)
         client.join(room_id)
 
         await this.setupSpecialMessage(
@@ -113,7 +115,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             room_id,
             `${client.handshake.query.user_id} created a direct chat`,
         )
-        client.emit('new-direct-list', await this.chatService.getDirectChatForUser(await this.getID(client)))
+        clientSocket.emit('new-direct-list', {content: await this.chatService.getDirectChatForUser(target_id), type: MessageType.SPECIAL,})
+        client.emit('new-direct-list', {content: await this.chatService.getDirectChatForUser(await this.getID(client)), type: MessageType.SPECIAL,})
     }
 
     @SubscribeMessage('join-group-chat')
@@ -163,7 +166,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.room_id,
             `${client.handshake.query.user_id} joined`,
         )
-        client.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
+        client.emit('new-group-list', {content: await this.groupService.getGroupChatForUser(await this.getID(client)), type: MessageType.SPECIAL,})
     }
 
     @SubscribeMessage('exit-group-chat')
@@ -199,7 +202,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${client.handshake.query.user_id} left`,
         )
 
-        client.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
+        client.emit('new-group-list', {content: await this.groupService.getGroupChatForUser(await this.getID(client)), type: MessageType.SPECIAL,})
         client.leave(payload.room_id)
     }
 
@@ -293,7 +296,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.chatWsService.addUser(payload.room_id, payload.user_id)
             const clientSocket = this.getSocket(payload.user_id)
             if (clientSocket) clientSocket.join(payload.room_id)
-            clientSocket.emit('new-group-list', await this.groupService.getGroupChatForUser(await this.getID(client)))
+            clientSocket.emit('new-group-list', {content: await this.groupService.getGroupChatForUser(await this.getID(client)), type: MessageType.SPECIAL,})
             await this.setupSpecialMessage(
                 await this.getID(client),
                 payload.room_id,
