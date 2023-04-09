@@ -2,6 +2,7 @@ import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
+import  * as bcrypt  from 'bcrypt';
 import {
     ChatRoom,
     chatType,
@@ -41,6 +42,8 @@ export class ChatWsService {
         )
             throw new WsException('No password provided')
 
+            const salt = bcrypt.genSaltSync(10);
+
         const room_id = crypto.randomUUID()
         await this.groupService.createGroupChatRoom(
             {
@@ -48,7 +51,7 @@ export class ChatWsService {
                 name: payload.name,
                 image: payload.image,
                 type: payload.type,
-                password: payload.password,
+                password: bcrypt.hashSync(payload.password, salt),
             },
             user_id,
         )
@@ -69,7 +72,7 @@ export class ChatWsService {
     async validatePassword(room_id: string, password: string): Promise<boolean> {
         const pass = await this.getPassword(room_id)
         if (pass === null) return true
-        else return pass === password
+        else return bcrypt.compareSync(password, pass)
     }
 
     async isUserOutsideChatRoom(room_id: string, user_id) {
