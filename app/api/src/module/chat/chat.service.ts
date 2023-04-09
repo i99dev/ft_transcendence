@@ -129,8 +129,6 @@ export class ChatService {
             let check = false
             chatUser.users.map(user => {
                 if (user.id === user_id) {
-                    console.log(user.id)
-                    console.log(user_id)
                     check = true
                     return user
                 }

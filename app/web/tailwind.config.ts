@@ -22,4 +22,9 @@ export default <Partial<Config>>{
             },
         },
     },
+    variants: {
+        extend: {
+            display: ["group-hover"],
+        },
+    },
 }

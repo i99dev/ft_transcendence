@@ -103,12 +103,14 @@ export class GroupService {
 
     async getChatRoomMessages(room_id: string) {
         try {
-            const chat = await this.prisma.chatRoom.findUnique({
+            const chat = await this.prisma.message.findMany({
                 where: {
-                    room_id: room_id,
+                    chat_room: {
+                        room_id: room_id,
+                    }
                 },
-                select: {
-                    messages: true,
+                include: {
+                    sender: true,
                 },
             })
             return chat

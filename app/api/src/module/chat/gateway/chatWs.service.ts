@@ -86,7 +86,7 @@ export class ChatWsService {
 
     async isUserNormal(room_id: string, user_id) {
         const chatUser = await this.chatService.getChatUser(room_id, user_id)
-        if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
+        if ((chatUser && chatUser.status === ChatUserStatus.NORMAL) || !chatUser) return true
         return false
     }
 
@@ -183,7 +183,6 @@ export class ChatWsService {
     }
 
     async addUser(room_id: string, user_id) {
-        console.log(room_id, user_id)
         this.joinGroupChat(room_id, user_id)
     }
 

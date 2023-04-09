@@ -29,20 +29,35 @@
         <div v-else class="text-slate-700 ml-2 text-xl py-1">{{ currentChat.name }}</div>
     </div>
     <div class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
-        <div id="chat-messages" class=" overflow-y-scroll pr-10 box-content flex flex-col bg-white">
+        <div id="chat-messages" class=" overflow-y-scroll box-content flex flex-col bg-white">
             <div
-                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 w-3/4 "
+                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 w-9/12 group relative"
                 v-for="(message, index) in messages"
                 :key="index"
                 :class="{ 'bg-green-200': message.sender_id === user_info.id, 'self-end': message.sender_id === user_info.id}"
             >
+                <div v-if="chatType === 'GROUP'"
+                    class="text-sm"
+                    :style="{color: `#${Math.floor(Math.random()*16777215).toString(16)}`}"
+                >
+                    {{ message.sender.username }}
+                </div>
                 <div class="">
                     {{ message.content }}
                 </div>
-                <div class="text-gray-600 text-sm flex justify-end">
-                    <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
-                    {{ new Date(message.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) }}
-                </div>
+                <!-- <div class="flex flex-row justify-end"> -->
+                    <!-- <div class="w-9/12"> -->
+                        <button v-if="message.sender_id === user_info.id" class="text-slate-700 hidden group-hover:block absolute -top-2 right-0 bg-inherit rounded-full"
+                            @click="deleteMessage(message.id)"
+                        >
+                            <TrashIcon class="h-4 w-4" aria-hidden="true" />
+                        </button>
+                    <!-- </div> -->
+                    <div class="text-gray-600 text-sm flex justify-end">
+                        <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
+                        {{ new Date(message.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) }}
+                    </div>
+                <!-- </div> -->
             </div>
         </div>
         <div>
@@ -65,14 +80,15 @@
                     </svg>
                 </button>
             </form>
+            
         </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { TrashIcon } from '@heroicons/vue/24/outline'
 import { Socket } from 'socket.io-client';
-import chat from '~/plugins/chat-socket'
 
 const { user_info } = useUserInfo()
 
@@ -83,6 +99,7 @@ const newMessage = ref('')
 const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
 
 onMounted(async () => {
+    
     chatSocket.value.on('add-message', (payload : chatMessage) => {
         messages.value.push(payload)
         
@@ -91,17 +108,28 @@ onMounted(async () => {
         setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
     })
 
+    chatSocket.value.on('delete-message', (payload : number) => {
+        messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
+    })
+
+    chatSocket.value.on('exception', (payload)=>{
+        console.log(`${payload}: ${payload.message}`)
+    })
+
     const { data } = await useChatMessages(currentChat.chat_room_id)
     if (data) {
-        messages.value = data.value.messages   
+        messages.value = data.value 
     }
 })
 
 
 const sendMessage = () => {
-    chatSocket.value.emit('add-message', {room_id: 'direct_room1', message: "first message from client"})
-    console.log('emit')
+    chatSocket.value.emit('add-message', JSON.stringify({room_id: currentChat.chat_room_id, message: newMessage.value}))
     newMessage.value = ''
+}
+
+const deleteMessage = (message_id: number) => {
+    chatSocket.value.emit('delete-message', JSON.stringify({room_id: currentChat.chat_room_id, message_id: message_id}))
 }
 
 </script>

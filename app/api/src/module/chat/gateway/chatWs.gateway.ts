@@ -55,11 +55,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.logger.log(`Client "${client.id}" connected to chat`)
 
         // Authentification with JWT
-        let user : number
+        let user: number
         if (client.handshake.query.user_id)
             user = parseInt(client.handshake.query.user_id.toString()) // temporary for testing
         if (!user) {
-            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+            user = await this.chatWsService.extractUserFromJwt(
+                client.handshake.headers.authorization,
+            )
             if (!user) {
                 this.logger.error('Invalid token')
                 return client.disconnect()
@@ -69,7 +71,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         // store the client in the maps
         this.clients.set(user, client.id)
         this.sockets.set(client.id, client)
-        
+
         // Joining all the rooms of the user
         this.joinAllRooms(client, user)
     }
@@ -82,7 +84,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (client.handshake.query.user_id)
             user = parseInt(client.handshake.query.user_id.toString()) // temporary for testing
         if (!user) {
-            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+            user = await this.chatWsService.extractUserFromJwt(
+                client.handshake.headers.authorization,
+            )
         }
         this.clients.delete(user)
         this.sockets.delete(client.id)
@@ -384,63 +388,31 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('add-message')
-    async sendMessage(
-        @ConnectedSocket() client: Socket,
-        @MessageBody(new SocketValidationPipe()) payload: AddMessageDto,
-    ) {
-        console.log('---------------------------------------------------------------------')
-        console.log('add-message')
-        console.log('---------------------------------------------------------------------')
+    async sendMessage(@ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: AddMessageDto) {
         let user
         if (client.handshake.query.user_id)
             user = parseInt(client.handshake.query.user_id.toString())
         else
-            user = await this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
+            user = await this.chatWsService.extractUserFromJwt(
+                client.handshake.headers.authorization,
+            )
         let type_check
-        if (
-            !(type_check = await this.chatService.validateChatRoom(
-                payload.room_id,
-                user,
-            ))
-        )
+        if (!(type_check = await this.chatService.validateChatRoom(payload.room_id, user)))
             return this.socketError('Invalid reciever')
-        
-        
+
         if (type_check.type === 'GROUP') {
-            if (
-                !(await this.chatWsService.isUserNormal(
-                    payload.room_id,
-                    user,
-                ))
-            )
+            if (!(await this.chatWsService.isUserNormal(payload.room_id, user)))
                 return this.socketError('User is not normal in the chat room')
-            if (
-                !(await this.chatWsService.checkUserInRoom1(
-                    payload.room_id,
-                    user,
-                ))
-            )
+            if (!(await this.chatWsService.checkUserInRoom1(payload.room_id, user)))
                 return this.socketError('User is not in channel')
         } else {
-            if (
-                !(await this.chatWsService.checkUserInRoom2(
-                    payload.room_id,
-                    user,
-                ))
-            )
+            if (!(await this.chatWsService.checkUserInRoom2(payload.room_id, user)))
                 return this.socketError('This user can not interfer in this DM')
         }
 
+        const message = await this.chatService.createMessage(user, payload.room_id, payload.message)
 
-        const message = await this.chatService.createMessage(
-            user,
-            payload.room_id,
-            payload.message,
-        )
-
-        this.wss
-            .to(payload.room_id)
-            .emit('add-message', message)
+        this.wss.to(payload.room_id).emit('add-message', message)
     }
 
     @SubscribeMessage('delete-message')
@@ -448,30 +420,21 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: DeleteMessageDto,
     ) {
-        if (!(await this.chatService.getUser(parseInt(client.handshake.query.user_id.toString()))))
-            return this.socketError('User not found')
-        if (
-            !(await this.chatService.validateChatRoom(
-                payload.room_id,
-                parseInt(client.handshake.query.user_id.toString()),
-            ))
-        )
+        let user
+        if (client.handshake.query.user_id)
+            user = parseInt(client.handshake.query.user_id.toString())
+        else
+            user = await this.chatWsService.extractUserFromJwt(
+                client.handshake.headers.authorization,
+            )
+        if (!(await this.chatService.getUser(user))) return this.socketError('User not found')
+        if (!(await this.chatService.validateChatRoom(payload.room_id, user)))
             return this.socketError('Invalid reciever')
 
-        if (
-            !(await this.chatWsService.isUserNormal(
-                payload.room_id,
-                parseInt(client.handshake.query.user_id.toString()),
-            ))
-        )
+        if (!(await this.chatWsService.isUserNormal(payload.room_id, user)))
             return this.socketError('User is not normal in the chat room')
 
-        this.chatService.deleteMessage(
-            parseInt(client.handshake.query.user_id.toString()),
-            payload.room_id,
-            payload.message_id,
-        )
-
+        this.chatService.deleteMessage(user, payload.room_id, payload.message_id)
         this.wss.to(payload.room_id).emit('delete-message', payload.message_id)
     }
 

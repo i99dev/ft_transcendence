@@ -60,16 +60,21 @@
                       </div>
 
                       <!-- users -->
-                      <div v-for="user in users"
-                        class="flex flex-row ">
-                        <button class="border rounded-full bg-slate-400 hover:bg-slate-200 ease-in-out transition duration-200 mx-2"
-                          @click="removeUser(user)"
-                        >
-                          <img class="rounded-full w-8 h-8 object-cover"
-                            :src="user.image"
-                            :alt="user.username"
+                      <div class="">
+                        <div v-for="user in users"
+                          class=" flex-row inline-flex flex-nowrap">
+                          <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative"
+                            @click="removeUser(user)"
                           >
-                        </button>
+                            <img class="rounded-full w-8 h-8 object-cover"
+                              :src="user.image"
+                              :alt="user.username"
+                            >
+                            <div class="absolute -right-1 -bottom-1 rounded-full p-1 bg-slate-200">
+                              <XMarkIcon class="h-2 w-2" aria-hidden="true" />
+                            </div>
+                          </button>
+                        </div>
                       </div>
                       <UserProfileList @selectUser="selectUser" />
 
@@ -85,9 +90,6 @@
                         </button>
                       </div>
                     </form>
-
-
-
                   </DialogPanel>
                 </TransitionChild>
               </div>
@@ -105,15 +107,14 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 
 const {isOpen} = defineProps(['isOpen'])
 const users = ref([] as UserGetDto[])
 
 const selectUser = (user: UserGetDto) => {
-  if (users.value.find((u) => u.id === user.id)) {
-    return
-  }
-  users.value.push(user)
+  if (!users.value.find((u) => u.id === user.id))
+    users.value.push(user)
 }
 
 const removeUser = (user: UserGetDto) => {
