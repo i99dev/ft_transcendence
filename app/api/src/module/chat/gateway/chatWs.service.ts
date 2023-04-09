@@ -2,7 +2,7 @@ import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
-import  * as bcrypt  from 'bcrypt';
+import * as bcrypt from 'bcrypt'
 import {
     ChatRoom,
     chatType,
@@ -42,7 +42,7 @@ export class ChatWsService {
         )
             throw new WsException('No password provided')
 
-            const salt = bcrypt.genSaltSync(10);
+        const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
         await this.groupService.createGroupChatRoom(

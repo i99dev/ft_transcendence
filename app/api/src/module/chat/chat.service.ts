@@ -431,7 +431,7 @@ export class ChatService {
                             created_at: 'desc',
                         },
                         take: 1,
-                    }
+                    },
                 },
             })
             return chatRooms

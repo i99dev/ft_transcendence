@@ -199,8 +199,8 @@ export class GroupService {
                         chat_user: {
                             some: {
                                 user_id: user_id,
-                            }
-                        }
+                            },
+                        },
                     },
                 },
                 select: {
@@ -210,8 +210,8 @@ export class GroupService {
                             created_at: 'desc',
                         },
                         take: 1,
-                    }
-                }
+                    },
+                },
             })
             return chat
         } catch (error) {
