@@ -73,9 +73,9 @@ declare global {
   interface groupChat {
     id:           number;
     name:         string;
-    image:        null;
+    image:        string;
     type:         string;
-    password:     null;
+    password:     string;
     chat_room_id: string;
   }
 
