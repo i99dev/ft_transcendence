@@ -25,16 +25,15 @@
 				  -->
 				  
 				  
-				  <!-- <button @click="handleFilteration('0')" class="w-full text-left text-gray-900 block px-4 py-2 text-sm focus:outline-none font-medium focus:bg-gray-100" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button> -->
-				  <button @click="handleFilteration('0')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
+				  <button @click="handleFilteration(0, `/match-history`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
 				 
-				  <button @click="handleFilteration('1')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
+				  <button @click=" handleFilteration(1, `/match-history/result?winning=true&losing=false`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
 				 
-				  <button @click="handleFilteration('2')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
+				  <button @click="handleFilteration(2, `/match-history/result?winning=false&losing=true`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
 				 
-				  <button @click="handleFilteration('3')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
+				  <button @click="handleFilteration(3, `/match-history/score?sort=asc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
 				 
-				  <button @click="handleFilteration('4')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
+				  <button @click="handleFilteration(4, `/match-history/score?sort=desc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
 
 				</div>
 			  </div>
@@ -47,7 +46,7 @@
 		  <div class="text-sm font-mono">Opponent 2</div> -->
 		<!-- </div> -->
 	  <!-- </div> -->
-	  <div class="">
+	  <div v-if="games.length > 0">
 		<div
 		  v-for="game in games"
 		  :key="game.id"
@@ -111,17 +110,29 @@
 			</div>
 		</div>
 	  </div>
+	  <div v-else class="flex flex-col justify-center items-center">
+		<div class="text-center text-gray-500">
+		  <div class="text-2xl font-bold">No Games Found</div>
+		</div>
+	  </div>
 	</div>
  </template>
   
 <script setup>
-const game_history = await useGameHistory()
 
-const games = computed(() => game_history)
+import { ref, computed, onMounted } from 'vue'
+
+const game_history = await useGameHistory('/match-history')
+
+const games = computed(() => game_history.values)
 
 const showButton = ref(false)
 
 const isClicked = ref(Array(5).fill(false))
+
+onMounted(async () => {
+	game_history.values = await useGameHistory('/match-history')
+})
 
 const getOpponent = (game) => {
   return game.opponents.find((opponent) => opponent.user.login !== 'aaljaber')
@@ -135,10 +146,12 @@ const handleDropdown = () => {
   showButton.value = !showButton.value? true : false
 }
 
-const handleFilteration = (filter) => {
+const handleFilteration = async (filter, ep_URL) => {
   console.log(filter)
   isClicked.value.fill(false, 0, 5)
   isClicked.value[filter] = true
+  game_history.values = await useGameHistory(ep_URL)
+  
 }
 
 </script>
