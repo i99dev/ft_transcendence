@@ -75,4 +75,20 @@ export class UserService {
         }
         return this.repository.deleteUser(name)
     }
+
+    async SearchUser(search: string) {
+        try {
+            const users = await this.prisma.user.findMany({
+                where: {
+                    login: {
+                        contains: search,
+                        mode: 'insensitive',
+                    },
+                },
+            })
+            return users
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
