@@ -104,16 +104,18 @@ export class GroupService {
 
     async getChatRoomMessages(room_id: string, page: number) {
         try {
-            const chat = await this.prisma.chatRoom.findUnique({
+            const chat = await this.prisma.message.findMany({
                 where: {
-                    room_id: room_id,
+                    chat_room: {
+                        room_id: room_id,
+                    }
+                    
                 },
-                select: {
-                    messages: {
-                        skip: (page - 1) * 20,
-                        take: 20,
-                    },
+                include: {
+                    sender: true,
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return chat
         } catch (error) {
@@ -159,14 +161,18 @@ export class GroupService {
         }
     }
 
-    async getChatRoomsForGroups() {
+    async getChatRoomsForGroups(user) {
         try {
-            const chatRooms = await this.prisma.chatRoom.findMany({
+            const groupChats = await this.prisma.groupChat.findMany({
                 where: {
-                    type: 'GROUP',
+                    chat_user: {
+                        some: {
+                            id: user.id
+                        }
+                    }
                 },
             })
-            return chatRooms
+            return groupChats
         } catch (error) {
             console.log(error)
         }

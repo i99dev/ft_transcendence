@@ -1,17 +1,16 @@
-import io from 'socket.io-client'
+import { io, Socket} from 'socket.io-client'
 
 import { defineNuxtPlugin } from '#app'
 
-const socket = ref()
+const chatSocket = ref({} as Socket)
 
-export default defineNuxtPlugin(nuxtApp => {
-    socket.value = io('http://localhost/games', {
+export default defineNuxtPlugin((nuxtApp) => {
+    chatSocket.value = io('ws://localhost/chat', {
         withCredentials: true,
         extraHeaders: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
         path: '/socket.io',
-        transports: ['websocket'],
     })
-    nuxtApp.socket = socket
+    nuxtApp.chatSocket = chatSocket
 })

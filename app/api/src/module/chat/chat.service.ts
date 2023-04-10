@@ -151,21 +151,15 @@ export class ChatService {
         type: MessageType = MessageType.NORMAL,
     ) {
         try {
-            const chat = await this.prisma.chatRoom.update({
-                where: {
-                    room_id: room_id,
-                },
+            const chatRoomMessage = await this.prisma.message.create({
                 data: {
-                    messages: {
-                        create: {
-                            content: message,
-                            sender_login: user_login,
-                            type: type,
-                        },
-                    },
-                },
+                    chat_room_id: room_id,
+                    content: message,
+                    sender_login: user_login,
+                    type: type
+                }
             })
-            return chat
+            return chatRoomMessage
         } catch (error) {
             console.log(error)
         }
@@ -381,14 +375,21 @@ export class ChatService {
         }
     }
 
-    async getDirectChatRooms() {
+    async getDirectChatRooms(user) {
         try {
-            const chatRooms = await this.prisma.chatRoom.findMany({
+            const directChats = await this.prisma.directChat.findMany({
                 where: {
-                    type: 'DM',
+                    users: {
+                        some: {
+                            id: user.id
+                        }
+                    }
                 },
+                include: {
+                    users: true
+                }
             })
-            return chatRooms
+            return directChats
         } catch (error) {
             console.log(error)
         }

@@ -114,6 +114,7 @@ export class ChatUserSeeder {
                         update: {},
                         create: {
                             user_login: 'bnaji',
+                            role: ChatUserRole.ADMIN,
                         },
                     },
                 },
@@ -130,6 +131,7 @@ export class ChatUserSeeder {
                         update: {},
                         create: {
                             user_login: 'oal-tena',
+                            role: ChatUserRole.OWNER,
                         },
                     },
                 },
