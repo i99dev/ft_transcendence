@@ -1,12 +1,52 @@
 <template>
 	<div>
-	  <div class="w-full px-2 m-2">
-		<div class="flex flex-row justify-between px-2 mb-2">
+
+		<div class="flex items-center justify-between">
+			<div class="relative inline-block text-left">
+			  <div>
+				<button @click="handleDropdown" type="button" class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" id="menu-button" aria-expanded="false" aria-haspopup="true">
+				  Sort
+				  <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+					<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+				  </svg>
+				</button>
+			  </div>
+  
+			  <!--
+				Dropdown menu, show/hide based on menu state.
+			  -->
+			  <div v-if="showButton" class="absolute right-0 left-100 z-10 mt-1 w-40 rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+				<div class="py-1" role="none">
+				  <!--
+					Clicked : 'text-gray-900 font-medium focus:bg-gray-100' 
+					Not Clicked : 'text-gray-500 hover:bg-gray-100'
+					Shared : 'w-full text-left block px-4 py-2 text-sm focus:outline-none'
+					on click previous buttn should be reset to default and current button should be clicked
+				  -->
+				  
+				  
+				  <!-- <button @click="handleFilteration('0')" class="w-full text-left text-gray-900 block px-4 py-2 text-sm focus:outline-none font-medium focus:bg-gray-100" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button> -->
+				  <button @click="handleFilteration('0')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
+				 
+				  <button @click="handleFilteration('1')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
+				 
+				  <button @click="handleFilteration('2')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
+				 
+				  <button @click="handleFilteration('3')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
+				 
+				  <button @click="handleFilteration('4')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
+
+				</div>
+			  </div>
+			</div>
+		</div>
+	  <!-- <div class="w-full px-2 m-2"> -->
+		<!-- <div class="flex flex-row justify-between px-2 mb-2"> -->
 		  <!-- <div class="text-sm font-mono">Opponent 1</div>
 		  <div class="text-sm font-mono">vs</div>
 		  <div class="text-sm font-mono">Opponent 2</div> -->
-		</div>
-	  </div>
+		<!-- </div> -->
+	  <!-- </div> -->
 	  <div class="">
 		<div
 		  v-for="game in games"
@@ -79,6 +119,10 @@ const game_history = await useGameHistory()
 
 const games = computed(() => game_history)
 
+const showButton = ref(false)
+
+const isClicked = ref(Array(5).fill(false))
+
 const getOpponent = (game) => {
   return game.opponents.find((opponent) => opponent.user.login !== 'aaljaber')
 }
@@ -87,8 +131,14 @@ const getMe = (game) => {
   return game.opponents.find((opponent) => opponent.user.login === 'aaljaber')
 }
 
+const handleDropdown = () => {
+  showButton.value = !showButton.value? true : false
+}
 
-// console.log(games)
+const handleFilteration = (filter) => {
+  console.log(filter)
+  isClicked.value.fill(false, 0, 5)
+  isClicked.value[filter] = true
+}
+
 </script>
-
-<style></style>
