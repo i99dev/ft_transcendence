@@ -59,7 +59,7 @@ export class SetUserDto {
     room_id: string
 
     @IsString()
-    user_id: number
+    user_login: string
 
     @IsString()
     action: string
