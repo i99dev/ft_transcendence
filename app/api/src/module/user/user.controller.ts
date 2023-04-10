@@ -66,6 +66,12 @@ export class UserController {
         return await this.UserService.getUser(req.user.login)
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('/search')
+    async SearchUser(@Query('search') search: string, @Req() req) {
+        return await this.UserService.SearchUser(search)
+    }
+
     @Get('/:name')
     @ApiOperation({
         operationId: 'getUser',
