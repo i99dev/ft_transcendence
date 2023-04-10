@@ -62,4 +62,10 @@ export class ChatController {
     async getDirectChat(@Req() req) {
         return await this.chatService.getDirectChatForUser(req.user.login)
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/groupChat/search')
+    async searchGroupChat(@Req() req, @Query('search') search: string) {
+        return await this.groupService.searchGroupChat(search)
+    }
 }

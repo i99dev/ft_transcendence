@@ -218,4 +218,20 @@ export class GroupService {
             console.log(error)
         }
     }
+
+    async searchGroupChat(search: string) {
+        try {
+            const chat = await this.prisma.groupChat.findMany({
+                where: {
+                    name: {
+                        contains: search,
+                        mode: 'insensitive'
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
