@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="">
-      <div class="flex justify-start items-center pt-5 pb-2 relative">
+      <div v-if="search" class="flex justify-start items-center pt-5 pb-2 relative">
         <input
           class="text-sm leading-none text-left text-gray-600 px-4 py-3 w-full border rounded border-gray-300 outline-none"
           type="text"
@@ -35,22 +35,29 @@
           class="flex flex-col"
           x-descriptions="Tab component"
       >
-          <button
-              @click="$emit('selectUser', user)"
-              class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
-          >
+        <button v-if="(user.login !== user_info.login) || (user.login === user_info.login && isMe === true)"
+            type="button"
+            @click="$emit('selectUser', user)"
+            class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
+        >
           <img
                   :src="user.image"
                   class="rounded-full w-10 h-10 object-cover"
-              />
-              <div class="absolute top-2 left-16 block text-slate-700">{{ user.username }}</div>
-          </button>
+          />
+          <div class="absolute top-2 left-16 block text-slate-700">{{ user.username }}</div>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+
+
+const { user_info } = useUserInfo()
+
+const { isMe, search } = defineProps(['isMe', 'search'])
+
 const users = ref()
 const {data} = await useUsers()
 if (data)

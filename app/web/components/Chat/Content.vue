@@ -29,14 +29,19 @@
         <div v-else class="text-slate-700 ml-2 text-xl py-1">{{ currentChat.name }}</div>
     </div>
     <div class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
-        <div id="chat-messages" class=" overflow-y-scroll box-content flex flex-col bg-white">
+        <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col">
             <div
-                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 w-9/12 group relative"
+                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
                 v-for="(message, index) in messages"
                 :key="index"
-                :class="{ 'bg-green-200': message.sender_login === user_info.login, 'self-end': message.sender_login === user_info.login}"
+                :class="{
+                    'bg-green-200': message.sender_login === user_info.login && message.type !== 'SPECIAL',
+                    'self-end': message.sender_login === user_info.login,
+                    'self-center': message.type === 'SPECIAL',
+                    'w-9/12': message.type !== 'SPECIAL',
+                }"
             >
-                <div class="ml-2 -mb-[1px] inline-block overflow-hidden top-0 absolute transform -scale-y-100"
+                <div v-if="message.sender_login !== user_info.login" class="ml-2 -mb-[1px] inline-block overflow-hidden top-0 absolute transform -scale-y-100"
                     :class="{ '-left-3': message.sender_login !== user_info.login, '-right-1': message.sender_login === user_info.login, '-scale-x-100': message.sender_login === user_info.login }"
                 >
                     <div class="h-3 w-3 origin-bottom-left rotate-45 transform bg-gray-200"
@@ -44,21 +49,26 @@
                     >
                     </div>
                 </div>
-                <div v-if="chatType === 'GROUP'"
+                <div v-if="chatType === 'GROUP' && message.type !== 'SPECIAL'"
                     class="text-sm"
                     :style="{color: `#${Math.floor(Math.random()*16777215).toString(16)}`}"
                 >
                     {{ message.sender.username }}
                 </div>
-                <div class="">
+                <div
+                    class="break-words"
+                   :class="{
+                        'text-sm': message.type === 'SPECIAL'
+                   }"
+                >
                     {{ message.content }}
-                </div>
-                    <button v-if="message.sender_login === user_info.login" class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full"
+                </div >
+                    <button v-if="message.sender_login === user_info.login && message.type !== 'SPECIAL'" class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full"
                         @click="deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>
-                    <div class="text-gray-600 text-sm flex justify-end">
+                    <div v-if="message.type !== 'SPECIAL'" class="text-gray-600 text-sm flex justify-end">
                         <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
                         {{ new Date(message.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) }}
                     </div>
@@ -103,7 +113,10 @@ const newMessage = ref('')
 const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
 
 onMounted(async () => {
-    
+    //scroll to bottom
+    const chatMessages = document.getElementById('chat-messages') as HTMLElement
+    setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+
     chatSocket.value.on('add-message', (payload : chatMessage) => {
         messages.value.push(payload)
         

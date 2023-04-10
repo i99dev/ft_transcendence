@@ -23,11 +23,14 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.12",
         "@heroicons/vue": "^2.0.16",
+        "@vuelidate/core": "^2.0.2",
+        "@vuelidate/validators": "^2.0.2",
         "autoprefixer": "^10.4.14",
         "chart.js": "2.8.0",
         "postcss": "^8.4.21",
         "socket.io": "^4.6.1",
         "socket.io-client": "^4.6.1",
-        "tailwindcss": "^3.3.1"
+        "tailwindcss": "^3.3.1",
+        "vue-upload-component": "^3.1.8"
     }
 }

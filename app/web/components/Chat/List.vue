@@ -1,6 +1,6 @@
 <template>
-  <div class="border-y border-gray-200 h-full">
-      <div class="overflow-y-auto" style="max-height: 92vh; height: 92vh;">
+  <div class="border-y border-gray-200 h-full overflow-hidden">
+      <div id="chat-list" class="overflow-y-scroll" style="max-height: 92vh; height: 92vh;">
           <!-- chat list -->
           <div
               class="flex flex-col"
@@ -10,7 +10,7 @@
               <!-- chat element -->
               <button v-for="chat in chats"
                   @click="$emit('selectChat', chat)"
-                  class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
+                  class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 relative"
               >
                   <img v-if="chatType === 'DM'"
                       :src="chat.users[1].image"
@@ -54,7 +54,9 @@
 </template>
 
 <script lang="ts" setup>
+import { Socket } from 'socket.io-client';
 
+const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const chats = ref()
 const chatType = ref()
 const isOpen = ref(false)
@@ -68,6 +70,9 @@ watch(()=>props.chatType, async () => {
 
 onMounted(async () => {
   await setup()
+  chatSocket.value.on('new-group-list', (payload) => {
+    chats.value = payload.content
+  })
 })
 
 const setup = async () => {
@@ -81,3 +86,16 @@ const setup = async () => {
 
 
 </script>
+
+<style scoped>
+#chat-list {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+#chat-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+</style>
