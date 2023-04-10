@@ -101,11 +101,11 @@ model ChatUser {
   role         ChatUserRole   @default(MEMBER)
   status       ChatUserStatus @default(NORMAL)
   created_at   DateTime       @default(now())
-  user_id      Int
+  user_login   String
   chat_room_id String
   chat         GroupChat      @relation(fields: [chat_room_id], references: [chat_room_id])
-  user         User           @relation(fields: [user_id], references: [id])
-  @@unique([chat_room_id, user_id], name: "chat_user")
+  user         User           @relation(fields: [user_login], references: [login])
+  @@unique([chat_room_id, user_login], name: "chat_user")
 }
 
 model Message {
@@ -114,9 +114,9 @@ model Message {
   created_at   DateTime    @default(now())
   type         MessageType @default(NORMAL)
   chat_room_id String
-  sender_id Int
+  sender_login String
   chat_room    ChatRoom    @relation(fields: [chat_room_id], references: [room_id])
-  sender       User        @relation(fields: [sender_id], references: [id])
+  sender       User        @relation(fields: [sender_login], references: [login])
 }
 
 enum UserStatus {

@@ -10,13 +10,14 @@ import { WsException } from '@nestjs/websockets'
 import { chatType, GroupChat } from '@prisma/client'
 import { decode } from 'punycode'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
+import { take } from 'rxjs'
 
 @Injectable()
 export class GroupService {
     constructor(private prisma: PrismaService) {}
     private chatRooms: ChatRoom[]
 
-    async createGroupChatRoom(value: ChatRoomDto, user_id: number) {
+    async createGroupChatRoom(value: ChatRoomDto, user_login: string) {
         try {
             const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
                 data: {
@@ -31,7 +32,7 @@ export class GroupService {
                             chat_user: {
                                 createMany: {
                                     data: {
-                                        user_id: user_id,
+                                        user_login: user_login,
                                         role: 'OWNER',
                                         status: 'NORMAL',
                                     },
@@ -72,7 +73,7 @@ export class GroupService {
                             where: {
                                 chat_user: {
                                     chat_room_id: room_id,
-                                    user_id: user.user_id,
+                                    user_login: user.user_login,
                                 },
                             },
                             update: user,
@@ -87,12 +88,12 @@ export class GroupService {
         }
     }
 
-    async getChatUserInRoom(room_id: string, user_id) {
+    async getChatUserInRoom(room_id: string, user_login: string) {
         try {
             const userChat = await this.prisma.chatUser.findFirst({
                 where: {
                     chat_room_id: room_id,
-                    user_id: user_id,
+                    user_login: user_login,
                 },
             })
             return userChat
@@ -101,17 +102,20 @@ export class GroupService {
         }
     }
 
-    async getChatRoomMessages(room_id: string) {
+    async getChatRoomMessages(room_id: string, page: number) {
         try {
             const chat = await this.prisma.message.findMany({
                 where: {
                     chat_room: {
                         room_id: room_id,
                     }
+                    
                 },
                 include: {
                     sender: true,
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return chat
         } catch (error) {
@@ -187,6 +191,35 @@ export class GroupService {
                     name: info?.name,
                 },
             })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getGroupChatForUser(user_login: string) {
+        try {
+            const chat = await this.prisma.groupChat.findMany({
+                where: {
+                    chat_user: {
+                        some: {
+                            user_login: user_login,
+                        },
+                    },
+                },
+                include: {
+                    chat_room: {
+                        select: {
+                            messages: {
+                                orderBy: {
+                                    created_at: 'desc',
+                                },
+                                take: 1,
+                            }
+                        }
+                    }
+                }
+            })
+            return chat
         } catch (error) {
             console.log(error)
         }

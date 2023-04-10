@@ -20,6 +20,9 @@ export default <Partial<Config>>{
                 desktop: { max: '1920px', min: '1281px' },
                 '4k': { max: '2560px', min: '1921px' },
             },
+            scale: {
+                '-100': '-1',
+            },
         },
     },
     variants: {

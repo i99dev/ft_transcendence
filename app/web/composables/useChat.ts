@@ -29,8 +29,9 @@ export async function useDirectChats(): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('chats/dm', {
+    } = await useFetch('chats', {
         baseURL: useRuntimeConfig().API_URL,
+        query: { type: 'DM'},
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
@@ -46,8 +47,9 @@ export async function useGroupChats(): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('chats/group', {
+    } = await useFetch('chats', {
         baseURL: useRuntimeConfig().API_URL,
+        query: { type: 'GROUP'},
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },

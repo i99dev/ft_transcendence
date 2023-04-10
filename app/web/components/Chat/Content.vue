@@ -34,8 +34,16 @@
                 class="bg-gray-200 rounded-lg p-2 mx-2 my-2 w-9/12 group relative"
                 v-for="(message, index) in messages"
                 :key="index"
-                :class="{ 'bg-green-200': message.sender_id === user_info.id, 'self-end': message.sender_id === user_info.id}"
+                :class="{ 'bg-green-200': message.sender_login === user_info.login, 'self-end': message.sender_login === user_info.login}"
             >
+                <div class="ml-2 -mb-[1px] inline-block overflow-hidden top-0 absolute transform -scale-y-100"
+                    :class="{ '-left-3': message.sender_login !== user_info.login, '-right-1': message.sender_login === user_info.login, '-scale-x-100': message.sender_login === user_info.login }"
+                >
+                    <div class="h-3 w-3 origin-bottom-left rotate-45 transform bg-gray-200"
+                        :class="{ 'bg-green-200': message.sender_login === user_info.login}"
+                    >
+                    </div>
+                </div>
                 <div v-if="chatType === 'GROUP'"
                     class="text-sm"
                     :style="{color: `#${Math.floor(Math.random()*16777215).toString(16)}`}"
@@ -45,19 +53,15 @@
                 <div class="">
                     {{ message.content }}
                 </div>
-                <!-- <div class="flex flex-row justify-end"> -->
-                    <!-- <div class="w-9/12"> -->
-                        <button v-if="message.sender_id === user_info.id" class="text-slate-700 hidden group-hover:block absolute -top-2 right-0 bg-inherit rounded-full"
-                            @click="deleteMessage(message.id)"
-                        >
-                            <TrashIcon class="h-4 w-4" aria-hidden="true" />
-                        </button>
-                    <!-- </div> -->
+                    <button v-if="message.sender_login === user_info.login" class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full"
+                        @click="deleteMessage(message.id)"
+                    >
+                        <TrashIcon class="h-4 w-4" aria-hidden="true" />
+                    </button>
                     <div class="text-gray-600 text-sm flex justify-end">
                         <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
                         {{ new Date(message.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) }}
                     </div>
-                <!-- </div> -->
             </div>
         </div>
         <div>

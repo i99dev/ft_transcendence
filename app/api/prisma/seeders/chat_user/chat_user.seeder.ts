@@ -11,13 +11,13 @@ export class ChatUserSeeder {
             await this.prisma.chatUser.upsert({
                 where: {
                     chat_user: {
-                        user_id: 1,
+                        user_login: 'bnaji',
                         chat_room_id: 'room1',
                     },
                 },
                 update: {},
                 create: {
-                    user_id: 1,
+                    user_login: 'bnaji',
                     chat_room_id: 'room1',
                     role: ChatUserRole.OWNER,
                 },
@@ -33,10 +33,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 1, chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                            user_id: 1,
+                            user_login: 'bnaji',
                             role: ChatUserRole.OWNER,
                         },
                     },
@@ -48,10 +48,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 5, chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'isaad', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                            user_id: 5,
+                            user_login: 'isaad',
                             role: ChatUserRole.ADMIN,
                         },
                     },
@@ -63,10 +63,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 2, chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                            user_id: 2,
+                            user_login: 'oal-tena',
                             role: ChatUserRole.MEMBER,
                         },
                     },
@@ -78,10 +78,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 3, chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'mal-guna', chat_room_id: 'room1' } },
                         update: {},
                         create: {
-                            user_id: 3,
+                            user_login: 'mal-guna',
                             role: ChatUserRole.ADMIN,
                         },
                     },
@@ -95,10 +95,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 4, chat_room_id: 'room2' } },
+                        where: { chat_user: { user_login: 'isaad', chat_room_id: 'room2' } },
                         update: {},
                         create: {
-                            user_id: 4,
+                            user_login: 'isaad',
                             role: ChatUserRole.OWNER,
                         },
                     },
@@ -110,10 +110,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 1, chat_room_id: 'room3' } },
+                        where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room3' } },
                         update: {},
                         create: {
-                            user_id: 1,
+                            user_login: 'bnaji',
                             role: ChatUserRole.ADMIN,
                         },
                     },
@@ -127,10 +127,10 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_id: 2, chat_room_id: 'room3' } },
+                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room3' } },
                         update: {},
                         create: {
-                            user_id: 2,
+                            user_login: 'oal-tena',
                             role: ChatUserRole.OWNER,
                         },
                     },
