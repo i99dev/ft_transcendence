@@ -161,7 +161,7 @@
 					{{ pageNumber }}
 				  </button>
 			  </div>
-			  			  
+
 			  <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">	
 				<span class="sr-only">Next</span>
 				<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -191,6 +191,7 @@ const isClicked = ref(Array(5).fill(false))
 
 onMounted(async () => {
 	game_history.values = await useGameHistory('/match-history')
+	isClicked2.value[1] = true
 })
 
 const getOpponent = (game) => {
@@ -218,7 +219,6 @@ const isClicked2 = ref(Array(5).fill(false))
 const handlePagination = (page) => {
   isClicked2.value.fill(false, 0, 6)
   isClicked2.value[page] = true
-//   numPage.value = page
 }
 
 
