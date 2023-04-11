@@ -167,7 +167,7 @@ export class GroupService {
                 where: {
                     chat_user: {
                         some: {
-                            id: user.id
+                            user_login: user.login
                         }
                     }
                 },

@@ -35,7 +35,7 @@ export class ChatWsService {
         return !decode ? null : decode['login']
     }
 
-    async setupGroupChat(payload: any, user_login: string) {
+    async setupGroupChat(payload: any, user_login: string) : Promise<ChatRoom> {
         if (
             payload.type === chatType.PROTECTED &&
             (payload.password === undefined || payload.password === null || payload.password === '')
@@ -45,7 +45,7 @@ export class ChatWsService {
         const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
-        await this.groupService.createGroupChatRoom(
+        const chatRoom = await this.groupService.createGroupChatRoom(
             {
                 room_id: room_id,
                 name: payload.name,
@@ -56,7 +56,7 @@ export class ChatWsService {
             user_login,
         )
 
-        return room_id
+        return chatRoom
     }
 
     async getPassword(room_id: string) {
