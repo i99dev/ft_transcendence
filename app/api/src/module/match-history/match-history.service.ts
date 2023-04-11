@@ -13,8 +13,7 @@ export class MatchHistoryService {
         return await this.jwtService.decode(token)['login']
     }
     async getPlayerMatchHistory(page: number, player: string): Promise<MatchHistoryDto[]> {
-        let skip = (page - 1) * this.limit
-        if (skip < 0) skip = 0
+        const skip = (page - 1) * this.limit
         const match = await this.prisma.match.findMany({
             where: {
                 opponents: {

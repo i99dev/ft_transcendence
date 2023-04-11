@@ -28,15 +28,15 @@
 				  -->
 				  
 				  
-				  <button @click="handleFilteration(0, `/match-history?page=${currentPage}`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
+				  <button @click="handleFilteration('all')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
 				 
-				  <button @click=" handleFilteration(1, `/match-history/result?page=${currentPage}?winning=true&losing=false`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
+				  <button @click=" handleFilteration('win')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
 				 
-				  <button @click="handleFilteration(2, `/match-history/result?page=${currentPage}?winning=false&losing=true`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
+				  <button @click="handleFilteration('lose')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
 				 
-				  <button @click="handleFilteration(3, `/match-history/score?page=${currentPage}?sort=asc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
+				  <button @click="handleFilteration('asc')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
 				 
-				  <button @click="handleFilteration(4, `/match-history/score?page=${currentPage}?sort=desc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
+				  <button @click="handleFilteration('desc')" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
 
 				</div>
 			  </div>
@@ -231,12 +231,25 @@ const handlePagination = async (page) => {
 
 }
 
-const handleFilteration = async (filter, ep_URL) => {
-	console.log(filter)
+const handleFilteration = async (filter) => {
 	isClicked.value.fill(false, 0, 5)
-	isClicked.value[filter] = true
-	game_history.values = await useGameHistory(ep_URL)
-  
+	if (filter == "all") {
+		game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
+		isClicked.value[0] = true
+	} else if (filter == "win") {
+		game_history.values = await useGameHistory(`/match-history/result?page=${currentPage.value}&winning=true&losing=false`)
+		isClicked.value[1] = true
+	} else if (filter == "lose") {
+		game_history.values = await useGameHistory(`/match-history/result?page=${currentPage.value}&winning=false&losing=true`)
+		isClicked.value[2] = true
+	} else if (filter == "asc"){
+		game_history.values = await useGameHistory(`/match-history/score?page=${currentPage.value}&sort=asc`)
+		isClicked.value[3] = true
+	} else if (filter == "desc"){
+		game_history.values = await useGameHistory(`/match-history/score?page=${currentPage.value}&sort=desc`)
+		isClicked.value[4] = true
+	}
+	console.log(filter)
 }
 
 </script>

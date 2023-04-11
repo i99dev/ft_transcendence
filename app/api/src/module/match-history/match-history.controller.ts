@@ -24,9 +24,7 @@ export class MatchHistoryController {
         @Query('losing') losing: string,
     ): Promise<MatchHistoryDto[]> {
         const player = await this.matchHistoryService.getLoginFromToken(authHeader)
-        if (winning === undefined && losing === undefined)
-            return await this.matchHistoryService.getPlayerMatchHistory(page, player)
-        else if (winning === 'true')
+        if (winning === 'true')
             return await this.matchHistoryService.getMatchHistoryByResult(page, player, true)
         else if (losing === 'true')
             return await this.matchHistoryService.getMatchHistoryByResult(page, player, false)
