@@ -1,6 +1,6 @@
 <template>
     <TransitionRoot as="template" :show="open">
-        <Dialog as="div" class="relative z-10" @close="open = false">
+        <Dialog as="div" class="relative z-10">
             <div class="fixed inset-0" />
 
             <div class="fixed inset-0 overflow-hidden">
@@ -19,14 +19,14 @@
                         >
                             <DialogPanel class="pointer-events-auto w-screen max-w-md">
                                 <div
-                                    class="flex justify-between min-h-screen flex-col bg-white shadow-xl rounded-2xl border"
+                                    class="flex min-h-screen flex-col bg-white shadow-xl rounded-2xl border"
                                 >
                                     <div class="pt-2">
                                         <div class="flex items-start justify-between">
                                             <div class="ml-3 flex items-center">
                                                 <button
                                                     type="button"
-                                                    class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                                                    class="rounded-full p-2 bg-white text-indigo-400 hover:text-indigo-600"
                                                     @click="setChatModalOpen(false)"
                                                 >
                                                     <span class="sr-only">Close panel</span>
@@ -42,11 +42,12 @@
                                     <ChatList v-if="chatListView"
                                         :chatType="chatType"
                                         @selectChat="switchChatView"
+                                        @closeNavBar="setChatModalOpen(false)"
                                     />
                                     <ChatContent v-else
                                         :currentChat="currentChat"
                                         :chatType="chatType"
-                                        @exitChat="switchChatView"
+                                        @closeChat="switchChatView"
                                     />
                                 </div>
                             </DialogPanel>
@@ -72,6 +73,7 @@ import {
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
+
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
 

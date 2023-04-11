@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TransitionRoot appear :show="isOpen" as="template">
+    <TransitionRoot appear :show="isOpened" as="template">
           <Dialog as="div" @close="closePopup" class="relative z-10">
             <TransitionChild
               as="template"
@@ -108,9 +108,9 @@
                           <div class="space-y-2">
                             <RadioGroupOption
                               as="template"
-                              v-for="plan in plans"
-                              :key="plan.type"
-                              :value="plan"
+                              v-for="chatType in chatTypes"
+                              :key="chatType.type"
+                              :value="chatType"
                               v-slot="{ active, checked }"
                             >
                               <div
@@ -129,7 +129,7 @@
                                         :class="checked ? 'text-white' : 'text-gray-900'"
                                         class="font-medium"
                                       >
-                                        {{ plan.type }}
+                                        {{ chatType.type }}
                                       </RadioGroupLabel>
                                       <RadioGroupDescription
                                         as="span"
@@ -138,7 +138,7 @@
                                       >
 
 
-                                      <div v-if="plan.type === 'PUBLIC'" class="flex flex-col md:mr-16 my-2">
+                                      <div v-if="chatType.type === 'PUBLIC'" class="flex flex-col md:mr-16 my-2">
                                         <label for="password3" class="text-sm font-bold leading-tight tracking-normal mb-2"
                                         :class="checked ? 'text-gray-200' : 'text-gray-500'"
                                         >
@@ -238,13 +238,13 @@ import { Socket } from 'socket.io-client';
 
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { user_info } = useUserInfo()
-const users = ref([] as UserGetDto[])
+const users = ref([] as User[])
 const stage = ref(1)
 const chatImage = ref(null as any)
 const fileInput = ref()
 const firstStage = 1
 const lastStage = 3
-const plans = [
+const chatTypes = [
   {
     type: 'PUBLIC',
   },
@@ -255,7 +255,7 @@ const plans = [
 const groupChat = ref({
   name: '',
   image: 'https://picsum.photos/200',
-  chatType: plans[0],
+  chatType: chatTypes[0],
   password: '',
 })
 
@@ -276,15 +276,15 @@ const changeView = () => {
     input.type = input.type === "text" ? "password" : "text";
 }
 
-const {isOpen} = defineProps(['isOpen'])
+const {isOpened} = defineProps(['isOpened'])
 const emit = defineEmits(['closeGroupChatCreation'])
 
-const selectUser = (user: UserGetDto) => {
+const selectUser = (user: User) => {
   if (!users.value.find((u) => u.id === user.id) && user.login !== user_info.value.login)
     users.value.push(user)
 }
 
-const removeUser = (user: UserGetDto) => {
+const removeUser = (user: User) => {
   users.value = users.value.filter((u) => u.id !== user.id)
 }
 
@@ -303,7 +303,7 @@ const closePopup = () => {
     groupChat.value = {
       name: '',
       image: 'https://picsum.photos/200',
-      chatType: plans[0],
+      chatType: chatTypes[0],
       password: '',
     }
     chatImage.value = null

@@ -130,7 +130,11 @@ export class GroupService {
                     chat_room_id: room_id,
                 },
                 select: {
-                    chat_user: true,
+                    chat_user: {
+                        include: {
+                            user: true,
+                        }
+                    }
                 },
             })
             return chat

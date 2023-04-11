@@ -3,8 +3,9 @@ export { };
 declare global {
 
   type UserStatus = "OFFLINE" | "ONLINE" | "LIVE"
+  type ChatRoomType = "GROUP" | "DM"
 
-  interface UserGetDto {
+  interface User {
       id: number
       login: string
       username: string
@@ -20,8 +21,8 @@ declare global {
       exp_level: number
       points: number
       two_fac_auth: boolean
-      friend_to?: UserGetDto[]
-      friends?: UserGetDto[]
+      friend_to?: User[]
+      friends?: User[]
   }
   
   interface gameStatusDto {
@@ -70,6 +71,13 @@ declare global {
     sender_id: number
   }
 
+  interface ChatRoom {
+    room_id:      string;
+    created_at:   string;
+    type:         ChatRoomType;
+    messages:     chatMessage[];
+  }
+
   interface groupChat {
     id:           number;
     name:         string;
@@ -77,11 +85,24 @@ declare global {
     type:         string;
     password:     string;
     chat_room_id: string;
+    chat_room:    ChatRoom;
+    chat_user:    ChatUser[];
   }
 
   interface directChat {
     id:           number;
     chat_room_id: string;
-    users:        UserGetDto[];
-}
+    chat_room:    ChatRoom;
+    users:        User[];
+  }
+
+  interface ChatUser {
+    id:           number;
+    role:         string;
+    status:       string;
+    created_at:   Date;
+    user_login:   string;
+    chat_room_id: string;
+    user:         User;
+  }
 }

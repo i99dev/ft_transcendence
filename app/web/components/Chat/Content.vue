@@ -3,39 +3,59 @@
     <div
         class="p-2 relative flex"
     >
-        <button @click="$emit('exitChat')">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <button
+            class="flex flex-row w-3/12 hover:bg-slate-200 items-center rounded-lg"
+            @click="$emit('closeChat')"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="icon icon-tabler icon-tabler-arrow-left"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="#555"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M5 12l14 0"></path>
                 <path d="M5 12l6 6"></path>
                 <path d="M5 12l6 -6"></path>
             </svg>
+            <img v-if="chatType === 'DM'"
+                :src="currentChat.users[1].image"
+                alt="User Photo"
+                class="rounded-full w-10 h-10 object-cover mx-1"
+            />
+            <img v-else
+                :src="currentChat.image"
+                alt="User Photo"
+                class="rounded-full w-10 h-10 object-cover mx-1"
+            />
+            <span
+            class="absolute bottom-2 left-16 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
+            />
         </button>
-        
-        <img v-if="chatType === 'DM'"
-            :src="currentChat.users[1].image"
-            alt="User Photo"
-            class="rounded-full w-10 h-10 object-cover mx-1"
-        />
-        <img v-else
-            :src="currentChat.image"
-            alt="User Photo"
-            class="rounded-full w-10 h-10 object-cover mx-1"
-        />
-        <span
-        class="absolute bottom-2 left-16 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
-        />
-        <div v-if="chatType === 'DM'" class="text-slate-700 ml-2 text-xl py-1">{{ currentChat.users[1].username }}</div>
-        <div v-else class="text-slate-700 ml-2 text-xl py-1">{{ currentChat.name }}</div>
+
+
+        <button
+            @click="isChatInfoOpened = !isChatInfoOpened"
+            class="w-full flex hover:bg-gray-200 rouned-lg"
+        >
+            <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat.users[1].username }}</div>
+            <div v-else class="text-slate-700 text-xl py-1">{{ currentChat.name }}</div>
+        </button>
     </div>
-    <div class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
+    <ChatParticipants v-if="isChatInfoOpened && chatType === 'GROUP'" :currentChat="currentChat" :participants="participants" />
+    <div v-else class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
         <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col">
             <div
                 class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
                 v-for="(message, index) in messages"
                 :key="index"
                 :class="{
-                    'bg-green-200': message.sender_login === user_info.login && message.type !== 'SPECIAL',
+                    'bg-indigo-200': message.sender_login === user_info.login && message.type !== 'SPECIAL',
                     'self-end': message.sender_login === user_info.login,
                     'self-center': message.type === 'SPECIAL',
                     'w-9/12': message.type !== 'SPECIAL',
@@ -45,7 +65,7 @@
                     :class="{ '-left-3': message.sender_login !== user_info.login, '-right-1': message.sender_login === user_info.login, '-scale-x-100': message.sender_login === user_info.login }"
                 >
                     <div class="h-3 w-3 origin-bottom-left rotate-45 transform bg-gray-200"
-                        :class="{ 'bg-green-200': message.sender_login === user_info.login}"
+                        :class="{ 'bg-indigo-200': message.sender_login === user_info.login}"
                     >
                     </div>
                 </div>
@@ -101,6 +121,7 @@
 </template>
 
 <script lang="ts" setup>
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { Socket } from 'socket.io-client';
 
@@ -109,11 +130,18 @@ const { user_info } = useUserInfo()
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const messages = ref()
 const newMessage = ref('')
+const isChatInfoOpened = ref(false)
+const participants = ref()
 
 const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
 
+
 onMounted(async () => {
-    //scroll to bottom
+    const {data: ChatParticipants} = await useGroupChatParticipants(currentChat.chat_room_id)
+    if (ChatParticipants)
+        participants.value = ChatParticipants.value
+    
+        //scroll to bottom
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
 

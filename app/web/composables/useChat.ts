@@ -7,8 +7,8 @@ export const useChat = () => {
         }
     })
 
-    const setChatModalOpen = (open: boolean) => {
-        chat_info.value.chatModalOpen = open
+    const setChatModalOpen = (status: boolean) => {
+        chat_info.value.chatModalOpen = status
     }
 
     const send_message = async (message: string) => {
@@ -29,9 +29,8 @@ export async function useDirectChats(): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('chats', {
+    } = await useFetch('chats/directChat/me', {
         baseURL: useRuntimeConfig().API_URL,
-        query: { type: 'DM'},
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
@@ -47,7 +46,24 @@ export async function useGroupChats(): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('chats', {
+    } = await useFetch('chats/groupChat/me', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        server: false,
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error, refresh, pending }
+}
+
+export async function useGroupChatParticipants(room_id: string): Promise<any> {
+    const {
+        data,
+        error: errorRef,
+        refresh,
+        pending,
+    } = await useFetch(`chats/${room_id}/users`, {
         baseURL: useRuntimeConfig().API_URL,
         query: { type: 'GROUP'},
         headers: {

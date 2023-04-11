@@ -438,7 +438,8 @@ export class ChatService {
                                 take: 1,
                             }
                         }
-                    }
+                    },
+                    users: true
                 }
             })
             return chatRooms
