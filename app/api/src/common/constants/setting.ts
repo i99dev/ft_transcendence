@@ -14,3 +14,7 @@ export const jwtHeaderConstants = {
 export const accessTokenConstants = {
     type: 'bearer',
 }
+
+export const pageInfoConstants = {
+    defaultPage: 20,
+}

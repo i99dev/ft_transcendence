@@ -228,4 +228,16 @@ export class GroupService {
             console.log(error)
         }
     }
+
+    async getAllGroupChats(page: number) {
+        try {
+            const chat = await this.prisma.groupChat.findMany({
+                skip: (page - 1) * 20,
+                take: 20,
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

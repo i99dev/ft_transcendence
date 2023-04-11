@@ -65,7 +65,9 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/groupChat/search')
-    async searchGroupChat(@Req() req, @Query('search') search: string) {
+    async searchGroupChat(@Req() req, @Query('search') search: string, @Query('page') page: number) {
+        if (page <= 0) return []
+        if (!search) return await this.groupService.getAllGroupChats(page)
         return await this.groupService.searchGroupChat(search)
     }
 }
