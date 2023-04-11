@@ -1,20 +1,13 @@
-import { create } from 'domain'
-import { object } from '@hapi/joi'
+import { ChatRepository } from './repository/chat.repository';
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
-import { UpdateChatUserInterface } from './interface/chat.interface'
-import { JwtService } from '@nestjs/jwt'
-import { WsException } from '@nestjs/websockets'
-import { chatType, GroupChat } from '@prisma/client'
-import { decode } from 'punycode'
+import { ChatRoom } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
-import { take } from 'rxjs'
 
 @Injectable()
 export class GroupService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private chatRepository: ChatRepository) {}
     private chatRooms: ChatRoom[]
 
     async createGroupChatRoom(value: ChatRoomDto, user_login: string) {
@@ -194,11 +187,11 @@ export class GroupService {
         try {
             const chat = await this.prisma.groupChat.findMany({
                 where: {
-                    chat_user: {
-                        some: {
-                            user_login: user_login,
-                        },
+                  chat_user: {
+                    some: {
+                      user_login: user_login,
                     },
+                  },
                 },
                 include: {
                     chat_room: {
@@ -208,12 +201,13 @@ export class GroupService {
                                     created_at: 'desc',
                                 },
                                 take: 1,
-                            }
-                        }
-                    }
-                }
-            })
-            return chat
+                            },
+                        },
+                    },
+                },
+            });
+            const sortedChat = this.chatRepository.sort(chat)
+            return sortedChat
         } catch (error) {
             console.log(error)
         }

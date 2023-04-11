@@ -1,21 +1,13 @@
-import { create } from 'domain'
-import { object } from '@hapi/joi'
-import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
-import { JwtService } from '@nestjs/jwt'
-import { WsException } from '@nestjs/websockets'
-import { chatType, GroupChat } from '@prisma/client'
-import { decode } from 'punycode'
-import { MESSAGES } from '@nestjs/core/constants'
-import { take } from 'rxjs'
-import { use } from 'passport'
+import { chatType } from '@prisma/client'
+import { ChatRepository } from './repository/chat.repository'
 
 @Injectable()
 export class ChatService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private chatRepository: ChatRepository) {}
     private chatRooms: ChatRoom[]
 
     async getUser(login: string) {
@@ -437,7 +429,8 @@ export class ChatService {
                     }
                 }
             })
-            return chatRooms
+            const sortedChat = await this.chatRepository.sort(chatRooms)
+            return sortedChat
         } catch (error) {
             console.log(error)
         }
