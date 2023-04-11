@@ -28,15 +28,15 @@
 				  -->
 				  
 				  
-				  <button @click="handleFilteration(0, `/match-history`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
+				  <button @click="handleFilteration(0, `/match-history?page=${currentPage}`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[0] , ' text-gray-500 hover:bg-gray-100':!isClicked[0]}" role="menuitem" tabindex="-1" id="menu-item-1">Latest</button>
 				 
-				  <button @click=" handleFilteration(1, `/match-history/result?winning=true&losing=false`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
+				  <button @click=" handleFilteration(1, `/match-history/result?page=${currentPage}?winning=true&losing=false`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[1] , ' text-gray-500 hover:bg-gray-100':!isClicked[1]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Victories only</button>
 				 
-				  <button @click="handleFilteration(2, `/match-history/result?winning=false&losing=true`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
+				  <button @click="handleFilteration(2, `/match-history/result?page=${currentPage}?winning=false&losing=true`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[2] , ' text-gray-500 hover:bg-gray-100':!isClicked[2]}" role="menuitem" tabindex="-1" id="menu-item-1">Result: Defeats only </button>
 				 
-				  <button @click="handleFilteration(3, `/match-history/score?sort=asc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
+				  <button @click="handleFilteration(3, `/match-history/score?page=${currentPage}?sort=asc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[3] , ' text-gray-500 hover:bg-gray-100':!isClicked[3]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: Low to High</button>
 				 
-				  <button @click="handleFilteration(4, `/match-history/score?sort=desc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
+				  <button @click="handleFilteration(4, `/match-history/score?page=${currentPage}?sort=desc`)" class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{'text-gray-900 font-medium focus:bg-gray-100': isClicked[4] , ' text-gray-500 hover:bg-gray-100':!isClicked[4]}" role="menuitem" tabindex="-1" id="menu-item-1">Score: High to Low</button>
 
 				</div>
 			  </div>
@@ -147,13 +147,15 @@
 		  </div>
 
 		  <div>
+
 			<nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-			  <a href="#" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+			  
+			<button @click="handlePagination(currentPage - 1)" type="button" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
 				<span class="sr-only">Previous</span>
 				<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 				  <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
 				</svg>
-			  </a>
+			</button>
 
 			  <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
 			  <div>
@@ -162,13 +164,15 @@
 				  </button>
 			  </div>
 
-			  <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">	
+			  <button @click="handlePagination(currentPage + 1)" type="button" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">	
 				<span class="sr-only">Next</span>
 				<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 				  <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
 				</svg>
-			  </a>
+			  </button>
+
 			</nav>
+
 		  </div>
 		</div>
 
@@ -181,7 +185,7 @@
 
 import { ref, computed, onMounted } from 'vue'
 
-const game_history = await useGameHistory('/match-history')
+const game_history = await useGameHistory(`/match-history?page=1`)
 
 const games = computed(() => game_history.values)
 
@@ -189,8 +193,11 @@ const showButton = ref(false)
 
 const isClicked = ref(Array(5).fill(false))
 
+const currentPage = ref(1)
+
 onMounted(async () => {
-	game_history.values = await useGameHistory('/match-history')
+	currentPage.value = 1
+	game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
 	isClicked2.value[1] = true
 })
 
@@ -207,27 +214,28 @@ const handleDropdown = () => {
 }
 
 const pageNumbers = computed(() => {
-  const pages = [];
-  for (let i = 1; i <= 5; i++) {
-    pages.push(i);
-  }
-  return pages;
+	const pages = [];
+	for (let i = 1; i <= 5; i++)
+		pages.push(i);
+	return pages;
 });
 
 const isClicked2 = ref(Array(5).fill(false))
 
-const handlePagination = (page) => {
-  isClicked2.value.fill(false, 0, 6)
-  isClicked2.value[page] = true
+const handlePagination = async (page) => {
+	if (page < 1 || page > 5) return
+	isClicked2.value.fill(false, 0, 6)
+	isClicked2.value[page] = true
+	currentPage.value = page
+	game_history.values = await useGameHistory(`/match-history?page=${page}`)
+
 }
 
-
-
 const handleFilteration = async (filter, ep_URL) => {
-  console.log(filter)
-  isClicked.value.fill(false, 0, 5)
-  isClicked.value[filter] = true
-  game_history.values = await useGameHistory(ep_URL)
+	console.log(filter)
+	isClicked.value.fill(false, 0, 5)
+	isClicked.value[filter] = true
+	game_history.values = await useGameHistory(ep_URL)
   
 }
 

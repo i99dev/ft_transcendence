@@ -6,12 +6,15 @@ import { JwtService } from '@nestjs/jwt'
 export class MatchHistoryService {
     private prisma = new PrismaClient()
     constructor(private jwtService: JwtService) {}
+    readonly limit = 3
 
     async getLoginFromToken(authHeader: string): Promise<string> {
         const token = authHeader.split(' ')[1]
         return await this.jwtService.decode(token)['login']
     }
-    async getPlayerMatchHistory(player: string): Promise<MatchHistoryDto[]> {
+    async getPlayerMatchHistory(page: number, player: string): Promise<MatchHistoryDto[]> {
+        let skip = (page - 1) * this.limit
+        if (skip < 0) skip = 0
         const match = await this.prisma.match.findMany({
             where: {
                 opponents: {
@@ -29,11 +32,17 @@ export class MatchHistoryService {
                     },
                 },
             },
+            skip: skip,
+            take: this.limit,
         })
         return match
     }
-    async getMatchHistoryByResult(player: string, winning: boolean): Promise<MatchHistoryDto[]> {
-        const match = await this.getPlayerMatchHistory(player)
+    async getMatchHistoryByResult(
+        page: number,
+        player: string,
+        winning: boolean,
+    ): Promise<MatchHistoryDto[]> {
+        const match = await this.getPlayerMatchHistory(page, player)
         const winningMatch = []
         match.forEach(m => {
             if (m.opponents[0].user.login === player && m.opponents[0].IsWinner === winning) {
@@ -47,8 +56,12 @@ export class MatchHistoryService {
         })
         return winningMatch
     }
-    async getMatchHistoryBySort(player: string, sort: 'asc' | 'desc'): Promise<MatchHistoryDto[]> {
-        const match = await this.getPlayerMatchHistory(player)
+    async getMatchHistoryBySort(
+        page: number,
+        player: string,
+        sort: 'asc' | 'desc',
+    ): Promise<MatchHistoryDto[]> {
+        const match = await this.getPlayerMatchHistory(page, player)
         match.sort((a, b) => {
             const userOpponentsA = a.opponents.filter(opponent => opponent.user.login === player)
             const userOpponentsB = b.opponents.filter(opponent => opponent.user.login === player)
