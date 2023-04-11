@@ -195,6 +195,12 @@ const isClicked = ref(Array(5).fill(false))
 
 const currentPage = ref(1)
 
+const currentFilter = ref('all')
+
+// const paGination = new Map<number, boolean>()
+
+// const filTeration = new Map<string, boolean>()
+
 onMounted(async () => {
 	currentPage.value = 1
 	game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
@@ -227,7 +233,8 @@ const handlePagination = async (page) => {
 	isClicked2.value.fill(false, 0, 6)
 	isClicked2.value[page] = true
 	currentPage.value = page
-	game_history.values = await useGameHistory(`/match-history?page=${page}`)
+	// game_history.values = await useGameHistory(`/match-history?page=${page}`)
+	await handleFilteration(currentFilter.value)
 
 }
 
@@ -236,18 +243,23 @@ const handleFilteration = async (filter) => {
 	if (filter == "all") {
 		game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
 		isClicked.value[0] = true
+		currentFilter.value = 'all'
 	} else if (filter == "win") {
 		game_history.values = await useGameHistory(`/match-history/result?page=${currentPage.value}&winning=true&losing=false`)
 		isClicked.value[1] = true
+		currentFilter.value = 'win'
 	} else if (filter == "lose") {
 		game_history.values = await useGameHistory(`/match-history/result?page=${currentPage.value}&winning=false&losing=true`)
 		isClicked.value[2] = true
+		currentFilter.value = 'lose'
 	} else if (filter == "asc"){
 		game_history.values = await useGameHistory(`/match-history/score?page=${currentPage.value}&sort=asc`)
 		isClicked.value[3] = true
+		currentFilter.value = 'asc'
 	} else if (filter == "desc"){
 		game_history.values = await useGameHistory(`/match-history/score?page=${currentPage.value}&sort=desc`)
 		isClicked.value[4] = true
+		currentFilter.value = 'desc'
 	}
 	console.log(filter)
 }
