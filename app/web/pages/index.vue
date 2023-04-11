@@ -9,7 +9,7 @@
 			<ButtonGame />
 		</div>
 		
-		<button @click="()=> navigateTo('/play')" class="h-10 w-30 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"> Play </button>
+		<button @click="()=> navigateTo('/play')" class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"> Play </button>
 		<div class="grid grid-flow-col-dense sm:flex gap-4 w-full justify-center"></div>
 		
             <div class="flex flex-wrap sm:flex-no-wrap items-center justify-between w-full">
