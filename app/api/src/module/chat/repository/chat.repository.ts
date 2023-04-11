@@ -8,7 +8,7 @@ export class ChatRepository {
     async sort(chatRooms: any[]) {
         for (let i: number = 0; i + 1 < chatRooms.length; i++) {
             let tmp;
-            if (chatRooms[i].chat_room.messages[0].created_at > chatRooms[i + 1].chat_room.messages[0].created_at) {
+            if (chatRooms[i].chat_room.messages[0].created_at < chatRooms[i + 1].chat_room.messages[0].created_at) {
                 tmp = chatRooms[i];
                 chatRooms[i] = chatRooms[i + 1];
                 chatRooms[i + 1] = tmp;
