@@ -26,7 +26,7 @@ import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
 import { ChatService } from '../chat.service'
 import { UserService } from '../../user/user.service'
-import { GroupService } from '../groupChat.service'
+import { GroupChatService } from '../groupChat.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -44,7 +44,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private chatWsService: ChatWsService,
         private chatService: ChatService,
-        private groupService: GroupService,
+        private groupChatService: GroupChatService,
         private userService: UserService,
         private jwtService: JwtService,
     ) {}
@@ -84,7 +84,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${client.handshake.query.user_login} created a group chat`,
         )
         client.emit('new-group-list', {
-            content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+            content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
             type: MessageType.SPECIAL,
         })
     }
@@ -159,7 +159,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${client.handshake.query.user_login} joined`,
         )
         client.emit('new-group-list', {
-            content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+            content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
             type: MessageType.SPECIAL,
         })
     }
@@ -190,7 +190,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
 
         client.emit('new-group-list', {
-            content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+            content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
             type: MessageType.SPECIAL,
         })
         client.leave(payload.room_id)
@@ -252,7 +252,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.join(payload.room_id)
             clientSocket.emit('new-group-list', {
-                content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+                content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
                 type: MessageType.SPECIAL,
             })
             await this.setupSpecialMessage(
@@ -282,7 +282,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) {
                 clientSocket.join(payload.room_id)
-                const room = await this.groupService.getGroupChatRoom(payload.room_id)
+                const room = await this.groupChatService.getGroupChatRoom(payload.room_id)
                 clientSocket.emit('add-message', {
                     content: `you got invited to ${room.name}`,
                     type: MessageType.SPECIAL,
@@ -320,7 +320,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) {
-                const room = await this.groupService.getGroupChatRoom(payload.room_id)
+                const room = await this.groupChatService.getGroupChatRoom(payload.room_id)
                 clientSocket.emit('add-message', {
                     content: `you got back to normal in ${room.name} chat`,
                     type: MessageType.SPECIAL,
