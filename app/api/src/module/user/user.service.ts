@@ -80,7 +80,7 @@ export class UserService {
         try {
             const users = await this.prisma.user.findMany({
                 where: {
-                    login: {
+                    username: {
                         contains: search,
                         mode: 'insensitive',
                     },
