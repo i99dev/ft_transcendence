@@ -214,11 +214,11 @@ onMounted(async () => {
 })
 
 const getOpponent = (game) => {
-  return game.opponents.find((opponent) => opponent.user.login !== 'aaljaber')
+  return game.opponents.find((opponent) => opponent.user.login !== useUserInfo().user_info.value.login)
 }
 
 const getMe = (game) => {
-  return game.opponents.find((opponent) => opponent.user.login === 'aaljaber')
+  return game.opponents.find((opponent) => opponent.user.login === useUserInfo().user_info.value.login)
 }
 
 const handleDropdown = () => {
