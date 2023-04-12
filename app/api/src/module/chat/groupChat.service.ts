@@ -1,4 +1,4 @@
-import { ChatRepository } from './repository/chat.repository';
+import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
@@ -101,8 +101,7 @@ export class GroupChatService {
                 where: {
                     chat_room: {
                         room_id: room_id,
-                    }
-                    
+                    },
                 },
                 include: {
                     sender: true,
@@ -160,9 +159,9 @@ export class GroupChatService {
                 where: {
                     chat_user: {
                         some: {
-                            user_login: user
-                        }
-                    }
+                            user_login: user,
+                        },
+                    },
                 },
             })
             return groupChats
@@ -193,11 +192,11 @@ export class GroupChatService {
         try {
             const chat = await this.prisma.groupChat.findMany({
                 where: {
-                  chat_user: {
-                    some: {
-                      user_login: user_login,
+                    chat_user: {
+                        some: {
+                            user_login: user_login,
+                        },
                     },
-                  },
                 },
                 include: {
                     chat_room: {
@@ -214,11 +213,11 @@ export class GroupChatService {
                         where: {
                             NOT: {
                                 user_login: user_login,
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
-            });
+            })
             const sortedChat = this.chatRepository.sort(chat)
             return sortedChat
         } catch (error) {
@@ -232,7 +231,7 @@ export class GroupChatService {
                 where: {
                     name: {
                         contains: search,
-                        mode: 'insensitive'
+                        mode: 'insensitive',
                     },
                 },
             })

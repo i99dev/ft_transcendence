@@ -16,7 +16,8 @@ export class ChatController {
     @Get('')
     async getChatRooms(@Query('type') type: string, @Req() req) {
         if (!type) return await this.groupChatService.getChatRooms()
-        else if (type === 'GROUP') return await this.groupChatService.getChatRoomsForGroups(req.user.login)
+        else if (type === 'GROUP')
+            return await this.groupChatService.getChatRoomsForGroups(req.user.login)
         else if (type === 'DM') return await this.chatService.getDirectChatRooms(req.user.login)
     }
 

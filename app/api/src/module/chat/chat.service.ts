@@ -149,8 +149,8 @@ export class ChatService {
                     chat_room_id: room_id,
                     content: message,
                     sender_login: user_login,
-                    type: type
-                }
+                    type: type,
+                },
             })
             return chatRoomMessage
         } catch (error) {
@@ -374,13 +374,13 @@ export class ChatService {
                 where: {
                     users: {
                         some: {
-                            login: user
-                        }
-                    }
+                            login: user,
+                        },
+                    },
                 },
                 include: {
-                    users: true
-                }
+                    users: true,
+                },
             })
             return directChats
         } catch (error) {
@@ -426,17 +426,17 @@ export class ChatService {
                                     created_at: 'desc',
                                 },
                                 take: 1,
-                            }
-                        }
+                            },
+                        },
                     },
                     users: {
                         where: {
                             NOT: {
                                 login: user_login,
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             })
             const sortedChat = await this.chatRepository.sort(chatRooms)
             return sortedChat

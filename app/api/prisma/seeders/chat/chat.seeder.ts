@@ -15,7 +15,7 @@ export class GroupChatSeeder {
                     chat_room_id: 'room1',
                     name: 'Mayers',
                     type: chatType.PUBLIC,
-                    image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw'
+                    image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw',
                 },
             }),
             await this.prisma.groupChat.upsert({
@@ -25,7 +25,7 @@ export class GroupChatSeeder {
                     chat_room_id: 'room2',
                     name: 'Novembers',
                     type: chatType.PRIVATE,
-                    image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw'
+                    image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw',
                 },
             }),
             await this.prisma.groupChat.upsert({
@@ -35,7 +35,7 @@ export class GroupChatSeeder {
                     chat_room_id: 'room3',
                     name: 'bnaji - oal-tena',
                     type: chatType.PUBLIC,
-                    image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw'
+                    image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw',
                 },
             }),
         ]

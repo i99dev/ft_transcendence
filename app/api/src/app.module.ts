@@ -22,7 +22,7 @@ import { NotificationModule } from '@module/notification/notification.module'
         GameModule,
         ChatModule,
         MatchHistoryModule,
-        NotificationModule
+        NotificationModule,
     ],
     controllers: [AppController],
     providers: [AppService],

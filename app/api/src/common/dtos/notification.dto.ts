@@ -1,8 +1,7 @@
-import { NotificationType } from "@prisma/client";
-import { IsOptional, IsString } from "class-validator";
+import { NotificationType } from '@prisma/client'
+import { IsOptional, IsString } from 'class-validator'
 
 export class CreateNotificationDto {
-
     @IsString()
     user_login: string
 
