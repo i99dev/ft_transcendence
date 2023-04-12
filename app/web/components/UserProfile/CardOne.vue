@@ -155,7 +155,7 @@ function openFriendsModel() {
                 </div>
 
                 <div class="flex flex-row space-x-6">
-                    <div class="relative" @click="openChatModel">
+                    <div class="relative cursor-pointer" @click="openChatModel">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

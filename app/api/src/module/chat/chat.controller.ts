@@ -41,6 +41,7 @@ export class ChatController {
         @Req() req,
         @Query('page') page: number,
     ) {
+        if (page <= 0 || page > 1000000) return []
         if (page <= 0) return []
         return await this.groupChatService.getChatRoomMessages(room_id, page)
     }

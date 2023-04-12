@@ -1,0 +1,169 @@
+<template>
+  <div class="bg-slate-100 rounded-lg mt-2">
+    <div
+        class="p-2 relative flex"
+    >
+        <button @click="$emit('exitChat')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 12l14 0"></path>
+                <path d="M5 12l6 6"></path>
+                <path d="M5 12l6 -6"></path>
+            </svg>
+        </button>
+        
+        <img v-if="chatType === 'DM'"
+            :src="currentChat.users[1].image"
+            alt="User Photo"
+            class="rounded-full w-10 h-10 object-cover mx-1"
+        />
+        <img v-else
+            :src="currentChat.image"
+            alt="User Photo"
+            class="rounded-full w-10 h-10 object-cover mx-1"
+        />
+        <span
+        class="absolute bottom-2 left-16 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
+        />
+        <div v-if="chatType === 'DM'" class="text-slate-700 ml-2 text-xl py-1">{{ currentChat.users[1].username }}</div>
+        <div v-else class="text-slate-700 ml-2 text-xl py-1">{{ currentChat.name }}</div>
+    </div>
+    <div class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
+        <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col">
+            <div
+                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
+                v-for="(message, index) in messages"
+                :key="index"
+                :class="{
+                    'bg-green-200': message.sender_login === user_info.login && message.type !== 'SPECIAL',
+                    'self-end': message.sender_login === user_info.login,
+                    'self-center': message.type === 'SPECIAL',
+                    'w-9/12': message.type !== 'SPECIAL',
+                }"
+            >
+                <div v-if="message.sender_login !== user_info.login" class="ml-2 -mb-[1px] inline-block overflow-hidden top-0 absolute transform -scale-y-100"
+                    :class="{ '-left-3': message.sender_login !== user_info.login, '-right-1': message.sender_login === user_info.login, '-scale-x-100': message.sender_login === user_info.login }"
+                >
+                    <div class="h-3 w-3 origin-bottom-left rotate-45 transform bg-gray-200"
+                        :class="{ 'bg-green-200': message.sender_login === user_info.login}"
+                    >
+                    </div>
+                </div>
+                <div v-if="chatType === 'GROUP' && message.type !== 'SPECIAL'"
+                    class="text-sm"
+                    :style="{color: `#${Math.floor(Math.random()*16777215).toString(16)}`}"
+                >
+                    {{ message.sender.username }}
+                </div>
+                <div
+                    class="break-words"
+                   :class="{
+                        'text-sm': message.type === 'SPECIAL'
+                   }"
+                >
+                    {{ message.content }}
+                </div >
+                    <button v-if="message.sender_login === user_info.login && message.type !== 'SPECIAL'" class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full"
+                        @click="deleteMessage(message.id)"
+                    >
+                        <TrashIcon class="h-4 w-4" aria-hidden="true" />
+                    </button>
+                    <div v-if="message.type !== 'SPECIAL'" class="text-gray-600 text-sm flex justify-end">
+                        <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
+                        {{ new Date(message.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) }}
+                    </div>
+            </div>
+        </div>
+        <div>
+            <form @submit.prevent="sendMessage">
+                <input
+                    v-model="newMessage"
+                    type="text"
+                    placeholder="Message"
+                    class="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-400 mb-8"
+                    style="outline: none;"
+                />
+                <button
+                    type="submit"
+                    class=" bg-blue-500 text-white py-2 px-2 -ml-10 mt-4 rounded-full h-full"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M10 14l11 -11"></path>
+                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                    </svg>
+                </button>
+            </form>
+            
+        </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { TrashIcon } from '@heroicons/vue/24/outline'
+import { Socket } from 'socket.io-client';
+
+const { user_info } = useUserInfo()
+
+const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const messages = ref()
+const newMessage = ref('')
+
+const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
+
+onMounted(async () => {
+    //scroll to bottom
+    const chatMessages = document.getElementById('chat-messages') as HTMLElement
+    setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+
+    chatSocket.value.on('add-message', (payload : chatMessage) => {
+        messages.value.push(payload)
+        
+        //scroll to bottom
+        const chatMessages = document.getElementById('chat-messages') as HTMLElement
+        setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+    })
+
+    chatSocket.value.on('delete-message', (payload : number) => {
+        messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
+    })
+
+    chatSocket.value.on('exception', (payload)=>{
+        console.log(`${payload}: ${payload.message}`)
+    })
+
+    const { data } = await useChatMessages(currentChat.chat_room_id)
+    if (data) {
+        messages.value = data.value 
+    }
+})
+
+
+const sendMessage = () => {
+    chatSocket.value.emit('add-message', JSON.stringify({room_id: currentChat.chat_room_id, message: newMessage.value}))
+    newMessage.value = ''
+}
+
+const deleteMessage = (message_id: number) => {
+    chatSocket.value.emit('delete-message', JSON.stringify({room_id: currentChat.chat_room_id, message_id: message_id}))
+}
+
+</script>
+
+<style scoped>
+#chat-messages {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+#chat-messages::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+/* screen width is less than 768px (medium) */
+#chat-messages {
+    height: 82vh;
+}
+</style>
