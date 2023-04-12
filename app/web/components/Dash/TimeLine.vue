@@ -199,8 +199,10 @@ const isPage = ref(new Map<number, boolean>())
 
 const isFilter = ref(new Map<string, boolean>())
 
+const pageNumber = await useGameHistoryPages()
+
 onMounted(async () => {
-	for (let i = 1; i <= 5; i++)
+	for (let i = 1; i <= pageNumber; i++)
 		isPage.value.set(i, false);
 	isFilter.value.set('all', true);
 	isFilter.value.set('win', false);
@@ -227,7 +229,7 @@ const handleDropdown = () => {
 
 
 const handlePagination = async (page) => {
-	if (page < 1 || page > 5) return
+	if (page < 1 || page > pageNumber) return
 	for (const key of isPage.value.keys())
 		isPage.value.set(key, false)
 	isPage.value.set(page, true)

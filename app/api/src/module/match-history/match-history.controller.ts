@@ -42,4 +42,11 @@ export class MatchHistoryController {
             sort,
         )
     }
+
+    @Get('totalPages')
+    async getTotalPages(@Headers('authorization') authHeader: string): Promise<number> {
+        return await this.matchHistoryService.getTotalPages(
+            await this.matchHistoryService.getLoginFromToken(authHeader),
+        )
+    }
 }

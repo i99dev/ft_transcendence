@@ -12,6 +12,20 @@ export class MatchHistoryService {
         const token = authHeader.split(' ')[1]
         return await this.jwtService.decode(token)['login']
     }
+    async getTotalPages(player: string): Promise<number> {
+        const count = await this.prisma.match.count({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                    },
+                },
+            },
+        })
+        return Math.ceil(count / this.limit)
+    }
     async getPlayerMatchHistory(page: number, player: string): Promise<MatchHistoryDto[]> {
         const skip = (page - 1) * this.limit
         const match = await this.prisma.match.findMany({

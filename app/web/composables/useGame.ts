@@ -29,12 +29,28 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
         },
     })
     const error = errorRef.value
-    if (error) {
+    if (error)
         console.error('Failed to get match history:', error)
-    } else {
+    else
         console.log('Match history:', data.value)
-    }
     return data.value
+}
+
+export async function useGameHistoryPages(): Promise<number | null> {
+	const api = useRuntimeConfig().API_URL
+	const { data, error: errorRef } = await useFetch<number>(`/match-history/totalPages`, {
+		method: 'GET',
+		baseURL: api,
+		headers: {
+			Authorization: `Bearer ${useCookie('access_token').value}`,
+		},
+	})
+	const error = errorRef.value
+	if (error)
+		console.error('Failed to get pages:', error)
+	else
+		console.log('Match history Page number:', data.value)
+	return data.value
 }
 
 
