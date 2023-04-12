@@ -337,7 +337,6 @@ const removeUser = (user: User) => {
 const CanAddUsers = () => {
 
   for(let i = 0; i < participants.value.length; i++) {
-    console.log(participants.value[i].user_login === user_info.value.login && participants.value[i].role !== 'MEMBER')
     if (participants.value[i].user_login === user_info.value.login && participants.value[i].role !== 'MEMBER')
       return true
   }

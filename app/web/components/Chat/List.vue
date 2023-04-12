@@ -16,7 +16,7 @@
               >
                   <div class="relative">
                     <img v-if="chatType === 'DM'"
-                        :src="chat.users[1].image"
+                        :src="chat.users[0].image"
                         alt="User Photo"
                         class="rounded-full w-10 h-10 object-cover"
                     />
@@ -33,7 +33,7 @@
 
                   <div class="flex justify-between w-full">
                     <div class="flex flex-col mx-4">
-                      <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">{{ chat.users[1].username }}</div> <!-- there should be one user only -->
+                      <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">{{ chat.users[0].username }}</div> <!-- there should be one user only -->
                       <div v-else class="flex justify-start text-slate-700">{{ chat.name }}</div>
     
                       <div class="text-xs max-w-md text-slate-400 ">

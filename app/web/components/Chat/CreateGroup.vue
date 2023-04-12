@@ -322,7 +322,7 @@ const createGroupChat = () => {
 }
 
 const handleForm = () => {
-  console.log('Handled')
+  // console.log('Handled')
 }
 
 const handleFileUpload = () => {

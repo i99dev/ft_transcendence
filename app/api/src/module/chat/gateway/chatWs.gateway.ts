@@ -27,7 +27,7 @@ import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
 import { ChatService } from '../chat.service'
 import { UserService } from '../../user/user.service'
-import { GroupService } from '../groupChat.service'
+import { GroupChatService } from '../groupChat.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -45,7 +45,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private chatWsService: ChatWsService,
         private chatService: ChatService,
-        private groupService: GroupService,
+        private groupChatService: GroupChatService,
         private userService: UserService,
         private jwtService: JwtService,
     ) {}
@@ -86,7 +86,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${this.getID(client) as string} created a group chat`,
         )
         client.emit('new-group-list', {
-            content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+            content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
             type: MessageType.SPECIAL,
         })
     }
@@ -161,7 +161,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${this.getID(client) as string} joined`,
         )
         client.emit('new-group-list', {
-            content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+            content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
             type: MessageType.SPECIAL,
         })
     }
@@ -192,10 +192,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${this.getID(client) as string} left`,
         )
 
-        // client.emit('new-group-list', {
-        //     content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
-        //     type: MessageType.SPECIAL,
-        // })
         client.leave(payload.room_id)
     }
 
@@ -255,7 +251,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const chatUsers = await this.chatWsService.addUser(payload.room_id, payload.user_login)
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.join(payload.room_id)
-            await this.groupService.getGroupChatForUser((this.getID(client)) as string)
+            await this.groupChatService.getGroupChatForUser((this.getID(client)) as string)
 
             this.wss.to(payload.room_id).emit('user-group-chat', chatUsers.chat_user)
             await this.setupSpecialMessage(
@@ -286,8 +282,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) {
                 clientSocket.join(payload.room_id)
-                const room = await this.groupService.getGroupChatRoom(payload.room_id)
-                this.wss.emit('add-message', {
+                const room = await this.groupChatService.getGroupChatRoom(payload.room_id)
+                clientSocket.emit('add-message', {
                     content: `you got invited to ${room.name}`,
                     type: MessageType.SPECIAL,
                 })
@@ -324,8 +320,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) {
-                const room = await this.groupService.getGroupChatRoom(payload.room_id)
-                this.wss.emit('add-message', {
+                const room = await this.groupChatService.getGroupChatRoom(payload.room_id)
+                clientSocket.emit('add-message', {
                     content: `you got back to normal in ${room.name} chat`,
                     type: MessageType.SPECIAL,
                 })

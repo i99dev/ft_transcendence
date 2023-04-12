@@ -24,7 +24,7 @@
                 <path d="M5 12l6 -6"></path>
             </svg>
             <img v-if="chatType === 'DM'"
-                :src="currentChat.users[1].image"
+                :src="currentChat.users[0].image"
                 alt="User Photo"
                 class="rounded-full w-10 h-10 object-cover mx-1"
             />
@@ -43,7 +43,7 @@
             @click="isChatInfoOpened = !isChatInfoOpened"
             class="w-full flex hover:bg-slate-200 rounded-lg pl-2"
         >
-            <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat.users[1].username }}</div>
+            <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat.users[0].username }}</div>
             <div v-else class="text-slate-700 text-xl py-1">{{ currentChat.name }}</div>
         </button>
     </div>
