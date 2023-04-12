@@ -4,7 +4,7 @@
         class="p-2 relative flex"
     >
         <button
-            class="flex flex-row w-3/12 hover:bg-slate-200 items-center rounded-lg"
+            class="flex flex-row justify-between w-24 hover:bg-slate-200 items-center rounded-lg"
             @click="$emit('closeChat')"
         >
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@
 
         <button
             @click="isChatInfoOpened = !isChatInfoOpened"
-            class="w-full flex hover:bg-gray-200 rouned-lg"
+            class="w-full flex hover:bg-slate-200 rounded-lg pl-2"
         >
             <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat.users[1].username }}</div>
             <div v-else class="text-slate-700 text-xl py-1">{{ currentChat.name }}</div>
@@ -71,7 +71,7 @@
                 </div>
                 <div v-if="chatType === 'GROUP' && message.type !== 'SPECIAL'"
                     class="text-sm"
-                    :style="{color: `#${Math.floor(Math.random()*16777215).toString(16)}`}"
+                    :style="{color: participantsColors[message.sender_login]}"
                 >
                     {{ message.sender.username }}
                 </div>
@@ -132,16 +132,24 @@ const messages = ref()
 const newMessage = ref('')
 const isChatInfoOpened = ref(false)
 const participants = ref()
+const participantsColors = ref({} as Map<string, string>)
 
 const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
 
 
 onMounted(async () => {
-    const {data: ChatParticipants} = await useGroupChatParticipants(currentChat.chat_room_id)
-    if (ChatParticipants)
-        participants.value = ChatParticipants.value
+    if (chatType === 'GROUP') {
+        const {data: chatUsers} = await useGroupChatParticipants(currentChat.chat_room_id)
+        if (chatUsers)
+            participants.value = chatUsers.value.chat_user
     
-        //scroll to bottom
+        // set random color for each participant
+        for(let i = 0; i < participants.value.length; i++){
+            participantsColors.value[participants.value[i].user_login] = `${getDarkColor()}`
+        }
+    }
+    
+    //scroll to bottom
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
 
@@ -166,6 +174,14 @@ onMounted(async () => {
         messages.value = data.value 
     }
 })
+
+const getDarkColor = () => {
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += Math.floor(Math.random() * 10);
+    }
+    return color;
+}
 
 
 const sendMessage = () => {

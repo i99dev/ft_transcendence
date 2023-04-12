@@ -92,7 +92,7 @@ const chats = ref()
 const chatType = ref()
 const isChatCreateGroupOpened = ref(false)
 const hoverButton = ref(null)
-const emit = defineEmits(['closeNavBar'])
+const emit = defineEmits(['closeNavBar', 'selectChat'])
 
 const props = defineProps(['chatType'])
 

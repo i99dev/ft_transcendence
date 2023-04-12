@@ -58,7 +58,7 @@
 
 
       <div
-          v-for="participant in participants.chat_user"
+          v-for="participant in participants"
           :key="participant.user.username"
           class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
         
@@ -162,7 +162,7 @@ const setAdminOptions = () => {
 }
 
 const openPopup = (chatUser : ChatUser) => {
-  const myChatUser = participants.value.chat_user.find((chatUser) => chatUser.user_login === user_info.value.login)
+  const myChatUser = participants.value.find((chatUser) => chatUser.user_login === user_info.value.login)
   if (chatUser.user_login === user_info.value.login || chatUser.role === 'OWNER' || myChatUser.role === 'MEMBER') return
   participant.value = chatUser
   setAdminOptions()
