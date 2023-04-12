@@ -47,11 +47,11 @@
             <div v-else class="text-slate-700 text-xl py-1">{{ currentChat.name }}</div>
         </button>
     </div>
-    <ChatParticipants v-if="isChatInfoOpened && chatType === 'GROUP'" :currentChat="currentChat" :participants="participants" />
+    <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" :currentChat="currentChat" :participants="participants" />
     <div v-else class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
-        <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col">
+        <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col h-full">
             <div
-                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
+                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group"
                 v-for="(message, index) in messages"
                 :key="index"
                 :class="{
@@ -94,18 +94,18 @@
                     </div>
             </div>
         </div>
-        <div>
-            <form @submit.prevent="sendMessage">
+        <div class="w-full h-min mb-8">
+            <form @submit.prevent="sendMessage" class="w-full flex justify-center my-4">
                 <input
                     v-model="newMessage"
                     type="text"
                     placeholder="Message"
-                    class="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-400 mb-8"
+                    class="w-11/12 p-3 border-2 border-gray-300 rounded-xl focus:border-blue-400"
                     style="outline: none;"
                 />
                 <button
                     type="submit"
-                    class=" bg-blue-500 text-white py-2 px-2 -ml-10 mt-4 rounded-full h-full"
+                    class=" bg-blue-500 text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -150,23 +150,17 @@ onMounted(async () => {
     }
     
     //scroll to bottom
-    const chatMessages = document.getElementById('chat-messages') as HTMLElement
-    setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+    scrollToLastMessage()
 
     chatSocket.value.on('add-message', (payload : chatMessage) => {
         messages.value.push(payload)
         
         //scroll to bottom
-        const chatMessages = document.getElementById('chat-messages') as HTMLElement
-        setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+        scrollToLastMessage()
     })
 
     chatSocket.value.on('delete-message', (payload : number) => {
         messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
-    })
-
-    chatSocket.value.on('exception', (payload)=>{
-        console.log(`${payload}: ${payload.message}`)
     })
 
     const { data } = await useChatMessages(currentChat.chat_room_id)
@@ -174,6 +168,12 @@ onMounted(async () => {
         messages.value = data.value 
     }
 })
+
+const scrollToLastMessage = () => {
+    if (isChatInfoOpened) return
+    const chatMessages = document.getElementById('chat-messages') as HTMLElement
+    setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
+}
 
 const getDarkColor = () => {
     var color = '#';
@@ -208,6 +208,6 @@ const deleteMessage = (message_id: number) => {
 
 /* screen width is less than 768px (medium) */
 #chat-messages {
-    height: 82vh;
+    /* height: 85%; */
 }
 </style>

@@ -10,6 +10,7 @@ import {
     ChatRoomType,
     ChatUserRole,
     ChatUserStatus,
+    ChatUser,
 } from '@prisma/client'
 import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
@@ -104,42 +105,52 @@ export class ChatWsService {
     }
 
     async handleAdminSetup(payload: SetUserDto, user_login: string) {
-        if (payload.action === 'upgrade') await this.makeAdmin(payload.room_id, payload.user_login)
+        if (payload.action === 'upgrade')
+            return await this.makeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'downgrade')
-            await this.removeAdmin(payload.room_id, payload.user_login)
+            return await this.removeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'owner')
-            await this.makeOwner(payload.room_id, payload.user_login, user_login)
+            return await this.makeOwner(payload.room_id, payload.user_login, user_login)
         else throw new WsException('Invalid action')
     }
 
     async makeAdmin(room_id: string, user_login: string) {
-        const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.ADMIN) throw new WsException('User is already admin')
+        let chatUsers: ChatUser[] = []
+        chatUsers.push(await this.chatService.getChatUser(room_id, user_login))
+        if (chatUsers[0].role === ChatUserRole.ADMIN) throw new WsException('User is already admin')
 
-        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.MEMBER) {
-            await this.chatService.updateChatUser(user_login, room_id, {
+        if (chatUsers[0].role !== ChatUserRole.OWNER && chatUsers[0].role === ChatUserRole.MEMBER) {
+            chatUsers[0] = await this.chatService.updateChatUser(user_login, room_id, {
                 role: ChatUserRole.ADMIN,
             })
         }
+        return chatUsers
     }
 
     async removeAdmin(room_id: string, user_login: string) {
-        const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.MEMBER) throw new WsException('User is not admin')
+        let chatUsers: ChatUser[] = []
+        chatUsers.push(await this.chatService.getChatUser(room_id, user_login))
+        if (chatUsers[0].role === ChatUserRole.MEMBER) throw new WsException('User is not admin')
 
-        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.ADMIN) {
-            await this.chatService.updateChatUser(user_login, room_id, {
+        if (chatUsers[0].role !== ChatUserRole.OWNER && chatUsers[0].role === ChatUserRole.ADMIN) {
+            chatUsers[0] = await this.chatService.updateChatUser(user_login, room_id, {
                 role: ChatUserRole.MEMBER,
             })
         }
+        return chatUsers
     }
 
     async makeOwner(room_id: string, user_login: string, owner: string) {
-        const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role !== ChatUserRole.OWNER) throw new WsException('User is not the owner')
+        const chatOwner = await this.chatService.getChatUser(room_id, owner)
+        if (chatOwner.role !== ChatUserRole.OWNER) throw new WsException('User is not the owner')
 
-        await this.chatService.updateChatUser(owner, room_id, { role: ChatUserRole.ADMIN })
-        await this.chatService.updateChatUser(user_login, room_id, { role: ChatUserRole.OWNER })
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role !== ChatUserRole.ADMIN) throw new WsException('User is not an admin')
+
+        let chatUsers: ChatUser[] = []
+        chatUsers.push(await this.chatService.updateChatUser(owner, room_id, { role: ChatUserRole.ADMIN }))
+        chatUsers.push(await this.chatService.updateChatUser(user_login, room_id, { role: ChatUserRole.OWNER }))
+        return chatUsers
     }
 
     async joinGroupChat(room_id: string, user_login: string) {
@@ -152,6 +163,7 @@ export class ChatWsService {
             role: ChatUserRole.MEMBER,
             status: ChatUserStatus.NORMAL,
         })
+        return await this.groupService.getGroupChatUsers(room_id)
     }
 
     async inviteUser(room_id: string, user_login: string, sender: string) {
@@ -183,10 +195,11 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
         })
+        return await this.groupService.getGroupChatUsers(room_id)
     }
 
     async addUser(room_id: string, user_login: string) {
-        this.joinGroupChat(room_id, user_login)
+        return this.joinGroupChat(room_id, user_login)
     }
 
     async kickUser(room_id: string, user_login: string, sender: string) {
@@ -199,6 +212,8 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
         })
+
+        return await this.groupService.getGroupChatUsers(room_id)
     }
 
     async banUser(room_id: string, user_login: string, sender: string) {

@@ -21,6 +21,7 @@ import {
     DeleteMessageDto,
     CreateGroupChatDto,
     CreateDirectChatDto,
+    RoomIdDto,
 } from './dto/chatWs.dto'
 import { WsException } from '@nestjs/websockets'
 import { SocketValidationPipe } from '../../../common/pipes/socketObjValidation.pipe'
@@ -168,7 +169,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('exit-group-chat')
     async exitChatUser(
         @ConnectedSocket() client: Socket,
-        @MessageBody(new SocketValidationPipe()) payload: MainInfoDto,
+        @MessageBody(new SocketValidationPipe()) payload: RoomIdDto,
     ) {
         if (!(await this.chatService.getUser((this.getID(client)) as string)))
             return this.socketError('User not found')
@@ -182,18 +183,19 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
             return this.socketError('User is already outside the chat room')
 
-        await this.chatWsService.leaveGroupChat(payload.room_id, (this.getID(client)) as string)
+        const chatUsers = await this.chatWsService.leaveGroupChat(payload.room_id, (this.getID(client)) as string)
 
+        this.wss.to(payload.room_id).emit('user-group-chat', chatUsers.chat_user)
         await this.setupSpecialMessage(
             (this.getID(client)),
             payload.room_id,
             `${this.getID(client) as string} left`,
         )
 
-        client.emit('new-group-list', {
-            content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
-            type: MessageType.SPECIAL,
-        })
+        // client.emit('new-group-list', {
+        //     content: await this.groupService.getGroupChatForUser((this.getID(client)) as string),
+        //     type: MessageType.SPECIAL,
+        // })
         client.leave(payload.room_id)
     }
 
@@ -230,7 +232,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.chatWsService.canChangeAdmin(payload.room_id, (this.getID(client)) as string)))
             return this.socketError('User is neither admin nor owner')
 
-        await this.chatWsService.handleAdminSetup(payload, (this.getID(client)) as string) // 'upgrade' , 'downgrade', 'owner'
+        const chatUsers = await this.chatWsService.handleAdminSetup(payload, (this.getID(client)) as string) // 'upgrade' , 'downgrade', 'owner'
+        this.wss.to(payload.room_id).emit('admin-group-chat', chatUsers)
     }
 
     @SubscribeMessage('user-group-chat')
@@ -249,27 +252,25 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User is neither admin nor owner')
 
         if (payload.action === 'add') {
-            await this.chatWsService.addUser(payload.room_id, payload.user_login)
+            const chatUsers = await this.chatWsService.addUser(payload.room_id, payload.user_login)
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.join(payload.room_id)
-            const chatList = await this.groupService.getGroupChatForUser((this.getID(client)) as string)
-            this.wss.emit('new-group-list', {
-                content: chatList,
-                type: MessageType.SPECIAL,
-            })
+            await this.groupService.getGroupChatForUser((this.getID(client)) as string)
 
+            this.wss.to(payload.room_id).emit('user-group-chat', chatUsers.chat_user)
             await this.setupSpecialMessage(
                 (this.getID(client)),
                 payload.room_id,
                 `${this.getID(client) as string} added ${payload.user_login}`,
             )
         } else if (payload.action === 'kick') {
-            await this.chatWsService.kickUser(
+            const chatUsers = await this.chatWsService.kickUser(
                 payload.room_id,
                 payload.user_login,
                 (this.getID(client)) as string,
             )
             const clientSocket = this.getSocket(payload.user_login)
+            this.wss.to(payload.room_id).emit('user-group-chat', chatUsers.chat_user)
             await this.setupSpecialMessage(
                 (this.getID(client)),
                 payload.room_id,
@@ -330,6 +331,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 })
             }
         } else return this.socketError('Invalid action')
+        
+
     }
 
     @SubscribeMessage('add-message')

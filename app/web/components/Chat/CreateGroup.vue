@@ -48,7 +48,7 @@
                           
 
                           <div class="file-upload">
-                          <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
+                          <input type="file" ref="fileInput" @change="handleFileUpload"  style="display: none;" />
                           <button @click="$refs.fileInput.click()"
                             class="bg-blue-100 rounded-full"
                             :class="{ 'p-2': !chatImage}"
@@ -76,6 +76,7 @@
                             placeholder="Enter group name"
                             aria-label="Group Name"
                             v-model="groupChat.name"
+                            @keyup.enter="nextStage"
                             required
                           >
                         </div>
@@ -265,9 +266,6 @@ onMounted(() => {
       chatSocket.value.emit('user-group-chat', JSON.stringify({room_id: payload.room_id, user_login: users.value[i].login, action: 'add'}))
     }
     closePopup()
-  })
-  chatSocket.value.on('exception', (payload)=>{
-    console.log(`${payload}: ${payload.message}`)
   })
 })
 

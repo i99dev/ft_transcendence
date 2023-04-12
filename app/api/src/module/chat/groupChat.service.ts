@@ -131,6 +131,11 @@ export class GroupService {
                 },
                 select: {
                     chat_user: {
+                        where: {
+                            NOT: {
+                                status: 'OUT',
+                            }
+                        },
                         include: {
                             user: true,
                         }
