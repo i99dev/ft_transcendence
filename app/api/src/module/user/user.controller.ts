@@ -68,7 +68,7 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async SearchUser(@Query('search') search: string, @Req() req) {
+    async SearchUser(@Query('username') search: string, @Req() req) {
         return await this.UserService.SearchUser(search)
     }
 
