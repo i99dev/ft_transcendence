@@ -9,6 +9,7 @@ import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
+import { NotificationModule } from '@module/notification/notification.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -21,6 +22,7 @@ import { MatchHistoryModule } from './module/match-history/match-history.module'
         GameModule,
         ChatModule,
         MatchHistoryModule,
+        NotificationModule
     ],
     controllers: [AppController],
     providers: [AppService],

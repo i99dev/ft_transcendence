@@ -4,6 +4,7 @@ import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/cli
 import { UpdateChatUserInterface } from './interface/chat.interface'
 import { chatType } from '@prisma/client'
 import { ChatRepository } from './repository/chat.repository'
+import { CreateNotificationDto } from '@common/dtos/notification.dto'
 
 @Injectable()
 export class ChatService {
