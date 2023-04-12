@@ -52,16 +52,16 @@ export class ChatController {
         return await this.chatService.getChatUserMessagesInChatRoom(room_id, req.user.login)
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('/groupChat/me')
     async getGroupChat(@Req() req) {
-        return await this.groupChatService.getGroupChatForUser('isaad')
+        return await this.groupChatService.getGroupChatForUser(req.user.login)
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('/directChat/me')
     async getDirectChat(@Req() req) {
-        return await this.chatService.getDirectChatForUser('isaad')
+        return await this.chatService.getDirectChatForUser(req.user.login)
     }
 
     @UseGuards(JwtAuthGuard)
