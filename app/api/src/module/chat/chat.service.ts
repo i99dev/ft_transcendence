@@ -427,6 +427,13 @@ export class ChatService {
                                 take: 1,
                             }
                         }
+                    },
+                    users: {
+                        where: {
+                            NOT: {
+                                login: user_login,
+                            }
+                        }
                     }
                 }
             })

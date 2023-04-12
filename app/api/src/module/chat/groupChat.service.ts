@@ -210,6 +210,13 @@ export class GroupChatService {
                             },
                         },
                     },
+                    chat_user: {
+                        where: {
+                            NOT: {
+                                user_login: user_login,
+                            }
+                        }
+                    }
                 },
             });
             const sortedChat = this.chatRepository.sort(chat)
