@@ -137,11 +137,9 @@
 		  <div>
 			<p class="text-sm text-gray-700">
 			  Showing
-			  <span class="font-medium">1</span>
-			  to
-			  <span class="font-medium">10</span>
+			  <span class="font-medium"> {{ currentPage }}</span>
 			  of
-			  <span class="font-medium">97</span>
+			  <span class="font-medium"> {{ pageNumber }} </span>
 			  results
 			</p>
 		  </div>
