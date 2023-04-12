@@ -6,7 +6,7 @@ import { ChatRoom } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 
 @Injectable()
-export class GroupService {
+export class GroupChatService {
     constructor(private prisma: PrismaService, private chatRepository: ChatRepository) {}
     private chatRooms: ChatRoom[]
 
