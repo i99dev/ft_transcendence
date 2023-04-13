@@ -36,11 +36,13 @@
                                             <ChatOptions 
                                                 :chatType="chatType"
                                                 @switchChatType="switchChatType"
+                                                @filteredGroupChatNames="(searchedGroupChats) => filteredGroupChatNames = searchedGroupChats"
                                             />
                                         </div>
                                     </div>
                                     <ChatList v-if="chatListView"
                                         :chatType="chatType"
+                                        :filteredGroupChatNames="filteredGroupChatNames"
                                         @selectChat="switchChatView"
                                         @closeNavBar="setChatModalOpen(false)"
                                     />
@@ -48,7 +50,8 @@
                                         :currentChat="currentChat"
                                         :chatType="chatType"
                                         @closeChat="switchChatView"
-                                    />
+                                    />div
+div
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -74,12 +77,12 @@ import {
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
-
 const { chat_info, setChatModalOpen, send_message } = useChat()
 
 const chatListView = ref(true)
 const currentChat = ref()
 const chatType = ref('DM')
+const filteredGroupChatNames = ref()
 
 const switchChatType = (type: string) => {
     chatType.value = type
@@ -88,7 +91,7 @@ const switchChatType = (type: string) => {
 }
 
 const switchChatView = async (chat: directChat | groupChat) => {
-    if (chat) {
+    if (chat && chatType.value) {
         chatListView.value = false
         currentChat.value = chat
     }

@@ -66,7 +66,6 @@
 
 const { user_info } = useUserInfo()
 const dimmedUsers = ref([] as ChatUser[])
-const filteredUsers = ref([] as User[])
 const searchedUsers = ref('')
 
 const { isMe, search, unwantedUsers } = defineProps(['isMe', 'search', 'unwantedUsers'])

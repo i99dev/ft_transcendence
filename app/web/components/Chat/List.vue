@@ -31,12 +31,25 @@
                     />
                   </div>
 
-                  <div class="flex justify-between" style="width: 90%;">
+                  <!-- last message details -->
+                  <div
+                    class="flex justify-between"
+                    style="width: 90%;"
+                  >
                     <div class="flex flex-col mx-4 w-1/2">
                       <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">{{ chat.users[0].username }}</div> <!-- there should be one user only -->
-                      <div v-else class="flex justify-start text-slate-700">{{ chat.name }}</div>
+                      <div
+                        v-else
+                        class="flex justify-start text-slate-700"
+                        :class=" {'h-10': !chatType,  'items-center': !chatType}"
+                      >
+                        {{ chat.name }}
+                      </div>
     
-                      <div class=" w-full flex justify-start whitespace-nowrap text-xs text-slate-400">
+                      <div
+                        v-if="chatType"
+                        class=" w-full flex justify-start whitespace-nowrap text-xs text-slate-400"
+                      >
                         <span v-if="chatType === 'GROUP'"
                           class="w-auto"
                         >
@@ -47,9 +60,6 @@
                         </span>
                       </div>
                     </div>
-                    
-                    
-  
                     <button v-if="chatType === 'DM' && hoverButton === chat" class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
                         @click.stop="challange">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ping-pong" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -59,7 +69,10 @@
                         <path d="M9.3 5.3l9.4 9.4"></path>
                       </svg>
                     </button>
-                    <div class="text-xs text-slate-400 flex items-end">
+                    <div
+                      v-if="chatType"
+                      class="text-xs text-slate-400 flex items-end"
+                    >
                       {{
                         getDisplayDate(new Date(chat.chat_room.messages[0].created_at).getFullYear(),
                         new Date(chat.chat_room.messages[0].created_at).getMonth() + 1,
@@ -77,7 +90,7 @@
             <button
               type="button"
               @click="isChatCreateGroupOpened = true"
-              class="rounded-full bg-blue-900 bg-opacity-60 p-4 font-medium text-white hover:bg-opacity-90 transition duration-200 ease-in-out"
+              class="rounded-full bg-indigo-500 bg-opacity-60 p-4 font-medium text-white hover:bg-opacity-90 transition duration-200 ease-in-out"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -103,7 +116,7 @@ const isChatCreateGroupOpened = ref(false)
 const hoverButton = ref(null)
 const emit = defineEmits(['closeNavBar', 'selectChat'])
 
-const props = defineProps(['chatType'])
+const props = defineProps(['chatType', 'filteredGroupChatNames'])
 
 
 watch(()=>props.chatType, async () => {
@@ -118,7 +131,7 @@ onMounted(async () => {
 })
 
 const setup = async () => {
-  const { data } = props.chatType === 'DM' ? await useDirectChats() : await useGroupChats()
+  const { data } = props.chatType === 'DM' ? await useDirectChats() : props.chatType === 'GROUP'? await useGroupChats() : await useGroupChatSearch('')
 
   if (data) chats.value = data.value
 
@@ -129,6 +142,14 @@ const challange = () => {
   emit('closeNavBar')
   // navigateTo('/play')
 }
+
+watch(() => props.filteredGroupChatNames, async (name) => {
+  chatType.value = ''
+  const {data} = await useGroupChatSearch(name)
+  if (data) chats.value = data.value
+})
+
+
 
 </script>
 

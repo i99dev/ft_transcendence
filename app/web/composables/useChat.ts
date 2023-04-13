@@ -81,10 +81,10 @@ export async function useGroupChatSearch(name: string): Promise<any> {
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('users/search', {
+    } = await useFetch('chats/groupChat/search', {
         baseURL: useRuntimeConfig().API_URL,
         query: {
-          username: name
+          name: name
         },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,

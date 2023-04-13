@@ -221,13 +221,7 @@ export class GroupChatService {
                             },
                         },
                     },
-                    chat_user: {
-                        where: {
-                            NOT: {
-                                user_login: user_login,
-                            }
-                        }
-                    }
+                    chat_user: true
                 },
             });
             const sortedChat = this.chatRepository.sort(chat)
@@ -237,7 +231,7 @@ export class GroupChatService {
         }
     }
 
-    async searchGroupChat(search: string) {
+    async searchGroupChat(search: string, user_login: string) {
         try {
             const chat = await this.prisma.groupChat.findMany({
                 where: {
@@ -245,6 +239,19 @@ export class GroupChatService {
                         contains: search,
                         mode: 'insensitive'
                     },
+                },
+                include: {
+                    chat_room: {
+                        select: {
+                            messages: {
+                                orderBy: {
+                                    created_at: 'desc',
+                                },
+                                take: 1,
+                            },
+                        },
+                    },
+                    chat_user: true
                 },
             })
             return chat
@@ -258,6 +265,19 @@ export class GroupChatService {
             const chat = await this.prisma.groupChat.findMany({
                 skip: (page - 1) * 20,
                 take: 20,
+                include: {
+                    chat_room: {
+                        select: {
+                            messages: {
+                                orderBy: {
+                                    created_at: 'desc',
+                                },
+                                take: 1,
+                            },
+                        },
+                    },
+                    chat_user: true
+                },
             })
             return chat
         } catch (error) {
