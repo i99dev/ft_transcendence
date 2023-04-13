@@ -33,7 +33,7 @@ export class GroupChatSeeder {
                 update: {},
                 create: {
                     chat_room_id: 'room3',
-                    name: 'bnaji - oal-tena',
+                    name: 'Master Class',
                     type: chatType.PUBLIC,
                     image: 'https://play-lh.googleusercontent.com/tAz_oa7rcTByVJZIFa4X0eC3zP5uRIxov_tzChPIAGcRQfEfDJglRvwV2wImWgjZKEI=w240-h480-rw'
                 },

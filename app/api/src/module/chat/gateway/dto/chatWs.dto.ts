@@ -46,6 +46,11 @@ export class MainInfoDto {
     password?: string
 }
 
+export class RoomIdDto {
+    @IsString()
+    room_id: string
+}
+
 export class AddUserDto {
     @IsString()
     room_id: string

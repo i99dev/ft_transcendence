@@ -38,7 +38,12 @@
         <button v-if="(user.login !== user_info.login) || (user.login === user_info.login && isMe === true)"
             type="button"
             @click="$emit('selectUser', user)"
-            class="p-2 border-y border-slate-100 bg-slate-200 hover:bg-slate-100 relative"
+            class="p-2 border-y border-slate-100 bg-slate-100 rounded-lg relative"
+            :class="{
+              'bg-slate-300': isUserDimmed(user.login),
+              'hover:bg-indigo-100': !isUserDimmed(user.login),
+              'cursor-default': isUserDimmed(user.login)
+            }"
         >
           <img
                   :src="user.image"
@@ -51,15 +56,25 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 
 
 const { user_info } = useUserInfo()
+const dimmedUsers = ref([] as ChatUser[])
 
-const { isMe, search } = defineProps(['isMe', 'search'])
+const { isMe, search, unwantedUsers } = defineProps(['isMe', 'search', 'unwantedUsers'])
 
 const users = ref()
 const {data} = await useUsers()
-if (data)
-  users.value = data.value
+
+onMounted(()=> {
+  if (data)
+    users.value = data.value
+    if (unwantedUsers) dimmedUsers.value = unwantedUsers
+})
+
+const isUserDimmed = (login: string) => {
+  return dimmedUsers.value.find((u: ChatUser) => u.user_login === login)
+}
+
 </script>

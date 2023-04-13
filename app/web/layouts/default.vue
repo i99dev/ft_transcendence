@@ -1,10 +1,17 @@
-<script setup>
+<script lang="ts" setup>
+import { Socket } from 'socket.io-client';
+
+const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { data, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
 
 if (data) {
     await setUserInfo(data.value)
 }
+
+chatSocket.value.on('exception', (payload)=>{
+    console.log(`${payload}: ${payload.message}`)
+})
 </script>
 
 <template>

@@ -149,6 +149,9 @@ export class ChatService {
                     content: message,
                     sender_login: user_login,
                     type: type
+                },
+                include: {
+                    sender: true
                 }
             })
             return chatRoomMessage

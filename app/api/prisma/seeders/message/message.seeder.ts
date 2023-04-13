@@ -160,8 +160,8 @@ export class MessageSeeder {
                     createMany: {
                         data: [
                             {
-                                content: 'Hello I am abrar',
-                                sender_login: 'aaljaber',
+                                content: 'Hello I am obaid',
+                                sender_login: 'oal-tena',
                             },
                             {
                                 content: 'Is this the direct chat?',
