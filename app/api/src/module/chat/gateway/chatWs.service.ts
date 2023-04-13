@@ -46,14 +46,15 @@ export class ChatWsService {
         const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
-        console.log(payload.password)
+        let password = null
+        if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
                 room_id: room_id,
                 name: payload.name,
                 image: payload.image,
                 type: payload.type,
-                password: payload.password ? bcrypt.hashSync(payload.password, salt) : null,
+                password: password,
             },
             user_login,
         )
@@ -91,7 +92,7 @@ export class ChatWsService {
 
     async isUserNormal(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser && chatUser.status === ChatUserStatus.NORMAL || !chatUser) return true
+        if ((chatUser && chatUser.status === ChatUserStatus.NORMAL) || !chatUser) return true
         return false
     }
 
@@ -170,7 +171,7 @@ export class ChatWsService {
             throw new WsException('Request failed, not a admin')
 
         const room = await this.groupChatService.getGroupChatRoom(room_id)
-        if (room.type !== chatType.PRIVATE) throw new WsException('Room is not protected')
+        if (room.type !== chatType.PRIVATE) throw new WsException('Room is not private')
 
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (

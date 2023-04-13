@@ -34,6 +34,7 @@ model User {
     direct_chats DirectChat[]  @relation("DirectChatUsers")
     chat         ChatUser[]
     message      Message[]
+    notification Notification[]
 }
 
 model Player {
@@ -119,10 +120,20 @@ model Message {
   sender       User        @relation(fields: [sender_login], references: [login])
 }
 
+model Notification {
+  id           Int              @id @default(autoincrement())
+  created_at   DateTime         @default(now())
+  user_login   String
+  content      String
+  type         NotificationType
+  target       String?
+  user         User             @relation(fields: [user_login], references: [login])
+}
+
 enum UserStatus {
-    OFFLINE
-    ONLINE
-    LIVE
+  OFFLINE
+  ONLINE
+  LIVE
 }
 
 enum chatType {
@@ -153,4 +164,12 @@ enum ChatUserStatus {
 enum ChatRoomType {
   DM
   GROUP
+}
+
+enum NotificationType {
+  ACHIEVEMENT
+  FRIEND_REQUEST
+  FRIEND_REQUEST_ACCEPTED
+  MATCH_INVITE
+  CHAT_INVITE
 }

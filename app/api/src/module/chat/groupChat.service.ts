@@ -1,4 +1,4 @@
-import { ChatRepository } from './repository/chat.repository';
+import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
@@ -101,8 +101,7 @@ export class GroupChatService {
                 where: {
                     chat_room: {
                         room_id: room_id,
-                    }
-                    
+                    },
                 },
                 include: {
                     sender: true,
@@ -204,11 +203,11 @@ export class GroupChatService {
         try {
             const chat = await this.prisma.groupChat.findMany({
                 where: {
-                  chat_user: {
-                    some: {
-                      user_login: user_login,
+                    chat_user: {
+                        some: {
+                            user_login: user_login,
+                        },
                     },
-                  },
                 },
                 include: {
                     chat_room: {
@@ -221,9 +220,8 @@ export class GroupChatService {
                             },
                         },
                     },
-                    chat_user: true
                 },
-            });
+            })
             const sortedChat = this.chatRepository.sort(chat)
             return sortedChat
         } catch (error) {
@@ -237,7 +235,7 @@ export class GroupChatService {
                 where: {
                     name: {
                         contains: search,
-                        mode: 'insensitive'
+                        mode: 'insensitive',
                     },
                 },
                 include: {
@@ -251,7 +249,6 @@ export class GroupChatService {
                             },
                         },
                     },
-                    chat_user: true
                 },
             })
             return chat
@@ -276,7 +273,6 @@ export class GroupChatService {
                             },
                         },
                     },
-                    chat_user: true
                 },
             })
             return chat

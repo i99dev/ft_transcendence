@@ -4,6 +4,7 @@ import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/cli
 import { UpdateChatUserInterface } from './interface/chat.interface'
 import { chatType } from '@prisma/client'
 import { ChatRepository } from './repository/chat.repository'
+import { CreateNotificationDto } from '@common/dtos/notification.dto'
 
 @Injectable()
 export class ChatService {
@@ -376,13 +377,13 @@ export class ChatService {
                 where: {
                     users: {
                         some: {
-                            login: user
-                        }
-                    }
+                            login: user,
+                        },
+                    },
                 },
                 include: {
-                    users: true
-                }
+                    users: true,
+                },
             })
             return directChats
         } catch (error) {
@@ -428,17 +429,17 @@ export class ChatService {
                                     created_at: 'desc',
                                 },
                                 take: 1,
-                            }
-                        }
+                            },
+                        },
                     },
                     users: {
                         where: {
                             NOT: {
                                 login: user_login,
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             })
             const sortedChat = await this.chatRepository.sort(chatRooms)
             return sortedChat

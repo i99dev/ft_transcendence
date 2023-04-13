@@ -1,13 +1,24 @@
 <template>
-  <div class="flex flex-row mb-2">
-    <input
-    v-if="searching"
-    v-model="searchedGroupChats"
-    @input="$emit('filteredGroupChatNames', searchedGroupChats)"
-    class="text-sm leading-none text-left text-gray-600 px-4 py-2 mx-2 w-full border rounded border-gray-300 outline-none"
-    type="text"
-    placeholder="Search"
-    />
+    <div class="flex flex-row mb-2">
+        <TransitionRoot
+        :show="searching"
+        enter="transition-opacity duration-500 ease-in-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="transition-opacity duration-500 ease-in-out"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+        class="w-4/5 mx-2 flex items-center"
+    >
+        <input
+            v-model="searchedGroupChats"
+            @input="$emit('filteredGroupChatNames', searchedGroupChats)"
+            class="text-sm leading-none text-left text-gray-600 px-4 py-2 w-full border rounded border-gray-300 outline-none"
+            type="text"
+            placeholder="Search"
+        />
+    </TransitionRoot>
+    
     <button 
         @click="handleChatSearch()"
         class="border rounded-full hover:bg-indigo-200 ease-in-out transition duration-200 p-2 mr-2"
@@ -30,6 +41,7 @@
 
 
 <script lang="ts" setup>
+import { TransitionRoot } from '@headlessui/vue'
 import {
     MagnifyingGlassIcon,
     UserIcon,
