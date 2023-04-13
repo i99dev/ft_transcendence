@@ -10,11 +10,11 @@
               <!-- chat element -->
               <button v-for="chat in chats"
                   @click="$emit('selectChat', chat)"
-                  class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative"
+                  class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full"
                   @mouseover="hoverButton = chat"
                   @mouseleave="hoverButton = null"
               >
-                  <div class="relative">
+                  <div class="relative" style="width: 10%;">
                     <img v-if="chatType === 'DM'"
                         :src="chat.users[0].image"
                         alt="User Photo"
@@ -31,13 +31,18 @@
                     />
                   </div>
 
-                  <div class="flex justify-between w-full">
-                    <div class="flex flex-col mx-4">
+                  <div class="flex justify-between" style="width: 90%;">
+                    <div class="flex flex-col mx-4 w-1/2">
                       <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">{{ chat.users[0].username }}</div> <!-- there should be one user only -->
                       <div v-else class="flex justify-start text-slate-700">{{ chat.name }}</div>
     
-                      <div class="text-xs max-w-md text-slate-400 ">
-                        {{ chat.chat_room.messages[0].content }}
+                      <div class=" w-1/2 flex justify-start overflow-hidden whitespace-nowrap text-xs text-slate-400">
+                        <span v-if="chatType === 'GROUP'">
+                          {{ chat.chat_room.messages[0].sender_login }}:&ensp;
+                        </span>
+                        <span>
+                          {{ chat.chat_room.messages[0].content }}
+                        </span>
                       </div>
                     </div>
   

@@ -51,7 +51,7 @@
     <div v-else class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
         <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col h-full">
             <div
-                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group"
+                class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
                 v-for="(message, index) in messages"
                 :key="index"
                 :class="{
@@ -206,8 +206,4 @@ const deleteMessage = (message_id: number) => {
   display: none; /* Chrome, Safari, Opera*/
 }
 
-/* screen width is less than 768px (medium) */
-#chat-messages {
-    /* height: 85%; */
-}
 </style>

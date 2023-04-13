@@ -230,17 +230,7 @@ const users = ref([] as User[])
 onMounted(()=>{
   participants.value = props?.participants
 
-  chatSocket.value.on('admin-group-chat', (payload: ChatUser[])=>{
-    
-    // Update particpants roles
-    for (let i = 0; i < payload.length; i++)
-      for (let j = 0; j < participants.value.length; j++)
-        if (payload[i].user_login === participants.value[j].user_login)
-          participants.value[j].role = payload[i].role
-
-  })
-
-  chatSocket.value.on('user-group-chat', (payload: ChatUser[])=>{
+  chatSocket.value.on('group-chat-users', (payload: ChatUser[])=>{
     participants.value = payload
   })
 

@@ -106,38 +106,36 @@ export class ChatWsService {
 
     async handleAdminSetup(payload: SetUserDto, user_login: string) {
         if (payload.action === 'upgrade')
-            return await this.makeAdmin(payload.room_id, payload.user_login)
+            await this.makeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'downgrade')
-            return await this.removeAdmin(payload.room_id, payload.user_login)
+            await this.removeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'owner')
-            return await this.makeOwner(payload.room_id, payload.user_login, user_login)
+            await this.makeOwner(payload.room_id, payload.user_login, user_login)
         else throw new WsException('Invalid action')
+
+        return await this.groupChatService.getGroupChatUsers(payload.room_id)
     }
 
     async makeAdmin(room_id: string, user_login: string) {
-        let chatUsers: ChatUser[] = []
-        chatUsers.push(await this.chatService.getChatUser(room_id, user_login))
-        if (chatUsers[0].role === ChatUserRole.ADMIN) throw new WsException('User is already admin')
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.ADMIN) throw new WsException('User is already admin')
 
-        if (chatUsers[0].role !== ChatUserRole.OWNER && chatUsers[0].role === ChatUserRole.MEMBER) {
-            chatUsers[0] = await this.chatService.updateChatUser(user_login, room_id, {
+        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.MEMBER) {
+            await this.chatService.updateChatUser(user_login, room_id, {
                 role: ChatUserRole.ADMIN,
             })
         }
-        return chatUsers
     }
 
     async removeAdmin(room_id: string, user_login: string) {
-        let chatUsers: ChatUser[] = []
-        chatUsers.push(await this.chatService.getChatUser(room_id, user_login))
-        if (chatUsers[0].role === ChatUserRole.MEMBER) throw new WsException('User is not admin')
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.MEMBER) throw new WsException('User is not admin')
 
-        if (chatUsers[0].role !== ChatUserRole.OWNER && chatUsers[0].role === ChatUserRole.ADMIN) {
-            chatUsers[0] = await this.chatService.updateChatUser(user_login, room_id, {
+        if (chatUser.role !== ChatUserRole.OWNER && chatUser.role === ChatUserRole.ADMIN) {
+            await this.chatService.updateChatUser(user_login, room_id, {
                 role: ChatUserRole.MEMBER,
             })
         }
-        return chatUsers
     }
 
     async makeOwner(room_id: string, user_login: string, owner: string) {
@@ -147,10 +145,8 @@ export class ChatWsService {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser.role !== ChatUserRole.ADMIN) throw new WsException('User is not an admin')
 
-        let chatUsers: ChatUser[] = []
-        chatUsers.push(await this.chatService.updateChatUser(owner, room_id, { role: ChatUserRole.ADMIN }))
-        chatUsers.push(await this.chatService.updateChatUser(user_login, room_id, { role: ChatUserRole.OWNER }))
-        return chatUsers
+        await this.chatService.updateChatUser(owner, room_id, { role: ChatUserRole.ADMIN })
+        await this.chatService.updateChatUser(user_login, room_id, { role: ChatUserRole.OWNER })
     }
 
     async joinGroupChat(room_id: string, user_login: string) {
