@@ -27,8 +27,10 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+
 definePageMeta({
-    middleware: ['pages'],
+	middleware: ['pages'],
 })
+
 </script>

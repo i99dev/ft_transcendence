@@ -55,11 +55,13 @@
 		<!-- </div> -->
 	  <!-- </div> -->
 	  <div v-if="games.length > 0">
+
 		<div
 		  v-for="game in games"
 		  :key="game.id"
 		  class="w-full px-2 rounded m-2 bg-white shadow-sm p-2"
 		>
+		<template v-if="!isSameLogin(game)">
 		  <div class="flex flex-row justify-between w-full">
 			<div class="self-center">
 				<img
@@ -116,7 +118,9 @@
 				/>
 			  </div>
 			</div>
+		</template>
 		</div>
+
 	  </div>
 	  <div v-else class="flex flex-col justify-center items-center rounded">
 		<div class="text-center text-gray-500">
@@ -211,6 +215,9 @@ onMounted(async () => {
 	currentFilter.value = 'all'
 	game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
 	isPage.value.set(1, true)
+	console.log(game_history.values)
+	
+	console.log(games.value)
 })
 
 const getOpponent = (game) => {
@@ -225,6 +232,13 @@ const handleDropdown = () => {
   showButton.value = !showButton.value? true : false
 }
 
+// temprorary solution for same login bug
+const isSameLogin = (game) => {
+	if (game.opponents[0].user.login === game.opponents[1].user.login)
+		return true
+	else
+		return false
+}
 
 const handlePagination = async (page) => {
 	if (page < 1 || page > pageNumber) return
@@ -235,6 +249,7 @@ const handlePagination = async (page) => {
 	await handleFilteration(currentFilter.value)
 
 }
+
 
 const handleFilteration = async (filter) => {
 	for (const key of isFilter.value.keys())
