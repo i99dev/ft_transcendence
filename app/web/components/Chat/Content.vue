@@ -102,6 +102,7 @@
                     placeholder="Message"
                     class="w-11/12 p-3 border-2 border-gray-300 rounded-xl focus:border-blue-400"
                     style="outline: none;"
+                    :disabled="AmIMuted"
                 />
                 <button
                     type="submit"
@@ -132,7 +133,9 @@ const messages = ref()
 const newMessage = ref('')
 const isChatInfoOpened = ref(false)
 const participants = ref()
+const me = ref()
 const participantsColors = ref({} as Map<string, string>)
+const AmIMuted = computed(() => {return chatType === 'GROUP' && me.value?.status === 'MUTE'})
 
 const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
 
@@ -142,13 +145,14 @@ onMounted(async () => {
         const {data: chatUsers} = await useGroupChatParticipants(currentChat.chat_room_id)
         if (chatUsers)
             participants.value = chatUsers.value.chat_user
-    
+        me.value = participants.value.find((participant: any) => participant.user_login === user_info.value.login)
+        
         // set random color for each participant
         for(let i = 0; i < participants.value.length; i++){
             participantsColors.value[participants.value[i].user_login] = `${getDarkColor()}`
         }
     }
-    
+
     //scroll to bottom
     scrollToLastMessage()
 
@@ -163,6 +167,11 @@ onMounted(async () => {
         messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
     })
 
+    chatSocket.value.on('group-chat-users', (payload: ChatUser[])=>{
+        participants.value = payload
+        me.value = participants.value.find((participant: any) => participant.user_login === user_info.value.login)
+    })
+
     const { data } = await useChatMessages(currentChat.chat_room_id)
     if (data) {
         messages.value = data.value 
@@ -170,7 +179,7 @@ onMounted(async () => {
 })
 
 const scrollToLastMessage = () => {
-    if (isChatInfoOpened) return
+    if (isChatInfoOpened.value) return
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {chatMessages.scrollTop = chatMessages.scrollHeight}, 100)
 }
@@ -182,7 +191,6 @@ const getDarkColor = () => {
     }
     return color;
 }
-
 
 const sendMessage = () => {
     chatSocket.value.emit('add-message', JSON.stringify({room_id: currentChat.chat_room_id, message: newMessage.value}))

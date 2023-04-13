@@ -36,15 +36,19 @@
                       <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">{{ chat.users[0].username }}</div> <!-- there should be one user only -->
                       <div v-else class="flex justify-start text-slate-700">{{ chat.name }}</div>
     
-                      <div class=" w-1/2 flex justify-start overflow-hidden whitespace-nowrap text-xs text-slate-400">
-                        <span v-if="chatType === 'GROUP'">
-                          {{ chat.chat_room.messages[0].sender_login }}:&ensp;
+                      <div class=" w-full flex justify-start whitespace-nowrap text-xs text-slate-400">
+                        <span v-if="chatType === 'GROUP'"
+                          class="w-auto"
+                        >
+                          {{ chat.chat_room.messages[0].sender_login }}:
                         </span>
-                        <span>
+                        <span class="inline-block max-w-full overflow-hidden whitespace-nowrap ml-1 text-ellipsis">
                           {{ chat.chat_room.messages[0].content }}
                         </span>
                       </div>
                     </div>
+                    
+                    
   
                     <button v-if="chatType === 'DM' && hoverButton === chat" class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
                         @click.stop="challange">

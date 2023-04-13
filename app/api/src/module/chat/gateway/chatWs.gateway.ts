@@ -254,11 +254,18 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.groupChatService.getGroupChatForUser((this.getID(client)) as string)
 
             this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
+
             await this.setupSpecialMessage(
                 (this.getID(client)),
                 payload.room_id,
                 `${this.getID(client) as string} added ${payload.user_login}`,
             )
+
+            clientSocket.emit('new-group-list', {
+                content: await this.groupChatService.getGroupChatForUser((this.getID(client)) as string),
+                type: MessageType.SPECIAL,
+            })
+
         } else if (payload.action === 'kick') {
             const chatUsers = await this.chatWsService.kickUser(
                 payload.room_id,
@@ -266,7 +273,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 (this.getID(client)) as string,
             )
             const clientSocket = this.getSocket(payload.user_login)
+
             this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
+
             await this.setupSpecialMessage(
                 (this.getID(client)),
                 payload.room_id,
@@ -289,43 +298,35 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 })
             }
         } else if (payload.action === 'mute') {
-            await this.chatWsService.muteUser(
+            const chatUsers = await this.chatWsService.muteUser(
                 payload.room_id,
                 payload.user_login,
                 (this.getID(client)) as string,
             )
-            await this.setupSpecialMessage(
-                (this.getID(client)),
-                payload.room_id,
-                `${this.getID(client) as string} muted ${payload.user_login}`,
-            )
+            
+            this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
+
         } else if (payload.action === 'ban') {
-            await this.chatWsService.banUser(
+            const chatUsers = await this.chatWsService.banUser(
                 payload.room_id,
                 payload.user_login,
                 (this.getID(client)) as string,
             )
+
+            this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
+
             const clientSocket = this.getSocket(payload.user_login)
-            await this.setupSpecialMessage(
-                (this.getID(client)),
-                payload.room_id,
-                `${this.getID(client) as string} banned ${payload.user_login}`,
-            )
             if (clientSocket) clientSocket.leave(payload.room_id)
+
         } else if (payload.action === 'reset') {
-            await this.chatWsService.resetUser(
+            const chatUsers = await this.chatWsService.resetUser(
                 payload.room_id,
                 payload.user_login,
                 (this.getID(client)) as string,
             )
-            const clientSocket = this.getSocket(payload.user_login)
-            if (clientSocket) {
-                const room = await this.groupChatService.getGroupChatRoom(payload.room_id)
-                clientSocket.emit('add-message', {
-                    content: `you got back to normal in ${room.name} chat`,
-                    type: MessageType.SPECIAL,
-                })
-            }
+
+            this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
+
         } else return (this.socketError('Invalid action'), [])
         
 
@@ -366,6 +367,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )
                 return this.socketError('This user can not interfer in this DM')
         }
+        
+        if (!payload.message || payload.message === '') return this.socketError('Empty Message')
 
         const message = await this.chatService.createMessage((this.getID(client)) as string, payload.room_id, payload.message)
         

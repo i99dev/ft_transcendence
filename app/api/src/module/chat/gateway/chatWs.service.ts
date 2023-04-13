@@ -46,13 +46,14 @@ export class ChatWsService {
         const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
+        console.log(payload.password)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
                 room_id: room_id,
                 name: payload.name,
                 image: payload.image,
                 type: payload.type,
-                password: bcrypt.hashSync(payload.password, salt),
+                password: payload.password ? bcrypt.hashSync(payload.password, salt) : null,
             },
             user_login,
         )
@@ -223,6 +224,8 @@ export class ChatWsService {
             throw new WsException('User is already banned')
 
         this.chatService.updateUserStatus(user_login, room_id, 'BAN')
+
+        return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
     async muteUser(room_id: string, user_login: string, sender: string) {
@@ -235,6 +238,8 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.MUTE,
         })
+
+        return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
     async resetUser(room_id: string, user_login: string, sender: string) {
@@ -247,6 +252,8 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.NORMAL,
         })
+
+        return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
     async validateUserInRoom(room_id: string, user_login: string) {

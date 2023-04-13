@@ -126,7 +126,9 @@ export class GroupChatService {
                     chat_user: {
                         where: {
                             NOT: {
-                                status: 'OUT',
+                                status: {
+                                    in: ['OUT', 'BAN']
+                                },
                             }
                         },
                         include: {
