@@ -154,6 +154,8 @@ export class ChatWsService {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status !== ChatUserStatus.OUT)
             throw new WsException('User is already in chat room')
+        else if (chatUser && chatUser.status === ChatUserStatus.BAN)
+            throw new WsException('User is banned from chat room')
 
         await this.groupChatService.addUserToGroupChat(room_id, {
             user_login: user_login,

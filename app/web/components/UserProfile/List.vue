@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div class="">
-      <div v-if="search" class="flex justify-start items-center pt-5 pb-2 relative">
+    <div v-if="search" class="flex justify-start items-center pt-5 pb-2 relative">
         <input
+          v-model="searchedUsers"
+          @input="getFilteredUsers()"
           class="text-sm leading-none text-left text-gray-600 px-4 py-3 w-full border rounded border-gray-300 outline-none"
           type="text"
           placeholder="Search"
@@ -31,26 +32,30 @@
           />
         </svg>
       </div>
-      <div v-for="user in users"
-          class="flex flex-col"
-          x-descriptions="Tab component"
-      >
-        <button v-if="(user.login !== user_info.login) || (user.login === user_info.login && isMe === true)"
-            type="button"
-            @click="$emit('selectUser', user)"
-            class="p-2 border-y border-slate-100 bg-slate-100 rounded-lg relative"
-            :class="{
-              'bg-slate-300': isUserDimmed(user.login),
-              'hover:bg-indigo-100': !isUserDimmed(user.login),
-              'cursor-default': isUserDimmed(user.login)
-            }"
+    <div id="users-list" class="overflow-y-scroll h-auto" style="max-height: 70vh;">
+      
+      <div>
+        <div v-for="user in users"
+            class="flex flex-col"
+            x-descriptions="Tab component"
         >
-          <img
-                  :src="user.image"
-                  class="rounded-full w-10 h-10 object-cover"
-          />
-          <div class="absolute top-2 left-16 block text-slate-700">{{ user.username }}</div>
-        </button>
+          <button v-if="(user.login !== user_info.login) || (user.login === user_info.login && isMe === true)"
+              type="button"
+              @click="$emit('selectUser', user)"
+              class="p-2 border-y border-slate-100 bg-slate-100 rounded-xl relative mb-1"
+              :class="{
+                'bg-slate-300': isUserDimmed(user.login),
+                'hover:bg-indigo-100': !isUserDimmed(user.login),
+                'cursor-default': isUserDimmed(user.login)
+              }"
+          >
+            <img
+                    :src="user.image"
+                    class="rounded-full w-10 h-10 object-cover"
+            />
+            <div class="absolute top-2 left-16 block text-slate-700">{{ user.username }}</div>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -61,20 +66,46 @@
 
 const { user_info } = useUserInfo()
 const dimmedUsers = ref([] as ChatUser[])
+const filteredUsers = ref([] as User[])
+const searchedUsers = ref('')
 
 const { isMe, search, unwantedUsers } = defineProps(['isMe', 'search', 'unwantedUsers'])
 
+watch(searchedUsers, async (val) => {
+  if (val === '') {
+    users.value = allUsers.value
+  }
+})
+const {data: allUsers} = await useUsers()
 const users = ref()
-const {data} = await useUsers()
 
 onMounted(()=> {
-  if (data)
-    users.value = data.value
-    if (unwantedUsers) dimmedUsers.value = unwantedUsers
+  if (allUsers)
+    users.value = allUsers.value
+
+  if (unwantedUsers) dimmedUsers.value = unwantedUsers
 })
+
+const getFilteredUsers = async () => {
+  const {data} = await useUsersSearch(searchedUsers.value)
+  users.value = data.value
+}
 
 const isUserDimmed = (login: string) => {
   return dimmedUsers.value.find((u: ChatUser) => u.user_login === login)
 }
 
 </script>
+
+<style scoped>
+#users-list {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+#users-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+</style>
