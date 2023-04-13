@@ -23,8 +23,8 @@ model User {
     created_at   DateTime      @default(now())
     last_login   DateTime      @default(now())
     image        String?
-    exp_level    Int           @default(0)
-    points       Int           @default(0)
+    xp    Int           		@default(0)
+    ladder       String        @default("Capin Boy")
     two_fac_auth Boolean       @default(false)
     achievements Achievement[] @relation("UserAchievements")
     power_ups    PowerUp[]     @relation("UserPowerUps")

@@ -121,4 +121,7 @@ export class socketLogic {
             },
         }
     }
+    public emitAchievment(name: string): void {
+        this.PlayersSocket[0].emit('achievment', name)
+    }
 }

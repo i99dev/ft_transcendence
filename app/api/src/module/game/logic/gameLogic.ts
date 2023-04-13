@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/04/02 19:51:29 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/04/14 01:51:08 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@ import { gameStatusDto, PlayerDto, BallDto } from '../dto/game.dto'
 import { Socket } from 'socket.io'
 import { gameHistory } from './gameHistory'
 import { socketLogic } from './gameSocket'
+import { gameAnalyzer } from './gameAnalyzer'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
@@ -28,6 +29,7 @@ export class gameLogic {
     private players: Map<string, PlayerDto> = new Map()
     private games: Map<string, gameStatusDto> = new Map()
     private socketLogic = new socketLogic()
+    private gameAnalyzer = new gameAnalyzer()
 
     public get Players(): Map<string, PlayerDto> {
         return this.players
@@ -67,7 +69,7 @@ export class gameLogic {
     }
 
     private turnOnComputer(gameID: string): void {
-        const intervalId = setInterval(async () => {
+        setInterval(async () => {
             this.updateComputer(this.games[gameID].ball, this.games[gameID].players[1])
         }, COMPUTER_FRAME_INTERVAL)
     }
@@ -248,6 +250,7 @@ export class gameLogic {
         this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameID])
         const game: gameHistory = new gameHistory(this.games[player.gameID])
         game.addHistory()
+        this.socketLogic.emitAchievment('killer')
         this.clearData(player)
     }
 

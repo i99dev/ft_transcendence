@@ -8,4 +8,6 @@ export interface NewUser {
     image: string
     email: string
     status: UserStatus
+    xp: number
+    ladder: string
 }

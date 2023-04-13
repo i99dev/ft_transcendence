@@ -37,6 +37,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
+
 const loading = ref(false as boolean)
 let name = ref('Dou' as string)
 

@@ -28,6 +28,8 @@ export class UserRepository {
             image: data.image.link,
             email: data.email,
             status: UserStatus.ONLINE,
+            xp: 0,
+            ladder: 'Capin Boy',
         }
         return user
     }
