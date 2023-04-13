@@ -122,7 +122,18 @@ export class GroupChatService {
                     chat_room_id: room_id,
                 },
                 select: {
-                    chat_user: true,
+                    chat_user: {
+                        where: {
+                            NOT: {
+                                status: {
+                                    in: ['OUT', 'BAN']
+                                },
+                            }
+                        },
+                        include: {
+                            user: true,
+                        }
+                    }
                 },
             })
             return chat
@@ -153,15 +164,15 @@ export class GroupChatService {
         }
     }
 
-    async getChatRoomsForGroups(user: string) {
+    async getChatRoomsForGroups(user_login: string) {
         try {
             const groupChats = await this.prisma.groupChat.findMany({
                 where: {
                     chat_user: {
                         some: {
-                            user_login: user,
-                        },
-                    },
+                            user_login: user_login
+                        }
+                    }
                 },
             })
             return groupChats
