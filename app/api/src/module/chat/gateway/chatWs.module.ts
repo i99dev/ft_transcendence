@@ -6,9 +6,10 @@ import { UserModule } from '../../user/user.module'
 import { ChatModule } from '../chat.module'
 import { ChatWsGateway } from './chatWs.gateway'
 import { ChatWsService } from './chatWs.service'
+import { NotificationService } from '@module/notification/notification.service'
 
 @Module({
     imports: [AuthModule, PrismaModule, forwardRef(() => ChatModule), UserModule],
-    providers: [ChatWsGateway, ChatWsService, PrismaClient],
+    providers: [ChatWsGateway, ChatWsService, PrismaClient, NotificationService],
 })
 export class ChatWsModule {}
