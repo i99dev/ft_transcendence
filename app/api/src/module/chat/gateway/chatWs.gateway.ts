@@ -263,6 +263,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return (this.socketError('Invalid reciever'), [])
         if (!(await this.chatWsService.canChangeAdmin(payload.room_id, (this.getID(client)) as string)))
             return (this.socketError('User is neither admin nor owner'), [])
+        if (payload.user_login === (this.getID(client)) as string)
+            return (this.socketError('User cannot change himself'), [])
 
         if (payload.action === 'add') {
             const chatUsers = await this.chatWsService.addUser(payload.room_id, payload.user_login)
