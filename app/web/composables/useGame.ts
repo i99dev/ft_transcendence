@@ -19,55 +19,39 @@ export const useGame = () => {
     return { game_info, setGameModalOpen, setGame }
 }
 
-export const useGameHistory = () => {
-    const game_history = useState<any | null>('game_history', () => {
-        return {
-            games: [
-                {
-                    id: 1,
-                    player1: {
-                        user: {
-                            username: 'i99dev',
-                            result: 'Win',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 2,
-                    },
-                    player2: {
-                        user: {
-                            username: 'i88dev',
-                            result: 'Lose',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 0,
-                    },
-                },
-                {
-                    id: 2,
-                    player1: {
-                        user: {
-                            username: 'i88dev',
-                            result: 'Win',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 5,
-                    },
-                    player2: {
-                        user: {
-                            username: 'i99dev',
-                            result: 'Lose',
-                            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        },
-                        score: 2,
-                    },
-                },
-            ],
-        }
+export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] | null> {
+    const api = useRuntimeConfig().API_URL
+    const { data, error: errorRef } = await useFetch<MatchHistoryDto[]>(`${ep_URL}`, {
+        method: 'GET',
+        baseURL: api,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
     })
-
-    const setGames = (games: any) => {
-        game_history.value.games = games
-    }
-
-    return { game_history, setGames }
+    const error = errorRef.value
+    if (error)
+        console.error('Failed to get match history:', error)
+    else
+        console.log('Match history:', data.value)
+    return data.value
 }
+
+export async function useGameHistoryPages(): Promise<number | null> {
+	const api = useRuntimeConfig().API_URL
+	const { data, error: errorRef } = await useFetch<number>(`/match-history/totalPages`, {
+		method: 'GET',
+		baseURL: api,
+		headers: {
+			Authorization: `Bearer ${useCookie('access_token').value}`,
+		},
+	})
+	const error = errorRef.value
+	if (error)
+		console.error('Failed to get pages:', error)
+	else
+		console.log('Match history Page number:', data.value)
+	return data.value
+}
+
+
+

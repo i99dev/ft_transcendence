@@ -22,6 +22,7 @@ declare global {
       two_fac_auth: boolean
       friend_to?: UserGetDto[]
       friends?: UserGetDto[]
+	  player?: PlayerStatusDto[]
   }
   
   interface gameStatusDto {
@@ -62,4 +63,17 @@ declare global {
       size: number
     }
   }
+	interface PlayerStatusDto {
+	  id: number
+	  score: number
+	  IsWinner: boolean
+	  user: UserGetDto
+	  // matches: MatchHistoryDto
+	}
+	interface MatchHistoryDto {
+		gameID: string
+		start: Date
+		end: Date
+		opponents: PlayerDto[]
+	}
 }

@@ -69,11 +69,11 @@
 //tabs
 const tabs = [
     {
-        name: 'Timeline',
+        name: 'Match History',
         component: 'DashTimeLine',
     },
     {
-        name: 'achievement',
+        name: 'Achievements',
         component: 'DashAchievement',
     },
     {

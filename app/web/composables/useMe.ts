@@ -1,23 +1,3 @@
-interface userData {
-    created_at: string
-    email: string
-    exp_level: number
-    first_name: string
-    friend_to: []
-    friends: []
-    id: number
-    image: string
-    last_login: string
-    last_name: string
-    login: string
-    points: number
-    status: string
-    total_loses: number
-    total_wins: number
-    two_fac_auth: boolean
-    username: string
-}
-
 export async function useMe(): Promise<any> {
     const {
         data,
