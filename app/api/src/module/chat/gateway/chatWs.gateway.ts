@@ -159,7 +159,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (await this.chatWsService.validatePassword(payload.room_id, payload.password))
             await this.chatWsService.joinGroupChat(payload.room_id, this.getID(client) as string)
-        else return this.socketError('Invalid password')
+        else
+            return this.socketError('Invalid password')
         client.join(payload.room_id)
 
         await this.setupSpecialMessage(

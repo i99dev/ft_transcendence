@@ -75,6 +75,7 @@ export class ChatWsService {
     async validatePassword(room_id: string, password: string): Promise<boolean> {
         const pass = await this.getPassword(room_id)
         if (pass === null) return true
+        else if (!password) return false
         else return bcrypt.compareSync(password, pass)
     }
 

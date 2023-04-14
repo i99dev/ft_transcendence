@@ -50,8 +50,7 @@
                                         :currentChat="currentChat"
                                         :chatType="chatType"
                                         @closeChat="switchChatView"
-                                    />div
-div
+                                    />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -90,7 +89,7 @@ const switchChatType = (type: string) => {
     currentChat.value = null
 }
 
-const switchChatView = async (chat: directChat | groupChat) => {
+const switchChatView = async (chat: DirectChat | GroupChat) => {
     if (chat && chatType.value) {
         chatListView.value = false
         currentChat.value = chat

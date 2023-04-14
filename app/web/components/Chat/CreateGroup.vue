@@ -140,7 +140,7 @@
 
 
                                       <div v-if="chatType.type === 'PUBLIC'" class="flex flex-col md:mr-16 my-2">
-                                        <label for="password3" class="text-sm font-bold leading-tight tracking-normal mb-2"
+                                        <label for="createGroupPassword" class="text-sm font-bold leading-tight tracking-normal mb-2"
                                         :class="checked ? 'text-gray-200' : 'text-gray-500'"
                                         >
                                           Password - <i>Optional</i>
@@ -155,10 +155,10 @@
                                                 </svg>
                                             </div>
                                             <input class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 dark:focus:border-indigo-700 dark:bg-gray-800 bg-white dark:border-gray-700 font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
-                                              id="password3"
+                                              id="createGroupPassword"
                                               type="password"
                                               v-model="groupChat.password"
-                                              placeholder="Enter a password"
+                                              placeholder="Enter password"
                                               />
                                         </div>
                                       </div>
@@ -270,7 +270,7 @@ onMounted(() => {
 })
 
 const changeView = () => {
-    let input = document.getElementById("password3") as HTMLInputElement;
+    let input = document.getElementById("createGroupPassword") as HTMLInputElement;
     input.type = input.type === "text" ? "password" : "text";
 }
 
@@ -321,12 +321,9 @@ const createGroupChat = () => {
   }))
 }
 
-const handleForm = () => {
-  // console.log('Handled')
-}
+const handleForm = () => {}
 
 const handleFileUpload = () => {
-    console.log('File uploaded')
     const file = fileInput.value.files[0];
     const formData = new FormData();
     formData.append('file', file);
@@ -340,8 +337,6 @@ const handleFileUpload = () => {
     reader.onload = () => {
       chatImage.value = reader.result;
     };
-    console.log('formData', formData)
-    console.log('chatImage', chatImage.value)
 }
 
 </script>

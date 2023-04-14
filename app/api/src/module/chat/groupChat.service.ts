@@ -237,6 +237,9 @@ export class GroupChatService {
                         contains: search,
                         mode: 'insensitive',
                     },
+                    type: {
+                        not: 'PRIVATE',
+                    }
                 },
                 include: {
                     chat_room: {
@@ -260,6 +263,11 @@ export class GroupChatService {
     async getAllGroupChats(page: number) {
         try {
             const chat = await this.prisma.groupChat.findMany({
+                where: {
+                    type: {
+                        not: 'PRIVATE',
+                    }
+                },
                 skip: (page - 1) * 20,
                 take: 20,
                 include: {

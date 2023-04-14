@@ -61,7 +61,7 @@
                     'w-9/12': message.type !== 'SPECIAL',
                 }"
             >
-                <div v-if="message.sender_login !== user_info.login" class="ml-2 -mb-[1px] inline-block overflow-hidden top-0 absolute transform -scale-y-100"
+                <div v-if="message.type !== 'SPECIAL'" class="ml-2 -mb-[1px] inline-block overflow-hidden top-0 absolute transform -scale-y-100"
                     :class="{ '-left-3': message.sender_login !== user_info.login, '-right-1': message.sender_login === user_info.login, '-scale-x-100': message.sender_login === user_info.login }"
                 >
                     <div class="h-3 w-3 origin-bottom-left rotate-45 transform bg-gray-200"
