@@ -10,117 +10,113 @@
       >
 
       <TransitionRoot appear :show="isAdminOptionsOpened" as="template">
-          <Dialog as="div" @close="closeAdminOptionsPopup" class="relative z-10">
-            <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0"
-              enter-to="opacity-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100"
-              leave-to="opacity-0"
-            >
-              <div class="fixed inset-0 bg-black bg-opacity-25" />
-            </TransitionChild>
+        <Dialog as="div" @close="closeAdminOptionsPopup" class="relative z-10">
+          <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0"
+            enter-to="opacity-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100"
+            leave-to="opacity-0"
+          >
+            <div class="fixed inset-0 bg-black bg-opacity-25" />
+          </TransitionChild>
 
-            <div class="fixed inset-0">
-              <div
-                class="absolute w-80 top-1/4 right-10 min-h-full items-center justify-end p-4 text-center"
+          <div class="fixed inset-0">
+            <div
+              class="absolute w-80 top-1/4 right-10 min-h-full items-center justify-end p-4 text-center"
+            >
+              <TransitionChild
+                as="template"
+                enter="duration-300 ease-out"
+                enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100"
+                leave="duration-200 ease-in"
+                leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95"
               >
-                <TransitionChild
-                  as="template"
-                  enter="duration-300 ease-out"
-                  enter-from="opacity-0 scale-95"
-                  enter-to="opacity-100 scale-100"
-                  leave="duration-200 ease-in"
-                  leave-from="opacity-100 scale-100"
-                  leave-to="opacity-0 scale-95"
+                <DialogPanel
+                  class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
                 >
-                  <DialogPanel
-                    class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                  <h1 class=" p-2 border-b border-indigo-500 text-indigo-500 font-semibold flex justify-center mb-2">
+                    {{ participant.user.username }}
+                  </h1>
+                  <button
+                    v-for="option in adminOptions"
+                    :key="option.action"
+                    class="flex items-center p-2 w-full rounded-lg hover:bg-indigo-500 hover:text-white"
+                    @click="setUser(option.action)"
                   >
-                    <h1 class=" p-2 border-b border-indigo-500 text-indigo-500 font-semibold flex justify-center mb-2">
-                      {{ participant.user.username }}
-                    </h1>
-                    <button
-                      v-for="option in adminOptions"
-                      :key="option.action"
-                      class="flex items-center p-2 w-full rounded-lg hover:bg-indigo-500 hover:text-white"
-                      @click="setUser(option.action)"
-                    >
-                      {{ option.text }}
-                    </button>
-                   </DialogPanel>
-                </TransitionChild>
-              </div>
+                    {{ option.text }}
+                  </button>
+                  </DialogPanel>
+              </TransitionChild>
             </div>
-          </Dialog>
-        </TransitionRoot>
+          </div>
+        </Dialog>
+      </TransitionRoot>
 
         
-    <TransitionRoot appear :show="isAddUserOpened" as="template">
-      <Dialog as="div" @close="closeAddUsersPopup" class="relative z-10">
-        <TransitionChild
-          as="template"
-          enter="duration-300 ease-out"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="duration-200 ease-in"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <div class="fixed inset-0 bg-black bg-opacity-25" />
-        </TransitionChild>
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
+      <TransitionRoot appear :show="isAddUserOpened" as="template">
+        <Dialog as="div" @close="closeAddUsersPopup" class="relative z-10">
+          <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0"
+            enter-to="opacity-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100"
+            leave-to="opacity-0"
           >
-            <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0 scale-95"
-              enter-to="opacity-100 scale-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-95"
+            <div class="fixed inset-0 bg-black bg-opacity-25" />
+          </TransitionChild>
+
+          <div class="fixed inset-0 overflow-y-auto">
+            <div
+              class="flex min-h-full items-center justify-center p-4 text-center"
             >
-              <DialogPanel
-                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              <TransitionChild
+                as="template"
+                enter="duration-300 ease-out"
+                enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100"
+                leave="duration-200 ease-in"
+                leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95"
               >
-                <div v-for="user in users"
-                  class=" flex-row inline-flex flex-nowrap">
-                  <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative"
-                    @click="removeUser(user)"
-                  >
-                    <img class="rounded-full w-8 h-8 object-cover"
-                      :src="user.image"
-                      :alt="user.username"
+                <DialogPanel
+                  class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                >
+                  <div v-for="user in users"
+                    class=" flex-row inline-flex flex-nowrap">
+                    <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative"
+                      @click="removeUser(user)"
                     >
-                    <div class="absolute -right-1 -bottom-1 rounded-full p-1 bg-slate-200">
-                      <XMarkIcon class="h-2 w-2" aria-hidden="true" />
-                    </div>
-                  </button>
-                </div>
-                <UserProfileList @selectUser="selectUser" :search="true" :unwantedUsers="participants"/>
-                <div class="flex justify-end mt-2">
-                  <button class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize"
-                    type="button"
-                    @click="addUsers"
-                  >
-                    add
-                  </button>
-                </div>
-              </DialogPanel>
-            </TransitionChild>
+                      <img class="rounded-full w-8 h-8 object-cover"
+                        :src="user.image"
+                        :alt="user.username"
+                      >
+                      <div class="absolute -right-1 -bottom-1 rounded-full p-1 bg-slate-200">
+                        <XMarkIcon class="h-2 w-2" aria-hidden="true" />
+                      </div>
+                    </button>
+                  </div>
+                  <UserProfileList @selectUser="selectUser" :search="true" :unwantedUsers="participants"/>
+                  <div class="flex justify-end mt-2">
+                    <button class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize"
+                      type="button"
+                      @click="addUsers"
+                    >
+                      add
+                    </button>
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
           </div>
-        </div>
-      </Dialog>
-    </TransitionRoot>
-
-
-
-
+        </Dialog>
+      </TransitionRoot>
 
       <div
           v-for="participant in participants"
@@ -128,36 +124,36 @@
           class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
         
       >
-          <button
-              @click="openAdminOptionsPopup(participant)"
-              class="relative w-full -m-3 flex items-center rounded-lg p-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-          >
-          <div
-            class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-slate-200 p-1 rounded-full"
-          >
-              <img
-                :src="participant.user.image"
-                :alt="participant.user.username"
-                class="rounded-full w-10 h-10 object-cover"
-              >
-          </div>
-          <div class="flex justify-between w-full">
-            <div class="ml-4">
-              <div v-if="participant.user_login === user_info.login" class="font-medium text-gray-900 capitalize">
-                you
-              </div>
-              <div v-else class=" font-medium text-gray-900">
-                {{ participant.user.username }}
-              </div>
-            </div>
-            <div
-              v-if="participant.role !== 'MEMBER'"
-              class="text-indigo-500 text-sm"
+        <button
+            @click="openAdminOptionsPopup(participant)"
+            class="relative w-full -m-3 flex items-center rounded-lg p-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+        >
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-slate-200 p-1 rounded-full"
+        >
+            <img
+              :src="participant.user.image"
+              :alt="participant.user.username"
+              class="rounded-full w-10 h-10 object-cover"
             >
-              {{ participant.role }}
+        </div>
+        <div class="flex justify-between w-full">
+          <div class="ml-4">
+            <div v-if="participant.user_login === user_info.login" class="font-medium text-gray-900 capitalize">
+              you
+            </div>
+            <div v-else class=" font-medium text-gray-900">
+              {{ participant.user.username }}
             </div>
           </div>
-          </button>
+          <div
+            v-if="participant.role !== 'MEMBER'"
+            class="text-indigo-500 text-sm"
+          >
+            {{ participant.role }}
+          </div>
+        </div>
+        </button>
       </div>
       </div>
       <div class="bg-gray-50 p-4">
@@ -330,9 +326,7 @@ const CanAddUsers = () => {
     if (participants.value[i].user_login === user_info.value.login && participants.value[i].role !== 'MEMBER')
       return true
   }
-  // console.log(participants.value.find((chatUser) => chatUser.user_login === user_info.value.login))
   return false
-  //   && participants.value.find((p) => p.user_login === user_info.value.login)?.role !== 'MEMBER'
 }
 
 </script>

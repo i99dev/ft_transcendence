@@ -79,7 +79,7 @@ declare global {
     messages:     chatMessage[]
   }
 
-  interface groupChat {
+  interface GroupChat {
     id:           number
     name:         string
     image:        string
@@ -90,7 +90,7 @@ declare global {
     chat_user:    ChatUser[]
   }
 
-  interface directChat {
+  interface DirectChat {
     id:           number
     chat_room_id: string
     chat_room:    ChatRoom

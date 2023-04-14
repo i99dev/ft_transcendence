@@ -26,7 +26,7 @@
                                             <div class="ml-3 flex items-center">
                                                 <button
                                                     type="button"
-                                                    class="rounded-full p-2 bg-white text-indigo-400 hover:text-indigo-600"
+                                                    class="rounded-full p-2 bg-white text-indigo-400 hover:text-indigo-600 ring-1 ring-indigo-400 focus:outline-indigo-400"
                                                     @click="setChatModalOpen(false)"
                                                 >
                                                     <span class="sr-only">Close panel</span>
@@ -36,11 +36,13 @@
                                             <ChatOptions 
                                                 :chatType="chatType"
                                                 @switchChatType="switchChatType"
+                                                @filteredGroupChatNames="(searchedGroupChats) => filteredGroupChatNames = searchedGroupChats"
                                             />
                                         </div>
                                     </div>
                                     <ChatList v-if="chatListView"
                                         :chatType="chatType"
+                                        :filteredGroupChatNames="filteredGroupChatNames"
                                         @selectChat="switchChatView"
                                         @closeNavBar="setChatModalOpen(false)"
                                     />
@@ -74,12 +76,12 @@ import {
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
-
 const { chat_info, setChatModalOpen, send_message } = useChat()
 
 const chatListView = ref(true)
 const currentChat = ref()
 const chatType = ref('DM')
+const filteredGroupChatNames = ref()
 
 const switchChatType = (type: string) => {
     chatType.value = type
@@ -87,8 +89,8 @@ const switchChatType = (type: string) => {
     currentChat.value = null
 }
 
-const switchChatView = async (chat: directChat | groupChat) => {
-    if (chat) {
+const switchChatView = async (chat: DirectChat | GroupChat) => {
+    if (chat && chatType.value) {
         chatListView.value = false
         currentChat.value = chat
     }

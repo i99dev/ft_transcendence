@@ -159,7 +159,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (await this.chatWsService.validatePassword(payload.room_id, payload.password))
             await this.chatWsService.joinGroupChat(payload.room_id, this.getID(client) as string)
-        else return this.socketError('Invalid password')
+        else
+            return this.socketError('Invalid password')
         client.join(payload.room_id)
 
         await this.setupSpecialMessage(
@@ -278,12 +279,14 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 `${this.getID(client) as string} added ${payload.user_login}`,
             )
 
-            clientSocket.emit('new-group-list', {
-                content: await this.groupChatService.getGroupChatForUser(
-                    this.getID(client) as string,
-                ),
-                type: MessageType.SPECIAL,
-            })
+            if (clientSocket) {
+                clientSocket.emit('new-group-list', {
+                    content: await this.groupChatService.getGroupChatForUser((this.getID(clientSocket)) as string),
+                    type: MessageType.SPECIAL,
+                })
+            }
+
+
         } else if (payload.action === 'kick') {
             const chatUsers = await this.chatWsService.kickUser(
                 payload.room_id,

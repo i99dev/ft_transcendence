@@ -75,6 +75,7 @@ export class ChatWsService {
     async validatePassword(room_id: string, password: string): Promise<boolean> {
         const pass = await this.getPassword(room_id)
         if (pass === null) return true
+        else if (!password) return false
         else return bcrypt.compareSync(password, pass)
     }
 
@@ -155,6 +156,8 @@ export class ChatWsService {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status !== ChatUserStatus.OUT)
             throw new WsException('User is already in chat room')
+        else if (chatUser && chatUser.status === ChatUserStatus.BAN)
+            throw new WsException('User is banned from chat room')
 
         await this.groupChatService.addUserToGroupChat(room_id, {
             user_login: user_login,

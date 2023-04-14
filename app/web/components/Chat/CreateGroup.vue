@@ -50,7 +50,7 @@
                           <div class="file-upload">
                           <input type="file" ref="fileInput" @change="handleFileUpload"  style="display: none;" />
                           <button @click="$refs.fileInput.click()"
-                            class="bg-blue-100 rounded-full"
+                            class="bg-blue-100 rounded-full focus:outline-indigo-400"
                             :class="{ 'p-2': !chatImage}"
                           >
                             <svg v-if="!chatImage" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-camera-plus"
@@ -86,7 +86,7 @@
                       <div v-else-if="stage === 2">
                         <div v-for="user in users"
                           class=" flex-row inline-flex flex-nowrap">
-                          <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative"
+                          <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative focus:outline-indigo-400"
                             @click="removeUser(user)"
                           >
                             <img class="rounded-full w-8 h-8 object-cover"
@@ -140,7 +140,7 @@
 
 
                                       <div v-if="chatType.type === 'PUBLIC'" class="flex flex-col md:mr-16 my-2">
-                                        <label for="password3" class="text-sm font-bold leading-tight tracking-normal mb-2"
+                                        <label for="createGroupPassword" class="text-sm font-bold leading-tight tracking-normal mb-2"
                                         :class="checked ? 'text-gray-200' : 'text-gray-500'"
                                         >
                                           Password - <i>Optional</i>
@@ -155,10 +155,10 @@
                                                 </svg>
                                             </div>
                                             <input class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 dark:focus:border-indigo-700 dark:bg-gray-800 bg-white dark:border-gray-700 font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
-                                              id="password3"
+                                              id="createGroupPassword"
                                               type="password"
                                               v-model="groupChat.password"
-                                              placeholder="Enter a password"
+                                              placeholder="Enter password"
                                               />
                                         </div>
                                       </div>
@@ -192,18 +192,18 @@
                       </div>
 
                       <div class="flex justify-end mt-4">
-                        <button v-if="stage !== firstStage" class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize"
+                        <button v-if="stage !== firstStage" class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
                           type="button"
                           @click="prevStage"
                         >
                           back
                         </button>
-                        <button v-if="stage !== lastStage" class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize" type="button"
+                        <button v-if="stage !== lastStage" class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400" type="button"
                           @click="nextStage"
                         >
                           next
                         </button>
-                        <button v-else class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize"
+                        <button v-else class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
                           type="button"
                           @click="createGroupChat"
                         >
@@ -270,7 +270,7 @@ onMounted(() => {
 })
 
 const changeView = () => {
-    let input = document.getElementById("password3") as HTMLInputElement;
+    let input = document.getElementById("createGroupPassword") as HTMLInputElement;
     input.type = input.type === "text" ? "password" : "text";
 }
 
@@ -321,12 +321,9 @@ const createGroupChat = () => {
   }))
 }
 
-const handleForm = () => {
-  // console.log('Handled')
-}
+const handleForm = () => {}
 
 const handleFileUpload = () => {
-    console.log('File uploaded')
     const file = fileInput.value.files[0];
     const formData = new FormData();
     formData.append('file', file);
@@ -340,8 +337,6 @@ const handleFileUpload = () => {
     reader.onload = () => {
       chatImage.value = reader.result;
     };
-    console.log('formData', formData)
-    console.log('chatImage', chatImage.value)
 }
 
 </script>
