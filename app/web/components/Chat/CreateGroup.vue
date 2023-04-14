@@ -50,7 +50,7 @@
                           <div class="file-upload">
                           <input type="file" ref="fileInput" @change="handleFileUpload"  style="display: none;" />
                           <button @click="$refs.fileInput.click()"
-                            class="bg-blue-100 rounded-full"
+                            class="bg-blue-100 rounded-full focus:outline-indigo-400"
                             :class="{ 'p-2': !chatImage}"
                           >
                             <svg v-if="!chatImage" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-camera-plus"
@@ -86,7 +86,7 @@
                       <div v-else-if="stage === 2">
                         <div v-for="user in users"
                           class=" flex-row inline-flex flex-nowrap">
-                          <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative"
+                          <button class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative focus:outline-indigo-400"
                             @click="removeUser(user)"
                           >
                             <img class="rounded-full w-8 h-8 object-cover"
@@ -192,18 +192,18 @@
                       </div>
 
                       <div class="flex justify-end mt-4">
-                        <button v-if="stage !== firstStage" class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize"
+                        <button v-if="stage !== firstStage" class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
                           type="button"
                           @click="prevStage"
                         >
                           back
                         </button>
-                        <button v-if="stage !== lastStage" class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize" type="button"
+                        <button v-if="stage !== lastStage" class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400" type="button"
                           @click="nextStage"
                         >
                           next
                         </button>
-                        <button v-else class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize"
+                        <button v-else class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
                           type="button"
                           @click="createGroupChat"
                         >

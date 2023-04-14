@@ -26,7 +26,7 @@
                                             <div class="ml-3 flex items-center">
                                                 <button
                                                     type="button"
-                                                    class="rounded-full p-2 bg-white text-indigo-400 hover:text-indigo-600"
+                                                    class="rounded-full p-2 bg-white text-indigo-400 hover:text-indigo-600 ring-1 ring-indigo-400 focus:outline-indigo-400"
                                                     @click="setChatModalOpen(false)"
                                                 >
                                                     <span class="sr-only">Close panel</span>

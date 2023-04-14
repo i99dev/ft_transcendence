@@ -4,7 +4,7 @@
         class="p-2 relative flex"
     >
         <button
-            class="flex flex-row justify-between w-24 hover:bg-slate-200 items-center rounded-lg"
+            class="flex flex-row justify-between w-24 hover:bg-slate-200 items-center rounded-lg focus:outline-indigo-400"
             @click="$emit('closeChat')"
         >
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@
 
         <button
             @click="isChatInfoOpened = !isChatInfoOpened"
-            class="w-full flex hover:bg-slate-200 rounded-lg pl-2"
+            class="w-full flex hover:bg-slate-200 rounded-lg pl-2 focus:outline-indigo-400"
         >
             <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat.users[0].username }}</div>
             <div v-else class="text-slate-700 text-xl py-1">{{ currentChat.name }}</div>
@@ -83,7 +83,7 @@
                 >
                     {{ message.content }}
                 </div >
-                    <button v-if="message.sender_login === user_info.login && message.type !== 'SPECIAL'" class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full"
+                    <button v-if="message.sender_login === user_info.login && message.type !== 'SPECIAL'" class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full focus:outline-indigo-400"
                         @click="deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
@@ -100,13 +100,13 @@
                     v-model="newMessage"
                     type="text"
                     placeholder="Message"
-                    class="w-11/12 p-3 border-2 border-gray-300 rounded-xl focus:border-blue-400"
+                    class="w-11/12 p-3 border-2 border-gray-300 rounded-xl focus:border-indigo-400"
                     style="outline: none;"
                     :disabled="AmIMuted"
                 />
                 <button
                     type="submit"
-                    class=" bg-blue-500 text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full"
+                    class=" bg-indigo-400 hover:bg-indigo-500 text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full focus:outline-indigo-400"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

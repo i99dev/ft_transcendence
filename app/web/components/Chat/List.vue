@@ -10,7 +10,7 @@
               <!-- chat element -->
               <button v-for="chat in chats"
                   @click="$emit('selectChat', chat)"
-                  class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full"
+                  class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
                   @mouseover="hoverButton = chat"
                   @mouseleave="hoverButton = null"
               >
@@ -90,7 +90,7 @@
             <button
               type="button"
               @click="isChatCreateGroupOpened = true"
-              class="rounded-full bg-indigo-500 bg-opacity-60 p-4 font-medium text-white hover:bg-opacity-90 transition duration-200 ease-in-out"
+              class="rounded-full bg-indigo-500 bg-opacity-60 p-4 font-medium text-white hover:bg-opacity-90 transition duration-200 ease-in-out focus:outline-indigo-400"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

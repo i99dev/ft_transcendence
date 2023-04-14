@@ -42,7 +42,7 @@
           <button v-if="(user.login !== user_info.login) || (user.login === user_info.login && isMe === true)"
               type="button"
               @click="$emit('selectUser', user)"
-              class="p-2 border-y border-slate-100 bg-slate-100 rounded-xl relative mb-1"
+              class="p-2 border-y border-slate-100 bg-slate-100 rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
               :class="{
                 'bg-slate-300': isUserDimmed(user.login),
                 'hover:bg-indigo-100': !isUserDimmed(user.login),
