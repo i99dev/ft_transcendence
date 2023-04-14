@@ -240,6 +240,14 @@ export class ChatWsService {
             status: ChatUserStatus.MUTE,
         })
 
+        setTimeout( async function() {
+            const check = await this.chatService.getChatUser(room_id, user_login)
+            if (check.status === ChatUserStatus.MUTE)
+                await this.chatService.updateChatUser(user_login, room_id, {
+                    status: ChatUserStatus.NORMAL,
+                })
+        }.bind(this), 600000)
+
         return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
