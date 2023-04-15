@@ -4,8 +4,8 @@
         class="p-2 relative flex"
     >
         <button
-            class="flex flex-row justify-between w-24 hover:bg-slate-200 items-center rounded-lg focus:outline-indigo-400"
-            @click="$emit('closeChat')"
+            class="flex flex-row justify-between w-24 hover:bg-slate-200 items-center rounded-full p-1 focus:outline-indigo-400"
+            @click="setCurrentChat(null)"
         >
             <svg xmlns="http://www.w3.org/2000/svg"
                 class="icon icon-tabler icon-tabler-arrow-left"
@@ -23,19 +23,21 @@
                 <path d="M5 12l6 6"></path>
                 <path d="M5 12l6 -6"></path>
             </svg>
-            <img v-if="chatType === 'DM'"
-                :src="currentChat.users[0].image"
-                alt="User Photo"
-                class="rounded-full w-10 h-10 object-cover mx-1"
-            />
-            <img v-else
-                :src="currentChat.image"
-                alt="User Photo"
-                class="rounded-full w-10 h-10 object-cover mx-1"
-            />
-            <span
-            class="absolute bottom-2 left-16 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
-            />
+            <div class="relative">
+                <img v-if="chatType === 'DM'"
+                    :src="currentChat?.users[0].image"
+                    alt="User Photo"
+                    class="rounded-full w-10 h-10 object-cover mx-1"
+                />
+                <img v-else
+                    :src="currentChat?.image"
+                    alt="User Photo"
+                    class="rounded-full w-10 h-10 object-cover mx-1"
+                />
+                <span
+                    class="absolute bottom-1 right-0 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
+                />
+            </div>
         </button>
 
 
@@ -43,11 +45,11 @@
             @click="isChatInfoOpened = !isChatInfoOpened"
             class="w-full flex hover:bg-slate-200 rounded-lg pl-2 focus:outline-indigo-400"
         >
-            <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat.users[0].username }}</div>
-            <div v-else class="text-slate-700 text-xl py-1">{{ currentChat.name }}</div>
+            <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">{{ currentChat?.users[0].username }}</div>
+            <div v-else class="text-slate-700 text-xl py-1">{{ currentChat?.name }}</div>
         </button>
     </div>
-    <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" :currentChat="currentChat" :participants="participants" />
+    <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" />
     <div v-else class="flex flex-col justify-between overflow-hidden w-full h-full" style="height: 90vh;">
         <div id="chat-messages" class="bg-white overflow-y-scroll box-content flex flex-col h-full">
             <div
@@ -71,7 +73,7 @@
                 </div>
                 <div v-if="chatType === 'GROUP' && message.type !== 'SPECIAL'"
                     class="text-sm"
-                    :style="{color: participantsColors[message.sender_login]}"
+                    :style="{color: participantsColors.get(message.sender_login)}"
                 >
                     {{ message.sender.username }}
                 </div>
@@ -97,6 +99,7 @@
         <div class="w-full h-min mb-8">
             <form @submit.prevent="sendMessage" class="w-full flex justify-center my-4">
                 <input
+                    id="message-input"
                     v-model="newMessage"
                     type="text"
                     placeholder="Message"
@@ -132,29 +135,30 @@ const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const messages = ref()
 const newMessage = ref('')
 const isChatInfoOpened = ref(false)
-const participants = ref()
+const { participants, setParticipants, updateParticipants } = useGroupChatParticipants()
 const me = ref()
-const participantsColors = ref({} as Map<string, string>)
-const AmIMuted = computed(() => {return chatType === 'GROUP' && me.value?.status === 'MUTE'})
+const participantsColors = ref(new Map<string, string>())
+const AmIMuted = computed(() => {return chatType.value === 'GROUP' && me.value?.status === 'MUTE'})
+const { chatType } = useChatType()
 
-const { chatType, currentChat } = defineProps(['chatType', 'currentChat'])
+const { currentChat, setCurrentChat } = useCurrentChat()
 
 
 onMounted(async () => {
-    if (chatType === 'GROUP') {
-        const {data: chatUsers} = await useGroupChatParticipants(currentChat.chat_room_id)
-        if (chatUsers)
-            participants.value = chatUsers.value.chat_user
-        me.value = participants.value.find((participant: any) => participant.user_login === user_info.value.login)
+    if (chatType.value === 'GROUP') {
+        updateParticipants()
+        me.value = participants.value?.find((participant: any) => participant.user_login === user_info.value.login)
         
         // set random color for each participant
-        for(let i = 0; i < participants.value.length; i++){
-            participantsColors.value[participants.value[i].user_login] = `${getDarkColor()}`
-        }
+        if (participants.value)
+            for(let i = 0; i < participants.value.length; i++)
+                participantsColors.value.set(participants.value[i].user_login, `${getDarkColor()}`)
     }
 
     //scroll to bottom
     scrollToLastMessage()
+
+    document.getElementById('message-input')?.focus()
 
     chatSocket.value.on('add-message', (payload : chatMessage) => {
         messages.value.push(payload)
@@ -168,13 +172,16 @@ onMounted(async () => {
     })
 
     chatSocket.value.on('group-chat-users', (payload: ChatUser[])=>{
-        participants.value = payload
-        me.value = participants.value.find((participant: any) => participant.user_login === user_info.value.login)
+        setParticipants(payload)
+        if (participants.value)
+            me.value = participants.value.find((participant: any) => participant.user_login === user_info.value.login)
     })
 
-    const { data } = await useChatMessages(currentChat.chat_room_id)
-    if (data) {
-        messages.value = data.value 
+    if (currentChat.value) {
+        const { data } = await useChatMessages(currentChat.value?.chat_room_id)
+        if (data) {
+            messages.value = data.value 
+        }
     }
 })
 
@@ -193,12 +200,12 @@ const getDarkColor = () => {
 }
 
 const sendMessage = () => {
-    chatSocket.value.emit('add-message', JSON.stringify({room_id: currentChat.chat_room_id, message: newMessage.value}))
+    chatSocket.value.emit('add-message', JSON.stringify({room_id: currentChat.value?.chat_room_id, message: newMessage.value}))
     newMessage.value = ''
 }
 
 const deleteMessage = (message_id: number) => {
-    chatSocket.value.emit('delete-message', JSON.stringify({room_id: currentChat.chat_room_id, message_id: message_id}))
+    chatSocket.value.emit('delete-message', JSON.stringify({room_id: currentChat.value?.chat_room_id, message_id: message_id}))
 }
 
 </script>

@@ -194,8 +194,7 @@ import { Socket } from 'socket.io-client';
 
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 
-const props = defineProps(['currentChat', 'participants'])
-const participants = ref({} as ChatUser[])
+const { participants, setParticipants } = useGroupChatParticipants()
 const participant = ref({} as ChatUser)
 const adminOptions = ref([
   {
@@ -219,17 +218,15 @@ const isAdminOptionsOpened = ref(false)
 const isAddUserOpened = ref(false)
 
 const {user_info} = useUserInfo()
+const { currentChat } = useCurrentChat()
 
 
 const users = ref([] as User[])
 
 onMounted(()=>{
-  participants.value = props?.participants
-
   chatSocket.value.on('group-chat-users', (payload: ChatUser[])=>{
-    participants.value = payload
+    setParticipants(payload)
   })
-
 })
 
 const setAdminOptions = () => {
@@ -238,7 +235,7 @@ const setAdminOptions = () => {
   adminOptions.value[0].text = participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin'
 
   // check if participant is OWNER to change ownership
-  const myRole = participants.value.find((chatUser) => chatUser.user_login === user_info.value.login)?.role
+  const myRole = participants.value?.find((chatUser) => chatUser.user_login === user_info.value.login)?.role
   if (myRole === 'OWNER' && participant.value.role === 'ADMIN')
   adminOptions.value.unshift({
     action: 'owner',
@@ -268,7 +265,7 @@ const resetAdminOptions = () => {
 }
 
 const openAdminOptionsPopup = (chatUser : ChatUser) => {
-  const myChatUser = participants.value.find((chatUser) => chatUser.user_login === user_info.value.login)
+  const myChatUser = participants.value?.find((chatUser) => chatUser.user_login === user_info.value.login)
   if (chatUser.user_login === user_info.value.login || chatUser.role === 'OWNER' || myChatUser?.role === 'MEMBER') return
   participant.value = chatUser
   setAdminOptions()
@@ -291,28 +288,28 @@ const closeAddUsersPopup = () => {
 
 const setUser = (action: string) => {
   if (action === 'upgrade' || action === 'downgrade' || action === 'owner') {
-    chatSocket.value.emit('admin-group-chat', JSON.stringify({room_id: props.currentChat.chat_room_id, user_login: participant.value.user_login, action: action}))
+    chatSocket.value.emit('admin-group-chat', JSON.stringify({room_id: currentChat.value?.chat_room_id, user_login: participant.value.user_login, action: action}))
   }
   else
-    chatSocket.value.emit('user-group-chat', JSON.stringify({room_id: props.currentChat.chat_room_id, user_login: participant.value.user_login, action: action}))
+    chatSocket.value.emit('user-group-chat', JSON.stringify({room_id: currentChat.value?.chat_room_id, user_login: participant.value.user_login, action: action}))
   closeAdminOptionsPopup()
 }
 
 const exitChat = () => {
-  chatSocket.value.emit('exit-group-chat', JSON.stringify({room_id: props.currentChat.chat_room_id}))
+  chatSocket.value.emit('exit-group-chat', JSON.stringify({room_id: currentChat.value?.chat_room_id}))
 }
 
 
 const addUsers = () => {
   for (let i = 0; i < users.value.length; i++) {
-    chatSocket.value.emit('user-group-chat', JSON.stringify({room_id: props.currentChat.chat_room_id, user_login: users.value[i].login, action: 'add'}))
+    chatSocket.value.emit('user-group-chat', JSON.stringify({room_id: currentChat.value?.chat_room_id, user_login: users.value[i].login, action: 'add'}))
   }
   closeAddUsersPopup()
 }
 
 const selectUser = (user: User) => {
   if (!users.value.find((u) => u.login === user.login) && user.login !== user_info.value.login
-    && !participants.value.find((p) => p.user_login === user.login))
+    && !participants.value?.find((p) => p.user_login === user.login))
       users.value.push(user)
 }
 
@@ -322,10 +319,12 @@ const removeUser = (user: User) => {
 
 const CanAddUsers = () => {
 
-  for(let i = 0; i < participants.value.length; i++) {
-    if (participants.value[i].user_login === user_info.value.login && participants.value[i].role !== 'MEMBER')
-      return true
-  }
+  if (participants.value)
+    for(let i = 0; i < participants.value.length; i++)
+      if (participants.value[i].user_login === user_info.value.login
+        && participants.value[i].role !== 'MEMBER')
+          return true
+
   return false
 }
 
