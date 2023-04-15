@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TransitionRoot appear :show="isOpened" as="template">
+    <TransitionRoot appear :show="props.isOpened" as="template">
           <Dialog as="div" @close="closePopup" class="relative z-10">
             <TransitionChild
               as="template"
@@ -48,8 +48,8 @@
                           
 
                           <div class="file-upload">
-                          <input type="file" ref="fileInput" @change="handleFileUpload"  style="display: none;" />
-                          <button @click="$refs.fileInput.click()"
+                          <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
+                          <button @click="()=>fileInput.click()"
                             class="bg-blue-100 rounded-full focus:outline-indigo-400"
                             :class="{ 'p-2': !chatImage}"
                           >
@@ -71,7 +71,8 @@
                           </button>
                         </div>
 
-                          <input class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" 
+                          <input class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                            id="groupChatName"
                             type="text"
                             placeholder="Enter group name"
                             aria-label="Group Name"
@@ -267,14 +268,20 @@ onMounted(() => {
     }
     closePopup()
   })
+
 })
+
+watch(()=>props.isOpened, ()=> {
+  setTimeout(() => document.getElementById("groupChatName")?.focus(), 200)
+})
+
 
 const changeView = () => {
     let input = document.getElementById("createGroupPassword") as HTMLInputElement;
     input.type = input.type === "text" ? "password" : "text";
 }
 
-const {isOpened} = defineProps(['isOpened'])
+const props = defineProps(['isOpened'])
 const emit = defineEmits(['closeGroupChatCreation'])
 
 const selectUser = (user: User) => {

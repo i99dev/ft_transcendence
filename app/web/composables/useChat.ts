@@ -57,7 +57,7 @@ export async function useGroupChats(): Promise<any> {
     return { data, error, refresh, pending }
 }
 
-export async function useGroupChatParticipants(room_id: string): Promise<any> {
+export async function useGetGroupChatParticipants(room_id: string): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -110,6 +110,89 @@ export async function useChatMessages(room_id: string): Promise<any> {
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }
+}
+
+export const useChatType = () => {
+    const chatType = useState<ChatRoomType | null>('chat_type', () => 'DM')
+
+    const setChatType = async (type: ChatRoomType | null) => {
+        const { setChats } = useChats()
+        const { data } = type === 'DM' ? await useDirectChats() : type === 'GROUP'? await useGroupChats() : await useGroupChatSearch('')
+        if (data) setChats(data.value)
+
+        chatType.value = type
+    }
+
+    setChatType(chatType.value)
+
+    return { chatType, setChatType }
+}
+
+export const useChats = () => {
+    const chats = useState<any | null>('chats', () => null)
+    const searchedGroupChats = useState<GroupChat[] & DirectChat[] | null>('SearchedGroupChats', () => null)
+
+    const setChats = (chatList: GroupChat[] & DirectChat[] | null) => {
+        chats.value = chatList
+    }
+
+    const setSearchedGroupChats = async (name: string) => {
+        const {data} = await useGroupChatSearch(name)
+        setChats(data.value)
+    }
+
+    return { chats, searchedGroupChats, setSearchedGroupChats, setChats }
+}
+
+export const useSearchedGroupChats = () => {
+    const searchedGroupChats = useState<GroupChat & DirectChat | null>('SearchedGroupChats', () => null)
+
+    const setSearchedGroupChats = async (name: string) => {
+        const { setChats } = useChats()
+        const {data} = await useGroupChatSearch(name)
+        setChats(data.value)
+    }
+
+    return { searchedGroupChats, setSearchedGroupChats }
+}
+
+export const useCurrentChat = () => {
+    const currentChat = useState<GroupChat & DirectChat | null>('current_chat', () => null)
+
+    const setCurrentChat = (chat: GroupChat & DirectChat | null) => {
+        currentChat.value = chat
+    }
+
+    return { currentChat, setCurrentChat }
+}
+
+export const useGroupChatParticipants = () => {
+    const participants = useState<ChatUser[] | null>('group_chat_participants', () => null)
+
+    const setParticipants = (groupChatParticipants: ChatUser[] | null) => {
+        participants.value = groupChatParticipants
+    }
+
+    const updateParticipants = async () => {
+        const { currentChat } = useCurrentChat()
+        if (currentChat.value) {
+            const {data: chatUsers} = await useGetGroupChatParticipants(currentChat.value.chat_room_id)
+            if (chatUsers)
+            setParticipants(chatUsers.value.chat_user)
+        }
+    }
+
+    return { participants, setParticipants, updateParticipants }
+}
+
+export const useChatView = () => {
+    const chatView = useState<boolean>('chat_view', () => true)
+
+    const setChatView = (view: boolean) => {
+        chatView.value = view
+    }
+
+    return { chatView, setChatView }
 }
 
 interface FetchError<T> extends Error {

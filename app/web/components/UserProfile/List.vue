@@ -2,6 +2,7 @@
   <div>
     <div v-if="search" class="flex justify-start items-center pt-5 pb-2 relative">
         <input
+          id="search-input"
           v-model="searchedUsers"
           @input="getFilteredUsers()"
           class="text-sm leading-none text-left text-gray-600 px-4 py-3 w-full border rounded border-gray-300 outline-none"
@@ -83,6 +84,8 @@ onMounted(()=> {
     users.value = allUsers.value
 
   if (unwantedUsers) dimmedUsers.value = unwantedUsers
+
+  if (search) document.getElementById('search-input')?.focus()
 })
 
 const getFilteredUsers = async () => {

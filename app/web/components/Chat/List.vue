@@ -56,7 +56,6 @@
                               placeholder="Enter password"
                             />
                           </div>
-                          
                           <button class="h-auto w-auto border rounded-lg bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
                               @click.stop="joinGroupChat()">
                             <span
@@ -77,7 +76,7 @@
 
               <!-- chat element -->
               <button v-for="chat in chats"
-                  @click="$emit('selectChat', chat)"
+                  @click="setCurrentChat(chat)"
                   class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
                   @mouseover="hoverButton = chat"
                   @mouseleave="hoverButton = null"
@@ -128,7 +127,7 @@
                         </span>
                       </div>
                     </div>
-                    <button v-if="(chatType === 'DM' || chatType === '') && hoverButton === chat" class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
+                    <button v-if="(chatType === 'DM' || chatType === null) && hoverButton === chat" class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
                         @click.stop="HandleItemButton(chat)">
                       <svg 
                         v-if="chatType === 'DM'"
@@ -155,7 +154,7 @@
                           {{
                             getDisplayDate(new Date(chat.chat_room.messages[0].created_at).getFullYear(),
                             new Date(chat.chat_room.messages[0].created_at).getMonth() + 1,
-                            new Date(chat.chat_room.messages[0].created_at).getDate() - 10
+                            new Date(chat.chat_room.messages[0].created_at).getDate()
                             )
                           }}
                         </span>
@@ -200,8 +199,9 @@ import {
 import { Socket } from 'socket.io-client';
 
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
-const chats = ref()
-const chatType = ref()
+const { chats, setChats } = useChats()
+const { chatType } = useChatType()
+const { setCurrentChat } = useCurrentChat()
 const isChatCreateGroupOpened = ref(false)
 const isJoinGroupChatOpened = ref(false)
 const joinGroupPassword = ref('')
@@ -209,28 +209,12 @@ const selectedChat = ref()
 const hoverButton = ref(null)
 const emit = defineEmits(['closeNavBar', 'selectChat'])
 
-const props = defineProps(['chatType', 'filteredGroupChatNames'])
-
-
-watch(()=>props.chatType, async () => {
-  await setup()
-})
-
-onMounted(async () => {
-  await setup()
+onMounted(() => {
   chatSocket.value.on('new-group-list', (payload) => {
     if (chatType.value)
-      chats.value = payload.content
+      setChats(payload.content)
   })
 })
-
-const setup = async () => {
-  const { data } = props.chatType === 'DM' ? await useDirectChats() : props.chatType === 'GROUP'? await useGroupChats() : await useGroupChatSearch('')
-
-  if (data) chats.value = data.value
-
-  chatType.value = props.chatType
-}
 
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
   if (chatType.value === 'DM') {
@@ -251,12 +235,6 @@ const joinGroupChat = () => {
   chatSocket.value.emit('join-group-chat', JSON.stringify({room_id: selectedChat.value.chat_room_id, password: joinGroupPassword.value}))
   closejoinGroupPasswordPopup()
 }
-
-watch(() => props.filteredGroupChatNames, async (name) => {
-  chatType.value = ''
-  const {data} = await useGroupChatSearch(name)
-  if (data) chats.value = data.value
-})
 
 const changePasswordView = () => {
     let input = document.getElementById("joinGroupPassword") as HTMLInputElement

@@ -33,24 +33,13 @@
                                                     <XMarkIcon class="h-6 w-6" aria-hidden="true" />
                                                 </button>
                                             </div>
-                                            <ChatOptions 
-                                                :chatType="chatType"
-                                                @switchChatType="switchChatType"
-                                                @filteredGroupChatNames="(searchedGroupChats) => filteredGroupChatNames = searchedGroupChats"
-                                            />
+                                            <ChatOptions />
                                         </div>
                                     </div>
-                                    <ChatList v-if="chatListView"
-                                        :chatType="chatType"
-                                        :filteredGroupChatNames="filteredGroupChatNames"
-                                        @selectChat="switchChatView"
+                                    <ChatList v-if="chatView"
                                         @closeNavBar="setChatModalOpen(false)"
                                     />
-                                    <ChatContent v-else
-                                        :currentChat="currentChat"
-                                        :chatType="chatType"
-                                        @closeChat="switchChatView"
-                                    />
+                                    <ChatContent v-else />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -65,40 +54,31 @@
 import {
     Dialog,
     DialogPanel,
-    DialogTitle,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
     TransitionChild,
     TransitionRoot,
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
 
-const chatListView = ref(true)
-const currentChat = ref()
-const chatType = ref('DM')
-const filteredGroupChatNames = ref()
+const { chatView, setChatView } = useChatView()
+const { currentChat, setCurrentChat } = useCurrentChat()
+const { chatType } = useChatType()
 
-const switchChatType = (type: string) => {
-    chatType.value = type
-    chatListView.value = true
-    currentChat.value = null
-}
+watch(()=>chatType.value, () => {
+    setChatView(true)
+    setCurrentChat(null)
+})
 
-const switchChatView = async (chat: DirectChat | GroupChat) => {
-    if (chat && chatType.value) {
-        chatListView.value = false
-        currentChat.value = chat
+watch(()=>currentChat.value, () => {
+    
+    if (currentChat.value && chatType.value) {
+        setChatView(false)
     }
     else {
-        chatListView.value = true
-        currentChat.value = null
+        setChatView(true)
     }
-}
+})
 
 const open = computed(() => chat_info.value.chatModalOpen)
 </script>
