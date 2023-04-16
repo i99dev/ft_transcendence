@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io'
 import { gameStatusDto, PlayerDto } from '../dto/game.dto'
-const BALL_XSPEED = 0.01
+const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
@@ -26,28 +26,35 @@ export class socketLogic {
         const computer = this.createPlayer('Computer', 2)
         const gameID: string = this.generateRandomId()
 
+        this.PlayersSocket[0] = client
         players[client.id] = player
         players[client.id].gameID = gameID
+        computer.gameID = gameID
         const game = this.instanciateGame(player, computer)
         games[gameID] = game
 
+        this.emitGameSetup(game);
         client.join(gameID)
-        client.emit('Game-Setup', { game, player: 1 })
+        client.emit('Game-Setup', { game, player: 0 })
         return gameID
     }
 
     // emit the game-setup event to the players to update them with the game status
     public emitGameSetup(game: gameStatusDto): void {
-        this.PlayersSocket[0].emit('Game-Setup', { game, player: 1 })
-        this.PlayersSocket[1].emit('Game-Setup', { game, player: 2 })
+        this.PlayersSocket[0].emit('Game-Setup', { game, player: 0 })
         this.PlayersSocket[0].leave('lobby')
-        this.PlayersSocket[1].leave('lobby')
+        if(this.PlayersSocket[1])
+        {
+            this.PlayersSocket[1].emit('Game-Setup', { game, player: 1 })
+            this.PlayersSocket[1].leave('lobby')
+        }
     }
 
     // emit end game event to the players in case of leaving the game or winning
     public emitEndGame(winner: PlayerDto, game: gameStatusDto): void {
         this.PlayersSocket[0].emit('Game-Over', { game, winner })
-        this.PlayersSocket[1].emit('Game-Over', { game, winner })
+        if (this.PlayersSocket[1])
+            this.PlayersSocket[1].emit('Game-Over', { game, winner })
     }
 
     // join the players to the game room

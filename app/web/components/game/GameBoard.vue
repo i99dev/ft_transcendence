@@ -68,7 +68,7 @@ function powerup(): void {
 }
 
 function giveUp(): void {
-    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
+    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
 }
 
 const socketSetup = (mode: string): void => {
@@ -89,9 +89,9 @@ const socketEvents = (): void => {
     })
 
     socket.value.on('Game-Over', payload => {
-        if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
+        if (payload.winner.username == gameSetup.value.game.players[gameSetup.value.player].username)
             emit('GameOver', 'you won')
-        else emit('GameOver', 'you won')
+        else emit('GameOver', 'you lost')
     })
 }
 
@@ -206,29 +206,10 @@ const draw = (): void => {
     drawPlayersInfo()
     drawScore()
     drawBall()
-
-    // temporary decision for winner
-    checkWinner()
 }
 
 const isObjEmpty = (obj: any): boolean => {
     return Object.values(obj).length === 0 && obj.constructor === Object
-}
-
-// temporay function for winner. need to be removed
-const checkWinner = (): void => {
-    let gameFinished = false
-    for (let p = 0; p < gameData.value.players.length; p++)
-        if (gameData.value.players[p].score == 11) gameFinished = true
-
-    if (gameFinished) {
-        for (let p = 0; p < gameData.value.players.length; p++) {
-            if (p == gameSetup.value.player - 1) {
-                if (gameData.value.players[p].score == 11) emit('GameOver', 'you won')
-                else emit('GameOver', 'you Lost')
-            }
-        }
-    }
 }
 
 const handleKeyDown = (event: KeyboardEvent): void => {
@@ -269,7 +250,6 @@ const drawBall = (): void => {
 
 const drawPlayer = (players: PlayerDto[]): void => {
     for (let i = 0; i < players.length; i++) {
-        console.log(players[i])
         const p = players[i].paddle
         const posy = p.y * canvas.value.height - p.height / 2
         const posx = i == 0 ? 0 : canvas.value.width - p.width

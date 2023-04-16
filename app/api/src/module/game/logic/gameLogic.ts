@@ -19,9 +19,9 @@ const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 const COMPUTER_FRAME_INTERVAL = 1000 / 60
 const COMPUTER_SPEED = 0.0045
-const PADDLE_SPEED = 0.015
+const PADDLE_SPEED = 0.017
 const REFLECT_ANGLE = 80
-const BALL_XSPEED = 0.01
+const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
 
 export class gameLogic {
@@ -241,11 +241,15 @@ export class gameLogic {
 
     // end the game and emit the end game event
     public async endGame(player: PlayerDto, isWinner: boolean): Promise<void> {
-        if (this.isComputer(player)) return
-        const opponent = this.games[player.gameID].players.find(
+        let opponent = this.games[player.gameID].players.find(
             (op: PlayerDto) => op.username !== player.username,
         )
+        // temp solution to prevent crash when player == opponent
+        if(!opponent)
+            opponent = player;
         this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameID])
+        // dont save history if the game is against computer (It causes a crash when trying to save the game)
+        if (this.isComputer(player) || this.isComputer(opponent)) return
         const game: gameHistory = new gameHistory(this.games[player.gameID])
         game.addHistory()
         this.clearData(player)
