@@ -57,8 +57,7 @@ function destroy(): void {
 }
 
 function powerup(): void {
-	if (poweredUp.value == false) 
-	{
+    if (poweredUp.value == false) {
 		socket.value.emit('powerup', 'start')
 		poweredUp.value = true
 		   setTimeout(() => {
@@ -72,7 +71,7 @@ function giveUp(): void {
     socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
 }
 
-const socketSetup = (mode:string): void => {
+const socketSetup = (mode: string): void => {
 	socket.value.emit('Join-game', mode)
 }
 
@@ -161,7 +160,7 @@ const storePlayersData = (players: PlayerDto[]): void => {
     for (let i = 0; i < players.length; i++) {
         players[i].paddle.width *= canvas.value.width
         players[i].paddle.height *= canvas.value.height
-        players[i].y = players[i].y * canvas.value.height - players[i].paddle.height / 2
+        players[i].paddle.y = players[i].paddle.y * canvas.value.height - players[i].paddle.height / 2
     }
 }
 
@@ -270,11 +269,12 @@ const drawBall = (): void => {
 
 const drawPlayer = (players: PlayerDto[]): void => {
     for (let i = 0; i < players.length; i++) {
-        const p = players[i]
-        const posy = p.y * canvas.value.height - p.paddle.height / 2
-        const posx = i == 0 ? 0 : canvas.value.width - p.paddle.width
+        console.log(players[i])
+        const p = players[i].paddle
+        const posy = p.y * canvas.value.height - p.height / 2
+        const posx = i == 0 ? 0 : canvas.value.width - p.width
         ctx.value.fillStyle = 'white'
-        ctx.value.fillRect(posx, p.y, p.paddle.width, p.paddle.height)
+        ctx.value.fillRect(posx, p.y, p.width, p.height)
     }
 }
 
@@ -336,7 +336,7 @@ const drawText = (text: string, size: number, posx = 0, posy = 0): void => {
     )
 }
 
-const clearText = (text: string, size: number, w: number, h: number, posx = 0, posy = 0) => {}
+const clearText = (text: string, size: number, w: number, h: number, posx = 0, posy = 0) => { }
 
 const textSetup = (text: string, size: number): { w: number; h: number } => {
     ctx.value.font = `${size}px Arial`

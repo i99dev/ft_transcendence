@@ -84,8 +84,8 @@ export class socketLogic {
 
     // assign the player side
     private assignPlayerSide(players: Map<string, PlayerDto>): void {
-        players[this.PlayersSocket[0].id].x = PADDLE_WIDTH / 2
-        players[this.PlayersSocket[1].id].x = 1 - PADDLE_WIDTH / 2
+        players[this.PlayersSocket[0].id].paddle.x = PADDLE_WIDTH / 2
+        players[this.PlayersSocket[1].id].paddle.x = 1 - PADDLE_WIDTH / 2
     }
 
     public isEnoughPlyrinLobby(): boolean {
@@ -112,10 +112,10 @@ export class socketLogic {
     private createPlayer(username: string, side: number): PlayerDto {
         return {
             username,
-            y: 0.5,
-            x: side == 1 ? PADDLE_WIDTH / 2 : 1 - PADDLE_WIDTH / 2,
             score: 0,
             paddle: {
+                x: side == 1 ? PADDLE_WIDTH / 2 : 1 - PADDLE_WIDTH / 2,
+                y: 0.5,
                 width: PADDLE_WIDTH,
                 height: PADDLE_HEIGHT,
             },

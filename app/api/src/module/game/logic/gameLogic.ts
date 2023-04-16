@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-import { gameStatusDto, PlayerDto, BallDto } from '../dto/game.dto'
+import { gameStatusDto, PlayerDto, BallDto, PaddleDto } from '../dto/game.dto'
 import { Socket } from 'socket.io'
 import { gameHistory } from './gameHistory'
 import { socketLogic } from './gameSocket'
@@ -68,11 +68,11 @@ export class gameLogic {
 
     private turnOnComputer(gameID: string): void {
         const intervalId = setInterval(async () => {
-            this.updateComputer(this.games[gameID].ball, this.games[gameID].players[1])
+            this.updateComputer(this.games[gameID].ball, this.games[gameID].players[1].paddle)
         }, COMPUTER_FRAME_INTERVAL)
     }
 
-    private updateComputer(ball: BallDto, player: PlayerDto): void {
+    private updateComputer(ball: BallDto, paddle: PaddleDto): void {
         if (ball.dx < 0) return
 
         const distance = Math.abs(1 - ball.x)
@@ -82,14 +82,14 @@ export class gameLogic {
         let targetY = predictedBallY
 
         targetY = Math.max(
-            player.paddle.height / 2,
-            Math.min(1 - player.paddle.height / 2, targetY),
+            paddle.height / 2,
+            Math.min(1 - paddle.height / 2, targetY),
         )
 
-        if (player.y < targetY) {
-            player.y += Math.min(COMPUTER_SPEED, targetY - player.y)
-        } else if (player.y > targetY) {
-            player.y -= Math.min(COMPUTER_SPEED, player.y - targetY)
+        if (paddle.y < targetY) {
+            paddle.y += Math.min(COMPUTER_SPEED, targetY - paddle.y)
+        } else if (paddle.y > targetY) {
+            paddle.y -= Math.min(COMPUTER_SPEED, paddle.y - targetY)
         }
     }
 
@@ -140,11 +140,11 @@ export class gameLogic {
     }
 
     // check if the ball collided with a player paddle
-    private checkPlayerCollision(ball: BallDto, player: PlayerDto, playerIndex: number): boolean {
-        const paddleLeft = playerIndex === 0 ? player.x : player.x - player.paddle.width
-        const paddleRight = playerIndex === 0 ? player.x + player.paddle.width : player.x
-        const paddleTop = player.y - player.paddle.height / 2
-        const paddleBottom = player.y + player.paddle.height / 2
+    private checkPlayerCollision(ball: BallDto, paddle: PaddleDto, playerIndex: number): boolean {
+        const paddleLeft = playerIndex === 0 ? paddle.x : paddle.x - paddle.width
+        const paddleRight = playerIndex === 0 ? paddle.x + paddle.width : paddle.x
+        const paddleTop = paddle.y - paddle.height / 2
+        const paddleBottom = paddle.y + paddle.height / 2
 
         return (
             ball.y + ball.radius >= paddleTop &&
@@ -161,9 +161,9 @@ export class gameLogic {
         this.checkWallCollision(ball)
 
         // Check if the ball is within the horizontal range of the left paddle
-        if (ball.x <= players[0].x + players[0].paddle.width && ball.dx < 0) {
-            if (this.checkPlayerCollision(ball, players[0], 0)) {
-                this.reflectBall(ball, players[0])
+        if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
+            if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
+                this.reflectBall(ball, players[0].paddle)
             } else if (ball.x < 0) {
                 // Ball crossed the left boundary
                 players[1].score += 1
@@ -171,9 +171,9 @@ export class gameLogic {
             }
         }
         // Check if the ball is within the horizontal range of the right paddle
-        else if (ball.x >= players[1].x - players[1].paddle.width && ball.dx > 0) {
-            if (this.checkPlayerCollision(ball, players[1], 1)) {
-                this.reflectBall(ball, players[1])
+        else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
+            if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
+                this.reflectBall(ball, players[1].paddle)
             } else if (ball.x > 1) {
                 // Ball crossed the right boundary
                 players[0].score += 1
@@ -201,10 +201,10 @@ export class gameLogic {
     }
 
     // reflect the ball based on the paddle hit point
-    private reflectBall(ball: BallDto, player: PlayerDto): void {
+    private reflectBall(ball: BallDto, paddle: PaddleDto): void {
         ball.dx *= -1
-        const relativePos = ball.y - player.y
-        const paddleHitPoint = relativePos / (player.paddle.height / 2 + ball.radius)
+        const relativePos = ball.y - paddle.y
+        const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
         const angle = paddleHitPoint * REFLECT_ANGLE
         const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2)
         ball.dy = ballSpeed * Math.sin(angle * (Math.PI / 180))
@@ -224,14 +224,14 @@ export class gameLogic {
         if (!game) return
 
         if (direction === 'up') {
-            player.y -= PADDLE_SPEED
+            player.paddle.y -= PADDLE_SPEED
         } else if (direction === 'down') {
-            player.y += PADDLE_SPEED
+            player.paddle.y += PADDLE_SPEED
         }
 
-        player.y = Math.max(
+        player.paddle.y = Math.max(
             0 + player.paddle.height / 2,
-            Math.min(1 - player.paddle.height / 2, player.y),
+            Math.min(1 - player.paddle.height / 2, player.paddle.y),
         )
     }
 
