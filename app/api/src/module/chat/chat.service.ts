@@ -447,4 +447,17 @@ export class ChatService {
             console.log(error)
         }
     }
+
+    async countUsersInChatRoom(room_id: string) {
+        try {
+            const chat = await this.prisma.chatUser.count({
+                where: {
+                    chat_room_id: room_id,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
