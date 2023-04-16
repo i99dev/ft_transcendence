@@ -55,6 +55,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private logger = new Logger('ChatWsGateway')
 
     async handleConnection(client: Socket, ...args: any[]) {
+        if (this.clients.has(this.getID(client) as unknown as string)) {
+            this.logger.log(`Client "${client.id}" is already connected to chat`)
+            client.emit('exception', 'Duplicate connection detected');
+        }
+
         this.logger.log(`Client "${client.id}" connected to chat`)
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
