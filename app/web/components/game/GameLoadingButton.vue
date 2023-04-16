@@ -41,11 +41,11 @@ const loading = ref(false as boolean)
 let name = ref('Dou' as string)
 
 // Defines
-const emit = defineEmits(['startGame'])
+const emit = defineEmits(['StartGame'])
 
 const load = (): void => {
     loading.value = true
     name.value = 'Searching'
-    emit('startGame')
+    emit('StartGame')
 }
 </script>

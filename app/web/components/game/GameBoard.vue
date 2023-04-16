@@ -23,6 +23,11 @@ const nuxtApp = useNuxtApp()
 const socket = ref(nuxtApp.socket as Socket)
 let poweredUp = ref(false as boolean)
 
+const keys: { [key: string]: boolean } = {
+    ArrowUp: false,
+    ArrowDown: false
+};
+
 // game settings
 const sensitivity = 3 // for mouse movements or touch movements
 const canvasRatio = 1.5 // board width / board height
@@ -97,6 +102,8 @@ const windowEvents = (): void => {
 
     // Handle Keyboard events
     document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp);
+
     // Handle Mouse and Touch events
     window.addEventListener('mousedown', holdPaddle)
     window.addEventListener('mousemove', movePaddle)
@@ -194,6 +201,7 @@ const redraw = (): void => {
 const draw = (): void => {
     if (isObjEmpty(gameData.value)) return
 
+    updatePaddleDirection();
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawPlayer(gameData.value.players)
     drawPlayersInfo()
@@ -225,15 +233,26 @@ const checkWinner = (): void => {
 }
 
 const handleKeyDown = (event: KeyboardEvent): void => {
-    switch (event.key) {
-        case 'ArrowUp':
-            socket.value.emit('move', 'up')
-            break
-        case 'ArrowDown':
-            socket.value.emit('move', 'down')
-            break
+    if (keys.hasOwnProperty(event.key)) {
+        event.preventDefault();
+        keys[event.key] = true;
     }
+};
+
+const handleKeyUp = (event: KeyboardEvent): void => {
+    if (keys.hasOwnProperty(event.key)) {
+        event.preventDefault();
+        keys[event.key] = false;
 }
+};
+
+const updatePaddleDirection = (): void => {
+    if (keys.ArrowUp) {
+        socket.value.emit('move', 'up');
+    } else if (keys.ArrowDown) {
+        socket.value.emit('move', 'down');
+    }
+};
 
 const drawBall = (): void => {
     ctx.value.beginPath()
