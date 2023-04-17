@@ -222,7 +222,9 @@ export class GroupChatService {
                     },
                 },
             })
-            const sortedChat = this.chatRepository.sort(chat)
+            let sortedChat
+            if (chat)
+                sortedChat = this.chatRepository.sort(chat)
             return sortedChat
         } catch (error) {
             console.log(error)
