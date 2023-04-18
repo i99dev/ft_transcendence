@@ -63,7 +63,11 @@ const { chat_info, setChatModalOpen, send_message } = useChat()
 
 const { chatView, setChatView } = useChatView()
 const { currentChat, setCurrentChat } = useCurrentChat()
-const { chatType } = useChatType()
+const { chatType, setChatType } = useChatType()
+
+onMounted(() => {
+    setChatType(chatType.value)
+})
 
 watch(()=>chatType.value, () => {
     setChatView(true)
