@@ -123,8 +123,6 @@ export const useChatType = () => {
         chatType.value = type
     }
 
-    setChatType(chatType.value)
-
     return { chatType, setChatType }
 }
 
