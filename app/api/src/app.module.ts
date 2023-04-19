@@ -8,6 +8,7 @@ import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
+import { MulterModule } from './module/multer/multer.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -18,6 +19,7 @@ import { MatchHistoryModule } from './module/match-history/match-history.module'
         PrismaModule,
         GameModule,
         MatchHistoryModule,
+        MulterModule
     ],
     controllers: [AppController],
     providers: [AppService],
