@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
-import { PlayerDto } from '../dto/game.dto'
+import { GameSelectDto, PlayerDto } from '../dto/game.dto'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
@@ -33,13 +33,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Join-game')
-    Join(@ConnectedSocket() client: any, @MessageBody() gameMode: string) {
-        if (gameMode == 'solo') {
-            //add conditon to check if the game is vs computer
+    Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
+        if ( payload.gameMode == 'single') {
             this.gameService.gameLogic.startComputerGame(client, this.decoded, (gameId, game) => {
                 this.server.to(gameId).emit('Game-Data', game)
             })
-        } else if (gameMode == 'duo') {
+        } else if (payload.gameMode == 'multi') {
             this.gameService.gameLogic.addToLobby(client, this.decoded)
             this.gameService.gameLogic.checkLobby((gameId, game) => {
                 this.server.to(gameId).emit('Game-Data', game)

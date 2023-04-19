@@ -52,3 +52,12 @@ export class PaddleDto {
     width: number
     height: number
 }
+
+export class GameSelectDto {
+    gameType: "classic" | "custom";
+  
+    gameMode: "single" | "multi";
+  
+    invitedId?: string;
+  
+  }

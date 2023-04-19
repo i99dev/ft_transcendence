@@ -36,7 +36,7 @@ const canvasRatio = 1.5 // board width / board height
 const emit = defineEmits(['ReadyGame', 'GameOver'])
 defineExpose({ setup, destroy, giveUp, powerup })
 
-function setup(mode: string): void {
+function setup(mode: GameSelectDto): void {
     // setup socket connection and events
 
     socketSetup(mode)
@@ -71,7 +71,7 @@ function giveUp(): void {
     socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
 }
 
-const socketSetup = (mode: string): void => {
+const socketSetup = (mode: GameSelectDto): void => {
 	socket.value.emit('Join-game', mode)
 }
 
