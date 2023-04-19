@@ -76,4 +76,10 @@ declare global {
     end: Date
     opponents: PlayerDto[]
   }
+
+  interface GameSelectDto {
+    gameType: string  
+    gameMode: string
+    invitedID?: string
+  }
 }
