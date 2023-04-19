@@ -127,7 +127,7 @@ const emitGameSelected = () => {
   }
 
   .half-circle-spinner .circle.circle-2 {
-    border-bottom-color: #ff1d5e;
+    border-bottom-color: #00b6e9;
     animation: half-circle-spinner-animation 1s infinite alternate;
   }
 
