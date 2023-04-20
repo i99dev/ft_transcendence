@@ -12,6 +12,7 @@ import {
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
 import { GameSelectDto, PlayerDto } from '../dto/game.dto'
+import { SocketService } from './socket.service'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
@@ -24,7 +25,10 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private logger = new Logger('DefaultGateway')
     private decoded: any
 
-    constructor(private gameService: DefaultService, private jwtService: JwtService) {}
+        private socketService: SocketService,
+    afterInit(server: Server) {
+        this.socketService.setServer(server)
+    }
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
