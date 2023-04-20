@@ -57,7 +57,6 @@ export class MulterController {
         return { message: 'File uploaded successfully' }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/download/:target/files/:filename')
     async getFile(
         @Param('target') target: string,
@@ -65,9 +64,6 @@ export class MulterController {
         @Res() res: any,
         @Req() request: any,
     ) {
-        if (!(await this.multerService.checkTargetId(target, request.user.login))) {
-            throw new NotFoundException('Target not found')
-        }
         const userDir = `./uploads/${target}`
         const filePath = `${userDir}/${filename}`
         if (fs.existsSync(filePath)) {
