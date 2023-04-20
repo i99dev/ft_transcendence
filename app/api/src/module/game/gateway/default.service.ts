@@ -54,6 +54,17 @@ export class DefaultService {
         console.log('Connected users number is :', this.connected_users.length)
     }
 
+    public giveUp(userSocket: Socket) {
+        const player = this.connected_users.find(user => user.socket == userSocket)
+        player.game.setLoser(player.id)
+    }
+
+    public powerUp(userSocket: Socket, powerUp: string) {
+        const player = this.connected_users.find(user => user.socket == userSocket)
+        player.game.powerUp(player.id, powerUp)
+    }
+
+
     public matchPlayer(userSocket: Socket, gameType: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         player.status = 'inqueue'
@@ -87,8 +98,15 @@ export class DefaultService {
         }
     }
 
-    public createSingleGame(player1ID: string, gameType: string) {
-        const game = new PongGame(player1ID, 'Computer', gameType)
+    public createSingleGame(player1Socket: Socket, gameType: string) {
+        const player = this.connected_users.find(user => user.socket == player1Socket)
+        const game = new PongGame(player.id, 'Computer', gameType)
+        player.status = 'ingame'
+        player.game = game
+        player.socket.join(game.getGameID())
+        this.socketService.emitGameSetup(player.socket, null, game.getGameStatus())
+
+        this.startGame(game)
     }
 
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
@@ -97,19 +115,17 @@ export class DefaultService {
         player2.game = game
         player1.socket.join(game.getGameID())
         player2.socket.join(game.getGameID())
-        this.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
+        this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
 
         this.startGame(game)
     }
 
-    private emitGameSetup(socket1: Socket, socket2: Socket, game: gameStatusDto): void {
-        socket1.emit('Game-Setup', { game, player: 0 })
-        if (socket2) socket2.emit('Game-Setup', { game, player: 1 })
-    }
-
     private startGame(game: PongGame) {
         const intervalId = setInterval(async () => {
-            game.updateGame() // game logic to be added here
+            if(game.getGameStatus().players[1].username == 'Computer')
+                game.updateComputer()
+            console.log('game data', game.getGameStatus())
+            game.updateGame() 
             this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             if (game.getPlayer1Score() >= 11 || game.getPlayer2Score() >= 11) {
                 clearInterval(intervalId)
@@ -140,6 +156,7 @@ export class DefaultService {
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
         this.emitEndGame(winner, game_status, game.getGameID())
+        
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1]))
             return
@@ -152,7 +169,8 @@ export class DefaultService {
 
         const game_result: gameHistory = new gameHistory(game_status)
 
-        // game_result.addHistory()
+        // Commented temp. cuz it causes a crash when trying a match to the game history while a user is not in the database
+        // game_result.addHistory() 
 
         this.clearData(game)
     }

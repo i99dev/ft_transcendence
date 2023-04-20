@@ -6,6 +6,7 @@ const PADDLE_SPEED = 0.017
 const REFLECT_ANGLE = 80
 const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
+const COMPUTER_SPEED = 0.0045
 
 export class PongGame {
     private game_status: gameStatusDto
@@ -76,6 +77,7 @@ export class PongGame {
                 height: PADDLE_HEIGHT,
             },
             gameID: this.game_id,
+            powerUp: false,
         }
     }
 
@@ -87,6 +89,30 @@ export class PongGame {
         if (playerIndex !== -1) {
             const opponentIndex = playerIndex === 0 ? 1 : 0
             this.game_status.players[opponentIndex].score = 11
+        }
+    }
+
+    public updateComputer(): void {
+        const computer = this.game_status.players.find(player => player.username === 'Computer')
+        const ball = this.game_status.ball
+        const paddle = computer.paddle
+        if(computer) {
+
+            if (ball.dx < 0) return
+
+            const distance = Math.abs(1 - ball.x)
+            const timeToReachPaddle = distance / Math.abs(ball.dx)
+            const predictedBallY = ball.y + ball.dy * timeToReachPaddle
+
+            let targetY = predictedBallY
+
+            targetY = Math.max(paddle.height / 2, Math.min(1 - paddle.height / 2, targetY))
+
+            if (paddle.y < targetY) {
+                paddle.y += Math.min(COMPUTER_SPEED, targetY - paddle.y)
+            } else if (paddle.y > targetY) {
+                paddle.y -= Math.min(COMPUTER_SPEED, paddle.y - targetY)
+            }
         }
     }
 
@@ -157,23 +183,23 @@ export class PongGame {
         }
     }
 
-    // public powerup(client, action: string): void {
-    //     const player = this.players[client.id]
-    //     if (
-    //         (player.powerup === true && action === 'start') ||
-    //         (player.powerup === false && action === 'end')
-    //     )
-    //         return
-    //     if (action === 'start') {
-    //         player.paddle.width *= 2
-    //         player.paddle.height *= 2
-    //         player.powerup = true
-    //     } else if (action === 'end') {
-    //         player.paddle.width /= 2
-    //         player.paddle.height /= 2
-    //         player.powerup = false
-    //     }
-    // }
+    public powerUp(playerID: string, action: string): void {
+        const player = this.game_status.players.find(player => player.username === playerID)
+        if (
+            (player.powerUp === true && action === 'start') ||
+            (player.powerUp === false && action === 'end')
+        )
+            return
+        if (action === 'start') {
+            player.paddle.width *= 2
+            player.paddle.height *= 2
+            player.powerUp = true
+        } else if (action === 'end') {
+            player.paddle.width /= 2
+            player.paddle.height /= 2
+            player.powerUp = false
+        }
+    }
 
     // reflect the ball based on the paddle hit point
     private reflectBall(ball: BallDto, paddle: PaddleDto): void {
