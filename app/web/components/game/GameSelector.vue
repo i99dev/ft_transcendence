@@ -79,19 +79,28 @@
   
 <script setup>
 
-const emit = defineEmits(['gameSelected'])
 
 const step = ref(1);
 const selectedGame = ref(null);
 const selectedMode = ref(null);
 
+const emit = defineEmits(['gameSelected'])
+
 const selectGame = (game) => {
-    selectedGame.value = game;
-    step.value = 2;
+  selectedGame.value = game;
+  step.value = 2;
 };
 
+const reset = (game) => {
+  step.value = 1
+  selectedGame.value = null
+  selectedMode.value = null
+};
+
+defineExpose({ reset });
+
 const selectMode = (mode) => {
-    selectedMode.value = mode;
+  selectedMode.value = mode;
 };
 
 const emitGameSelected = () => {

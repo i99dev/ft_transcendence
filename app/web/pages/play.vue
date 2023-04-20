@@ -1,12 +1,11 @@
 <template>
 	<div>
         <div
-        v-if="!ready && firstGameReady"
+        v-if="showSelector"
         class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
       >
         <div class="flex flex-col items-center">
-
-          <GameSelector @gameSelected="startGame" />
+          <GameSelector @gameSelected="startGame" ref="gameSelector" />
         </div>
       </div>
 	
@@ -25,7 +24,7 @@
                     <Button @click="switchExistStatus(true)" icon="pi pi-times" />
                     <button class="bg-slate-400 text-xs p-2 rounded-t-md" @click="powerup" >PowerUp</button>
                 </div>
-                <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+                <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
             <GameResult
                 v-if="gameResult"
@@ -41,42 +40,50 @@
 
 import { ref, defineEmits, defineExpose } from 'vue'
 
-let exit = ref(false);
-let ready = ref(false)
-let firstGameReady = ref(true)
-let gameResult = ref(false)
-let gameResultMessage = ref('')
-let gameBoard = ref()
+const exit = ref(false);
+const showSelector = ref(true)
+const showBoard = ref(false)
+const gameResult = ref(false)
+const gameResultMessage = ref('')
+const gameBoard = ref()
+const gameSelector = ref()
 
 const startGame = (mode: GameSelectDto): void => {
     console.log(mode)
-    gameBoard.value.setup(mode)
+    showBoard.value = true
+    
+    setTimeout(() => {
+        gameBoard.value.setup(mode)
+    }, 1000);
     gameResult.value = false
 }
 
-
 const playAgain = (): void => {
-    gameBoard.value.setup()
+    showSelector.value = true;
+    showBoard.value = false;
+    gameResult.value = false;
+    console.log(gameSelector.value);
+    console.log(gameBoard.value);
+
 }
 
 const gameOver = (message: string): void => {
-    gameBoard.value.destroy()
-	firstGameReady.value = false
-    ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
 }
 
 const setGameReady = (): void => {
-    ready.value = true
+    showSelector.value = false
     gameResult.value = false
 }
 
 const exitGame = (): void => {
+    console.log('exit game called')
     gameBoard.value.giveUp()
-    gameBoard.value.destroy()
+    gameBoard.value.resetSocket()
+    showBoard.value = false
     exit.value = false
-    ready.value = false
+    showSelector.value = true
     gameResult.value = false
     navigateTo('/')
 }

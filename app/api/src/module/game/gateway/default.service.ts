@@ -39,15 +39,16 @@ export class DefaultService {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
             const user = this.connected_users[index]
-            if (user.status == 'ingame') {
-                user.game.setLoser(user.id)
-            } else if (user.status == 'inqueue') {
+            if (user.status == 'inqueue') {
                 if (user.game.getGameType() == 'classic') {
                     this.classic_queue.splice(this.classic_queue.indexOf(user.id), 1)
                 } else if (user.game.getGameType() == 'custom') {
                     this.custom_queue.splice(this.custom_queue.indexOf(user.id), 1)
                 }
             }
+            else if (user.status == 'ingame') {
+                user.game.setLoser(user.id)
+            } 
             this.connected_users.splice(index, 1)
         }
         console.log('Connected users number is :', this.connected_users.length)
