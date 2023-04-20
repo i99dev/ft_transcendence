@@ -54,10 +54,9 @@ export class PaddleDto {
 }
 
 export class GameSelectDto {
-    gameType: "classic" | "custom";
-  
-    gameMode: "single" | "multi";
-  
-    invitedId?: string;
-  
-  }
+    gameType: 'classic' | 'custom'
+
+    gameMode: 'single' | 'multi'
+
+    invitedId?: string
+}

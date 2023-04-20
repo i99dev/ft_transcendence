@@ -33,7 +33,7 @@ export class socketLogic {
         const game = this.instanciateGame(player, computer)
         games[gameID] = game
 
-        this.emitGameSetup(game);
+        this.emitGameSetup(game)
         client.join(gameID)
         client.emit('Game-Setup', { game, player: 0 })
         return gameID
@@ -43,8 +43,7 @@ export class socketLogic {
     public emitGameSetup(game: gameStatusDto): void {
         this.PlayersSocket[0].emit('Game-Setup', { game, player: 0 })
         this.PlayersSocket[0].leave('lobby')
-        if(this.PlayersSocket[1])
-        {
+        if (this.PlayersSocket[1]) {
             this.PlayersSocket[1].emit('Game-Setup', { game, player: 1 })
             this.PlayersSocket[1].leave('lobby')
         }
@@ -53,8 +52,7 @@ export class socketLogic {
     // emit end game event to the players in case of leaving the game or winning
     public emitEndGame(winner: PlayerDto, game: gameStatusDto): void {
         this.PlayersSocket[0].emit('Game-Over', { game, winner })
-        if (this.PlayersSocket[1])
-            this.PlayersSocket[1].emit('Game-Over', { game, winner })
+        if (this.PlayersSocket[1]) this.PlayersSocket[1].emit('Game-Over', { game, winner })
     }
 
     // join the players to the game room

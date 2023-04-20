@@ -29,7 +29,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         private gameService: DefaultService,
         private socketService: SocketService,
         private jwtService: JwtService,
-        
     ) {}
 
     afterInit(server: Server) {
@@ -46,14 +45,16 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @SubscribeMessage('Join-game')
     Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
-        if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType);
-        else if (payload.gameMode == 'single') this.gameService.createSingleGame(client, payload.gameType);
-        else if (payload.gameMode == 'invite') this.gameService.createInviteGame(client, payload.gameType, payload.invitedId);
+        if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType)
+        else if (payload.gameMode == 'single')
+            this.gameService.createSingleGame(client, payload.gameType)
+        else if (payload.gameMode == 'invite')
+            this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
-        this.gameService.removeDisconnectedUser(client);
+        this.gameService.removeDisconnectedUser(client)
     }
 
     @SubscribeMessage('Give-Up')

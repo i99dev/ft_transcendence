@@ -25,8 +25,7 @@ export class DefaultService {
     public addConnectedUser(userID: string, userSocket: Socket) {
         // adds random number to username incase of duplicate names
         const temp = this.connected_users.find(user => user.id == userID)
-        if (temp)
-            userID = userID + "1";
+        if (temp) userID = userID + '1'
         this.connected_users.push({
             id: userID,
             socket: userSocket,
@@ -39,15 +38,13 @@ export class DefaultService {
     public removeDisconnectedUser(userSocket: Socket) {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
-            const user = this.connected_users[index];
-            if(user.status == 'ingame'){
+            const user = this.connected_users[index]
+            if (user.status == 'ingame') {
                 user.game.setLoser(user.id)
-            }
-            else if(user.status == 'inqueue'){
-                if(user.game.getGameType() == 'classic'){
+            } else if (user.status == 'inqueue') {
+                if (user.game.getGameType() == 'classic') {
                     this.classic_queue.splice(this.classic_queue.indexOf(user.id), 1)
-                }
-                else if(user.game.getGameType() == 'custom'){
+                } else if (user.game.getGameType() == 'custom') {
                     this.custom_queue.splice(this.custom_queue.indexOf(user.id), 1)
                 }
             }
@@ -140,23 +137,19 @@ export class DefaultService {
 
     // end the game and emit the end game event
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
-
-        const game_status = game.getGameStatus();
+        const game_status = game.getGameStatus()
         this.emitEndGame(winner, game_status, game.getGameID())
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
-        if (
-            this.isComputer(game_status.players[0]) ||
-            this.isComputer(game_status.players[1])
-        )
+        if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1]))
             return
-            
+
         // TEMP ONLY checks wheather player1 or player 2 ends names end with number 1 if yes, removes it.
         // if (game_status.players[0][game_status.players[0].username.length - 1] == '1')
         //     game_status.players[0].username = game_status.players[0].username.slice(0, -1)
         // if (game_status.players[1][game_status.players[1].username.length - 1] == '1')
         //     game_status.players[1].username = game_status.players[1].username.slice(0, -1)
 
-            const game_result: gameHistory = new gameHistory(game_status)
+        const game_result: gameHistory = new gameHistory(game_status)
 
         // game_result.addHistory()
 
@@ -164,17 +157,14 @@ export class DefaultService {
     }
 
     private clearData(game: PongGame) {
-        
         const player1 = this.connected_users.find(user => user.id == game.getPlayer1ID())
         const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
-        if(player1)
-        {
+        if (player1) {
             player1.game = null
             player1.status = 'online'
             player1.socket.leave(game.getGameID())
         }
-        if(player2)
-        {
+        if (player2) {
             player2.game = null
             player2.status = 'online'
             player2.socket.leave(game.getGameID())

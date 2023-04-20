@@ -80,11 +80,13 @@ export class PongGame {
     }
 
     public setLoser(playerID: string): void {
-        const playerIndex = this.game_status.players.findIndex(player => player.username === playerID)
+        const playerIndex = this.game_status.players.findIndex(
+            player => player.username === playerID,
+        )
 
         if (playerIndex !== -1) {
-            const opponentIndex = playerIndex === 0 ? 1 : 0;
-            this.game_status.players[opponentIndex].score = 11;
+            const opponentIndex = playerIndex === 0 ? 1 : 0
+            this.game_status.players[opponentIndex].score = 11
         }
     }
 

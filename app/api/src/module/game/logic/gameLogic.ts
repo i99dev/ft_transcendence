@@ -81,10 +81,7 @@ export class gameLogic {
 
         let targetY = predictedBallY
 
-        targetY = Math.max(
-            paddle.height / 2,
-            Math.min(1 - paddle.height / 2, targetY),
-        )
+        targetY = Math.max(paddle.height / 2, Math.min(1 - paddle.height / 2, targetY))
 
         if (paddle.y < targetY) {
             paddle.y += Math.min(COMPUTER_SPEED, targetY - paddle.y)
@@ -245,8 +242,7 @@ export class gameLogic {
             (op: PlayerDto) => op.username !== player.username,
         )
         // temp solution to prevent crash when player == opponent
-        if(!opponent)
-            opponent = player;
+        if (!opponent) opponent = player
         this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameID])
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(player) || this.isComputer(opponent)) return
