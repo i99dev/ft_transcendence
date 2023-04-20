@@ -1,3 +1,4 @@
+import { ChatModule } from './module/chat/chat.module'
 import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -9,6 +10,7 @@ import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { MulterModule } from './module/multer/multer.module'
+import { NotificationModule } from '@module/notification/notification.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -17,9 +19,12 @@ import { MulterModule } from './module/multer/multer.module'
         AuthModule,
         UserModule,
         PrismaModule,
+        ChatModule,
         GameModule,
+        ChatModule,
         MatchHistoryModule,
         MulterModule,
+        NotificationModule,
     ],
     controllers: [AppController],
     providers: [AppService],

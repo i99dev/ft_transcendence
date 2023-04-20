@@ -66,6 +66,12 @@ export class UserController {
         return await this.UserService.getUser(req.user.login)
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('/search')
+    async SearchUser(@Query('username') search: string, @Req() req) {
+        return await this.UserService.SearchUser(search)
+    }
+
     @Get('/:name')
     @ApiOperation({
         operationId: 'getUser',
@@ -95,10 +101,9 @@ export class UserController {
         description: 'User data',
         required: true,
     })
-    @UsePipes(new UserPatchValidationPipe())
     async UpdateUser(
         @Param('name') name: string,
-        @Body() data1: UserPatchDto,
+        @Body(new UserPatchValidationPipe()) data1: UserPatchDto,
     ): Promise<UserGetDto> {
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
         const updatedUser: User = Object.assign({}, existingUser, data1)
