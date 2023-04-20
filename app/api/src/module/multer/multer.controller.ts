@@ -1,14 +1,53 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
-import { MulterService } from "./multer.service";
-import { FileInterceptor } from "@nestjs/platform-express";
+import {
+	Controller,
+	HttpStatus,
+	ParseFilePipeBuilder,
+	Post,
+	UploadedFile,
+	UseInterceptors,
+	Param,
+	Res,
+	NotFoundException,
+	Get,
+} from '@nestjs/common'
+import { MulterService } from './multer.service'
+import { FileInterceptor } from '@nestjs/platform-express'
+import * as fs from 'fs'
 
 @Controller('/multer')
 export class MulterController {
-    constructor(private multerService: MulterService) {}
+	constructor(private multerService: MulterService) {}
 
-    @Post()
-    @UseInterceptors(FileInterceptor('file'))
-    uploadFile(@UploadedFile() file: Express.Multer.File) {
-      console.log(file);
-    }
+	@Post('/upload/:target')
+	@UseInterceptors(FileInterceptor('file'))
+	uploadFile(
+		@UploadedFile(
+			new ParseFilePipeBuilder()
+				.addFileTypeValidator({ fileType: 'jpeg|jpg|png' })
+				.addMaxSizeValidator({ maxSize: 2000000 })
+				.build({ errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE }),
+		)
+		file: Express.Multer.File,
+		@Param('target') target: string,
+	) {
+		const userDir = `./uploads/${target}`;
+		if (!fs.existsSync(userDir)) {
+			fs.mkdirSync(userDir);
+		}
+		const filePath = `${userDir}/${file.originalname}`;
+		fs.writeFileSync(filePath, file.buffer);
+		return { message: 'File uploaded successfully' };
+	}
+
+	@Get('/download/:target/files/:filename')
+	  async getFile(@Param('target') target: string, @Param('filename') filename: string, @Res() res: any) {
+		const userDir = `./uploads/${target}`;
+		const filePath = `${userDir}/${filename}`;
+		if (fs.existsSync(filePath)) {
+		    res.sendFile(filename, { root: userDir });
+		} else {
+		    throw new NotFoundException('File not found');
+		}
+	}
+
 }

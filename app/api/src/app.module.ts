@@ -19,7 +19,7 @@ import { MulterModule } from './module/multer/multer.module'
         PrismaModule,
         GameModule,
         MatchHistoryModule,
-        MulterModule
+        MulterModule,
     ],
     controllers: [AppController],
     providers: [AppService],
