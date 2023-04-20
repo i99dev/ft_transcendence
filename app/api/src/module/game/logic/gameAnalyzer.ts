@@ -9,9 +9,10 @@ enum ladderLevel {
     Yonko = 'Yonko',
     KaizokuOu = 'Kaizoku Ou',
 }
-
 export class gameAnalyzer {
     private prisma = new PrismaClient()
+
+    // Data retrievals
     async getTotalVictories(player: string): Promise<number> {
         return await this.prisma.match.count({
             where: {
@@ -53,11 +54,6 @@ export class gameAnalyzer {
             },
         })
     }
-    async getWinRate(player: string): Promise<number> {
-        const totalWins = await this.getTotalVictories(player)
-        const totalMatches = await this.getTotalMatches(player)
-        return totalWins / totalMatches
-    }
     async getVictories(player: string): Promise<MatchHistoryDto[]> {
         return await this.prisma.match.findMany({
             where: {
@@ -86,10 +82,6 @@ export class gameAnalyzer {
             },
         })
     }
-    async getAcheivment(player: string): Promise<string> {
-        const totalWins = await this.getTotalVictories(player)
-        if (totalWins == 1) return 'Rookie no more'
-    }
     async getLadderLevel(player: string): Promise<string> {
         const user = await this.prisma.user.findUnique({
             where: {
@@ -98,35 +90,94 @@ export class gameAnalyzer {
         })
         return user.ladder
     }
-    async getXP(player: string, IsWinner: boolean): Promise<number> {
+    async getXP(player: string): Promise<number> {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                login: player,
+            },
+        })
+        return user.xp
+    }
+
+    // Rank calculations
+    async calcWinRate(player: string): Promise<number> {
+        const totalWins = await this.getTotalVictories(player)
+        const totalMatches = await this.getTotalMatches(player)
+        return totalWins / totalMatches
+    }
+    async calcXP(player: string, IsWinner: boolean): Promise<number> {
         const ladder = await this.getLadderLevel(player)
         let xp = 0
         switch (ladder) {
             case ladderLevel.CapinBoy:
-                if (IsWinner) xp = 10
-                else xp = 2
+                xp = IsWinner ? 10 : 2
                 break
             case ladderLevel.Kaizoku:
-                if (IsWinner) xp = 20
-                else xp = 4
+                xp = IsWinner ? 20 : 4
                 break
             case ladderLevel.SuperRookie:
-                if (IsWinner) xp = 30
-                else xp = 6
+                xp = IsWinner ? 30 : 6
                 break
             case ladderLevel.Shichibukai:
-                if (IsWinner) xp = 40
-                else xp = 8
+                xp = IsWinner ? 40 : 8
                 break
             case ladderLevel.Yonko:
-                if (IsWinner) xp = 50
-                else xp = 10
+                xp = IsWinner ? 50 : 10
                 break
             case ladderLevel.KaizokuOu:
-                if (IsWinner) xp = 60
-                else xp = 12
+                xp = IsWinner ? 60 : 12
                 break
         }
         return xp
+    }
+    async calcLadder(player: string): Promise<string> {
+        if (
+            (await this.getLadderLevel(player)) == ladderLevel.Yonko &&
+            (await this.getXP(player)) >= 3500 &&
+            (await this.calcWinRate(player)) >= 0.45
+        )
+            return ladderLevel.KaizokuOu
+        else if (
+            (await this.getLadderLevel(player)) == ladderLevel.Shichibukai &&
+            (await this.getXP(player)) >= 1500 &&
+            (await this.calcWinRate(player)) >= 0.5
+        )
+            return ladderLevel.Yonko
+        else if (
+            (await this.getLadderLevel(player)) == ladderLevel.SuperRookie &&
+            ((await this.getXP(player)) >= 600 || (await this.calcWinRate(player)) >= 0.55)
+        )
+            return ladderLevel.Shichibukai
+        else if (
+            (await this.getLadderLevel(player)) == ladderLevel.Kaizoku &&
+            (await this.getXP(player)) >= 150 &&
+            (await this.calcWinRate(player)) >= 0.6
+        )
+            return ladderLevel.SuperRookie
+        else if (
+            (await this.getLadderLevel(player)) == ladderLevel.CapinBoy &&
+            (await this.getTotalVictories(player)) >= 10
+        )
+            return ladderLevel.Kaizoku
+        return await this.getLadderLevel(player)
+    }
+    async updatePlayerXP(xp: number, player: string): Promise<void> {
+        await this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                xp: {
+                    increment: xp,
+                },
+            },
+        })
+    }
+    // async updatePlayerLadder(player: string): Promise<void> {
+
+    // Acheivments
+    async assignAcheivment(player: string): Promise<string> {
+        const totalWins = await this.getTotalVictories(player)
+        if (totalWins == 1) return 'Rookie no more'
     }
 }
