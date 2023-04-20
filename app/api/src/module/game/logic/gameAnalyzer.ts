@@ -161,19 +161,28 @@ export class gameAnalyzer {
             return ladderLevel.Kaizoku
         return await this.getLadderLevel(player)
     }
-    async updatePlayerXP(xp: number, player: string): Promise<void> {
+    async updatePlayerXP(player: string): Promise<void> {
         await this.prisma.user.update({
             where: {
                 login: player,
             },
             data: {
                 xp: {
-                    increment: xp,
+                    increment: await this.calcXP(player, true),
                 },
             },
         })
     }
-    // async updatePlayerLadder(player: string): Promise<void> {
+    async updatePlayerLadder(player: string): Promise<void> {
+        await this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                ladder: await this.calcLadder(player),
+            },
+        })
+    }
 
     // Acheivments
     async assignAcheivment(player: string): Promise<string> {

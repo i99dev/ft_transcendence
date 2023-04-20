@@ -6,7 +6,7 @@
 /*   By: aaljaber <aaljaber@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 08:07:46 by aaljaber          #+#    #+#             */
-/*   Updated: 2023/04/19 07:55:10 by aaljaber         ###   ########.fr       */
+/*   Updated: 2023/04/20 08:25:47 by aaljaber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,8 +249,9 @@ export class gameLogic {
         )
         this.socketLogic.emitEndGame(isWinner ? player : opponent, this.games[player.gameID])
         const game: gameHistory = new gameHistory(this.games[player.gameID])
-        game.addHistory()
-        this.socketLogic.emitAchievment('killer')
+        await game.addHistory()
+        await this.gameAnalyzer.updatePlayerXP(player.username)
+        await this.gameAnalyzer.updatePlayerLadder(player.username)
         this.clearData(player)
     }
 

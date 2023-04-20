@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Headers } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { UseGuards, Req } from '@nestjs/common'
@@ -8,7 +8,7 @@ export class MatchHistoryController {
     constructor(private readonly matchHistoryService: MatchHistoryService) {}
 
     @UseGuards(JwtAuthGuard)
-    @Get('') // /match-history?page=1&limit=3
+    @Get('') // /match-history?page=1
     async getPlayerMatchHistory(
         @Req() req,
         @Query('page') page: number,
