@@ -40,6 +40,8 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
 
     @SubscribeMessage('add-friend')
     async sendMessage( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: any){
+        if (this.getID(client) === payload.friend_login)
+            return (this.socketError('cannot add yourself'), [])
         if (await this.friendWsService.checkIfFriend(this.getID(client) as string, payload.friend_login))
             return (this.socketError('already friends'), [])
         if (await this.friendService.checkAddedFriends(this.getID(client) as string, payload.friend_login))
