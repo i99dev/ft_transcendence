@@ -75,8 +75,10 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
                 if (socket) {
                     this.notification.setUpNotificationMessage(socket, notification)
                     socket.emit('add-friend', { content: `${this.getID(client)} accepted your friend request` })
+                    socket.emit('friends-list', await this.friendService.getFriends(payload.friend_login))
                 }
                 client.emit('add-friend', { content: `friend request accepted from ${payload.friend_login}` })
+                client.emit('friends-list', await this.friendService.getFriends(this.getID(client) as string))
                 return notification
             }
         }
