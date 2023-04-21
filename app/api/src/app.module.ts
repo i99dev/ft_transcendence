@@ -10,6 +10,7 @@ import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { NotificationModule } from '@module/notification/notification.module'
+import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -23,6 +24,7 @@ import { NotificationModule } from '@module/notification/notification.module'
         ChatModule,
         MatchHistoryModule,
         NotificationModule,
+        FriendWsModule
     ],
     controllers: [AppController],
     providers: [AppService],
