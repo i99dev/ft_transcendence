@@ -5,6 +5,7 @@ import { Logger } from "@nestjs/common";
 import { NotificationService } from "@module/notification/notification.service";
 import { FriendService } from "../friend.service";
 import { SocketValidationPipe } from "@common/pipes/socketObjValidation.pipe";
+import { FriendWs } from "./dto/friend.dto";
 
 
 
@@ -39,7 +40,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     @SubscribeMessage('add-friend')
-    async sendMessage( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: any){
+    async sendMessage( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: FriendWs){
         if (this.getID(client) === payload.friend_login)
             return (this.socketError('cannot add yourself'), [])
         if (await this.friendWsService.checkIfFriend(this.getID(client) as string, payload.friend_login))
@@ -87,7 +88,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     @SubscribeMessage('delete-friend')
-    async deleteFriend( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: any) {
+    async deleteFriend( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: FriendWs) {
         if (!(await this.friendWsService.checkIfFriend(this.getID(client) as string, payload.friend_login)))
             return (this.socketError('not friends already'), [])
         if (!(await this.friendWsService.deleteFriend(this.getID(client) as string, payload.friend_login)))
