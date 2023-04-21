@@ -90,6 +90,15 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     async deleteFriend( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: any) {
         if (!(await this.friendWsService.checkIfFriend(this.getID(client) as string, payload.friend_login)))
             return (this.socketError('not friends already'), [])
+        if (!(await this.friendWsService.deleteFriend(this.getID(client) as string, payload.friend_login)))
+            return (this.socketError('error deleting friend'), [])
+        const socket = this.getSocket(payload.friend_login)
+        if (socket) {
+            socket.emit('delete-friend', { content: `${this.getID(client)} removed you` })
+            socket.emit('friends-list', await this.friendService.getFriends(payload.friend_login))
+        }
+        client.emit('delete-friend', { content: `you removed ${payload.friend_login}` })
+        client.emit('friends-list', await this.friendService.getFriends(this.getID(client) as string))
     }
 
     getSocket(user): Socket {

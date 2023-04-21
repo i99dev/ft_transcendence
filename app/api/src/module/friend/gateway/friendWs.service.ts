@@ -36,4 +36,12 @@ export class FriendWsService {
         const friends = await this.friendService.getFriends(user)
         return friends.some(f => f.login === friend)
     }
+
+    async deleteFriend(user: string, friend: string) {
+        if (!(await this.friendService.DeleteFriend(friend, user)))
+            return false
+        if (!(await this.friendService.DeleteFriend(user, friend)))
+            return false
+        return true
+    }
 }
