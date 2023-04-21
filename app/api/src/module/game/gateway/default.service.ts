@@ -14,7 +14,6 @@ const COMPUTER_SPEED = 0.0045
 
 @Injectable()
 export class DefaultService {
-    // public gameLogic: gameLogic = new gameLogic()
 
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
@@ -23,9 +22,10 @@ export class DefaultService {
     constructor(private socketService: SocketService) {}
 
     public addConnectedUser(userID: string, userSocket: Socket) {
-        // adds random number to username incase of duplicate names
         const temp = this.connected_users.find(user => user.id == userID)
-        if (temp) userID = userID + '1'
+        // temp.. adds a random number to the end of username if its already there
+        if (temp)
+            userID = userID + Math.floor(Math.random() * 100)
         this.connected_users.push({
             id: userID,
             socket: userSocket,
@@ -34,7 +34,10 @@ export class DefaultService {
         // console.log("connected user with name mal-guna is " , this.connected_users.find(user => user.socket == userSocket).socket);
         console.log('Connected users number is :', this.connected_users.length)
     }
-
+    
+    // Once a user disconects, it removes them from the connected users array
+    // if in game -> set loser
+    // if in queue -> remove from queue
     public removeDisconnectedUser(userSocket: Socket) {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
