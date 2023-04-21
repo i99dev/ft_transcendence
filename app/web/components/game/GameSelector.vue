@@ -68,7 +68,7 @@
                     <div class="circle circle-1"></div>
                     <div class="circle circle-2"></div>
                 </div>
-                  <p class="loading-text mt-2 text-lg font-bold">Finding Opponent</p>
+                  <p class="loading-text mt-2 text-lg font-bold">{{ loadingMsg }}</p>
                 </div>
               </div>
             </div>
@@ -83,6 +83,7 @@
 const step = ref(1);
 const selectedGame = ref(null);
 const selectedMode = ref(null);
+const loadingMsg = ref('');
 
 const emit = defineEmits(['gameSelected'])
 
@@ -105,6 +106,11 @@ const selectMode = (mode) => {
 
 const emitGameSelected = () => {
     emit('gameSelected', { gameType: selectedGame.value, gameMode: selectedMode.value});
+    if(selectedMode.value === 'single') {
+      loadingMsg.value = 'Creating Game...';
+    } else {
+      loadingMsg.value = 'Finding Opponent...';
+    }
     step.value = 3;
 };
 </script>

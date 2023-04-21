@@ -2,11 +2,11 @@ import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
-const PADDLE_SPEED = 0.017
+const PADDLE_SPEED = 0.019
 const REFLECT_ANGLE = 80
 const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
-const COMPUTER_SPEED = 0.0045
+const COMPUTER_SPEED = 0.0075
 
 export class PongGame {
     private game_status: gameStatusDto
@@ -60,12 +60,11 @@ export class PongGame {
         return this.game_status.players[1].score
     }
 
-    // generate a random id for the game
+    // generate a random id for the game.. replace with uuid later
     private generateRandomId(): string {
         return Math.random().toString(36) + Date.now().toString(36)
     }
 
-    // create a new player object
     private createPlayer(username: string, side: number): PlayerDto {
         return {
             username,

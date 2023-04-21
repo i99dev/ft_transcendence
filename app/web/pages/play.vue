@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 
-import { ref, defineEmits, defineExpose } from 'vue'
+import { ref } from 'vue'
 
 const exit = ref(false);
 const showSelector = ref(true)
@@ -49,7 +49,6 @@ const gameBoard = ref()
 const gameSelector = ref()
 
 const startGame = (mode: GameSelectDto): void => {
-    console.log(mode)
     showBoard.value = true
     
     setTimeout(() => {
@@ -62,8 +61,6 @@ const playAgain = (): void => {
     showSelector.value = true;
     showBoard.value = false;
     gameResult.value = false;
-    console.log(gameSelector.value);
-    console.log(gameBoard.value);
 
 }
 
@@ -78,7 +75,6 @@ const setGameReady = (): void => {
 }
 
 const exitGame = (): void => {
-    console.log('exit game called')
     gameBoard.value.giveUp()
     gameBoard.value.resetSocket()
     showBoard.value = false
@@ -113,7 +109,6 @@ body {
     min-width: 100vw;
     position: relative;
     height: 100vh;
-    /* overflow-y: hidden; */
 }
 
 

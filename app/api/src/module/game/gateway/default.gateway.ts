@@ -47,8 +47,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
         if (payload.gameMode == 'single')
             this.gameService.createSingleGame(client, payload.gameType)
-        else if (payload.gameMode == 'multi') 
-            this.gameService.matchPlayer(client, payload.gameType)
+        else if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType)
         else if (payload.gameMode == 'invite')
             this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
@@ -60,7 +59,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @SubscribeMessage('Give-Up')
     giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
-        this.gameService.giveUp(client);
+        this.gameService.giveUp(client)
     }
 
     @SubscribeMessage('powerup')

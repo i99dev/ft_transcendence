@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { gameLogic } from '../logic/gameLogic'
 import { ConnectedUser } from '../interface/game.interface'
 import { Socket } from 'socket.io'
 import { PongGame } from '../logic/pongGame'
@@ -9,12 +8,9 @@ import { gameHistory } from '../logic/gameHistory'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
-const COMPUTER_FRAME_INTERVAL = 1000 / 60
-const COMPUTER_SPEED = 0.0045
 
 @Injectable()
 export class DefaultService {
-
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
     private custom_queue: string[] = []
@@ -24,18 +20,16 @@ export class DefaultService {
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
         // temp.. adds a random number to the end of username if its already there
-        if (temp)
-            userID = userID + Math.floor(Math.random() * 100)
+        if (temp) userID = userID + Math.floor(Math.random() * 100)
+
         this.connected_users.push({
             id: userID,
             socket: userSocket,
             status: 'online',
         })
-        // console.log("connected user with name mal-guna is " , this.connected_users.find(user => user.socket == userSocket).socket);
-        console.log('Connected users number is :', this.connected_users.length)
     }
-    
-    // Once a user disconects, it removes them from the connected users array
+
+    // Once a user disconects, it removes him from the connected users array
     // if in game -> set loser
     // if in queue -> remove from queue
     public removeDisconnectedUser(userSocket: Socket) {
@@ -48,13 +42,11 @@ export class DefaultService {
                 } else if (user.game.getGameType() == 'custom') {
                     this.custom_queue.splice(this.custom_queue.indexOf(user.id), 1)
                 }
-            }
-            else if (user.status == 'ingame') {
+            } else if (user.status == 'ingame') {
                 user.game.setLoser(user.id)
-            } 
+            }
             this.connected_users.splice(index, 1)
         }
-        console.log('Connected users number is :', this.connected_users.length)
     }
 
     public giveUp(userSocket: Socket) {
@@ -66,7 +58,6 @@ export class DefaultService {
         const player = this.connected_users.find(user => user.socket == userSocket)
         player.game.powerUp(player.id, powerUp)
     }
-
 
     public matchPlayer(userSocket: Socket, gameType: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
@@ -125,10 +116,9 @@ export class DefaultService {
 
     private startGame(game: PongGame) {
         const intervalId = setInterval(async () => {
-            if(game.getGameStatus().players[1].username == 'Computer')
-                game.updateComputer()
-            console.log('game data', game.getGameStatus())
-            game.updateGame() 
+            if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
+
+            game.updateGame()
             this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             if (game.getPlayer1Score() >= 11 || game.getPlayer2Score() >= 11) {
                 clearInterval(intervalId)
@@ -159,21 +149,16 @@ export class DefaultService {
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
         this.emitEndGame(winner, game_status, game.getGameID())
-        
+
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
-        if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1]))
+        if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
+            this.clearData(game)
             return
+        }
 
-        // TEMP ONLY checks wheather player1 or player 2 ends names end with number 1 if yes, removes it.
-        // if (game_status.players[0][game_status.players[0].username.length - 1] == '1')
-        //     game_status.players[0].username = game_status.players[0].username.slice(0, -1)
-        // if (game_status.players[1][game_status.players[1].username.length - 1] == '1')
-        //     game_status.players[1].username = game_status.players[1].username.slice(0, -1)
-
-        const game_result: gameHistory = new gameHistory(game_status)
-
-        // Commented temp. cuz it causes a crash when trying a match to the game history while a user is not in the database
-        // game_result.addHistory() 
+        // Temporarily commented out, it crashes when adding game history for non-existent user (I add numbers to usernames when 2 players have the same username)
+        // const game_result: gameHistory = new gameHistory(game_status)
+        // game_result.addHistory()
 
         this.clearData(game)
     }
