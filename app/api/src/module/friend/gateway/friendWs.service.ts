@@ -1,12 +1,15 @@
-import { JwtService } from '@nestjs/jwt';
-import { Injectable } from "@nestjs/common";
-import { FriendService } from "../friend.service";
-import { PrismaClient } from '@prisma/client';
-
+import { JwtService } from '@nestjs/jwt'
+import { Injectable } from '@nestjs/common'
+import { FriendService } from '../friend.service'
+import { PrismaClient } from '@prisma/client'
 
 @Injectable()
 export class FriendWsService {
-    constructor(private friendService: FriendService, private prisma: PrismaClient, private jwtService: JwtService,) {}
+    constructor(
+        private friendService: FriendService,
+        private prisma: PrismaClient,
+        private jwtService: JwtService,
+    ) {}
 
     extractUserFromJwt(jwt: string) {
         if (!jwt) return null
@@ -20,10 +23,7 @@ export class FriendWsService {
             const notifications = await this.prisma.notification.findMany({
                 where: {
                     user_login: user_login,
-                    OR: [
-                        { type: 'FRIEND_REQUEST' },
-                        { type: 'FRIEND_REQUEST_ACCEPTED' },
-                    ],
+                    OR: [{ type: 'FRIEND_REQUEST' }, { type: 'FRIEND_REQUEST_ACCEPTED' }],
                 },
             })
             return notifications
@@ -38,10 +38,8 @@ export class FriendWsService {
     }
 
     async deleteFriend(user: string, friend: string) {
-        if (!(await this.friendService.DeleteFriend(friend, user)))
-            return false
-        if (!(await this.friendService.DeleteFriend(user, friend)))
-            return false
+        if (!(await this.friendService.DeleteFriend(friend, user))) return false
+        if (!(await this.friendService.DeleteFriend(user, friend))) return false
         return true
     }
 }

@@ -1,13 +1,20 @@
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
+import {
+    ConnectedSocket,
+    MessageBody,
+    OnGatewayConnection,
+    OnGatewayDisconnect,
+    SubscribeMessage,
+    WebSocketGateway,
+    WebSocketServer,
+    WsException,
+} from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { FriendWsService } from "./friendWs.service";
-import { Logger } from "@nestjs/common";
-import { NotificationService } from "@module/notification/notification.service";
-import { FriendService } from "../friend.service";
-import { SocketValidationPipe } from "@common/pipes/socketObjValidation.pipe";
-import { FriendWs } from "./dto/friend.dto";
-
-
+import { FriendWsService } from './friendWs.service'
+import { Logger } from '@nestjs/common'
+import { NotificationService } from '@module/notification/notification.service'
+import { FriendService } from '../friend.service'
+import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
+import { FriendWs } from './dto/friend.dto'
 
 @WebSocketGateway({
     namespace: '/friend',
@@ -23,13 +30,20 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
 
     private logger = new Logger('FriendWsGateway')
 
-    constructor(private friendWsService: FriendWsService, private notification: NotificationService, private friendService: FriendService) {}
+    constructor(
+        private friendWsService: FriendWsService,
+        private notification: NotificationService,
+        private friendService: FriendService,
+    ) {}
 
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client "${client.id}" connected to friends`)
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
-        this.notification.setUpNotificationMessage(client, this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string))
+        this.notification.setUpNotificationMessage(
+            client,
+            this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string),
+        )
     }
 
     handleDisconnect(client: Socket) {
@@ -40,16 +54,39 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     @SubscribeMessage('add-friend')
-    async sendMessage( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: FriendWs){
+    async sendMessage(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new SocketValidationPipe()) payload: FriendWs,
+    ) {
         if (this.getID(client) === payload.friend_login)
-            return (this.socketError('cannot add yourself'), [])
-        if (await this.friendWsService.checkIfFriend(this.getID(client) as string, payload.friend_login))
-            return (this.socketError('already friends'), [])
-        if (await this.friendService.checkAddedFriends(this.getID(client) as string, payload.friend_login))
-            return (this.socketError('already have sent a request'), [])
-        if (!(await this.friendService.CheckFriendsUpdate(this.getID(client) as string, payload.friend_login)))
-            return (this.socketError('error adding friend'), [])
-        if (!(await this.friendService.checkAddedFriends(payload.friend_login, this.getID(client) as string))) {
+            return this.socketError('cannot add yourself'), []
+        if (
+            await this.friendWsService.checkIfFriend(
+                this.getID(client) as string,
+                payload.friend_login,
+            )
+        )
+            return this.socketError('already friends'), []
+        if (
+            await this.friendService.checkAddedFriends(
+                this.getID(client) as string,
+                payload.friend_login,
+            )
+        )
+            return this.socketError('already have sent a request'), []
+        if (
+            !(await this.friendService.CheckFriendsUpdate(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError('error adding friend'), []
+        if (
+            !(await this.friendService.checkAddedFriends(
+                payload.friend_login,
+                this.getID(client) as string,
+            ))
+        ) {
             const notification = await this.notification.createNotification({
                 user_login: payload.friend_login,
                 content: `${this.getID(client)} wants to be your friend`,
@@ -60,13 +97,16 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
                 const socket = this.getSocket(payload.friend_login)
                 if (socket) {
                     this.notification.setUpNotificationMessage(socket, notification)
-                    socket.emit('add-friend', { content: `${this.getID(client)} wants to be your friend`})
+                    socket.emit('add-friend', {
+                        content: `${this.getID(client)} wants to be your friend`,
+                    })
                 }
-                client.emit('add-friend', { content: `friend request sent to ${payload.friend_login }`})
+                client.emit('add-friend', {
+                    content: `friend request sent to ${payload.friend_login}`,
+                })
                 return notification
             }
-        }
-        else {
+        } else {
             const notification = await this.notification.createNotification({
                 user_login: payload.friend_login,
                 content: `${this.getID(client)} accepted your friend request`,
@@ -77,29 +117,55 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
                 const socket = this.getSocket(payload.friend_login)
                 if (socket) {
                     this.notification.setUpNotificationMessage(socket, notification)
-                    socket.emit('add-friend', { content: `${this.getID(client)} accepted your friend request` })
-                    socket.emit('friends-list', await this.friendService.getFriends(payload.friend_login))
+                    socket.emit('add-friend', {
+                        content: `${this.getID(client)} accepted your friend request`,
+                    })
+                    socket.emit(
+                        'friends-list',
+                        await this.friendService.getFriends(payload.friend_login),
+                    )
                 }
-                client.emit('add-friend', { content: `friend request accepted from ${payload.friend_login}` })
-                client.emit('friends-list', await this.friendService.getFriends(this.getID(client) as string))
+                client.emit('add-friend', {
+                    content: `friend request accepted from ${payload.friend_login}`,
+                })
+                client.emit(
+                    'friends-list',
+                    await this.friendService.getFriends(this.getID(client) as string),
+                )
                 return notification
             }
         }
     }
 
     @SubscribeMessage('delete-friend')
-    async deleteFriend( @ConnectedSocket() client: Socket, @MessageBody(new SocketValidationPipe()) payload: FriendWs) {
-        if (!(await this.friendWsService.checkIfFriend(this.getID(client) as string, payload.friend_login)))
-            return (this.socketError('not friends already'), [])
-        if (!(await this.friendWsService.deleteFriend(this.getID(client) as string, payload.friend_login)))
-            return (this.socketError('error deleting friend'), [])
+    async deleteFriend(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new SocketValidationPipe()) payload: FriendWs,
+    ) {
+        if (
+            !(await this.friendWsService.checkIfFriend(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError('not friends already'), []
+        if (
+            !(await this.friendWsService.deleteFriend(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError('error deleting friend'), []
         const socket = this.getSocket(payload.friend_login)
         if (socket) {
             socket.emit('delete-friend', { content: `${this.getID(client)} removed you` })
             socket.emit('friends-list', await this.friendService.getFriends(payload.friend_login))
         }
         client.emit('delete-friend', { content: `you removed ${payload.friend_login}` })
-        client.emit('friends-list', await this.friendService.getFriends(this.getID(client) as string))
+        client.emit(
+            'friends-list',
+            await this.friendService.getFriends(this.getID(client) as string),
+        )
     }
 
     getSocket(user): Socket {

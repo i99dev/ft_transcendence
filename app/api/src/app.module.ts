@@ -24,7 +24,7 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
         ChatModule,
         MatchHistoryModule,
         NotificationModule,
-        FriendWsModule
+        FriendWsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
