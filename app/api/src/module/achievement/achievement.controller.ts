@@ -10,11 +10,6 @@ export class AchievementController {
     @UseGuards(JwtAuthGuard)
     @Get('winningrate')
     async getWinnigRate(@Req() req): Promise<number> {
-        console.log('WWINN RAATTEE !!!', req.user.login)
-		console.log(
-            'WWINN RAATTEE !!!',
-            await this.achievementService.gameAnalyzer.calcWinRate(req.user.login),
-        )
         return await this.achievementService.gameAnalyzer.calcWinRate(req.user.login)
     }
 

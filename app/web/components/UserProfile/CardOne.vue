@@ -86,10 +86,6 @@ const totaLoses = await getPlayerTotalLoses()
 
 const totalWins = await getPlayerTotalWins()
 
-console.log('winRate', WinRate * 100)
-console.log('totalLoses', totaLoses)
-console.log('totalWins', totalWins)
-
 
 </script>
 
