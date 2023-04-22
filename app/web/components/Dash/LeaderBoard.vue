@@ -2,24 +2,21 @@
 	<div>
 
 		<div>DashLeaderBoard</div>
-		<div
-		
-		class="w-full px-6 rounded m-2 bg-white shadow-sm p-2"
-		>
+		<button @click="handle_test">Toggle</button>
+		<div class="w-full px-6 rounded m-2 bg-white shadow-sm p-2">
 		<table class="min-w-full text-left text-sm font-light">
 			<tbody>
 				<tr>
 					<td class="whitespace-nowrap px-2 py-4 font-medium">1</td>
-					  <td class="whitespace-nowrap px-2 py-4 flex items-center">
+					<td class="whitespace-nowrap px-2 py-4 flex items-center">
 						<img src="your-image-url.jpg" alt="image-description" class="mr-8">
 						<img src="your-image-url.jpg" alt="image-description" class="mr-2">
 						<span>Abrar</span>
-					  </td>
-					  <td class="whitespace-nowrap px-6 py-4">1</td>
-					</tr>
+					</td>
+					<td class="whitespace-nowrap px-6 py-4">1</td>
+				</tr>
 			</tbody>
 		</table>
-
 		</div>
 
 		<div class="w-full items-center bg-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2">
@@ -95,6 +92,18 @@ const handlePagination = async (page: number) => {
 	isPage.value.set(page, true)
 	currentPage.value = page
 
+}
+
+const handle_test = async () => {
+	const api = useRuntimeConfig().API_URL
+	const { data } = await useFetch<string>(`/leaderboard`, {
+		method: 'GET',
+		baseURL: api,
+		headers: {
+			Authorization: `Bearer ${useCookie('access_token').value}`,
+		},
+	})
+	console.log(data)
 }
 
 </script>

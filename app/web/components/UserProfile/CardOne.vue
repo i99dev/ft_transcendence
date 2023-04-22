@@ -1,5 +1,5 @@
 <script setup>
-import { getPlayerWinRate,  getPlayerTotalLoses, getPlayerTotalWins} from '@/composables/usePlayer'
+import { getPlayerWinRate,  getPlayerGameResult} from '@/composables/usePlayer'
 
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
 
@@ -82,10 +82,9 @@ function handleDropDown() {
 
 const WinRate = await getPlayerWinRate()
 
-const totaLoses = await getPlayerTotalLoses()
+const totaLoses = await getPlayerGameResult('false', 'true')
 
-const totalWins = await getPlayerTotalWins()
-
+const totalWins = await getPlayerGameResult('true', 'false')
 
 </script>
 

@@ -9,6 +9,7 @@ import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { AchievementModule } from './module/achievement/achievement.module'
+import { LeaderboardModule } from './module/leaderboard/leaderboard.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -20,6 +21,7 @@ import { AchievementModule } from './module/achievement/achievement.module'
         GameModule,
         MatchHistoryModule,
         AchievementModule,
+        LeaderboardModule,
     ],
     controllers: [AppController],
     providers: [AppService],

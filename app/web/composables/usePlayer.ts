@@ -18,9 +18,9 @@ export async function getPlayerWinRate(): Promise<number | null> {
 	return data.value
 }
 
-export async function getPlayerTotalLoses(): Promise<number | null> {
+export async function getPlayerGameResult(isWin: string, isLose: string): Promise<number | null> {
 	const api = useRuntimeConfig().API_URL
-	const { data, error: errorRef } = await useFetch<number>(`/achievement/totalgames?Win=false&Lose=true`, {
+	const { data, error: errorRef } = await useFetch<number>(`/achievement/totalgames?Win=${isWin}&Lose=${isLose}`, {
 		method: 'GET',
 		baseURL: api,
 		headers: {
@@ -32,22 +32,5 @@ export async function getPlayerTotalLoses(): Promise<number | null> {
 		console.error('Failed to get :', error)
 	else
 		console.log('Total Lose :', data.value)
-	return data.value
-}
-
-export async function getPlayerTotalWins(): Promise<number | null> {
-	const api = useRuntimeConfig().API_URL
-	const { data, error: errorRef } = await useFetch<number>(`/achievement/totalgames?Win=flase&Lose=true`, {
-		method: 'GET',
-		baseURL: api,
-		headers: {
-			Authorization: `Bearer ${useCookie('access_token').value}`,
-		},
-	})
-	const error = errorRef.value
-	if (error)
-		console.error('Failed to get :', error)
-	else
-		console.log('Total Win :', data.value)
 	return data.value
 }
