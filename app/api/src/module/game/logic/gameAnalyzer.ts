@@ -103,6 +103,8 @@ export class gameAnalyzer {
     async calcWinRate(player: string): Promise<number> {
         const totalWins = await this.getTotalVictories(player)
         const totalMatches = await this.getTotalMatches(player)
+		console.log('totalWins', totalWins)
+		console.log('totalMatches', totalMatches)
         return totalWins / totalMatches
     }
     async calcXP(player: string, IsWinner: boolean): Promise<number> {

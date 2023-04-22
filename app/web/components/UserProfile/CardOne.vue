@@ -1,4 +1,6 @@
 <script setup>
+import { getPlayerWinRate,  getPlayerTotalLoses, getPlayerTotalWins} from '@/composables/usePlayer'
+
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
 
 const userData = computed(() => {
@@ -78,6 +80,17 @@ function handleDropDown() {
 	showstat.value = !showstat.value
 }
 
+const WinRate = await getPlayerWinRate()
+
+const totaLoses = await getPlayerTotalLoses()
+
+const totalWins = await getPlayerTotalWins()
+
+console.log('winRate', WinRate * 100)
+console.log('totalLoses', totaLoses)
+console.log('totalWins', totalWins)
+
+
 </script>
 
 <template>
@@ -144,15 +157,15 @@ function handleDropDown() {
 						<div class="flex sm:flex-col justify-end sm:p-2">
 						  <div class="ml-14">
 							<button @click="handleDropDown" class="sm:text-3xl text-lg text-black dark:text-white hover:text-blue-800 focus:outline-none">
-							  Ladder level
+								{{ userData.ladder }}
 							</button>
 						  </div>
 						</div>
 						<div v-if="showstat" class="absolute left-14 mt-2 py-2 w-48 bg-white rounded-lg shadow-lg z-10">
-							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">XP level</span>
-							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Winning Rate</span>
-							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">total wins</span>
-							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">total loses</span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">XP level: {{ userData.xp }}</span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Winning Rate: {{ WinRate * 100 }}% </span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Total Wins: {{ totalWins }} </span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Total Loses: {{ totaLoses }}</span>
 						</div>
 					  </div>
 
