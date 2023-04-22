@@ -152,7 +152,7 @@ const totalWins = await getPlayerTotalWins()
 					<div class="relative">
 						<div class="flex sm:flex-col justify-end sm:p-2">
 						  <div class="ml-14">
-							<button @click="handleDropDown" class="sm:text-3xl text-lg text-black dark:text-white hover:text-blue-800 focus:outline-none">
+							<button @click="handleDropDown" class="sm:text-3xl text-lg text-black dark:text-white hover:text-blue-800 focus:outline-none" title='Your Rank'>
 								{{ userData.ladder }}
 							</button>
 						  </div>
