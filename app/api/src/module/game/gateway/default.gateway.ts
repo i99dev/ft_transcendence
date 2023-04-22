@@ -40,6 +40,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         this.decoded = this.jwtService.decode(token)
+        if(!this.decoded) return
         this.gameService.addConnectedUser(this.decoded['login'], client)
     }
 
