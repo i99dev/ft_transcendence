@@ -17,6 +17,9 @@ export class DefaultService {
 
     constructor(private socketService: SocketService) {}
 
+    /* 
+        Adds a new user to connected_users array
+    */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
         // temp.. adds a random number to the end of username if its already there
@@ -29,9 +32,11 @@ export class DefaultService {
         })
     }
 
-    // Once a user disconects, it removes him from the connected users array
-    // if in game -> set loser
-    // if in queue -> remove from queue
+    /* 
+        Remove user from connected_users array and:
+            * if in queue -> remove user from queue
+            * if in game -> set player a loser so game will end and other player will win.
+    */
     public removeDisconnectedUser(userSocket: Socket) {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
@@ -54,13 +59,21 @@ export class DefaultService {
         player.game.setLoser(player.id)
     }
 
+    /* 
+        Activate the power up requested by frontend
+    */
     public powerUp(userSocket: Socket, powerUp: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         player.game.powerUp(player.id, powerUp)
     }
 
+    /* 
+        called On Client's "Join-Game" event with mode = 'multi', it matches player with an opponent
+    */
     public matchPlayer(userSocket: Socket, gameType: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
+        if (player.status != 'online') return
+
         player.status = 'inqueue'
 
         const opponent = this.findOpponent(player.id, gameType)
@@ -72,6 +85,12 @@ export class DefaultService {
         }
     }
 
+    /* 
+        finds an opponent for the player in the either classic or custom queue
+            * if there is an opponent -> return opponent's ConnectedUser object
+            * if there is no opponent -> add player to queue and return null
+        TODO: add matchmaking algorithm to find opponent with similar skill level
+    */
     private findOpponent(userID: string, gameType: string): ConnectedUser | null {
         if (gameType == 'classic') {
             if (this.classic_queue.length > 0) {
@@ -92,6 +111,10 @@ export class DefaultService {
         }
     }
 
+
+    /* 
+        Creates a new pongGame object with "Computer" as opponent and emit the game setup to player
+    */
     public createSingleGame(player1Socket: Socket, gameType: string) {
         const player = this.connected_users.find(user => user.socket == player1Socket)
         const game = new PongGame(player.id, 'Computer', gameType)
@@ -103,6 +126,10 @@ export class DefaultService {
         this.startGame(game)
     }
 
+
+    /* 
+        Creates a new pongGame object and emit the game setup to both players
+    */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
         const game = new PongGame(player1.id, player2.id, gameType)
         player1.game = game
@@ -140,15 +167,10 @@ export class DefaultService {
         }
     }
 
-    // emit end game event to the players in case of leaving the game or winning
-    public emitEndGame(winner: PlayerDto, game: gameStatusDto, game_id: string): void {
-        this.socketService.emitToGroup(game_id, 'Game-Over', { winner, game })
-    }
-
     // end the game and emit the end game event
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
-        this.emitEndGame(winner, game_status, game.getGameID())
+        this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
 
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
@@ -183,5 +205,14 @@ export class DefaultService {
         return player.username === 'Computer'
     }
 
+    /* 
+        called On client's "Invite-Game" event.
+        TODO: implement this function when game is in multiplayer
+
+        * Possible implementaiton:
+        1- emit "Game-Invite" event to the invited player and wait for his response
+        2- if the response is "accept" -> create a new game with the invited player
+
+    */
     public createInviteGame(client: Socket, gameType: string, invitedID: string) {}
 }
