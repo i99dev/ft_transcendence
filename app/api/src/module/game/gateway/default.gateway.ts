@@ -11,7 +11,8 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
-import { PlayerDto } from '../dto/game.dto'
+import { GameSelectDto, PlayerDto } from '../dto/game.dto'
+import { SocketService } from './socket.service'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
@@ -24,46 +25,52 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private logger = new Logger('DefaultGateway')
     private decoded: any
 
-    constructor(private gameService: DefaultService, private jwtService: JwtService) {}
+    constructor(
+        private gameService: DefaultService,
+        private socketService: SocketService,
+        private jwtService: JwtService,
+    ) {}
+
+    afterInit(server: Server) {
+        this.socketService.setServer(server)
+    }
+
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
         token = token.split(' ')[1]
         this.decoded = this.jwtService.decode(token)
+        if(!this.decoded) return
+        this.gameService.addConnectedUser(this.decoded['login'], client)
     }
 
     @SubscribeMessage('Join-game')
-    Join(@ConnectedSocket() client: any, @MessageBody() gameMode: string) {
-        if (gameMode == 'solo') {
-            //add conditon to check if the game is vs computer
-            this.gameService.gameLogic.startComputerGame(client, this.decoded, (gameId, game) => {
-                this.server.to(gameId).emit('Game-Data', game)
-            })
-        } else if (gameMode == 'duo') {
-            this.gameService.gameLogic.addToLobby(client, this.decoded)
-            this.gameService.gameLogic.checkLobby((gameId, game) => {
-                this.server.to(gameId).emit('Game-Data', game)
-            })
-        }
+    Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
+        if (payload.gameMode == 'single')
+            this.gameService.createSingleGame(client, payload.gameType)
+        else if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType)
+        else if (payload.gameMode == 'invite')
+            this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
+        this.gameService.removeDisconnectedUser(client)
     }
 
     @SubscribeMessage('Give-Up')
-    async giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
-        await this.gameService.gameLogic.endGame(player, false)
+    giveUp(@ConnectedSocket() client: any, @MessageBody() player: PlayerDto) {
+        this.gameService.giveUp(client)
     }
 
     @SubscribeMessage('powerup')
     PowerupStart(@ConnectedSocket() client: any, @MessageBody() action: string) {
         console.log('powerup', action)
-        this.gameService.gameLogic.powerup(client, action)
+        this.gameService.powerUp(client, action)
     }
 
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
-        this.gameService.gameLogic.updatePaddlePosition(client, direction)
+        this.gameService.movePaddle(client, direction)
     }
 }

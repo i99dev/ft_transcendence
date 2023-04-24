@@ -1,27 +1,13 @@
 <template>
 	<div>
-		<div
-		  v-if="!ready && firstGameReady"
-		  class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
-		>
-		  <div class="flex flex-col items-center">
-			<div class="text-center mb-4">
-			  <h1 class="text-4xl font-bold">Game Mode</h1>
-			  <p class="text-lg">Choose the mode of your next game !</p>
-			</div>
-			<div class="flex justify-between w-10">
-			  <button
-				@click="startGame('solo')"
-				type="button"
-				class="h-full w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center cursor-pointer"
-				style="margin-right: 20px;"
-			  >
-				Solo
-			  </button>
-			  <GameLoadingButton @StartGame="startGame('duo')" />
-			</div>
-		  </div>
-		</div>
+        <div
+        v-if="showSelector"
+        class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
+      >
+        <div class="flex flex-col items-center">
+          <GameSelector @gameSelected="startGame" ref="gameSelector" />
+        </div>
+      </div>
 	
 		<div>
             <GameClosePopup
@@ -38,7 +24,7 @@
                     <Button @click="switchExistStatus(true)" icon="pi pi-times" />
                     <button class="bg-slate-400 text-xs p-2 rounded-t-md" @click="powerup" >PowerUp</button>
                 </div>
-                <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+                <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
             <GameResult
                 v-if="gameResult"
@@ -52,43 +38,48 @@
 
 <script lang="ts" setup>
 
-import { ref, defineEmits, defineExpose } from 'vue'
+import { ref } from 'vue'
 
-let exit = ref(false);
-let ready = ref(false)
-let firstGameReady = ref(true)
-let gameResult = ref(false)
-let gameResultMessage = ref('')
-let gameBoard = ref()
+const exit = ref(false);
+const showSelector = ref(true)
+const showBoard = ref(false)
+const gameResult = ref(false)
+const gameResultMessage = ref('')
+const gameBoard = ref()
+const gameSelector = ref()
 
-const startGame = (mode: string): void => {
-    gameBoard.value.setup(mode)
+const startGame = (mode: GameSelectDto): void => {
+    showBoard.value = true
+    
+    setTimeout(() => {
+        gameBoard.value.setup(mode)
+    }, 1000);
     gameResult.value = false
 }
 
-
 const playAgain = (): void => {
-    gameBoard.value.setup()
+    showSelector.value = true;
+    showBoard.value = false;
+    gameResult.value = false;
+
 }
 
 const gameOver = (message: string): void => {
-    gameBoard.value.destroy()
-	firstGameReady.value = false
-    ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
 }
 
 const setGameReady = (): void => {
-    ready.value = true
+    showSelector.value = false
     gameResult.value = false
 }
 
 const exitGame = (): void => {
     gameBoard.value.giveUp()
-    gameBoard.value.destroy()
+    gameBoard.value.resetSocket()
+    showBoard.value = false
     exit.value = false
-    ready.value = false
+    showSelector.value = true
     gameResult.value = false
     navigateTo('/')
 }
@@ -118,7 +109,6 @@ body {
     min-width: 100vw;
     position: relative;
     height: 100vh;
-    /* overflow-y: hidden; */
 }
 
 

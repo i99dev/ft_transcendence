@@ -40,8 +40,6 @@ export class BallDto {
 
 export class PlayerDto {
     username: string
-    x: number
-    y: number
     score: number
     paddle: PaddleDto
     gameID?: string
@@ -49,6 +47,16 @@ export class PlayerDto {
 }
 
 export class PaddleDto {
+    x: number
+    y: number
     width: number
     height: number
+}
+
+export class GameSelectDto {
+    gameType: 'classic' | 'custom'
+
+    gameMode: 'single' | 'multi'
+
+    invitedId?: string
 }

@@ -23,37 +23,45 @@ const nuxtApp = useNuxtApp()
 const socket = ref(nuxtApp.socket as Socket)
 let poweredUp = ref(false as boolean)
 
+const keys: { [key: string]: boolean } = {
+    ArrowUp: false,
+    ArrowDown: false
+};
+
 // game settings
 const sensitivity = 3 // for mouse movements or touch movements
 const canvasRatio = 1.5 // board width / board height
 
 // Defines
 const emit = defineEmits(['ReadyGame', 'GameOver'])
-defineExpose({ setup, destroy, giveUp, powerup })
+defineExpose({ resetSocket, setup, destroy, giveUp, powerup })
 
-function setup(mode: string): void {
+function resetSocket (): void {
+    socket.value.off()
+}
+
+function setup(mode: GameSelectDto): void {
     // setup socket connection and events
-
+    resetSocket();
     socketSetup(mode)
     socketEvents()
-
+    
     // setup canvas values
     setUpCanvas()
-
+    
     // handle window events
     windowEvents()
-
+    
     // draw the game board
     draw()
 }
 
 function destroy(): void {
-    if (socket.value.connected) socket.value.disconnect()
+    // if (socket.value.connected) socket.value.disconnect()
 }
 
 function powerup(): void {
-	if (poweredUp.value == false) 
-	{
+    if (poweredUp.value == false) {
 		socket.value.emit('powerup', 'start')
 		poweredUp.value = true
 		   setTimeout(() => {
@@ -64,10 +72,10 @@ function powerup(): void {
 }
 
 function giveUp(): void {
-    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
+    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
 }
 
-const socketSetup = (mode:string): void => {
+const socketSetup = (mode: GameSelectDto): void => {
 	socket.value.emit('Join-game', mode)
 }
 
@@ -85,9 +93,9 @@ const socketEvents = (): void => {
     })
 
     socket.value.on('Game-Over', payload => {
-        if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
+        if (payload.winner.username == gameSetup.value.game.players[gameSetup.value.player].username)
             emit('GameOver', 'you won')
-        else emit('GameOver', 'you won')
+        else emit('GameOver', 'you lost')
     })
 }
 
@@ -97,6 +105,8 @@ const windowEvents = (): void => {
 
     // Handle Keyboard events
     document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp);
+
     // Handle Mouse and Touch events
     window.addEventListener('mousedown', holdPaddle)
     window.addEventListener('mousemove', movePaddle)
@@ -154,7 +164,7 @@ const storePlayersData = (players: PlayerDto[]): void => {
     for (let i = 0; i < players.length; i++) {
         players[i].paddle.width *= canvas.value.width
         players[i].paddle.height *= canvas.value.height
-        players[i].y = players[i].y * canvas.value.height - players[i].paddle.height / 2
+        players[i].paddle.y = players[i].paddle.y * canvas.value.height - players[i].paddle.height / 2
     }
 }
 
@@ -194,46 +204,39 @@ const redraw = (): void => {
 const draw = (): void => {
     if (isObjEmpty(gameData.value)) return
 
+    updatePaddleDirection();
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawPlayer(gameData.value.players)
     drawPlayersInfo()
     drawScore()
     drawBall()
-
-    // temporary decision for winner
-    checkWinner()
 }
 
 const isObjEmpty = (obj: any): boolean => {
     return Object.values(obj).length === 0 && obj.constructor === Object
 }
 
-// temporay function for winner. need to be removed
-const checkWinner = (): void => {
-    let gameFinished = false
-    for (let p = 0; p < gameData.value.players.length; p++)
-        if (gameData.value.players[p].score == 11) gameFinished = true
-
-    if (gameFinished) {
-        for (let p = 0; p < gameData.value.players.length; p++) {
-            if (p == gameSetup.value.player - 1) {
-                if (gameData.value.players[p].score == 11) emit('GameOver', 'you won')
-                else emit('GameOver', 'you Lost')
-            }
-        }
-    }
-}
-
 const handleKeyDown = (event: KeyboardEvent): void => {
-    switch (event.key) {
-        case 'ArrowUp':
-            socket.value.emit('move', 'up')
-            break
-        case 'ArrowDown':
-            socket.value.emit('move', 'down')
-            break
+    if (keys.hasOwnProperty(event.key)) {
+        event.preventDefault();
+        keys[event.key] = true;
     }
+};
+
+const handleKeyUp = (event: KeyboardEvent): void => {
+    if (keys.hasOwnProperty(event.key)) {
+        event.preventDefault();
+        keys[event.key] = false;
 }
+};
+
+const updatePaddleDirection = (): void => {
+    if (keys.ArrowUp) {
+        socket.value.emit('move', 'up');
+    } else if (keys.ArrowDown) {
+        socket.value.emit('move', 'down');
+    }
+};
 
 const drawBall = (): void => {
     ctx.value.beginPath()
@@ -251,11 +254,11 @@ const drawBall = (): void => {
 
 const drawPlayer = (players: PlayerDto[]): void => {
     for (let i = 0; i < players.length; i++) {
-        const p = players[i]
-        const posy = p.y * canvas.value.height - p.paddle.height / 2
-        const posx = i == 0 ? 0 : canvas.value.width - p.paddle.width
+        const p = players[i].paddle
+        const posy = p.y * canvas.value.height - p.height / 2
+        const posx = i == 0 ? 0 : canvas.value.width - p.width
         ctx.value.fillStyle = 'white'
-        ctx.value.fillRect(posx, p.y, p.paddle.width, p.paddle.height)
+        ctx.value.fillRect(posx, p.y, p.width, p.height)
     }
 }
 
@@ -317,7 +320,7 @@ const drawText = (text: string, size: number, posx = 0, posy = 0): void => {
     )
 }
 
-const clearText = (text: string, size: number, w: number, h: number, posx = 0, posy = 0) => {}
+const clearText = (text: string, size: number, w: number, h: number, posx = 0, posy = 0) => { }
 
 const textSetup = (text: string, size: number): { w: number; h: number } => {
     ctx.value.font = `${size}px Arial`
