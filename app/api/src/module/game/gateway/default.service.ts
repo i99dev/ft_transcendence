@@ -42,11 +42,10 @@ export class DefaultService {
         if (index > -1) {
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
-                if (user.game.getGameType() == 'classic') {
+                if(this.classic_queue.includes(user.id)) 
                     this.classic_queue.splice(this.classic_queue.indexOf(user.id), 1)
-                } else if (user.game.getGameType() == 'custom') {
+                if(this.custom_queue.includes(user.id)) 
                     this.custom_queue.splice(this.custom_queue.indexOf(user.id), 1)
-                }
             } else if (user.status == 'ingame') {
                 user.game.setLoser(user.id)
             }
