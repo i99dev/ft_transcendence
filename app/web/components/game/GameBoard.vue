@@ -36,7 +36,7 @@ const canvasRatio = 1.5 // board width / board height
 const emit = defineEmits(['ReadyGame', 'GameOver'])
 defineExpose({ resetSocket, setup, destroy, giveUp, powerup })
 
-function resetSocket (): void {
+function resetSocket(): void {
     socket.value.off()
 }
 
@@ -216,10 +216,28 @@ const isObjEmpty = (obj: any): boolean => {
     return Object.values(obj).length === 0 && obj.constructor === Object
 }
 
+const activatePowerUp = (key: string): void => {
+    if (key == '1') {
+        socket.value.emit('Power-Up', 'Hiken')
+    } else if (key == '2') {
+        socket.value.emit('Power-Up', 'Baika no Jutsu')
+    } else if (key == '3') {
+        socket.value.emit('Power-Up', 'Shinigami')
+    } else if (key == '4') {
+        socket.value.emit('Power-Up', 'Shinigami')
+    }
+}
+
 const handleKeyDown = (event: KeyboardEvent): void => {
+
     if (keys.hasOwnProperty(event.key)) {
         event.preventDefault();
+    }
+
+        if (event.key == 'ArrowUp' || event.key == 'ArrowDown')
         keys[event.key] = true;
+        else if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
+            activatePowerUp(event.key)
     }
 };
 
