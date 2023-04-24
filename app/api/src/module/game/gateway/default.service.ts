@@ -22,9 +22,13 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-        // temp.. adds a random number to the end of username if its already there
-        if (temp) userID = userID + Math.floor(Math.random() * 100)
 
+        // if(temp) {
+        //     userSocket.disconnect(
+        //         true,
+        //     )
+        //     return
+        // }
         this.connected_users.push({
             id: userID,
             socket: userSocket,
@@ -73,6 +77,8 @@ export class DefaultService {
     */
     public matchPlayer(userSocket: Socket, gameType: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
+        if(this.classic_queue.includes(player.id) || this.custom_queue.includes(player.id)) 
+            return;
         if (player.status != 'online') return
 
         player.status = 'inqueue'
@@ -179,21 +185,20 @@ export class DefaultService {
             return
         }
 
-        // Temporarily commented out, it crashes when adding game history for non-existent user (I add numbers to usernames when 2 players have the same username)
-        // const game_result: gameHistory = new gameHistory(game_status)
-        // game_result.addHistory()
+        const game_result: gameHistory = new gameHistory(game_status)
+        game_result.addHistory()
 
         this.clearData(game)
     }
 
     private clearData(game: PongGame) {
         const player1 = this.connected_users.find(user => user.id == game.getPlayer1ID())
-        const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player1) {
             player1.game = null
             player1.status = 'online'
             player1.socket.leave(game.getGameID())
         }
+        const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player2) {
             player2.game = null
             player2.status = 'online'
