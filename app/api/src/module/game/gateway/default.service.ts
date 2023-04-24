@@ -64,6 +64,8 @@ export class DefaultService {
     */
     public powerUp(userSocket: Socket, powerUp: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
+        if(player.game.getGameType() != 'custom') return
+
         player.game.powerUp(player.id, powerUp)
     }
 
