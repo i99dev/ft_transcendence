@@ -39,6 +39,8 @@ export class MulterController {
             throw new NotFoundException('Target not found')
         }
         const userDir = `./uploads/${target}`
+        if (!fs.existsSync('./uploads'))
+            fs.mkdirSync('./uploads')
         if (!fs.existsSync(userDir)) {
             fs.mkdirSync(userDir)
         } else {
