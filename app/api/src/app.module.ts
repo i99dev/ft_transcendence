@@ -9,6 +9,7 @@ import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
+import { MulterModule } from './module/multer/multer.module'
 import { NotificationModule } from '@module/notification/notification.module'
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { NotificationModule } from '@module/notification/notification.module'
         GameModule,
         ChatModule,
         MatchHistoryModule,
+        MulterModule,
         NotificationModule,
     ],
     controllers: [AppController],
