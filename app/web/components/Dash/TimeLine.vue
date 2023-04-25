@@ -64,7 +64,7 @@
 		<template v-if="!isSameLogin(game)">
 		  <div class="flex flex-row justify-between w-full">
 			<div class="self-center">
-				<span class="text-xs font-light">{{ getMe(game).user.ladder }}</span>
+				<span class="text-xs font-light">{{ getLadderRank(getMe(game).user.ladder) }}</span>
 				<img
 				  :src="getMe(game).user.image"
 				  class="w-8 h-8 rounded-full self-center"
@@ -117,7 +117,7 @@
 				  :src="getOpponent(game).user.image"
 				  class="w-8 h-8 rounded-full self-center"
 				/>
-				<span class="text-xs font-light">{{ getOpponent(game).user.ladder }}</span>
+				<span class="text-xs font-light">{{ getLadderRank(getOpponent(game).user.ladder) }}</span>
 			  </div>
 			</div>
 		</template>
@@ -269,6 +269,24 @@ const handleFilteration = async (filter: string) => {
 	currentFilter.value = filter
 	isFilter.value.set(filter, true)
 	console.log(filter)
+}
+
+const getLadderRank = (ladder) => {
+	switch (ladder) {
+		case 1:
+			return 'Kaizoku Ou'
+		case 2:
+			return 'Yonkou'
+		case 3:
+			return 'Shichibukai'
+		case 4:
+			return 'Super Rookie'
+		case 5:
+			return 'Kaizoku'
+		case 6:
+			return 'Capin Boy'
+	}
+
 }
 
 </script>
