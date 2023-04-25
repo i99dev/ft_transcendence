@@ -1,23 +1,27 @@
 <template>
 	<div>
 
-		<div>DashLeaderBoard</div>
-		<button @click="handle_test">Toggle</button>
-		<div class="w-full px-6 rounded m-2 bg-white shadow-sm p-2">
-		<table class="min-w-full text-left text-sm font-light">
-			<tbody>
-				<tr>
-					<td class="whitespace-nowrap px-2 py-4 font-medium">1</td>
-					<td class="whitespace-nowrap px-2 py-4 flex items-center">
-						<img src="your-image-url.jpg" alt="image-description" class="mr-8">
-						<img src="your-image-url.jpg" alt="image-description" class="mr-2">
-						<span>Abrar</span>
-					</td>
-					<td class="whitespace-nowrap px-6 py-4">1</td>
-				</tr>
-			</tbody>
-		</table>
+		<!--table-->
+
+		<div v-for="(player, index) in players" :key="index" class="w-full px-6 rounded m-2 bg-white shadow-sm p-2">
+			<table class="min-w-full text-left text-sm font-light">
+				<tbody>
+					<tr>
+						<td class="whitespace-nowrap px-2 py-4 font-medium align-middle">{{ index + 1 }}</td>
+						<td class="whitespace-nowrap px-2 py-4 flex items-center">
+							<!-- <img src="your-image-url.jpg" alt="image-description" class="ml-0 w-8 h-8 rounded-full self-center"> -->
+							<span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
+							<img :src=player.image alt="image-description" class="mr-2 w-0.3 h-20 rounded-full self-center">
+							<span class="w-96 align-middle">{{ player.login }}</span>
+						</td>
+						<td class="whitespace-nowrap px-1 py-4 align-middle"> total games played {{ player.TotalMatches }} </td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
+		
+
+		<!---- Pagination ---->
 
 		<div class="w-full items-center bg-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2">
 			<div class="flex flex-1 justify-between sm:hidden">
@@ -65,46 +69,110 @@
 	
 			  </div>
 			</div>
-			</div>
+	
+		  </div>
+		
 	</div>
 
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { arrayBuffer } from 'stream/consumers'
+import { ref, onMounted, computed } from 'vue'
 
 const isPage = ref(new Map<number, boolean>())
 
-const pageNumber = 3
+const pageNumber = ref(0)
+
+const TotalMatches = ref(0)
 
 const currentPage = ref(1)
 
+const lbPlayers = ref([] as any)
+
+const players = computed(() => lbPlayers.value)
+
 onMounted(async () => {
-	for (let i = 1; i <= pageNumber; i++)
+	const totalPages = await getLBTotalPages()
+	if (totalPages) pageNumber.value = totalPages
+	for (let i = 1; i <= pageNumber.value; i++)
 		isPage.value.set(i, false);
 	isPage.value.set(1, true)
+	await getLB()
 })
 
 const handlePagination = async (page: number) => {
-	if (page < 1 || page > pageNumber) return
+	if (page < 1 || page > pageNumber.value) return
 	for (const key of isPage.value.keys())
 		isPage.value.set(key, false)
+		console.log(lbPlayers.value)
 	isPage.value.set(page, true)
 	currentPage.value = page
-
+	await getLB()
 }
 
-const handle_test = async () => {
-	const api = useRuntimeConfig().API_URL
-	const { data } = await useFetch<string>(`/leaderboard`, {
+const getLB = async () => {
+	const { data } = await useFetch<any[]>(`/leaderboard?page=${currentPage.value}`, {
 		method: 'GET',
-		baseURL: api,
+		baseURL: useRuntimeConfig().API_URL,
 		headers: {
 			Authorization: `Bearer ${useCookie('access_token').value}`,
 		},
 	})
-	console.log(data)
+	const playersArray = []
+	if (data.value) {
+
+		for (let i = 0; i < data.value.length; i++) {
+			playersArray.push({
+				...data.value[i],
+				TotalMatches: await getLBTotalMatches(data.value[i].login),
+			})
+		}
+	}
+	if (data.value) lbPlayers.value = playersArray
 }
+
+const getLBTotalPages = async () => {
+	const { data } = await useFetch<number>(`/leaderboard/totalPages`, {
+		method: 'GET',
+		baseURL: useRuntimeConfig().API_URL,
+		headers: {
+			Authorization: `Bearer ${useCookie('access_token').value}`,
+		},
+	})
+	return data.value
+}
+
+const getLBTotalMatches = async (player:string) => {
+	const { data } = await useFetch<number>(`/achievement/playertotalgames/${player}?Win=false&Lose=false`, {
+		method: 'GET',
+		baseURL: useRuntimeConfig().API_URL,
+		headers: {
+			Authorization: `Bearer ${useCookie('access_token').value}`,
+		},
+	})
+	return data.value
+}
+
+const getLadderRank = (ladder) => {
+	switch (ladder) {
+		case 1:
+			return 'Kaizoku Ou'
+		case 2:
+			return 'Yonkou'
+		case 3:
+			return 'Shichibukai'
+		case 4:
+			return 'Super Rookie'
+		case 5:
+			return 'Kaizoku'
+		case 6:
+			return 'Capin Boy'
+	}
+
+}
+
+
 
 </script>
 

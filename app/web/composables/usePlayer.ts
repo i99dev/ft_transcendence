@@ -34,3 +34,4 @@ export async function getPlayerGameResult(isWin: string, isLose: string): Promis
 		console.log('Total Lose :', data.value)
 	return data.value
 }
+

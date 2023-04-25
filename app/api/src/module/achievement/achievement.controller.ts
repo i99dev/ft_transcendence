@@ -1,5 +1,5 @@
 import { AchievementService } from './achievement.service'
-import { Controller } from '@nestjs/common'
+import { Controller, Param } from '@nestjs/common'
 import { UseGuards, Req, Get, Query } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 
@@ -25,5 +25,18 @@ export class AchievementController {
         else if (win === 'true' && lose === 'false')
             return await this.achievementService.gameAnalyzer.getTotalVictories(req.user.login)
         else return await this.achievementService.gameAnalyzer.getTotalMatches(req.user.login)
+    }
+
+    @Get('playertotalgames/:login') // /achievement/playertotalgames/player?Win=true&Lose=false&login=player1
+    async getPlayerTotal(
+        @Param('login') login: string,
+        @Query('Win') win: string,
+        @Query('Lose') lose: string,
+    ): Promise<number> {
+        if (lose === 'true' && win === 'false')
+            return await this.achievementService.gameAnalyzer.getTotalDefeats(login)
+        else if (win === 'true' && lose === 'false')
+            return await this.achievementService.gameAnalyzer.getTotalVictories(login)
+        else return await this.achievementService.gameAnalyzer.getTotalMatches(login)
     }
 }
