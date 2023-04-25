@@ -24,7 +24,7 @@ model User {
     last_login   DateTime      @default(now())
     image        String?
     xp    Int           		@default(0)
-    ladder       String        @default("Capin Boy")
+    ladder       Int        @default(6)
     two_fac_auth Boolean       @default(false)
     achievements Achievement[] @relation("UserAchievements")
     power_ups    PowerUp[]     @relation("UserPowerUps")

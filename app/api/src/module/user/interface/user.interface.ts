@@ -9,5 +9,5 @@ export interface NewUser {
     email: string
     status: UserStatus
     xp: number
-    ladder: string
+    ladder: number
 }

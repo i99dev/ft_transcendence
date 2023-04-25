@@ -12,7 +12,7 @@ export class UserGetDto {
     last_login: Date
     image: string
     xp: number
-    ladder: string
+    ladder: number
     two_fac_auth: boolean
     friend_to?: UserGetDto[]
     friends?: UserGetDto[]

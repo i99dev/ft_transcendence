@@ -2,12 +2,12 @@ import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto } from '../../match-history/dto/match-history.dto'
 
 const ladderLevel = {
-    CapinBoy: { name: 'Capin Boy', lowXP: 0, highXP: 100, winRate: 0 },
-    Kaizoku: { name: 'Kaizoku', lowXP: 100, highXP: 300, winRate: 0.6 },
-    SuperRookie: { name: 'Super Rookie', lowXP: 300, highXP: 600, winRate: 0.55 },
-    Shichibukai: { name: 'Shichibukai', lowXP: 600, highXP: 1500, winRate: 0.5 },
-    Yonko: { name: 'Yonko', lowXP: 1500, highXP: 3500, winRate: 0.45 },
-    KaizokuOu: { name: 'Kaizoku Ou', lowXP: 3500, highXP: 6000, winRate: 0.4 },
+    CapinBoy: { Rank: 6, lowXP: 0, highXP: 100, winRate: 0 },
+    Kaizoku: { Rank: 5, lowXP: 100, highXP: 300, winRate: 0.6 },
+    SuperRookie: { Rank: 4, lowXP: 300, highXP: 600, winRate: 0.55 },
+    Shichibukai: { Rank: 3, lowXP: 600, highXP: 1500, winRate: 0.5 },
+    Yonko: { Rank: 2, lowXP: 1500, highXP: 3500, winRate: 0.45 },
+    KaizokuOu: { Rank: 1, lowXP: 3500, highXP: 6000, winRate: 0.4 },
 }
 export class gameAnalyzer {
     private prisma = new PrismaClient()
@@ -82,7 +82,7 @@ export class gameAnalyzer {
             },
         })
     }
-    async getLadderLevel(player: string): Promise<string> {
+    async getLadderLevel(player: string): Promise<number> {
         const user = await this.prisma.user.findUnique({
             where: {
                 login: player,
@@ -109,53 +109,53 @@ export class gameAnalyzer {
         const ladder = await this.getLadderLevel(player)
         let xp = 0
         switch (ladder) {
-            case ladderLevel.CapinBoy.name:
+            case ladderLevel.CapinBoy.Rank:
                 xp = IsWinner ? 10 : 2
                 break
-            case ladderLevel.Kaizoku.name:
+            case ladderLevel.Kaizoku.Rank:
                 xp = IsWinner ? 20 : 4
                 break
-            case ladderLevel.SuperRookie.name:
+            case ladderLevel.SuperRookie.Rank:
                 xp = IsWinner ? 30 : 6
                 break
-            case ladderLevel.Shichibukai.name:
+            case ladderLevel.Shichibukai.Rank:
                 xp = IsWinner ? 40 : 8
                 break
-            case ladderLevel.Yonko.name:
+            case ladderLevel.Yonko.Rank:
                 xp = IsWinner ? 50 : 10
                 break
-            case ladderLevel.KaizokuOu.name:
+            case ladderLevel.KaizokuOu.Rank:
                 xp = IsWinner ? 60 : 12
                 break
         }
         return xp
     }
-    RankDown(ladder: string, winningrate: number): string {
-        if (ladder == ladderLevel.KaizokuOu.name && winningrate < 0.4) return ladderLevel.Yonko.name
-        else if (ladder == ladderLevel.Yonko.name && winningrate < 0.45)
-            return ladderLevel.Shichibukai.name
-        else if (ladder == ladderLevel.Shichibukai.name && winningrate < 0.5)
-            return ladderLevel.SuperRookie.name
-        else if (ladder == ladderLevel.SuperRookie.name && winningrate < 0.55)
-            return ladderLevel.Kaizoku.name
-        else if (ladder == ladderLevel.Kaizoku.name && winningrate < 0.6)
-            return ladderLevel.CapinBoy.name
+    RankDown(ladder: number, winningrate: number): number {
+        if (ladder == ladderLevel.KaizokuOu.Rank && winningrate < 0.4) return ladderLevel.Yonko.Rank
+        else if (ladder == ladderLevel.Yonko.Rank && winningrate < 0.45)
+            return ladderLevel.Shichibukai.Rank
+        else if (ladder == ladderLevel.Shichibukai.Rank && winningrate < 0.5)
+            return ladderLevel.SuperRookie.Rank
+        else if (ladder == ladderLevel.SuperRookie.Rank && winningrate < 0.55)
+            return ladderLevel.Kaizoku.Rank
+        else if (ladder == ladderLevel.Kaizoku.Rank && winningrate < 0.6)
+            return ladderLevel.CapinBoy.Rank
         return ladder
     }
-    RankUp(ladder: string, xp: number, winningrate: number, totalWins: number): string {
-        if (ladder == ladderLevel.Yonko.name && xp >= 3500 && winningrate >= 0.45)
-            return ladderLevel.KaizokuOu.name
-        else if (ladder == ladderLevel.Shichibukai.name && xp >= 1500 && winningrate >= 0.5)
-            return ladderLevel.Yonko.name
-        else if (ladder == ladderLevel.SuperRookie.name && xp >= 600 && winningrate >= 0.55)
-            return ladderLevel.Shichibukai.name
-        else if (ladder == ladderLevel.Kaizoku.name && xp >= 150 && winningrate >= 0.6)
-            return ladderLevel.SuperRookie.name
-        else if (ladder == ladderLevel.CapinBoy.name && totalWins >= 10)
-            return ladderLevel.Kaizoku.name
+    RankUp(ladder: number, xp: number, winningrate: number, totalWins: number): number {
+        if (ladder == ladderLevel.Yonko.Rank && xp >= 3500 && winningrate >= 0.45)
+            return ladderLevel.KaizokuOu.Rank
+        else if (ladder == ladderLevel.Shichibukai.Rank && xp >= 1500 && winningrate >= 0.5)
+            return ladderLevel.Yonko.Rank
+        else if (ladder == ladderLevel.SuperRookie.Rank && xp >= 600 && winningrate >= 0.55)
+            return ladderLevel.Shichibukai.Rank
+        else if (ladder == ladderLevel.Kaizoku.Rank && xp >= 150 && winningrate >= 0.6)
+            return ladderLevel.SuperRookie.Rank
+        else if (ladder == ladderLevel.CapinBoy.Rank && totalWins >= 10)
+            return ladderLevel.Kaizoku.Rank
         return ladder
     }
-    async calcLadder(player: string): Promise<string> {
+    async calcLadder(player: string): Promise<number> {
         const ladder = await this.getLadderLevel(player)
         const xp = await this.getXP(player)
         const winningrate = await this.calcWinRate(player)

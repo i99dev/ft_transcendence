@@ -29,7 +29,7 @@ export class UserRepository {
             email: data.email,
             status: UserStatus.ONLINE,
             xp: 0,
-            ladder: 'Capin Boy',
+            ladder: 6,
         }
         return user
     }

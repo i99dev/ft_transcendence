@@ -20,7 +20,7 @@ export class UserSeeder {
                     last_name: 'Naji',
                     image: 'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg',
                     xp: 2000,
-                    ladder: 'Shichbukai',
+                    ladder: 3,
                 },
             }),
             await this.prisma.user.upsert({
@@ -35,7 +35,7 @@ export class UserSeeder {
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
                     xp: 700,
-                    ladder: 'Super Rookie',
+                    ladder: 4,
                 },
             }),
             await this.prisma.user.upsert({
@@ -50,7 +50,7 @@ export class UserSeeder {
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
                     xp: 4000,
-                    ladder: 'Yonko',
+                    ladder: 2,
                 },
             }),
             await this.prisma.user.upsert({
@@ -65,7 +65,7 @@ export class UserSeeder {
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
                     xp: 2500,
-                    ladder: 'Shichbukai',
+                    ladder: 3,
                 },
             }),
             await this.prisma.user.upsert({
@@ -80,7 +80,7 @@ export class UserSeeder {
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
                     xp: 6590,
-                    ladder: 'Kaizoku Ou',
+                    ladder: 1,
                 },
             }),
         ]

@@ -86,6 +86,24 @@ const totaLoses = await getPlayerGameResult('false', 'true')
 
 const totalWins = await getPlayerGameResult('true', 'false')
 
+const getLadderRank = (ladder) => {
+	switch (ladder) {
+		case 1:
+			return 'Kaizoku Ou'
+		case 2:
+			return 'Yonkou'
+		case 3:
+			return 'Shichibukai'
+		case 4:
+			return 'Super Rookie'
+		case 5:
+			return 'Kaizoku'
+		case 6:
+			return 'Capin Boy'
+	}
+
+}
+
 </script>
 
 <template>
@@ -152,7 +170,7 @@ const totalWins = await getPlayerGameResult('true', 'false')
 						<div class="flex sm:flex-col justify-end sm:p-2">
 						  <div class="ml-14">
 							<button @click="handleDropDown" class="sm:text-3xl text-lg text-black dark:text-white hover:text-blue-800 focus:outline-none" title='Your Rank'>
-								{{ userData.ladder }}
+								{{ getLadderRank(userData.ladder) }}
 							</button>
 						  </div>
 						</div>
