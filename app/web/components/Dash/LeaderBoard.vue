@@ -7,12 +7,14 @@
 			<table class="min-w-full text-left text-sm font-light">
 				<tbody>
 					<tr>
-						<td class="whitespace-nowrap px-2 py-4 font-medium align-middle">{{ index + 1 }}</td>
-						<td class="whitespace-nowrap px-2 py-4 flex items-center">
-							<!-- <img src="your-image-url.jpg" alt="image-description" class="ml-0 w-8 h-8 rounded-full self-center"> -->
+						<td class="whitespace-nowrap px-2 py-4 font-medium">{{ index + 1 }}</td>
+						<td class="whitespace-nowrap px-2 py-4">
+							<!-- <img src="https://www.pngitem.com/pimgs/m/536-5365344_icon-one-piece-png-transparent-png.png" alt="image-description" class="mr-2 w-0.3 h-20 rounded-full self-center"> -->
 							<span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
+						</td>
+						<td class="whitespace-nowrap px-2 py-4 flex items-center">
 							<img :src=player.image alt="image-description" class="mr-2 w-0.3 h-20 rounded-full self-center">
-							<span class="w-96 align-middle">{{ player.login }}</span>
+							<span class="w-96 align-middle">{{ player.username }}</span>
 						</td>
 						<td class="whitespace-nowrap px-1 py-4 align-middle"> total games played {{ player.TotalMatches }} </td>
 					</tr>
