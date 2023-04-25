@@ -7,3 +7,10 @@ export interface ConnectedUser {
     status: 'ingame' | 'inqueue' | 'online'
     game?: PongGame
 }
+
+export interface PowerUp{
+    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami';
+    active: boolean;
+    duration: number;
+}
+

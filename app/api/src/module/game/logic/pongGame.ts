@@ -1,4 +1,5 @@
-import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
+import { BallDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
+import { PowerUp } from '../interface/game.interface';
 
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
@@ -76,7 +77,23 @@ export class PongGame {
                 height: PADDLE_HEIGHT,
             },
             gameID: this.game_id,
-            powerUp: false,
+            powerUps: [
+                {
+                    type: 'Hiken',
+                    active: false,
+                    duration: 0,
+                },
+                {
+                    type: 'Baika no Jutsu',
+                    active: false,
+                    duration: 5000,
+                },
+                {
+                    type: 'Shinigami',
+                    active: false,
+                    duration: 5000,
+                },
+            ]
         }
     }
 
@@ -95,7 +112,7 @@ export class PongGame {
         const computer = this.game_status.players.find(player => player.username === 'Computer')
         const ball = this.game_status.ball
         const paddle = computer.paddle
-        if(computer) {
+        if (computer) {
 
             if (ball.dx < 0) return
 
@@ -154,6 +171,24 @@ export class PongGame {
         )
     }
 
+    private handleHikenPowerup(game: gameStatusDto, playerIndex: number): void {
+        const player = game.players[playerIndex]
+        const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Hiken')
+
+        if (powerUp && powerUp.active) {
+            game.ball.dx *= 1.5
+            game.ball.dy *= 1.5
+            this.disablePowerUp(player, powerUp)
+        }
+        else {
+            const originalSpeed = Math.sqrt(BALL_XSPEED ** 2 + BALL_YSPEED ** 2);
+            const currentSpeed = Math.sqrt(game.ball.dx ** 2 + game.ball.dy ** 2);
+
+            game.ball.dx = (game.ball.dx / currentSpeed) * originalSpeed;
+            game.ball.dy = (game.ball.dy / currentSpeed) * originalSpeed;
+        }
+
+    }
     // check if the ball collided with wall or paddle and update the score if it is out of bounds
     private checkBallCollision(game: gameStatusDto): void {
         const { ball, players } = game
@@ -164,6 +199,7 @@ export class PongGame {
         if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
                 this.reflectBall(ball, players[0].paddle)
+                this.handleHikenPowerup(game, 0)
             } else if (ball.x < 0) {
                 // Ball crossed the left boundary
                 players[1].score += 1
@@ -174,6 +210,7 @@ export class PongGame {
         else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
                 this.reflectBall(ball, players[1].paddle)
+                this.handleHikenPowerup(game, 1)
             } else if (ball.x > 1) {
                 // Ball crossed the right boundary
                 players[0].score += 1
@@ -182,21 +219,40 @@ export class PongGame {
         }
     }
 
-    public powerUp(playerID: string, action: string): void {
+    public activatePowerUp(playerID: string, type: string): void {
         const player = this.game_status.players.find(player => player.username === playerID)
-        if (
-            (player.powerUp === true && action === 'start') ||
-            (player.powerUp === false && action === 'end')
-        )
-            return
-        if (action === 'start') {
-            player.paddle.width *= 2
-            player.paddle.height *= 2
-            player.powerUp = true
-        } else if (action === 'end') {
-            player.paddle.width /= 2
-            player.paddle.height /= 2
-            player.powerUp = false
+        const powerUp = player.powerUps.find(powerUp => powerUp.type === type)
+
+        if (powerUp && !powerUp.active) {
+            powerUp.active = true
+
+            if (powerUp.type == 'Baika no Jutsu') {
+                player.paddle.height *= 2;
+                setTimeout(() => {
+                    this.disablePowerUp(player, powerUp)
+                }, powerUp.duration);
+            }
+            else if (powerUp.type == 'Hiken') {
+
+            }
+            else
+                console.log("Not implemented yet")
+        }
+
+
+    }
+
+    private disablePowerUp(player: PlayerDto, powerUp: PowerUp): void {
+        powerUp.active = false
+
+        if (powerUp.type == 'Hiken') {
+
+        }
+        else if (powerUp.type == 'Baika no Jutsu') {
+            player.paddle.height = PADDLE_HEIGHT;
+        }
+        else if (powerUp.type == 'Shinigami') {
+
         }
     }
 

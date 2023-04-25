@@ -66,7 +66,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @SubscribeMessage('Power-Up')
     PowerupStart(@ConnectedSocket() client: any, @MessageBody() type: string) {
         console.log('powerup request from clinet, type = ', type)
-        // this.gameService.powerUp(client, tyupe)
+        this.gameService.activatePowerUp(client, type)
     }
 
     @SubscribeMessage('move')
@@ -74,3 +74,4 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.movePaddle(client, direction)
     }
 }
+ 
