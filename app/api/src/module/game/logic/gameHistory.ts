@@ -24,9 +24,9 @@ export class gameHistory {
         this.game.players.forEach(pl => {
             if (pl.username !== player.username) {
                 if (pl.score > player.score) {
-                    isWinner = true
-                } else {
                     isWinner = false
+                } else {
+                    isWinner = true
                 }
             }
         })

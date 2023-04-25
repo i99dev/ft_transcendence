@@ -24,13 +24,10 @@
                         <div
                             class="rounded-3xl bg-gray-90 bg-opacity-50 px-10 py-2 text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600"
                         >
-                            <img
-                                src="https://signin.intra.42.fr/assets/42_logo-7dfc9110a5319a308863b96bda33cea995046d1731cebb735e41b16255106c12.svg"
-                                v-on:click="go"
-                                width="35"
-                                height="20"
-                                alt="icon"
-                            />
+                        <button type="button" class="rounded-3xl bg-transparent p-0 focus:outline-none" @click="go">
+                            <img src="https://signin.intra.42.fr/assets/42_logo-7dfc9110a5319a308863b96bda33cea995046d1731cebb735e41b16255106c12.svg" width="35" height="20" alt="icon" class="transition-opacity duration-300 hover:opacity-70"/>
+                        </button>
+                        
                         </div>
                     </div>
                     <!-- <dashboard /> -->

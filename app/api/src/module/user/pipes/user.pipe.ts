@@ -5,7 +5,6 @@ import { UserValidPatchDto } from '../dto/user.dto'
 
 @Injectable()
 export class UserPatchValidationPipe implements PipeTransform<any> {
-
     createAssignValue(): UserPatchDto {
         const vari: UserPatchDto = {
             username: 'string',
