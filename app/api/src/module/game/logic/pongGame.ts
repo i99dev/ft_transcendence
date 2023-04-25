@@ -76,6 +76,7 @@ export class PongGame {
                 y: 0.5,
                 width: PADDLE_WIDTH,
                 height: PADDLE_HEIGHT,
+                speed: PADDLE_SPEED,
                 color: 'white',
             },
             gameID: this.game_id,
@@ -94,6 +95,11 @@ export class PongGame {
                     type: 'Shinigami',
                     active: false,
                     duration: 500,
+                },
+                {
+                    type: 'Shunshin no Jutsu',
+                    active: false,
+                    duration: 10000,
                 },
             ]
         }
@@ -260,6 +266,15 @@ export class PongGame {
             }
             else if (powerUp.type == 'Shinigami') {
                 console.log("Shinigami activated")
+            }
+            else if (powerUp.type == 'Shunshin no Jutsu')
+            {
+                console.log("Shunshin activated")
+                player.paddle.speed *= 1.5;
+                player.paddle.color = 'cyan'
+                setTimeout(() => {
+                    this.disablePowerUp(player, powerUp)
+                }, powerUp.duration);
 
             }
 
@@ -281,6 +296,10 @@ export class PongGame {
             setTimeout(() => {
                 this.game_status.ball.color = 'white';
             }, powerUp.duration);
+        }
+        else if (powerUp.type == 'Shunshin no Jutsu') {
+            player.paddle.speed = PADDLE_SPEED;
+            player.paddle.color = 'white';
         }
 
     }
@@ -308,9 +327,9 @@ export class PongGame {
         const game = this.game_status
 
         if (direction === 'up') {
-            player.paddle.y -= PADDLE_SPEED
+            player.paddle.y -= player.paddle.speed
         } else if (direction === 'down') {
-            player.paddle.y += PADDLE_SPEED
+            player.paddle.y += player.paddle.speed
         }
 
         player.paddle.y = Math.max(

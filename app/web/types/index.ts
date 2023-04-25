@@ -57,6 +57,7 @@ declare global {
     y: number
     width: number
     height: number
+    speed: number
     color: string
   }
 

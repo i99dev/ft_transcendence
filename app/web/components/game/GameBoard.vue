@@ -224,7 +224,7 @@ const activatePowerUp = (key: string): void => {
     } else if (key == '3') {
         socket.value.emit('Power-Up', 'Shinigami')
     } else if (key == '4') {
-        socket.value.emit('Power-Up', 'Shinigami')
+        socket.value.emit('Power-Up', 'Shunshin no Jutsu')
     }
 }
 
