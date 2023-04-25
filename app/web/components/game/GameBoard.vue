@@ -265,7 +265,7 @@ const drawBall = (): void => {
         0,
         Math.PI * 2,
     )
-    ctx.value.fillStyle = 'white'
+    ctx.value.fillStyle = gameData.value.ball.color;
     ctx.value.fill()
     ctx.value.closePath()
 }
@@ -275,7 +275,7 @@ const drawPlayer = (players: PlayerDto[]): void => {
         const p = players[i].paddle
         const posy = p.y * canvas.value.height - p.height / 2
         const posx = i == 0 ? 0 : canvas.value.width - p.width
-        ctx.value.fillStyle = 'white'
+        ctx.value.fillStyle = p.color
         ctx.value.fillRect(posx, p.y, p.width, p.height)
     }
 }

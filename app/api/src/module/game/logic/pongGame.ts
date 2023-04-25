@@ -29,6 +29,7 @@ export class PongGame {
                 dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
                 dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
                 radius: 0.02,
+                color: 'white',
             },
         }
     }
@@ -75,6 +76,7 @@ export class PongGame {
                 y: 0.5,
                 width: PADDLE_WIDTH,
                 height: PADDLE_HEIGHT,
+                color: 'white',
             },
             gameID: this.game_id,
             powerUps: [
@@ -91,7 +93,7 @@ export class PongGame {
                 {
                     type: 'Shinigami',
                     active: false,
-                    duration: 5000,
+                    duration: 500,
                 },
             ]
         }
@@ -171,16 +173,34 @@ export class PongGame {
         )
     }
 
-    private handleHikenPowerup(game: gameStatusDto, playerIndex: number): void {
+    private handleShinigamiPowerUp(game: gameStatusDto, playerIndex: number): void {
+        const player = game.players[playerIndex]
+        const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
+
+        
+        if (powerUp && powerUp.active) {
+            game.ball.color = 'transparent'
+            this.disablePowerUp(player, powerUp)
+        }
+        else
+            game.ball.color = 'white'
+
+    }
+
+    private handleHikenPowerUp(game: gameStatusDto, playerIndex: number): void {
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Hiken')
 
         if (powerUp && powerUp.active) {
-            game.ball.dx *= 1.5
-            game.ball.dy *= 1.5
+            game.ball.color = 'blue'
+            console.log('Hikennnnnnnnnnn')
+            game.ball.color = 'red'
+            game.ball.dx *= 2
+            game.ball.dy *= 2
             this.disablePowerUp(player, powerUp)
         }
         else {
+            game.ball.color = 'white'
             const originalSpeed = Math.sqrt(BALL_XSPEED ** 2 + BALL_YSPEED ** 2);
             const currentSpeed = Math.sqrt(game.ball.dx ** 2 + game.ball.dy ** 2);
 
@@ -199,7 +219,8 @@ export class PongGame {
         if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
                 this.reflectBall(ball, players[0].paddle)
-                this.handleHikenPowerup(game, 0)
+                this.handleHikenPowerUp(game, 0)
+                this.handleShinigamiPowerUp(game, 0)
             } else if (ball.x < 0) {
                 // Ball crossed the left boundary
                 players[1].score += 1
@@ -210,7 +231,8 @@ export class PongGame {
         else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
                 this.reflectBall(ball, players[1].paddle)
-                this.handleHikenPowerup(game, 1)
+                this.handleHikenPowerUp(game, 1)
+                this.handleShinigamiPowerUp(game, 1)
             } else if (ball.x > 1) {
                 // Ball crossed the right boundary
                 players[0].score += 1
@@ -233,27 +255,34 @@ export class PongGame {
                 }, powerUp.duration);
             }
             else if (powerUp.type == 'Hiken') {
+                console.log("Hiken activated")
+                player.paddle.color = 'orange'
+            }
+            else if (powerUp.type == 'Shinigami') {
+                console.log("Shinigami activated")
 
             }
-            else
-                console.log("Not implemented yet")
+
+
         }
-
-
     }
 
     private disablePowerUp(player: PlayerDto, powerUp: PowerUp): void {
+
         powerUp.active = false
-
         if (powerUp.type == 'Hiken') {
-
+            player.paddle.color = 'white';
         }
         else if (powerUp.type == 'Baika no Jutsu') {
             player.paddle.height = PADDLE_HEIGHT;
         }
         else if (powerUp.type == 'Shinigami') {
 
+            setTimeout(() => {
+                this.game_status.ball.color = 'white';
+            }, powerUp.duration);
         }
+
     }
 
     // reflect the ball based on the paddle hit point

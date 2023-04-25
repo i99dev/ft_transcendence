@@ -37,6 +37,7 @@ export class BallDto {
     dx: number
     dy: number
     radius: number
+    color: string
 }
 
 export class PlayerDto {
@@ -52,13 +53,14 @@ export class PaddleDto {
     y: number
     width: number
     height: number
+    color: string
 }
 
 export class GameSelectDto {
     gameType: 'classic' | 'custom'
 
     gameMode: 'single' | 'multi'
-    
+
     invitedId?: string
 }
 
