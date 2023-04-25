@@ -1,6 +1,30 @@
 import { BallDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface';
 
+
+const DEFAULT_POWER_UPS: PowerUp[] = [
+    {
+        type: 'Hiken',
+        active: false,
+        duration: 0,
+    },
+    {
+        type: 'Baika no Jutsu',
+        active: false,
+        duration: 5000,
+    },
+    {
+        type: 'Shinigami',
+        active: false,
+        duration: 500,
+    },
+    {
+        type: 'Shunshin no Jutsu',
+        active: false,
+        duration: 10000,
+    },
+];
+
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
 const PADDLE_SPEED = 0.019
@@ -13,11 +37,15 @@ export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
+    // private powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void;
 
-    constructor(player1ID: string, Player2ID: string, gameType: string) {
+    constructor(player1ID: string, Player2ID: string, gameType: string/* , powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void */) {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
         this.game_status = this.instanciateGame(player1ID, Player2ID)
+        // if(gameType == 'custom') {
+        //     this.powerUpEventCallback = powerUpEventCallback
+        // }
     }
 
     private instanciateGame(player1ID: string, player2ID: string): gameStatusDto {
@@ -275,7 +303,7 @@ export class PongGame {
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration);
-
+                
             }
 
 
