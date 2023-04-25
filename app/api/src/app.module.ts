@@ -11,6 +11,7 @@ import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { MulterModule } from './module/multer/multer.module'
 import { NotificationModule } from '@module/notification/notification.module'
+import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -25,6 +26,7 @@ import { NotificationModule } from '@module/notification/notification.module'
         MatchHistoryModule,
         MulterModule,
         NotificationModule,
+        FriendWsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
