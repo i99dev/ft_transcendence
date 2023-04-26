@@ -95,7 +95,6 @@ const switchExistStatus = (status: boolean): void => {
 body {
     background-color: #334155;
 }
-
 .container {
     display: flex;
     justify-content: center;
@@ -108,6 +107,4 @@ body {
     position: relative;
     height: 100vh;
 }
-
-
 </style>
