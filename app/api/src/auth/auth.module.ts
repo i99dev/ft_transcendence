@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt'
 import { JwtStrategy } from './strategy/jwt.strategy'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ValidationMiddleware } from './middleware/validation.middleware'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { ValidationMiddleware } from './middleware/validation.middleware'
                 signOptions: { expiresIn: configService.getOrThrow('JWT_EXPIRES_IN') },
             }),
         }),
+        HttpModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, FtStrategy, JwtStrategy, AuthRepository],
