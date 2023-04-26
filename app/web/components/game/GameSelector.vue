@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center justify-center min-h-screen">
-      <div class="bg-white p-6 rounded-lg shadow-lg relative w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4">
+      <div class="bg-white p-6 rounded-lg shadow-lg relative w-full ">
         <div class="aspect-w-3 aspect-h-4">
             <div>
               <div v-if="step === 1" key="step1">
