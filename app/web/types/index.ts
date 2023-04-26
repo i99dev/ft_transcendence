@@ -39,6 +39,7 @@ declare global {
     dx: number
     dy: number
     radius: number
+    color: string
   }
 
   interface PlayerDto {
@@ -54,6 +55,8 @@ declare global {
     y: number
     width: number
     height: number
+    speed: number
+    color: string
   }
 
   interface gameObjects {

@@ -67,11 +67,11 @@ export class DefaultService {
     /* 
         Activate the power up requested by frontend
     */
-    public powerUp(userSocket: Socket, powerUp: string) {
+    public activatePowerUp(userSocket: Socket, powerUp: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (player.game.getGameType() != 'custom') return
 
-        player.game.powerUp(player.id, powerUp)
+        player.game.activatePowerUp(player.id, powerUp)
     }
 
     /* 
@@ -137,6 +137,7 @@ export class DefaultService {
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
+        
         const game = new PongGame(player1.id, player2.id, gameType)
         player1.game = game
         player2.game = game

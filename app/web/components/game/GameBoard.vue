@@ -34,9 +34,9 @@ const canvasRatio = 1.5 // board width / board height
 
 // Defines
 const emit = defineEmits(['ReadyGame', 'GameOver'])
-defineExpose({ resetSocket, setup, destroy, giveUp, powerup })
+defineExpose({ resetSocket, setup, destroy, giveUp })
 
-function resetSocket (): void {
+function resetSocket(): void {
     socket.value.off()
 }
 
@@ -58,17 +58,6 @@ function setup(mode: GameSelectDto): void {
 
 function destroy(): void {
     // if (socket.value.connected) socket.value.disconnect()
-}
-
-function powerup(): void {
-    if (poweredUp.value == false) {
-		socket.value.emit('powerup', 'start')
-		poweredUp.value = true
-		   setTimeout(() => {
-			   socket.value.emit('powerup', 'end')
-			   poweredUp.value = false
-		   }, 10000)
-	}   
 }
 
 function giveUp(): void {
@@ -216,10 +205,28 @@ const isObjEmpty = (obj: any): boolean => {
     return Object.values(obj).length === 0 && obj.constructor === Object
 }
 
+const activatePowerUp = (key: string): void => {
+    if (key == '1') {
+        socket.value.emit('Power-Up', 'Hiken')
+    } else if (key == '2') {
+        socket.value.emit('Power-Up', 'Baika no Jutsu')
+    } else if (key == '3') {
+        socket.value.emit('Power-Up', 'Shinigami')
+    } else if (key == '4') {
+        socket.value.emit('Power-Up', 'Shunshin no Jutsu')
+    }
+}
+
 const handleKeyDown = (event: KeyboardEvent): void => {
+
     if (keys.hasOwnProperty(event.key)) {
         event.preventDefault();
+    }
+
+        if (event.key == 'ArrowUp' || event.key == 'ArrowDown')
         keys[event.key] = true;
+        else if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
+            activatePowerUp(event.key)
     }
 };
 
@@ -247,7 +254,7 @@ const drawBall = (): void => {
         0,
         Math.PI * 2,
     )
-    ctx.value.fillStyle = 'white'
+    ctx.value.fillStyle = gameData.value.ball.color;
     ctx.value.fill()
     ctx.value.closePath()
 }
@@ -257,7 +264,7 @@ const drawPlayer = (players: PlayerDto[]): void => {
         const p = players[i].paddle
         const posy = p.y * canvas.value.height - p.height / 2
         const posx = i == 0 ? 0 : canvas.value.width - p.width
-        ctx.value.fillStyle = 'white'
+        ctx.value.fillStyle = p.color
         ctx.value.fillRect(posx, p.y, p.width, p.height)
     }
 }
