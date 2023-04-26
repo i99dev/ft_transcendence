@@ -19,7 +19,7 @@ export class gameHistory {
         return user.id
     }
 
-    private IsWinner(player: PlayerDto): boolean {
+    public IsWinner(player: PlayerDto): boolean {
         let isWinner = false
         this.game.players.forEach(pl => {
             if (pl.username !== player.username) {

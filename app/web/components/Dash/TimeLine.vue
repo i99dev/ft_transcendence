@@ -64,6 +64,7 @@
 		<template v-if="!isSameLogin(game)">
 		  <div class="flex flex-row justify-between w-full">
 			<div class="self-center">
+				<span class="text-xs font-light">{{ getLadderRank(getMe(game).user.ladder) }}</span>
 				<img
 				  :src="getMe(game).user.image"
 				  class="w-8 h-8 rounded-full self-center"
@@ -116,6 +117,7 @@
 				  :src="getOpponent(game).user.image"
 				  class="w-8 h-8 rounded-full self-center"
 				/>
+				<span class="text-xs font-light">{{ getLadderRank(getOpponent(game).user.ladder) }}</span>
 			  </div>
 			</div>
 		</template>
@@ -204,7 +206,7 @@ const isFilter = ref(new Map<string, boolean>())
 const pageNumber = await useGameHistoryPages()
 
 onMounted(async () => {
-	for (let i = 1; i <= pageNumber; i++)
+	for (let i = 1; i <= (pageNumber ? pageNumber: 0); i++)
 		isPage.value.set(i, false);
 	isFilter.value.set('all', true);
 	isFilter.value.set('win', false);
@@ -240,7 +242,7 @@ const isSameLogin = (game) => {
 		return false
 }
 
-const handlePagination = async (page) => {
+const handlePagination = async (page: number) => {
 	if (page < 1 || page > pageNumber) return
 	for (const key of isPage.value.keys())
 		isPage.value.set(key, false)
@@ -251,7 +253,7 @@ const handlePagination = async (page) => {
 }
 
 
-const handleFilteration = async (filter) => {
+const handleFilteration = async (filter: string) => {
 	for (const key of isFilter.value.keys())
 		isFilter.value.set(key, false)
 	if (filter == "all")
@@ -267,6 +269,24 @@ const handleFilteration = async (filter) => {
 	currentFilter.value = filter
 	isFilter.value.set(filter, true)
 	console.log(filter)
+}
+
+const getLadderRank = (ladder) => {
+	switch (ladder) {
+		case 1:
+			return 'Kaizoku Ou'
+		case 2:
+			return 'Yonkou'
+		case 3:
+			return 'Shichibukai'
+		case 4:
+			return 'Super Rookie'
+		case 5:
+			return 'Kaizoku'
+		case 6:
+			return 'Capin Boy'
+	}
+
 }
 
 </script>

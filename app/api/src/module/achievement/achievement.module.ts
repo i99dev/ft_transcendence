@@ -7,4 +7,4 @@ import { Module } from '@nestjs/common'
     controllers: [AchievementController],
     providers: [AchievementService],
 })
-export class UserModule {}
+export class AchievementModule {}

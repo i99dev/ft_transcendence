@@ -1,4 +1,6 @@
 <script setup>
+import { getPlayerWinRate,  getPlayerGameResult} from '@/composables/usePlayer'
+
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
 
 const userData = computed(() => {
@@ -71,6 +73,37 @@ function openFriendsModel() {
         setFriendsModalOpen(true)
     }
 }
+
+// Handle player stat drop down
+const showstat = ref(false)
+function handleDropDown() {
+	showstat.value = !showstat.value
+}
+
+const WinRate = await getPlayerWinRate()
+
+const totaLoses = await getPlayerGameResult('false', 'true')
+
+const totalWins = await getPlayerGameResult('true', 'false')
+
+const getLadderRank = (ladder) => {
+	switch (ladder) {
+		case 1:
+			return 'Kaizoku Ou'
+		case 2:
+			return 'Yonkou'
+		case 3:
+			return 'Shichibukai'
+		case 4:
+			return 'Super Rookie'
+		case 5:
+			return 'Kaizoku'
+		case 6:
+			return 'Capin Boy'
+	}
+
+}
+
 </script>
 
 <template>
@@ -110,26 +143,46 @@ function openFriendsModel() {
                             />
                             <!-- edit icon  -->
                             <div
-                                class="flex justify-center"
-                                @click="editUsername"
-                                v-if="editBoolaen"
+							class="flex justify-center"
+							@click="editUsername"
+							v-if="editBoolaen"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    stroke="currentColor"
-                                    class="w-8 h-8"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                                    />
-                                </svg>
-                            </div>
-                            <!-- save -->
+							<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="w-8 h-8"
+							>
+							<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+							/>
+						</svg>
+					</div>
+
+					<!----
+						rank dropdown
+					-->
+					<div class="relative">
+						<div class="flex sm:flex-col justify-end sm:p-2">
+						  <div class="ml-14">
+							<button @click="handleDropDown" class="sm:text-3xl text-lg text-black dark:text-white hover:text-blue-800 focus:outline-none" title='Your Rank'>
+								{{ getLadderRank(userData.ladder) }}
+							</button>
+						  </div>
+						</div>
+						<div v-if="showstat" class="absolute left-14 mt-2 py-2 w-48 bg-white rounded-lg shadow-lg z-10">
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">XP level: {{ userData.xp }}</span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Winning Rate: {{ (WinRate * 100).toFixed(2) }}% </span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Total Wins: {{ totalWins }} </span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Total Loses: {{ totaLoses }}</span>
+						</div>
+					  </div>
+
+					<!-- save -->
                             <div
                                 class="flex justify-center"
                                 @click="updateUsername"
