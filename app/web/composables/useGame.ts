@@ -36,6 +36,8 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
     return data.value
 }
 
+
+
 export async function useGameHistoryPages(): Promise<number | null> {
 	const api = useRuntimeConfig().API_URL
 	const { data, error: errorRef } = await useFetch<number>(`/match-history/totalPages`, {

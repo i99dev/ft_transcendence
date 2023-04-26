@@ -19,6 +19,8 @@ export class UserSeeder {
                     first_name: 'Bassam',
                     last_name: 'Naji',
                     image: 'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg',
+                    xp: 2000,
+                    ladder: 3,
                 },
             }),
             await this.prisma.user.upsert({
@@ -32,6 +34,8 @@ export class UserSeeder {
                     last_name: 'Saad',
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    xp: 700,
+                    ladder: 4,
                 },
             }),
             await this.prisma.user.upsert({
@@ -45,6 +49,8 @@ export class UserSeeder {
                     last_name: 'Aljaberi',
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    xp: 4000,
+                    ladder: 2,
                 },
             }),
             await this.prisma.user.upsert({
@@ -58,6 +64,8 @@ export class UserSeeder {
                     last_name: 'Al Gunaid',
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    xp: 2500,
+                    ladder: 3,
                 },
             }),
             await this.prisma.user.upsert({
@@ -71,6 +79,8 @@ export class UserSeeder {
                     last_name: 'Al Tenaiji',
                     status: 'LIVE',
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
+                    xp: 6590,
+                    ladder: 1,
                 },
             }),
         ]

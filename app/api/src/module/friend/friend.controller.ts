@@ -1,7 +1,8 @@
 import { FriendService } from './friend.service'
 import { UserGetDto } from './dto/friend.dto'
 import { Get, Controller, Param, Post, Delete } from '@nestjs/common'
-
+import { JwtAuthGuard } from '../../common/guards/jwt.guard'
+import { UseGuards, Req } from '@nestjs/common'
 @Controller('/users/:user/friends')
 export class FriendController {
     constructor(private readonly FriendService: FriendService) {}
@@ -22,8 +23,9 @@ export class FriendController {
         return await this.FriendService.DeleteFriend(friend, user)
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('')
-    async GetFriends(@Param('user') user: string): Promise<UserGetDto[]> {
-        return await this.FriendService.getFriends(user)
+    async GetFriends(@Req() req): Promise<UserGetDto[]> {
+        return await this.FriendService.getFriends(req.user.login)
     }
 }
