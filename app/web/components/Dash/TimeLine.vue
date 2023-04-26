@@ -206,7 +206,7 @@ const isFilter = ref(new Map<string, boolean>())
 const pageNumber = await useGameHistoryPages()
 
 onMounted(async () => {
-	for (let i = 1; i <= pageNumber; i++)
+	for (let i = 1; i <= (pageNumber ? pageNumber: 0); i++)
 		isPage.value.set(i, false);
 	isFilter.value.set('all', true);
 	isFilter.value.set('win', false);

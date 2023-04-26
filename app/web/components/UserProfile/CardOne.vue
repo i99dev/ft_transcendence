@@ -176,7 +176,7 @@ const getLadderRank = (ladder) => {
 						</div>
 						<div v-if="showstat" class="absolute left-14 mt-2 py-2 w-48 bg-white rounded-lg shadow-lg z-10">
 							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">XP level: {{ userData.xp }}</span>
-							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Winning Rate: {{ WinRate * 100 }}% </span>
+							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Winning Rate: {{ (WinRate * 100).toFixed(2) }}% </span>
 							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Total Wins: {{ totalWins }} </span>
 							<span class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out">Total Loses: {{ totaLoses }}</span>
 						</div>

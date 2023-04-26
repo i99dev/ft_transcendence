@@ -5,6 +5,7 @@ import { PongGame } from '../logic/pongGame'
 import { SocketService } from './socket.service'
 import { PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
+import { gameAnalyzer } from '../logic/gameAnalyzer'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
@@ -14,6 +15,7 @@ export class DefaultService {
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
     private custom_queue: string[] = []
+    private gameAnalyzer = new gameAnalyzer()
 
     constructor(private socketService: SocketService) {}
 
@@ -46,9 +48,9 @@ export class DefaultService {
         if (index > -1) {
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
-                if(this.classic_queue.includes(user.id)) 
+                if (this.classic_queue.includes(user.id))
                     this.classic_queue.splice(this.classic_queue.indexOf(user.id), 1)
-                if(this.custom_queue.includes(user.id)) 
+                if (this.custom_queue.includes(user.id))
                     this.custom_queue.splice(this.custom_queue.indexOf(user.id), 1)
             } else if (user.status == 'ingame') {
                 user.game.setLoser(user.id)
@@ -67,7 +69,7 @@ export class DefaultService {
     */
     public powerUp(userSocket: Socket, powerUp: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if(player.game.getGameType() != 'custom') return
+        if (player.game.getGameType() != 'custom') return
 
         player.game.powerUp(player.id, powerUp)
     }
@@ -77,8 +79,7 @@ export class DefaultService {
     */
     public matchPlayer(userSocket: Socket, gameType: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if(this.classic_queue.includes(player.id) || this.custom_queue.includes(player.id)) 
-            return;
+        if (this.classic_queue.includes(player.id) || this.custom_queue.includes(player.id)) return
         if (player.status != 'online') return
 
         player.status = 'inqueue'
@@ -118,7 +119,6 @@ export class DefaultService {
         }
     }
 
-
     /* 
         Creates a new pongGame object with "Computer" as opponent and emit the game setup to player
     */
@@ -132,7 +132,6 @@ export class DefaultService {
 
         this.startGame(game)
     }
-
 
     /* 
         Creates a new pongGame object and emit the game setup to both players
@@ -188,6 +187,14 @@ export class DefaultService {
         const game_result: gameHistory = new gameHistory(game_status)
         game_result.addHistory()
 
+        for (let i = 0; i < game_status.players.length; i++) {
+            await this.gameAnalyzer.updatePlayerXP(
+                game_status.players[i].username,
+                game_result.IsWinner(game_status.players[i]) ? true : false,
+            )
+            await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
+        }
+
         this.clearData(game)
     }
 
@@ -220,5 +227,5 @@ export class DefaultService {
         2- if the response is "accept" -> create a new game with the invited player
 
     */
-    public createInviteGame(client: Socket, gameType: string, invitedID: string) {}
+    // public createInviteGame(client: Socket, gameType: string, invitedID: string) {}
 }

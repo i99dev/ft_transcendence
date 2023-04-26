@@ -86,8 +86,6 @@ const isPage = ref(new Map<number, boolean>())
 
 const pageNumber = ref(0)
 
-const TotalMatches = ref(0)
-
 const currentPage = ref(1)
 
 const lbPlayers = ref([] as any)

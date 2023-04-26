@@ -173,14 +173,14 @@ export class gameAnalyzer {
 
         return ladder
     }
-    async updatePlayerXP(player: string): Promise<void> {
+    async updatePlayerXP(player: string, IsWinner: boolean): Promise<void> {
         await this.prisma.user.update({
             where: {
                 login: player,
             },
             data: {
                 xp: {
-                    increment: await this.calcXP(player, true),
+                    increment: await this.calcXP(player, IsWinner),
                 },
             },
         })

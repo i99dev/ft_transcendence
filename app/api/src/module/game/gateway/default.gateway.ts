@@ -49,8 +49,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         if (payload.gameMode == 'single')
             this.gameService.createSingleGame(client, payload.gameType)
         else if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType)
-        else if (payload.gameMode == 'invite')
-            this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
+        // else if (payload.gameMode == 'invite')
+        // this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
     handleDisconnect(client: Socket) {
