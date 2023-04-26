@@ -243,7 +243,7 @@ const isSameLogin = (game) => {
 }
 
 const handlePagination = async (page: number) => {
-	if (page < 1 || page > pageNumber) return
+	if (pageNumber && (page < 1 || page > pageNumber)) return
 	for (const key of isPage.value.keys())
 		isPage.value.set(key, false)
 	isPage.value.set(page, true)
