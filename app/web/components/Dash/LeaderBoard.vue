@@ -7,7 +7,7 @@
 			<table class="min-w-full text-left text-sm font-light">
 				<tbody>
 					<tr>
-						<td class="whitespace-nowrap px-2 py-4 font-medium">{{ index + 1 }}</td>
+						<td class="whitespace-nowrap px-2 py-4 font-medium">{{ player.rankNum }}</td>
 						<td class="whitespace-nowrap px-2 py-4">
 							<!-- <img src="https://www.pngitem.com/pimgs/m/536-5365344_icon-one-piece-png-transparent-png.png" alt="image-description" class="mr-2 w-0.3 h-20 rounded-full self-center"> -->
 							<span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
@@ -79,7 +79,6 @@
 </template>
 
 <script setup lang="ts">
-import { arrayBuffer } from 'stream/consumers'
 import { ref, onMounted, computed } from 'vue'
 
 const isPage = ref(new Map<number, boolean>())
@@ -91,6 +90,8 @@ const currentPage = ref(1)
 const lbPlayers = ref([] as any)
 
 const players = computed(() => lbPlayers.value)
+
+const Ranknum = ref(1)
 
 onMounted(async () => {
 	const totalPages = await getLBTotalPages()
@@ -124,10 +125,12 @@ const getLB = async () => {
 
 		for (let i = 0; i < data.value.length; i++) {
 			playersArray.push({
+				rankNum: Ranknum.value + i,
 				...data.value[i],
 				TotalMatches: await getLBTotalMatches(data.value[i].login),
 			})
 		}
+		Ranknum.value += playersArray.length
 	}
 	if (data.value) lbPlayers.value = playersArray
 }
