@@ -19,10 +19,8 @@
                 confirmation="Are you sure you want to exit the game?"
             />
             <div class="container">
-                <div class="w-1/3 flex justify-between">
-                    <button class="bg-slate-400 text-sm p-2 rounded-t-md" @click="powerup" >PowerUp</button>
+                <div class="flex justify-between">
                     <Button @click="switchExistStatus(true)" icon="pi pi-times" />
-                    <button class="bg-slate-400 text-xs p-2 rounded-t-md" @click="powerup" >PowerUp</button>
                 </div>
                 <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>

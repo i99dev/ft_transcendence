@@ -34,7 +34,7 @@ const canvasRatio = 1.5 // board width / board height
 
 // Defines
 const emit = defineEmits(['ReadyGame', 'GameOver'])
-defineExpose({ resetSocket, setup, destroy, giveUp, powerup })
+defineExpose({ resetSocket, setup, destroy, giveUp })
 
 function resetSocket(): void {
     socket.value.off()
@@ -58,17 +58,6 @@ function setup(mode: GameSelectDto): void {
 
 function destroy(): void {
     // if (socket.value.connected) socket.value.disconnect()
-}
-
-function powerup(): void {
-    if (poweredUp.value == false) {
-		socket.value.emit('powerup', 'start')
-		poweredUp.value = true
-		   setTimeout(() => {
-			   socket.value.emit('powerup', 'end')
-			   poweredUp.value = false
-		   }, 10000)
-	}   
 }
 
 function giveUp(): void {

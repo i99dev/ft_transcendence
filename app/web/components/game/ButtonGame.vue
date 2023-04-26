@@ -17,7 +17,6 @@
             />
             <div class="container">
                 <Button @click="switchExistStatus(true)" icon="pi pi-times" />
-                <Button class="button-wrapper" @click="powerup" />
                 <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
             <GameResult
@@ -67,10 +66,6 @@ const exitGame = (): void => {
     gameResult.value = false
 }
 
-const powerup = (): void => {
-    console.log('powerup')
-    gameBoard.value.powerup()
-}
 
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
