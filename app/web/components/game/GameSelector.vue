@@ -77,30 +77,30 @@
     </div>
   </template>
   
-<script setup>
+<script setup lang="ts">
 
 
 const step = ref(1);
-const selectedGame = ref(null);
-const selectedMode = ref(null);
-const loadingMsg = ref('');
+const selectedGame = ref('' as string);
+const selectedMode = ref('' as string);
+const loadingMsg = ref('' as string);
 
 const emit = defineEmits(['gameSelected'])
 
-const selectGame = (game) => {
+const selectGame = (game : string) => {
   selectedGame.value = game;
   step.value = 2;
 };
 
-const reset = (game) => {
+const reset = (game : string) => {
   step.value = 1
-  selectedGame.value = null
-  selectedMode.value = null
+  selectedGame.value = ''
+  selectedMode.value = ''
 };
 
 defineExpose({ reset });
 
-const selectMode = (mode) => {
+const selectMode = (mode : string) => {
   selectedMode.value = mode;
 };
 
