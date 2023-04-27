@@ -59,6 +59,8 @@ services:
             - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
             - JWT_SECRET=${JWT_SECRET}
             - PORT=${PORT}
+            - EMAIL_USER=${EMAIL_USER}
+            - EMAIL_PASSWORD=${EMAIL_PASSWORD}
 
         networks:
             - proxy_backend_net

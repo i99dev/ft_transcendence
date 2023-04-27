@@ -4,6 +4,7 @@ import { IntraAccessToken, Me } from './interface/intra.interface'
 import { JwtService } from '@nestjs/jwt'
 import { UserService } from '../module/user/user.service'
 import { AuthRepository } from './repository/auth.repository'
+import { User } from '@prisma/client'
 
 @Injectable({})
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
         private authrepository: AuthRepository,
     ) {}
 
-    async checkUserAccountOnDb(intraUser): Promise<{ httpStatus: HttpStatus; user: UserGetDto }> {
+    async getOrCreateUserAccountOnDb(intraUser): Promise<{ httpStatus: HttpStatus; user: UserGetDto }> {
         const myuser: UserGetDto = await this.userService.getUser(intraUser.login)
         if (!myuser) {
             return {
