@@ -9,30 +9,61 @@ export class AchievementSeeder {
     async seedAchievements(): Promise<Achievement[]> {
         this.achievements = [
             await this.prisma.achievement.upsert({
-                where: { type: 'points_hunter' },
+                where: { type: 'Serial Killer' },
                 update: {},
                 create: {
-                    type: 'points_hunter',
-                    description: 'Collect 50 points in one day.',
-                    points: 10,
+                    type: 'Serial Killer',
+                    description: 'Winning 11 matches in a row',
                 },
             }),
             await this.prisma.achievement.upsert({
-                where: { type: 'serial_killer' },
+                where: { type: 'Rookie no more' },
                 update: {},
                 create: {
-                    type: 'serial_killer',
-                    description: 'Win 10 games in row.',
-                    points: 7,
+                    type: 'Rookie no more',
+                    description: 'Winning two games in a row in the first level',
                 },
             }),
             await this.prisma.achievement.upsert({
-                where: { type: 'steel_defender' },
+                where: { type: 'First blood' },
                 update: {},
                 create: {
-                    type: 'steel_defender',
-                    description: 'Win 2 games in row without losing a point.',
-                    points: 5,
+                    type: 'First blood',
+                    description: 'Winning  first game',
+                },
+            }),
+            await this.prisma.achievement.upsert({
+                where: { type: 'No Sweat' },
+                update: {},
+                create: {
+                    type: 'No Sweat',
+                    description: 'Winning game without the opponent scoring any points',
+                },
+            }),
+            await this.prisma.achievement.upsert({
+                where: { type: 'Paddle Samurai' },
+                update: {},
+                create: {
+                    type: 'Paddle Samurai',
+                    description: `Blocking a certain number of opponent's shots`,
+                },
+            }),
+            await this.prisma.achievement.upsert({
+                where: { type: 'Table Ninja' },
+                update: {},
+                create: {
+                    type: 'Table Ninja',
+                    description:
+                        'Hitting a certain number of shots that bounce off multiple edges of the table',
+                },
+            }),
+            await this.prisma.achievement.upsert({
+                where: { type: 'Ball Whisperer' },
+                update: {},
+                create: {
+                    type: 'Ball Whisperer',
+                    description:
+                        'Hitting a certain number of shots that land just inside the edge of the table',
                 },
             }),
         ]
@@ -45,11 +76,7 @@ export class AchievementSeeder {
                 where: { login: 'bnaji' },
                 data: {
                     achievements: {
-                        connect: [
-                            { type: 'points_hunter' },
-                            { type: 'serial_killer' },
-                            { type: 'steel_defender' },
-                        ],
+                        connect: [{ type: 'Ball Whisperer' }, { type: 'Paddle Samurai' }],
                     },
                 },
             }),
@@ -57,7 +84,7 @@ export class AchievementSeeder {
                 where: { login: 'isaad' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'steel_defender' }],
+                        connect: [{ type: 'Ball Whisperer' }],
                     },
                 },
             }),
@@ -65,7 +92,11 @@ export class AchievementSeeder {
                 where: { login: 'aaljaber' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'points_hunter' }],
+                        connect: [
+                            { type: 'Table Ninja' },
+                            { type: 'Paddle Samurai' },
+                            { type: 'No Sweat' },
+                        ],
                     },
                 },
             }),
@@ -73,7 +104,7 @@ export class AchievementSeeder {
                 where: { login: 'mal-guna' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'points_hunter' }, { type: 'serial_killer' }],
+                        connect: [{ type: 'Table Ninja' }, { type: 'Paddle Samurai' }],
                     },
                 },
             }),
@@ -81,7 +112,7 @@ export class AchievementSeeder {
                 where: { login: 'oal-tena' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'serial_killer' }],
+                        connect: [{ type: 'No Sweat' }],
                     },
                 },
             }),

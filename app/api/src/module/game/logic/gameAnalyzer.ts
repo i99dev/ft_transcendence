@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { MatchHistoryDto } from '../../match-history/dto/match-history.dto'
+import { MatchHistoryDto, PlayerDto } from '../../match-history/dto/match-history.dto'
 
 const ladderLevel = {
     CapinBoy: { Rank: 6, lowXP: 0, highXP: 100, winRate: 0 },
@@ -49,6 +49,29 @@ export class gameAnalyzer {
                         user: {
                             login: player,
                         },
+                    },
+                },
+            },
+        })
+    }
+    async getMatches(player: string): Promise<MatchHistoryDto[]> {
+        return await this.prisma.match.findMany({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                start: 'desc',
+            },
+            include: {
+                opponents: {
+                    include: {
+                        user: true,
                     },
                 },
             },
@@ -173,6 +196,8 @@ export class gameAnalyzer {
 
         return ladder
     }
+
+    // Update Data
     async updatePlayerXP(player: string, IsWinner: boolean): Promise<void> {
         await this.prisma.user.update({
             where: {
@@ -195,10 +220,85 @@ export class gameAnalyzer {
             },
         })
     }
+    async updatePlayerAcheivments(player: string, acheivment: string): Promise<void> {
+        this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                achievements: {
+                    connect: {
+                        type: acheivment,
+                    },
+                },
+            },
+        })
+    }
+
+    async calcWinStreak(player: string, winNum: number): Promise<number> {
+        const matches = await this.getMatches(player)
+        console.log(
+            'matches',
+            matches[0].opponents[0].user.login,
+            matches[0].opponents[1].user.login,
+        )
+        let winStreak = 0
+        for (let i = 0; i < matches.length; i++) {
+            for (let j = 0; j < matches[i].opponents.length; j++) {
+                if (matches[i].opponents[j].user.login == player) {
+                    if (matches[i].opponents[j].IsWinner) winStreak++
+                    else {
+                        console.log('winstreak re', winStreak)
+                        return winStreak >= winNum ? winStreak : 0
+                    }
+                }
+            }
+        }
+        console.log('winstreak', winStreak)
+        return winStreak
+    }
+
+    async checkIfAcheivmentExists(player: string, acheivment: string): Promise<boolean> {
+        const count = await this.prisma.user.count({
+            where: {
+                login: player,
+                achievements: {
+                    some: {
+                        type: acheivment,
+                    },
+                },
+            },
+        })
+        if (count > 0) return true
+        return false
+    }
 
     // Acheivments
-    async assignAcheivment(player: string): Promise<string> {
+    async assignAcheivment(player: string): Promise<string[]> {
+        const totalAcheivments = []
         const totalWins = await this.getTotalVictories(player)
-        if (totalWins == 1) return 'Rookie no more'
+        const ladder = await this.getLadderLevel(player)
+        console.log('ladder', ladder, ladderLevel.CapinBoy.Rank)
+        if (!this.checkIfAcheivmentExists(player, 'First Blood') && totalWins == 1)
+            totalAcheivments.push('First Blood')
+        if (
+            !this.checkIfAcheivmentExists(player, 'Rookie no more') &&
+            ladder == ladderLevel.Yonko.Rank &&
+            (await this.calcWinStreak(player, 2)) == 2
+        )
+            totalAcheivments.push('Rookie no more')
+        if (
+            !this.checkIfAcheivmentExists(player, 'Serial Killer') &&
+            (await this.calcWinStreak(player, 11)) == 11
+        )
+            totalAcheivments.push('Serial Killer')
+        return totalAcheivments
+    }
+
+    async grantAcheivments(login: string, acheivments: string[]): Promise<void> {
+        if (acheivments.length == 0) return
+        acheivments.forEach(async acheivment => {
+            await this.updatePlayerAcheivments(login, acheivment)
+        })
     }
 }

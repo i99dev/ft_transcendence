@@ -65,7 +65,6 @@ model Achievement {
   id          Int     @id @default(autoincrement())
   type        String  @unique @default("default")
   description String?
-  points      Int     @default(0)
   users       User[]  @relation("UserAchievements")
 }
 

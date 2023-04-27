@@ -1,6 +1,5 @@
 import { BallDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
-import { PowerUp } from '../interface/game.interface';
-
+import { PowerUp } from '../interface/game.interface'
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -23,7 +22,7 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
         active: false,
         duration: 10000,
     },
-];
+]
 
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
@@ -39,7 +38,11 @@ export class PongGame {
     private gameType: string
     // private powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void;
 
-    constructor(player1ID: string, Player2ID: string, gameType: string/* , powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void */) {
+    constructor(
+        player1ID: string,
+        Player2ID: string,
+        gameType: string /* , powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void */,
+    ) {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
         this.game_status = this.instanciateGame(player1ID, Player2ID)
@@ -129,7 +132,7 @@ export class PongGame {
                     active: false,
                     duration: 10000,
                 },
-            ]
+            ],
         }
     }
 
@@ -149,7 +152,6 @@ export class PongGame {
         const ball = this.game_status.ball
         const paddle = computer.paddle
         if (computer) {
-
             if (ball.dx < 0) return
 
             const distance = Math.abs(1 - ball.x)
@@ -211,14 +213,10 @@ export class PongGame {
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
 
-        
         if (powerUp && powerUp.active) {
             game.ball.color = 'transparent'
             this.disablePowerUp(player, powerUp)
-        }
-        else
-            game.ball.color = 'white'
-
+        } else game.ball.color = 'white'
     }
 
     private handleHikenPowerUp(game: gameStatusDto, playerIndex: number): void {
@@ -232,16 +230,14 @@ export class PongGame {
             game.ball.dx *= 2
             game.ball.dy *= 2
             this.disablePowerUp(player, powerUp)
-        }
-        else {
+        } else {
             game.ball.color = 'white'
-            const originalSpeed = Math.sqrt(BALL_XSPEED ** 2 + BALL_YSPEED ** 2);
-            const currentSpeed = Math.sqrt(game.ball.dx ** 2 + game.ball.dy ** 2);
+            const originalSpeed = Math.sqrt(BALL_XSPEED ** 2 + BALL_YSPEED ** 2)
+            const currentSpeed = Math.sqrt(game.ball.dx ** 2 + game.ball.dy ** 2)
 
-            game.ball.dx = (game.ball.dx / currentSpeed) * originalSpeed;
-            game.ball.dy = (game.ball.dy / currentSpeed) * originalSpeed;
+            game.ball.dx = (game.ball.dx / currentSpeed) * originalSpeed
+            game.ball.dy = (game.ball.dy / currentSpeed) * originalSpeed
         }
-
     }
     // check if the ball collided with wall or paddle and update the score if it is out of bounds
     private checkBallCollision(game: gameStatusDto): void {
@@ -283,53 +279,40 @@ export class PongGame {
             powerUp.active = true
 
             if (powerUp.type == 'Baika no Jutsu') {
-                player.paddle.height *= 2;
+                player.paddle.height *= 2
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
-                }, powerUp.duration);
-            }
-            else if (powerUp.type == 'Hiken') {
-                console.log("Hiken activated")
+                }, powerUp.duration)
+            } else if (powerUp.type == 'Hiken') {
+                console.log('Hiken activated')
                 player.paddle.color = 'orange'
-            }
-            else if (powerUp.type == 'Shinigami') {
-                console.log("Shinigami activated")
-            }
-            else if (powerUp.type == 'Shunshin no Jutsu')
-            {
-                console.log("Shunshin activated")
-                player.paddle.speed *= 1.5;
+            } else if (powerUp.type == 'Shinigami') {
+                console.log('Shinigami activated')
+            } else if (powerUp.type == 'Shunshin no Jutsu') {
+                console.log('Shunshin activated')
+                player.paddle.speed *= 1.5
                 player.paddle.color = 'cyan'
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
-                }, powerUp.duration);
-                
+                }, powerUp.duration)
             }
-
-
         }
     }
 
     private disablePowerUp(player: PlayerDto, powerUp: PowerUp): void {
-
         powerUp.active = false
         if (powerUp.type == 'Hiken') {
-            player.paddle.color = 'white';
-        }
-        else if (powerUp.type == 'Baika no Jutsu') {
-            player.paddle.height = PADDLE_HEIGHT;
-        }
-        else if (powerUp.type == 'Shinigami') {
-
+            player.paddle.color = 'white'
+        } else if (powerUp.type == 'Baika no Jutsu') {
+            player.paddle.height = PADDLE_HEIGHT
+        } else if (powerUp.type == 'Shinigami') {
             setTimeout(() => {
-                this.game_status.ball.color = 'white';
-            }, powerUp.duration);
+                this.game_status.ball.color = 'white'
+            }, powerUp.duration)
+        } else if (powerUp.type == 'Shunshin no Jutsu') {
+            player.paddle.speed = PADDLE_SPEED
+            player.paddle.color = 'white'
         }
-        else if (powerUp.type == 'Shunshin no Jutsu') {
-            player.paddle.speed = PADDLE_SPEED;
-            player.paddle.color = 'white';
-        }
-
     }
 
     // reflect the ball based on the paddle hit point

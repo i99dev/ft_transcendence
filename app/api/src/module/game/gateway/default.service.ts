@@ -16,6 +16,7 @@ export class DefaultService {
     private classic_queue: string[] = []
     private custom_queue: string[] = []
     private gameAnalyzer = new gameAnalyzer()
+    private game_result: gameHistory | null = null
 
     constructor(private socketService: SocketService) {}
 
@@ -24,11 +25,9 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-        console.log("USER CONNECTED TO SERVER")
-        if(temp) {
-            userSocket.disconnect(
-                true,
-            )
+        console.log('USER CONNECTED TO SERVER')
+        if (temp) {
+            userSocket.disconnect(true)
             return
         }
         this.connected_users.push({
@@ -44,10 +43,9 @@ export class DefaultService {
             * if in game -> set player a loser so game will end and other player will win.
     */
     public removeDisconnectedUser(userSocket: Socket) {
-        
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
-            console.log("USER Disconnected From SERVER")
+            console.log('USER Disconnected From SERVER')
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
                 if (this.classic_queue.includes(user.id))
@@ -139,7 +137,6 @@ export class DefaultService {
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
-        
         const game = new PongGame(player1.id, player2.id, gameType)
         player1.game = game
         player2.game = game
@@ -151,6 +148,7 @@ export class DefaultService {
     }
 
     private startGame(game: PongGame) {
+        this.game_result = new gameHistory(game.getGameStatus())
         const intervalId = setInterval(async () => {
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
 
@@ -187,17 +185,24 @@ export class DefaultService {
             return
         }
 
-        const game_result: gameHistory = new gameHistory(game_status)
-        game_result.addHistory()
+        this.game_result.addHistory()
 
         for (let i = 0; i < game_status.players.length; i++) {
             await this.gameAnalyzer.updatePlayerXP(
                 game_status.players[i].username,
-                game_result.IsWinner(game_status.players[i]) ? true : false,
+                this.game_result.IsWinner(game_status.players[i]) ? true : false,
             )
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
+            const acheivment = await this.gameAnalyzer.assignAcheivment(
+                game_status.players[i].username,
+            )
+            console.log(acheivment)
+            // if (acheivment.length > 0)
+            //     await this.gameAnalyzer.grantAcheivments(
+            //         game_status.players[i].username,
+            //         acheivment,
+            //     )
         }
-
         this.clearData(game)
     }
 
@@ -214,6 +219,7 @@ export class DefaultService {
             player2.status = 'online'
             player2.socket.leave(game.getGameID())
         }
+        this.game_result = null
     }
 
     // check if the player is a computer
