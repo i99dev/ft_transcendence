@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { io, Socket } from 'socket.io-client'
 import { ref, defineEmits, defineExpose, onUnmounted } from 'vue'
+const { setAchievement } = useAchievement()
 
 // refs
 let canvas = ref({} as HTMLCanvasElement)
@@ -86,6 +87,12 @@ const socketEvents = (): void => {
             emit('GameOver', 'you won')
         else emit('GameOver', 'you lost')
     })
+	socket.value.on('acheivment', (data) => {
+		console.log(data)
+		setAchievement(data)
+	})
+
+
 }
 
 const windowEvents = (): void => {

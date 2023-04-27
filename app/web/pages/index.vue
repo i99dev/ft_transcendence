@@ -29,7 +29,7 @@
 						  <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
 							<img
 								src="../assets/png-clipart-monkey-d-luffy-gomu-gomu-no-mi-one-piece-devil-fruit-paramecia-all-kinds-of-fruit-purple-violet-removebg-preview.png">
-							<p class="mt-8 text-2xl font-semibold leading-none text-gray tracking-tighter lg:text-3xl">Aceivemnt</p>
+							<p class="mt-8 text-2xl font-semibold leading-none text-gray tracking-tighter lg:text-3xl">Acheivement</p>
 							<p class="mt-3 text-base leading-relaxed text-center text-gray-600">Description</p>
 							<div class="w-full mt-6">
 							  <a @click="closeAceiPopUp()" class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base
@@ -46,14 +46,32 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { Socket } from 'socket.io-client'
+
 definePageMeta({
     middleware: ['pages'],
 })
-const announceAchei = ref(true)
+
+const nuxtApp = useNuxtApp()
+
+const { acheivement } = useAchievement()
+
+const socket = ref(nuxtApp.socket as Socket)
+
+const announceAchei = ref(false)
 
 const closeAceiPopUp = () => {
 	announceAchei.value = false
 }
+
+onMounted(() => {
+	console.log('mounted', acheivement.value)
+	if (acheivement.value) {
+		announceAchei.value = true
+	}
+})
+
 
 </script>

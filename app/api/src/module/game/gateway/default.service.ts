@@ -179,6 +179,11 @@ export class DefaultService {
         const game_status = game.getGameStatus()
         this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
 
+        this.connected_users.forEach(user => {
+            if (user.id == 'aaljaber') {
+                user.socket.emit('acheivment', 'acheivement')
+            }
+        })
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
             this.clearData(game)
@@ -197,6 +202,8 @@ export class DefaultService {
                 game_status.players[i].username,
             )
             console.log(acheivment)
+
+            // this.socketService.emitAcheivement
             // if (acheivment.length > 0)
             //     await this.gameAnalyzer.grantAcheivments(
             //         game_status.players[i].username,
