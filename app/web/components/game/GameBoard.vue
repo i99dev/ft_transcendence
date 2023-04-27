@@ -1,19 +1,21 @@
 <template>
-    <div class="canvas-wrapper bg-slate-700 flex justify-center">
-        <canvas
-            ref="canvas"
-            class="bg-slate-800 border-2 rounded-xl shadow-2xl shadow-slate-900"
-        ></canvas>
-    </div>
+    <canvas ref="canvasRef" style="width: 100%; height: 100%;"> HEHEHE</canvas>
 </template>
+  
 
 <script lang="ts" setup>
 import { io, Socket } from 'socket.io-client'
 import { ref, defineEmits, defineExpose, onUnmounted } from 'vue'
+import * as THREE from 'three'
+import { GLTFLoader, OrbitControls } from 'three-stdlib'
+
+let canvasRef = ref<HTMLCanvasElement>()
+
+let scene: THREE.Scene, camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer
+let controls: OrbitControls
+let gameGroup: THREE.Group, paddle: THREE.Mesh, paddle2: THREE.Mesh, sphere: THREE.Mesh
 
 // refs
-let canvas = ref({} as HTMLCanvasElement)
-let ctx = ref({} as CanvasRenderingContext2D)
 let objsSizes = ref({} as gameObjects)
 let gameSetup = ref({} as SetupDto)
 let gameData = ref({} as gameStatusDto)
@@ -21,7 +23,6 @@ let grabbed = ref(false as boolean)
 let offsetY = ref(0 as number)
 const nuxtApp = useNuxtApp()
 const socket = ref(nuxtApp.socket as Socket)
-let poweredUp = ref(false as boolean)
 
 const keys: { [key: string]: boolean } = {
     ArrowUp: false,
@@ -31,6 +32,11 @@ const keys: { [key: string]: boolean } = {
 // game settings
 const sensitivity = 3 // for mouse movements or touch movements
 const canvasRatio = 1.5 // board width / board height
+
+const frameWidth = 30
+const frameHeight = 15
+const playGroundWidth = 28
+const playGroundHeight = 15
 
 // Defines
 const emit = defineEmits(['ReadyGame', 'GameOver'])
@@ -46,11 +52,9 @@ function setup(mode: GameSelectDto): void {
     socketSetup(mode)
     socketEvents()
     
-    // setup canvas values
-    setUpCanvas()
-    
     // handle window events
     windowEvents()
+    // Define EVENTS HERE
     
     // draw the game board
     draw()
@@ -73,7 +77,8 @@ const socketEvents = (): void => {
         emit('ReadyGame')
         gameSetup.value = payload
         storeGameData(gameSetup.value.game)
-        draw()
+        init()
+        animate()
     })
 
     socket.value.on('Game-Data', payload => {
@@ -89,58 +94,11 @@ const socketEvents = (): void => {
 }
 
 const windowEvents = (): void => {
-    // Handle Window resize
-    window.addEventListener('resize', () => redraw())
 
     // Handle Keyboard events
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp);
 
-    // Handle Mouse and Touch events
-    window.addEventListener('mousedown', holdPaddle)
-    window.addEventListener('mousemove', movePaddle)
-    window.addEventListener('mouseup', leavePaddle)
-    window.addEventListener('touchstart', holdPaddle)
-    window.addEventListener('touchmove', movePaddle)
-    window.addEventListener('touchend', leavePaddle)
-}
-
-const holdPaddle = (e: Event): void => {
-    const curOffsetY = getCurrentHoldPosY(e as MouseEvent & TouchEvent)
-    offsetY.value = curOffsetY
-    grabbed.value = true
-}
-
-const movePaddle = (e: Event): void => {
-    const curOffsetY = getCurrentHoldPosY(e as MouseEvent & TouchEvent)
-    if (grabbed.value) {
-        if (curOffsetY < offsetY.value - sensitivity) {
-            socket.value.emit('move', 'up')
-            offsetY.value = curOffsetY
-        } else if (curOffsetY > offsetY.value + sensitivity) {
-            socket.value.emit('move', 'down')
-            offsetY.value = curOffsetY
-        }
-    }
-}
-
-const getCurrentHoldPosY = (e: MouseEvent & TouchEvent): number => {
-    return e.changedTouches ? e.changedTouches[0].clientY : e.offsetY
-}
-
-const leavePaddle = (e: any): void => {
-    if (grabbed.value) {
-        offsetY.value = 0
-        grabbed.value = false
-    }
-}
-
-const initialize = (): void => {
-    objsSizes.value = {
-        score: {
-            size: canvas.value.width / 20,
-        },
-    }
 }
 
 const storeGameData = (payload: gameStatusDto): void => {
@@ -151,54 +109,46 @@ const storeGameData = (payload: gameStatusDto): void => {
 
 const storePlayersData = (players: PlayerDto[]): void => {
     for (let i = 0; i < players.length; i++) {
-        players[i].paddle.width *= canvas.value.width
-        players[i].paddle.height *= canvas.value.height
-        players[i].paddle.y = players[i].paddle.y * canvas.value.height - players[i].paddle.height / 2
+        players[i].paddle.width *= playGroundWidth
+        players[i].paddle.height *= playGroundHeight
+        players[i].paddle.y = - (players[i].paddle.y * playGroundHeight - playGroundHeight/2)
     }
 }
 
 const storeBallData = (ball: BallDto): void => {
-    ball.x *= canvas.value.width
-    ball.y *= canvas.value.height
-    ball.radius *= canvas.value.height
+    ball.x = - (ball.x * playGroundWidth - playGroundWidth/2)
+    ball.y = - (ball.y * playGroundHeight - playGroundHeight/2)
+    ball.radius *= playGroundHeight
 }
 
-const setUpCanvas = (): void => {
-    const canvasWrapper = document.querySelector('.canvas-wrapper') as HTMLCanvasElement
-    const parent = canvasWrapper.parentNode as HTMLElement
-
-    if (parent && parent.offsetHeight * canvasRatio >= parent.offsetWidth)
-        canvasWrapper.style.height =
-            (canvasWrapper.offsetWidth / canvasRatio / parent.offsetHeight) * 100 + '%'
-    else canvasWrapper.style.height = '90%'
-
-    canvas.value.height = canvasWrapper.offsetHeight
-    canvas.value.width = canvas.value.height * canvasRatio
-
-    ctx.value = canvas.value.getContext('2d') as CanvasRenderingContext2D
-
-    initialize()
-}
 
 onUnmounted((): void => {
     destroy()
 })
 
-const redraw = (): void => {
-    // Draw it all again.
-    setUpCanvas()
-    draw()
-}
-
 const draw = (): void => {
     if (isObjEmpty(gameData.value)) return
 
     updatePaddleDirection();
-    ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
-    drawPlayer(gameData.value.players)
-    drawPlayersInfo()
-    drawScore()
-    drawBall()
+    updatePlayer(gameData.value.players)
+    updateBall(gameData.value.ball)
+}
+
+const updatePlayer = (players: PlayerDto[]): void => {
+    for (let i = 0; i < players.length; i++) {
+        if (i == 1) {
+            paddle.position.y = players[i].paddle.y
+            //change paddle height
+        } else {
+            paddle2.position.y = players[i].paddle.y
+        }
+    }
+}
+
+const updateBall = (ball: BallDto): void => {
+    sphere.position.x = ball.x
+    sphere.position.y = ball.y
+    // change sphere color
 }
 
 const isObjEmpty = (obj: any): boolean => {
@@ -245,107 +195,160 @@ const updatePaddleDirection = (): void => {
     }
 };
 
-const drawBall = (): void => {
-    ctx.value.beginPath()
-    ctx.value.arc(
-        gameData.value.ball.x,
-        gameData.value.ball.y,
-        gameData.value.ball.radius,
-        0,
-        Math.PI * 2,
-    )
-    ctx.value.fillStyle = gameData.value.ball.color;
-    ctx.value.fill()
-    ctx.value.closePath()
+
+///////////////////////////////////////////////////////////////
+
+function init() {
+    scene = new THREE.Scene()
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+
+    renderer = new THREE.WebGLRenderer({ canvas: canvasRef.value })
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    
+    gameGroup = new THREE.Group()
+
+    controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.1
+    controls.screenSpacePanning = false
+
+    // Set up the paddle dimensions
+    const paddleWidth = gameSetup.value.game.players[0].paddle.width;
+    const paddleHeight = gameSetup.value.game.players[0].paddle.height;;
+    const paddle2Width = gameSetup.value.game.players[1].paddle.width;
+    const paddle2Height = gameSetup.value.game.players[1].paddle.height;;
+    const paddleDepth = 0.5;
+    const paddle1Y = gameSetup.value.game.players[0].paddle.y;
+    const paddle2Y = gameSetup.value.game.players[1].paddle.y;
+
+    const paddlePosition = new THREE.Vector3(-playGroundWidth/2, paddle1Y, 0);
+    const paddle2Position = new THREE.Vector3(playGroundWidth/2, paddle2Y, 0);
+    paddle = createPaddle(paddleWidth, paddleHeight, paddleDepth, paddlePosition, 0x006600, 0x00ff00, 0.1);
+    paddle2 = createPaddle(paddle2Width, paddle2Height, paddleDepth, paddle2Position, 0x006600, 0x00ff00, 0.1);
+    
+    addPointLightToObject(paddle, new THREE.Vector3(0, 0, 1.5), 0x00ff00, 6, 3);
+    addPointLightToObject(paddle2, new THREE.Vector3(0, 0, 1.5), 0x00ff00, 6, 3);
+    gameGroup.add(paddle);
+    gameGroup.add(paddle2);
+
+
+    const sphereRadius = 0.5; // you can change this to the desired radius
+    const spherePosition = new THREE.Vector3(0, 0, 0); // you can change this to the desired position
+    sphere = createSphere(sphereRadius, spherePosition, 0xffffff, 0xffffff, 0.5);
+    addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 3, 6);
+
+    gameGroup.add(sphere);
+
+
+    // Game Arena
+    const frameThickness = 0.1
+    const frameDepth = 0.5
+    const frameGeometry = createFrameGeometry(frameWidth, frameHeight, frameThickness, frameDepth)
+    const frameMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
+    const frame = new THREE.Mesh(frameGeometry, frameMaterial)
+    addPointLight(0,7, 0, 0x6810eb, 1, 10)
+    addPointLight(0,-7, 0, 0x6810eb, 1, 10)
+    addPointLight(-14, 0, 0, 0x6810eb, 1, 10)
+    addPointLight(14, 0, 0, 0x6810eb, 1, 10)
+    frame.position.set(0, 0, 0)
+    gameGroup.add(frame)
+
+    scene.add(gameGroup)
+    gameGroup.rotateX(-0.3)
+
+    camera.position.z = 0
+    camera.position.set(0, 0, 17)
 }
 
-const drawPlayer = (players: PlayerDto[]): void => {
-    for (let i = 0; i < players.length; i++) {
-        const p = players[i].paddle
-        const posy = p.y * canvas.value.height - p.height / 2
-        const posx = i == 0 ? 0 : canvas.value.width - p.width
-        ctx.value.fillStyle = p.color
-        ctx.value.fillRect(posx, p.y, p.width, p.height)
+function addPointLight(x: number, y: number, z: number, color: number = 0xffffff, intensity: number = 1, distance: number = 0) {
+    const pointLight = new THREE.PointLight(color, intensity, distance);
+    pointLight.position.set(x, y, z + 1.5);
+    scene.add(pointLight);
+    // const sphereSize = 1;
+    // const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
+    // scene.add(pointLightHelper);
+}
+
+function animate() {
+    requestAnimationFrame(animate)
+    controls.update()
+    renderer.render(scene, camera)
+}
+
+function createPaddle(width: number, height: number, depth: number, position: THREE.Vector3, color: number, emissive: number, emissiveIntensity: number): THREE.Mesh {
+    const paddleGeometry = new THREE.BoxGeometry(width, height, depth);
+    const paddleMaterial = new THREE.MeshStandardMaterial({
+        color: color,
+        emissive: emissive,
+        emissiveIntensity: emissiveIntensity
+    });
+    const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial);
+    paddle.position.copy(position);
+    return paddle;
+}
+
+function addPointLightToObject(object: THREE.Object3D, relativePosition: THREE.Vector3, color: number = 0xffffff, intensity: number = 1, distance: number = 0) {
+    const pointLight = new THREE.PointLight(color, intensity, distance);
+    pointLight.position.copy(relativePosition);
+    object.add(pointLight);
+
+    // const sphereSize = 1;
+    // const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
+    // object.add(pointLightHelper);
+}
+
+function createFrameGeometry(width: number, height: number, thickness: number, depth: number) {
+    const halfWidth = width / 2
+    const halfHeight = height / 2
+
+    const shape = new THREE.Shape()
+
+    // Outer rectangle
+    shape.moveTo(-halfWidth, halfHeight)
+    shape.lineTo(halfWidth, halfHeight)
+    shape.lineTo(halfWidth, -halfHeight)
+    shape.lineTo(-halfWidth, -halfHeight)
+    shape.lineTo(-halfWidth, halfHeight)
+
+    // Inner rectangle (hole)
+    const hole = new THREE.Path()
+    hole.moveTo(-halfWidth + thickness, halfHeight - thickness)
+    hole.lineTo(halfWidth - thickness, halfHeight - thickness)
+    hole.lineTo(halfWidth - thickness, -halfHeight + thickness)
+    hole.lineTo(-halfWidth + thickness, -halfHeight + thickness)
+    hole.lineTo(-halfWidth + thickness, halfHeight - thickness)
+    shape.holes.push(hole)
+
+    const extrudeSettings = {
+        depth: depth,
+        bevelEnabled: false,
     }
+
+    return new THREE.ExtrudeGeometry(shape, extrudeSettings)
 }
 
-const drawScore = (): void => {
-    // draw player 1 score
-    let text = `${gameData.value.players[0].score}\t\t`
-    let { w: w1, h: h1 } = textSetup(text, objsSizes.value.score.size)
-    drawText(
-        text,
-        objsSizes.value.score.size,
-        -w1 / 2,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
+function createSphere(radius: number, position: THREE.Vector3, color: number, emissive: number, emissiveIntensity: number): THREE.Mesh {
+    const sphereGeometry = new THREE.SphereGeometry(radius);
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+        color: color,
+        emissive: emissive,
+        emissiveIntensity: emissiveIntensity
+    });
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.copy(position);
 
-    // draw player 2 score
-    text = `\t\t${gameData.value.players[1].score}`
-    let { w: w2, h: h2 } = textSetup(text, objsSizes.value.score.size)
-    drawText(
-        text,
-        objsSizes.value.score.size,
-        w2 / 2,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
-
-    // draw : in the middle
-    drawText(
-        `:`,
-        objsSizes.value.score.size,
-        0,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
+    return sphere;
 }
 
-const drawPlayersInfo = (): void => {
-    // draw player 1 username
-    drawText(
-        `${gameData.value.players[0].username}`,
-        objsSizes.value.score.size,
-        -canvas.value.width / 4,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
-
-    // draw player 2 username
-    drawText(
-        `${gameData.value.players[1].username}`,
-        objsSizes.value.score.size,
-        canvas.value.width / 4,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
-}
-
-const drawText = (text: string, size: number, posx = 0, posy = 0): void => {
-    const { w, h } = textSetup(text, size)
-    clearText(text, size, w, h, posx, posy)
-    ctx.value.fillText(
-        text,
-        canvas.value.width / 2 - w / 2 + posx,
-        canvas.value.height / 2 - h / 2 + posy,
-    )
-}
-
-const clearText = (text: string, size: number, w: number, h: number, posx = 0, posy = 0) => { }
-
-const textSetup = (text: string, size: number): { w: number; h: number } => {
-    ctx.value.font = `${size}px Arial`
-    const w = ctx.value.measureText(text).width
-    const h =
-        ctx.value.measureText(text).fontBoundingBoxAscent +
-        ctx.value.measureText(text).fontBoundingBoxDescent
-    return { w, h }
-}
 </script>
-
-<style scoped>
-.canvas-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    margin: 0;
-    padding: 0;
+  
+<style>
+.three-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 </style>
+  
