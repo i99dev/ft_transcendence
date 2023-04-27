@@ -24,13 +24,13 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-
-        // if(temp) {
-        //     userSocket.disconnect(
-        //         true,
-        //     )
-        //     return
-        // }
+        console.log("USER CONNECTED TO SERVER")
+        if(temp) {
+            userSocket.disconnect(
+                true,
+            )
+            return
+        }
         this.connected_users.push({
             id: userID,
             socket: userSocket,
@@ -44,8 +44,10 @@ export class DefaultService {
             * if in game -> set player a loser so game will end and other player will win.
     */
     public removeDisconnectedUser(userSocket: Socket) {
+        
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
+            console.log("USER Disconnected From SERVER")
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
                 if (this.classic_queue.includes(user.id))

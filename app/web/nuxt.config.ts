@@ -7,16 +7,17 @@ export default defineNuxtConfig({
             REDIRECT_URI: process.env.REDIRECT_URI,
             API_URL: process.env.API_URL,
         },
-    },  
-    css: [
-        'primevue/resources/themes/saga-blue/theme.css',
-        "primevue/resources/primevue.css",
-        "primeicons/primeicons.css",
-        'primeflex/primeflex.css'
-    ],
+    },
+    css: ['~/assets/css/main.css'],
     build: {
-        transpile: ['primevue']
+        transpile: ['primevue'],
+    },
+    postcss: {
+        plugins: {
+            tailwindcss: {},
+            autoprefixer: {},
+        },
     },
     modules: ['@nuxtjs/tailwindcss'],
-    plugins: ['~/plugins/socket-io.ts'],
+    plugins: ['~/plugins/socket-io.ts','~/plugins/chat-socket.ts'],
 })

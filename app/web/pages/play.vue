@@ -8,7 +8,7 @@
           <GameSelector @gameSelected="startGame" ref="gameSelector" />
         </div>
       </div>
-	
+
 		<div>
             <GameClosePopup
                 v-if="exit"
@@ -20,7 +20,7 @@
             />
             <div class="container">
                 <div class="flex justify-between">
-                    <Button @click="switchExistStatus(true)" icon="pi pi-times" />
+                    <button @click="switchExistStatus(true)" class="bg-blue-500 text-white text-xl px-2 py-1">X</button>
                 </div>
                 <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
@@ -95,7 +95,6 @@ const switchExistStatus = (status: boolean): void => {
 body {
     background-color: #334155;
 }
-
 .container {
     display: flex;
     justify-content: center;
@@ -108,6 +107,4 @@ body {
     position: relative;
     height: 100vh;
 }
-
-
 </style>

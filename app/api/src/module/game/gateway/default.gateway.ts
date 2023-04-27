@@ -8,6 +8,7 @@ import {
     SubscribeMessage,
     WebSocketGateway,
     ConnectedSocket,
+    WsException,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
@@ -38,6 +39,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
+        if (!token) return new WsException('No token provided') && client.disconnect()
         token = token.split(' ')[1]
         this.decoded = this.jwtService.decode(token)
         if (!this.decoded) return

@@ -46,4 +46,19 @@ export class FriendService {
         )
         return commonFriends
     }
+
+    async checkAddedFriends(login: string, friend: string): Promise<boolean> {
+        const user: UserGetDto = await this.prisma.user.findUnique({
+            where: {
+                login: login,
+            },
+            include: {
+                friends: true,
+            },
+        })
+        if (!user) {
+            throw new NotFoundException(`User ${login} does not exist`)
+        }
+        return user.friends.some(f => f.login === friend)
+    }
 }

@@ -1,3 +1,4 @@
+import { ChatModule } from './module/chat/chat.module'
 import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -10,6 +11,9 @@ import { GameModule } from './module/game/game.module'
 import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { AchievementModule } from './module/achievement/achievement.module'
 import { LeaderboardModule } from './module/leaderboard/leaderboard.module'
+import { MulterModule } from './module/multer/multer.module'
+import { NotificationModule } from '@module/notification/notification.module'
+import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -18,10 +22,15 @@ import { LeaderboardModule } from './module/leaderboard/leaderboard.module'
         AuthModule,
         UserModule,
         PrismaModule,
+        ChatModule,
         GameModule,
+        ChatModule,
         MatchHistoryModule,
         AchievementModule,
         LeaderboardModule,
+        MulterModule,
+        NotificationModule,
+        FriendWsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
