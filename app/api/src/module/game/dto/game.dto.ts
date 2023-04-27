@@ -1,4 +1,5 @@
 import { UserStatus } from '@prisma/client'
+import { PowerUp } from '../interface/game.interface'
 
 export class UserGetDto {
     id: number
@@ -36,6 +37,7 @@ export class BallDto {
     dx: number
     dy: number
     radius: number
+    color: string
 }
 
 export class PlayerDto {
@@ -43,7 +45,7 @@ export class PlayerDto {
     score: number
     paddle: PaddleDto
     gameID?: string
-    powerUp?: boolean
+    powerUps: PowerUp[]
 }
 
 export class PaddleDto {
@@ -51,6 +53,8 @@ export class PaddleDto {
     y: number
     width: number
     height: number
+    speed: number
+    color: string
 }
 
 export class GameSelectDto {
@@ -59,4 +63,9 @@ export class GameSelectDto {
     gameMode: 'single' | 'multi'
 
     invitedId?: string
+}
+
+export class PowerUpInfoDto {
+    type: string
+    player: number
 }

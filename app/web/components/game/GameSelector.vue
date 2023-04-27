@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center justify-center min-h-screen">
-      <div class="bg-white p-6 rounded-lg shadow-lg relative w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4">
+      <div class="bg-white p-6 rounded-lg shadow-lg relative w-full ">
         <div class="aspect-w-3 aspect-h-4">
             <div>
               <div v-if="step === 1" key="step1">
@@ -77,30 +77,30 @@
     </div>
   </template>
   
-<script setup>
+<script setup lang="ts">
 
 
 const step = ref(1);
-const selectedGame = ref(null);
-const selectedMode = ref(null);
-const loadingMsg = ref('');
+const selectedGame = ref('' as string);
+const selectedMode = ref('' as string);
+const loadingMsg = ref('' as string);
 
 const emit = defineEmits(['gameSelected'])
 
-const selectGame = (game) => {
+const selectGame = (game : string) => {
   selectedGame.value = game;
   step.value = 2;
 };
 
-const reset = (game) => {
+const reset = (game : string) => {
   step.value = 1
-  selectedGame.value = null
-  selectedMode.value = null
+  selectedGame.value = ''
+  selectedMode.value = ''
 };
 
 defineExpose({ reset });
 
-const selectMode = (mode) => {
+const selectMode = (mode : string) => {
   selectedMode.value = mode;
 };
 

@@ -24,13 +24,13 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-
-        // if(temp) {
-        //     userSocket.disconnect(
-        //         true,
-        //     )
-        //     return
-        // }
+        console.log("USER CONNECTED TO SERVER")
+        if(temp) {
+            userSocket.disconnect(
+                true,
+            )
+            return
+        }
         this.connected_users.push({
             id: userID,
             socket: userSocket,
@@ -44,8 +44,10 @@ export class DefaultService {
             * if in game -> set player a loser so game will end and other player will win.
     */
     public removeDisconnectedUser(userSocket: Socket) {
+        
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
+            console.log("USER Disconnected From SERVER")
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
                 if (this.classic_queue.includes(user.id))
@@ -67,11 +69,11 @@ export class DefaultService {
     /* 
         Activate the power up requested by frontend
     */
-    public powerUp(userSocket: Socket, powerUp: string) {
+    public activatePowerUp(userSocket: Socket, powerUp: string) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (player.game.getGameType() != 'custom') return
 
-        player.game.powerUp(player.id, powerUp)
+        player.game.activatePowerUp(player.id, powerUp)
     }
 
     /* 
@@ -137,6 +139,7 @@ export class DefaultService {
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
+        
         const game = new PongGame(player1.id, player2.id, gameType)
         player1.game = game
         player2.game = game
