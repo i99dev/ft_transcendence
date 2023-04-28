@@ -56,7 +56,7 @@ export class PongGame {
                 y: 0.5,
                 dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
                 dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
-                radius: 0.02,
+                radius: 0.015,
                 color: 'white',
             },
         }

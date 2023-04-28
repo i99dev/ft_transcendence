@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="showSelector"
-            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700">
+            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
                 <GameSelector @gameSelected="startGame" ref="gameSelector" />
             </div>
@@ -81,7 +81,7 @@ const switchExistStatus = (status: boolean): void => {
 
 <style>
 body {
-    background-color: #334155;
+    background-color: #202020;
 }
 
 .container {

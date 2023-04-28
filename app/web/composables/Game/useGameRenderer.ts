@@ -7,19 +7,23 @@ export function useGameRenderer() {
     const gameSetup = useState<SetupDto>('gameSetup')
     const gameData = useState<gameStatusDto>('gameData')
 
-    let scene: THREE.Scene, camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer
+    let scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.WebGLRenderer
     let controls: OrbitControls
     let gameGroup: THREE.Group, paddle: THREE.Mesh, paddle2: THREE.Mesh, sphere: THREE.Mesh
 
     const initScene = (canvasRef: Ref<HTMLCanvasElement>) => {
         scene = new THREE.Scene()
         scene.background = new THREE.Color(0x000000)
-
+    
         renderer = new THREE.WebGLRenderer({ canvas: canvasRef.value })
         renderer.setSize(window.innerWidth, window.innerHeight)
-
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-        camera.position.set(0, 0, 15)
+    
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        const width = 50; // Adjust the width of the orthographic view
+        const height = width / aspectRatio;
+    
+        camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 1000);
+        camera.position.set(0, 0, 15);
     }
 
     const createGameObjects = async () => {
@@ -49,19 +53,17 @@ export function useGameRenderer() {
 
         const sphereRadius = 0.5;
         const spherePosition = new THREE.Vector3(0, 0, 0.5);
-        sphere = createSphere(sphereRadius, spherePosition, 0xffffff, 0xffffff, 0);
-        addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 3, 4);
+        sphere = createSphere(sphereRadius, spherePosition, 0xffffff, 0xffffff, 0.5);
+        addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 4, 6);
         gameGroup.add(sphere);
 
         /* ------------------------------- */
 
-
-
         const frameGeometry = createFrameGeometry(GAME.FRAME_WIDTH, GAME.FRAME_HEIGHT, GAME.FRAME_THICKNESS, GAME.FRAME_DEPTH)
-        const frameMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, side: THREE.DoubleSide })
+        const frameMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
         const frame = new THREE.Mesh(frameGeometry, frameMaterial)
-        addPointLight(0, 7, 0, 0x00ff00, 1, 7)
-        addPointLight(0, -7, 0, 0x00ff00, 1, 7)
+        addPointLight(0, 8, 0, 0x6004d9, 2, 10)
+        addPointLight(0, -8, 0, 0x6004d9, 2, 10)
         // addPointLight(-14, 0, 0, 0x00ff00, 1, 7)
         // addPointLight(14, 0, 0, 0x00ff00, 1, 7)
         frame.position.set(0, 0, 0)
@@ -69,8 +71,8 @@ export function useGameRenderer() {
 
         /* ------------------------------- */
 
-        const planeWidth = GAME.FRAME_WIDTH - GAME.FRAME_THICKNESS * 2;
-        const planeHeight = GAME.FRAME_HEIGHT - GAME.FRAME_THICKNESS * 2;
+        const planeWidth = GAME.FRAME_WIDTH + 1.8
+        const planeHeight = GAME.FRAME_HEIGHT  + 0.85
         const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
         const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
 
@@ -110,23 +112,26 @@ export function useGameRenderer() {
         await createGameObjects()
         const loader = new GLTFLoader();
 
-        loader.load(
-            '/scene.gltf',
-            function (gltf) {
-                gltf.scene.rotateX(Math.PI / 2);
-                gltf.scene.scale.set(1.5, 1.5, 1.5);
-                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 1, 0), 0xffffff, 2, 4);
+        // loader.load(
+        //     '/scene.gltf',
+        //     function (gltf) {
+        //         gltf.scene.rotateX(Math.PI / 2);
+        //         gltf.scene.scale.set(1.5, 1.5, 1.5);
+        //         addPointLightToObject(gltf.scene, new THREE.Vector3(0, 1, 0), 0xffffff, 2, 3);
                 
-                scene.add(gltf.scene);
-            },
-            undefined,
-            function (error) {
-                console.error(error);
-            }
-        );
+        //         scene.add(gltf.scene);
+        //     },
+        //     undefined,
+        //     function (error) {
+        //         console.error(error);
+        //     }
+        // );
         
         
         scene.add(gameGroup)
+        // const bg = new THREE.TextureLoader().load('/space_gray.jpg')
+        // scene.background = bg
+        scene.background = new THREE.Color(0x202020)
         animate()
     }
 
@@ -247,7 +252,7 @@ export function useGameRenderer() {
     }
 
     function createSphere(radius: number, position: THREE.Vector3, color: number, emissive: number, emissiveIntensity: number): THREE.Mesh {
-        const sphereGeometry = new THREE.SphereGeometry(radius);
+        const sphereGeometry = new THREE.SphereGeometry(radius,32 ,32);
         const sphereMaterial = new THREE.MeshStandardMaterial({
             color: color,
             emissive: emissive,
