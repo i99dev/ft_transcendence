@@ -46,8 +46,9 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.addConnectedUser(this.decoded['login'], client)
     }
 
-    @SubscribeMessage('Join-game')
+    @SubscribeMessage('Join-Game')
     Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
+        console.log('Join game request from clinet, payload = ', payload)
         if (payload.gameMode == 'single')
             this.gameService.createSingleGame(client, payload.gameType)
         else if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType)

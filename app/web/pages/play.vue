@@ -74,7 +74,6 @@ const setGameReady = (): void => {
 
 const exitGame = (): void => {
     gameBoard.value.giveUp()
-    gameBoard.value.resetSocket()
     showBoard.value = false
     exit.value = false
     showSelector.value = true
