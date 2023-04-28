@@ -192,19 +192,20 @@ export class DefaultService {
                 game_status.players[i].username,
                 this.game_result.IsWinner(game_status.players[i]) ? true : false,
             )
+            console.log(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
             const achievements = await this.gameAnalyzer.grantAchievements(
                 game_status.players[i].username,
             )
-            console.log(achievements)
-            // if (achievements) {
-            //     this.gameAnalyzer.assignAcheivments(game_status.players[i].username, achievements)
-            //     this.gameAnalyzer.announceAcheivment(
-            //         this.connected_users,
-            //         game_status.players[i].username,
-            //         achievements,
-            //     )
-            // }
+            console.log(achievements, achievements.length)
+            if (achievements.length > 0) {
+                this.gameAnalyzer.assignAcheivments(game_status.players[i].username, achievements)
+                this.gameAnalyzer.announceAcheivment(
+                    this.connected_users,
+                    game_status.players[i].username,
+                    achievements,
+                )
+            }
         }
         this.clearData(game)
     }
