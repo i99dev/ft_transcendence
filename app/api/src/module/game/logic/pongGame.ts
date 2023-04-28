@@ -187,7 +187,7 @@ export class PongGame {
 
     // reset the ball position that is out of bounds to the center
     private checkWallCollision(ball: BallDto): void {
-        if (ball.y <= ball.radius || ball.y >= 1 - ball.radius) {
+        if ((ball.y <= ball.radius && ball.dy < 0) || (ball.y >= 1 - ball.radius && ball.dy > 0)) {
             ball.dy *= -1
         }
     }
@@ -211,7 +211,7 @@ export class PongGame {
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
 
-        
+
         if (powerUp && powerUp.active) {
             game.ball.color = 'transparent'
             this.disablePowerUp(player, powerUp)
@@ -295,15 +295,14 @@ export class PongGame {
             else if (powerUp.type == 'Shinigami') {
                 console.log("Shinigami activated")
             }
-            else if (powerUp.type == 'Shunshin no Jutsu')
-            {
+            else if (powerUp.type == 'Shunshin no Jutsu') {
                 console.log("Shunshin activated")
                 player.paddle.speed *= 1.5;
                 player.paddle.color = 'cyan'
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration);
-                
+
             }
 
 
