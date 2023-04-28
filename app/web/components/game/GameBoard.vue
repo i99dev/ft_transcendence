@@ -1,13 +1,43 @@
 <template>
     <div>
-        <button @click="$emit('ExitBtn')"
-            class="text-white text-xl px-2 py-1 fixed top-2 left-1/2 transform -translate-x-1/2 z-20 bg-transparent">
-            Leave Game
-        </button>
-        <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
+      <div
+        class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-violet-900 bg-opacity-5 py-2 px-6 rounded-b-lg shadow-lg border border-violet-700 flex items-center space-x-8"
+      >
+      <div class="flex flex-col items-center">
+        <div class="text-white font-bold">MAL-GUNA</div>
+        <div class="text-white font-bold">11</div>
+      </div>
+        <div class="flex space-x-4">
+          <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center">
+            <!-- <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" /> -->
+          </div>
+          <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center">
+            <!-- <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" /> -->
+          </div>
+        </div>
+        <div class="border-r border-white border-opacity-50 h-8 mx-4"></div>
+        <div class="flex space-x-4">
+            <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center ">
+                <!-- <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" /> -->
+          </div>
+          <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center">
+            <!-- <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" /> -->
+          </div>
+        </div>
+        <div class="flex flex-col items-center">
+            <div class="text-white font-bold">COMPUTER</div>
+            <div class="text-white font-bold">0</div>
+          </div>
+      </div>
+      <button
+        @click="$emit('ExitBtn')"
+        class="fixed top-14 left-1/2 transform -translate-x-1/2 z-20 bg-transparent text-white text-xl px-2 py-1"
+      >
+        <img src="/leave.png" alt="Leave Game" class="w-6 h-6" />
+      </button>
+      <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
     </div>
-</template>
-  
+  </template>
 
 <script lang="ts" setup>
 import { io, Socket } from 'socket.io-client'
