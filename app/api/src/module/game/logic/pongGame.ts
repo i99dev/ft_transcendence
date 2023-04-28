@@ -22,7 +22,7 @@ export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
-    private analyzePlayer = new Map<string, gameAnalyzer>()
+    public analyzePlayer = new Map<string, gameAnalyzer>()
     // private powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void;
 
     constructor(
