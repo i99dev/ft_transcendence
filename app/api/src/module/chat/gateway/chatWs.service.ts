@@ -36,7 +36,7 @@ export class ChatWsService {
         return !decode ? null : decode['login']
     }
 
-    async setupGroupChat(payload: any, user_login: string) : Promise<ChatRoom> {
+    async setupGroupChat(payload: any, user_login: string): Promise<ChatRoom> {
         if (
             payload.type === chatType.PROTECTED &&
             (payload.password === undefined || payload.password === null || payload.password === '')
@@ -93,7 +93,7 @@ export class ChatWsService {
 
     async isUserNormal(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if ((chatUser && chatUser.status === ChatUserStatus.NORMAL)) return true
+        if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
         return false
     }
 
@@ -108,8 +108,7 @@ export class ChatWsService {
     }
 
     async handleAdminSetup(payload: SetUserDto, user_login: string) {
-        if (payload.action === 'upgrade')
-            await this.makeAdmin(payload.room_id, payload.user_login)
+        if (payload.action === 'upgrade') await this.makeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'downgrade')
             await this.removeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'owner')
@@ -243,13 +242,16 @@ export class ChatWsService {
             status: ChatUserStatus.MUTE,
         })
 
-        setTimeout( async function() {
-            const check = await this.chatService.getChatUser(room_id, user_login)
-            if (check.status === ChatUserStatus.MUTE)
-                await this.chatService.updateChatUser(user_login, room_id, {
-                    status: ChatUserStatus.NORMAL,
-                })
-        }.bind(this), 600000)
+        setTimeout(
+            async function () {
+                const check = await this.chatService.getChatUser(room_id, user_login)
+                if (check.status === ChatUserStatus.MUTE)
+                    await this.chatService.updateChatUser(user_login, room_id, {
+                        status: ChatUserStatus.NORMAL,
+                    })
+            }.bind(this),
+            600000,
+        )
 
         return await this.groupChatService.getGroupChatUsers(room_id)
     }

@@ -149,11 +149,11 @@ export class ChatService {
                     chat_room_id: room_id,
                     content: message,
                     sender_login: user_login,
-                    type: type
+                    type: type,
                 },
                 include: {
-                    sender: true
-                }
+                    sender: true,
+                },
             })
             return chatRoomMessage
         } catch (error) {

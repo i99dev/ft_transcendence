@@ -126,14 +126,14 @@ export class GroupChatService {
                         where: {
                             NOT: {
                                 status: {
-                                    in: ['OUT', 'BAN']
+                                    in: ['OUT', 'BAN'],
                                 },
-                            }
+                            },
                         },
                         include: {
                             user: true,
-                        }
-                    }
+                        },
+                    },
                 },
             })
             return chat
@@ -170,9 +170,9 @@ export class GroupChatService {
                 where: {
                     chat_user: {
                         some: {
-                            user_login: user_login
-                        }
-                    }
+                            user_login: user_login,
+                        },
+                    },
                 },
             })
             return groupChats
@@ -239,7 +239,7 @@ export class GroupChatService {
                     },
                     type: {
                         not: 'PRIVATE',
-                    }
+                    },
                 },
                 include: {
                     chat_room: {
@@ -266,7 +266,7 @@ export class GroupChatService {
                 where: {
                     type: {
                         not: 'PRIVATE',
-                    }
+                    },
                 },
                 skip: (page - 1) * 20,
                 take: 20,
