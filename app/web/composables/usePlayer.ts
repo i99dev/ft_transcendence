@@ -35,3 +35,19 @@ export async function getPlayerGameResult(isWin: string, isLose: string): Promis
 	return data.value
 }
 
+export async function getPlayerAchievement(): Promise<any | null> {
+	const api = useRuntimeConfig().API_URL
+	const { data, error: errorRef } = await useFetch<any>(`/achievement`, {
+		method: 'GET',
+		baseURL: api,
+		headers: {
+			Authorization: `Bearer ${useCookie('access_token').value}`,
+		},
+	})
+	const error = errorRef.value
+	if (error)
+		console.error('Failed to get :', error)
+	else
+		console.log('achievement: ', data.value)
+	return data.value
+}

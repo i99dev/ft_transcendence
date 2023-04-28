@@ -65,6 +65,7 @@ model Achievement {
   id          Int     @id @default(autoincrement())
   type        String  @unique @default("default")
   description String?
+  image       String?
   users       User[]  @relation("UserAchievements")
 }
 
