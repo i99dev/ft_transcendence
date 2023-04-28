@@ -248,7 +248,7 @@ export class PongGame {
     }
 
     private grantBallWhispererAchievement(ball: BallDto, player: PlayerDto): void {
-        if (ball.y > 1 && ball.y < 1) {
+        if (ball.y > 1 && ball.y < 0) {
             this.analyzePlayer.get(player.username).EdgeHit += 1
             console.log('edge hit', ball.y)
             this.analyzePlayer.get(player.username).EdgeHit = 0
