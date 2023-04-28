@@ -10,6 +10,7 @@ import { JwtStrategy } from './strategy/jwt.strategy'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ValidationMiddleware } from './middleware/validation.middleware'
 import { TwoFacAuthService } from './twoFacAuth.service'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { TwoFacAuthService } from './twoFacAuth.service'
                 signOptions: { expiresIn: configService.getOrThrow('JWT_EXPIRES_IN') },
             }),
         }),
+        HttpModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, FtStrategy, JwtStrategy, AuthRepository, TwoFacAuthService],

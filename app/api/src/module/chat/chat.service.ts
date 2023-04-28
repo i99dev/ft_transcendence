@@ -1,4 +1,4 @@
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
