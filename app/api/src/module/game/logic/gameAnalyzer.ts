@@ -306,7 +306,7 @@ export class gameAnalyzer {
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {
         users.forEach(user => {
             if (user.id == login) {
-                user.socket.emit('acheivment', achievements)
+                user.socket.emit('achievement', achievements)
             }
         })
     }

@@ -1,9 +1,9 @@
 export const useAchievement = () => {
-    const acheivement = useState<any | null>('acheivement', () => {})
+    const achievement = useState<any | null>('achievement', () => {})
 
     const setAchievement = (ach: any) => {
-        acheivement.value = ach
+        achievement.value = ach
     }
 
-    return { acheivement, setAchievement }
+    return { achievement, setAchievement }
 }

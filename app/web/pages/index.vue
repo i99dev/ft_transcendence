@@ -56,7 +56,7 @@ definePageMeta({
 
 const nuxtApp = useNuxtApp()
 
-const { acheivement } = useAchievement()
+const { achievement } = useAchievement()
 
 const socket = ref(nuxtApp.socket as Socket)
 
@@ -67,8 +67,8 @@ const closeAceiPopUp = () => {
 }
 
 onMounted(() => {
-	console.log('mounted', acheivement.value)
-	if (acheivement.value) {
+	console.log('mounted', achievement.value)
+	if (achievement.value) {
 		announceAchei.value = true
 	}
 })
