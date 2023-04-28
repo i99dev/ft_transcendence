@@ -238,23 +238,14 @@ export class gameAnalyzer {
 
     async calcWinStreak(player: string, winNum: number): Promise<number> {
         const matches = await this.getMatches(player)
-        console.log(
-            'matches',
-            matches[0].opponents[0].user.login,
-            matches[0].opponents[0].score,
-            matches[0].opponents[1].user.login,
-            matches[0].opponents[1].score,
-        )
         let winStreak = 0
         for (let i = 0; i < matches.length; i++) {
             for (let j = 0; j < matches[i].opponents.length; j++) {
                 if (matches[i].opponents[j].user.login == player) {
-                    console.log('player', player, 'match num', i)
+                    // console.log('player', player, 'match num', i)
                     if (matches[i].opponents[j].IsWinner) {
-                        console.log('winstreak add', winStreak)
                         winStreak++
                     } else {
-                        console.log('winstreak re', winStreak, winNum)
                         return winStreak >= winNum ? winStreak : 0
                     }
                 }
@@ -284,29 +275,19 @@ export class gameAnalyzer {
         const totalAcheivments = []
         const totalWins = await this.getTotalVictories(player)
         const ladder = await this.getLadderLevel(player)
-        console.log(
-            'ladder',
-            ladder,
-            ladderLevel.CapinBoy.Rank,
-            ladder == ladderLevel.CapinBoy.Rank,
-        )
-        // if (!await this.checkIfAchievementExists(player, 'First Blood') && totalWins == 1)
-        //     totalAcheivments.push('First Blood')
-        console.log(
-            'check rookie no more',
-            await this.checkIfAchievementExists(player, 'Rookie no more'),
-        )
+        if (!(await this.checkIfAchievementExists(player, 'First Blood')) && totalWins == 1)
+            totalAcheivments.push('First Blood')
         if (
             !(await this.checkIfAchievementExists(player, 'Rookie no more')) &&
             ladder == ladderLevel.CapinBoy.Rank &&
             (await this.calcWinStreak(player, 2)) == 2
         )
             totalAcheivments.push('Rookie no more')
-        // if (
-        //     !await this.checkIfAchievementExists(player, 'Serial Killer') &&
-        //     (await this.calcWinStreak(player, 11)) == 11
-        // )
-        //     totalAcheivments.push('Serial Killer')
+        if (
+            !(await this.checkIfAchievementExists(player, 'Serial Killer')) &&
+            (await this.calcWinStreak(player, 11)) == 11
+        )
+            totalAcheivments.push('Serial Killer')
         return totalAcheivments
     }
 
