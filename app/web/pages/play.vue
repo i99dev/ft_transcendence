@@ -1,35 +1,23 @@
 <template>
-	<div>
-        <div
-        v-if="showSelector"
-        class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700"
-      >
-        <div class="flex flex-col items-center">
-          <GameSelector @gameSelected="startGame" ref="gameSelector" />
-        </div>
-      </div>
-
-		<div>
-            <GameClosePopup
-                v-if="exit"
-                @closePopup="switchExistStatus(false)"
-                @GiveUp="exitGame"
-                summary="Exit Game"
-                detail="You will be considered a LOSER since you give up in middle of the game!!"
-                confirmation="Are you sure you want to exit the game?"
-            />
-            <div class="container">
-                <div class="flex justify-between">
-                    <button @click="switchExistStatus(true)" class="bg-blue-500 text-white text-xl px-2 py-1">X</button>
-                </div>
-                <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
+    <div>
+        <div v-if="showSelector"
+            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center bg-slate-700">
+            <div class="flex flex-col items-center">
+                <GameSelector @gameSelected="startGame" ref="gameSelector" />
             </div>
-            <GameResult
-                v-if="gameResult"
-                @vnode-mounted="exit = false"
-                :gameResultMessage="gameResultMessage"
-                @playAgain="playAgain"
-            />
+        </div>
+
+        <div>
+            <GameClosePopup v-if="exit" @closePopup="switchExistStatus(false)" @GiveUp="exitGame" summary="Exit Game"
+                detail="You will be considered a LOSER since you give up in middle of the game!!"
+                confirmation="Are you sure you want to exit the game?" />
+            <div   class="container">
+                <div class="relative w-full h-full">
+                    <GameBoard  v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" @ExitBtn="switchExistStatus(true)" ref="gameBoard" />
+                </div>
+            </div>
+            <GameResult v-if="gameResult" @vnode-mounted="exit = false" :gameResultMessage="gameResultMessage"
+                @playAgain="playAgain" />
         </div>
     </div>
 </template>
@@ -46,9 +34,10 @@ const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
 
+
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
-    
+
     setTimeout(() => {
         gameBoard.value.setup(mode)
     }, 1000);
@@ -94,6 +83,7 @@ const switchExistStatus = (status: boolean): void => {
 body {
     background-color: #334155;
 }
+
 .container {
     display: flex;
     justify-content: center;

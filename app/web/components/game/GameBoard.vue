@@ -1,5 +1,11 @@
 <template>
-    <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
+    <div>
+        <button @click="$emit('ExitBtn')"
+            class="text-white text-xl px-2 py-1 fixed top-2 left-1/2 transform -translate-x-1/2 z-20 bg-transparent">
+            Leave Game
+        </button>
+        <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
+    </div>
 </template>
   
 
@@ -33,6 +39,7 @@ const emitGameOver = (winner: string): void => {
     else
         emit('GameOver', 'you lost')
 }
+
 const { socket, emitStartGame, setupSocketHandlers, resetSocket } = useSocket(emitGameOver)
 
 function giveUp(): void {

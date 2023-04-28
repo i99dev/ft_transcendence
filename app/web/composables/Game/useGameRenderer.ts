@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { GLTFLoader, OrbitControls } from 'three-stdlib'
+import { GLTFLoader, OrbitControls, TTFLoader, FontLoader, TextGeometry } from 'three-stdlib'
 import { watch } from 'vue'
 import * as GAME from '~/constants/'
 
@@ -106,7 +106,7 @@ export function useGameRenderer() {
         initScene(canvasRef)
         enableOrbitControls()
         addLighting()
-
+        // renderNames()
         await createGameObjects()
         const loader = new GLTFLoader();
 
@@ -124,7 +124,8 @@ export function useGameRenderer() {
                 console.error(error);
             }
         );
-            
+        
+        
         scene.add(gameGroup)
         animate()
     }
