@@ -14,6 +14,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'Serial Killer',
                     description: 'Winning 11 matches in a row',
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -22,6 +23,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'Rookie no more',
                     description: 'Winning two games in a row in the first level',
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -30,6 +32,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'First blood',
                     description: 'Winning  first game',
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -38,6 +41,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'No Sweat',
                     description: 'Winning game without the opponent scoring any points',
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -46,6 +50,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'Paddle Samurai',
                     description: `Blocking a certain number of opponent's shots`,
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -55,6 +60,7 @@ export class AchievementSeeder {
                     type: 'Table Ninja',
                     description:
                         'Hitting a certain number of shots that bounce off multiple edges of the table',
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -64,6 +70,7 @@ export class AchievementSeeder {
                     type: 'Ball Whisperer',
                     description:
                         'Hitting a certain number of shots that land just inside the edge of the table',
+                    image: `../../assets/devilfruit.png`,
                 },
             }),
         ]
