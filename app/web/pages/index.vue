@@ -29,7 +29,7 @@
 
             <!-- Acheivement popup -->
             <div
-                v-if="announceAchei"
+                v-if="announceAchiev"
                 class="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"
             >
                 <div
@@ -71,28 +71,30 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Socket } from 'socket.io-client'
+import { getNewAchievement, useAchievement } from '../composables/useAchievement'
 
 definePageMeta({
     middleware: ['pages'],
 })
 
-const nuxtApp = useNuxtApp()
 
 const { achievement } = useAchievement()
 
-const socket = ref(nuxtApp.socket as Socket)
 
-const announceAchei = ref(false)
+const newAchievement = getNewAchievement()
+
+const announceAchiev = ref(false)
 
 const closeAceiPopUp = () => {
-    announceAchei.value = false
+    announceAchiev.value = false
 }
+
+console.log('newAchievement', newAchievement)
 
 onMounted(() => {
     console.log('mounted', achievement.value)
     if (achievement.value) {
-        announceAchei.value = true
+        announceAchiev.value = true
     }
 })
 </script>

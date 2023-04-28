@@ -45,4 +45,10 @@ export class AchievementController {
     async getAchievements(@Req() req): Promise<AchievementDto[]> {
         return await this.achievementService.getAchievements(req.user.login)
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('new')
+    async getNewAchievements(@Req() req): Promise<string[]> {
+        return await this.achievementService.getNewAchievements(req.user.login)
+    }
 }

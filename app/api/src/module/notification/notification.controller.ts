@@ -1,4 +1,4 @@
-import { Get, Param, Query } from '@nestjs/common'
+import { Get, Param, Query, Delete } from '@nestjs/common'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
@@ -15,7 +15,7 @@ export class NotificationController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/delete/:id')
+    @Delete('/:id')
     deleteNotification(@Param('id') id: string, @Req() req) {
         const idNumber = parseInt(id)
         return this.notificationService.deleteNotification(idNumber, req.user.login)

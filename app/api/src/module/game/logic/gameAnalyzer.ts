@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto, PlayerDto } from '../../match-history/dto/match-history.dto'
 import { ConnectedUser } from '../interface/game.interface'
+import { NotificationService } from '@module/notification/notification.service'
+import { CreateNotificationDto } from '@common/dtos/notification.dto'
+import { NotificationType } from '@prisma/client'
 
 const ladderLevel = {
     CapinBoy: { Rank: 6, lowXP: 0, highXP: 100, winRate: 0 },
@@ -12,6 +15,7 @@ const ladderLevel = {
 }
 export class gameAnalyzer {
     private prisma = new PrismaClient()
+    private notificationService: NotificationService
 
     // Data retrievals
     async getTotalVictories(player: string): Promise<number> {
@@ -295,7 +299,28 @@ export class gameAnalyzer {
         if (achievements.length == 0) return
         achievements.forEach(async achievement => {
             await this.updatePlayerAcheivments(login, achievement)
+            await this.storeAchievementAsNotification(login, achievement)
         })
+    }
+
+    createNotificationDto(
+        user_login: string,
+        content: string,
+        type: NotificationType,
+        target?: string,
+    ): CreateNotificationDto {
+        const notificationDto = new CreateNotificationDto()
+        notificationDto.user_login = user_login
+        notificationDto.content = content
+        notificationDto.type = type
+        notificationDto.target = target
+        return notificationDto
+    }
+
+    async storeAchievementAsNotification(login: string, achievement: string): Promise<void> {
+        this.notificationService.createNotification(
+            this.createNotificationDto(login, `${achievement}`, NotificationType.ACHIEVEMENT),
+        )
     }
 
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {

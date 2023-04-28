@@ -174,6 +174,19 @@ export class DefaultService {
         }
     }
 
+    public async unlockAchievement(username: string) {
+        const postGameAchiev = await this.gameAnalyzer.grantAchievements(username)
+        const midGameAchiev = this.connected_users
+            .find(user => user.id == username)
+            .game.analyzePlayer.get(username).Achievements
+        const achievements = [...postGameAchiev, ...midGameAchiev]
+        console.log(achievements, achievements.length)
+        if (achievements.length > 0) {
+            this.gameAnalyzer.assignAcheivments(username, achievements)
+            // this.gameAnalyzer.announceAcheivment(this.connected_users, username, achievements)
+        }
+    }
+
     // end the game and emit the end game event
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
@@ -194,22 +207,7 @@ export class DefaultService {
             )
             console.log(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
-            const postGameAchiev = await this.gameAnalyzer.grantAchievements(
-                game_status.players[i].username,
-            )
-            const midGameAchiev = this.connected_users
-                .find(user => user.id == game_status.players[i].username)
-                .game.analyzePlayer.get(game_status.players[i].username).Achievements
-            const achievements = [...postGameAchiev, ...midGameAchiev]
-            console.log(achievements, achievements.length)
-            if (achievements.length > 0) {
-                this.gameAnalyzer.assignAcheivments(game_status.players[i].username, achievements)
-                this.gameAnalyzer.announceAcheivment(
-                    this.connected_users,
-                    game_status.players[i].username,
-                    achievements,
-                )
-            }
+            await this.unlockAchievement(game_status.players[i].username)
         }
         this.clearData(game)
     }
