@@ -1,29 +1,6 @@
 import { BallDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
 
-const DEFAULT_POWER_UPS: PowerUp[] = [
-    {
-        type: 'Hiken',
-        active: false,
-        duration: 0,
-    },
-    {
-        type: 'Baika no Jutsu',
-        active: false,
-        duration: 5000,
-    },
-    {
-        type: 'Shinigami',
-        active: false,
-        duration: 500,
-    },
-    {
-        type: 'Shunshin no Jutsu',
-        active: false,
-        duration: 10000,
-    },
-]
-
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
 const PADDLE_SPEED = 0.019
@@ -32,28 +9,48 @@ const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
 const COMPUTER_SPEED = 0.0075
 
+interface gameAnalyzer {
+    BlockingShot: number
+    TableHit: number
+    EdgeHit: number
+    Achievements: string[]
+}
+
 export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
+    private analyzePlayer = new Map<string, gameAnalyzer>()
     // private powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void;
 
     constructor(
-        player1ID: string,
-        Player2ID: string,
+        player1Login: string,
+        Player2Login: string,
         gameType: string /* , powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void */,
     ) {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
-        this.game_status = this.instanciateGame(player1ID, Player2ID)
+        this.game_status = this.instanciateGame(player1Login, Player2Login)
+        this.createPlayerAnalyzer(player1Login)
+        this.createPlayerAnalyzer(Player2Login)
+
         // if(gameType == 'custom') {
         //     this.powerUpEventCallback = powerUpEventCallback
         // }
     }
 
-    private instanciateGame(player1ID: string, player2ID: string): gameStatusDto {
+    private createPlayerAnalyzer(playerLogin: string): void {
+        this.analyzePlayer.set(playerLogin, {
+            BlockingShot: 0,
+            TableHit: 0,
+            EdgeHit: 0,
+            Achievements: [],
+        })
+    }
+
+    private instanciateGame(player1Login: string, player2Login: string): gameStatusDto {
         return {
-            players: [this.createPlayer(player1ID, 1), this.createPlayer(player2ID, 2)],
+            players: [this.createPlayer(player1Login, 1), this.createPlayer(player2Login, 2)],
             ball: {
                 x: 0.5,
                 y: 0.5,
@@ -63,39 +60,6 @@ export class PongGame {
                 color: 'white',
             },
         }
-    }
-
-    public getGameStatus(): gameStatusDto {
-        return this.game_status
-    }
-
-    public getPlayer1ID(): string {
-        return this.game_status.players[0].username
-    }
-
-    public getPlayer2ID(): string {
-        return this.game_status.players[1].username
-    }
-
-    public getGameID(): string {
-        return this.game_id
-    }
-
-    public getGameType(): string {
-        return this.gameType
-    }
-
-    public getPlayer1Score(): number {
-        return this.game_status.players[0].score
-    }
-
-    public getPlayer2Score(): number {
-        return this.game_status.players[1].score
-    }
-
-    // generate a random id for the game.. replace with uuid later
-    private generateRandomId(): string {
-        return Math.random().toString(36) + Date.now().toString(36)
     }
 
     private createPlayer(username: string, side: number): PlayerDto {
@@ -134,6 +98,39 @@ export class PongGame {
                 },
             ],
         }
+    }
+
+    public getGameStatus(): gameStatusDto {
+        return this.game_status
+    }
+
+    public getPlayer1ID(): string {
+        return this.game_status.players[0].username
+    }
+
+    public getPlayer2ID(): string {
+        return this.game_status.players[1].username
+    }
+
+    public getGameID(): string {
+        return this.game_id
+    }
+
+    public getGameType(): string {
+        return this.gameType
+    }
+
+    public getPlayer1Score(): number {
+        return this.game_status.players[0].score
+    }
+
+    public getPlayer2Score(): number {
+        return this.game_status.players[1].score
+    }
+
+    // generate a random id for the game.. replace with uuid later
+    private generateRandomId(): string {
+        return Math.random().toString(36) + Date.now().toString(36)
     }
 
     public setLoser(playerID: string): void {
@@ -191,6 +188,7 @@ export class PongGame {
     private checkWallCollision(ball: BallDto): void {
         if (ball.y <= ball.radius || ball.y >= 1 - ball.radius) {
             ball.dy *= -1
+            console.log('Wall collision')
         }
     }
 
@@ -200,6 +198,16 @@ export class PongGame {
         const paddleRight = playerIndex === 0 ? paddle.x + paddle.width : paddle.x
         const paddleTop = paddle.y - paddle.height / 2
         const paddleBottom = paddle.y + paddle.height / 2
+        let boo = 0
+
+        if (
+            ball.y + ball.radius >= paddleTop &&
+            ball.y - ball.radius <= paddleBottom &&
+            ball.x + ball.radius >= paddleLeft &&
+            ball.x - ball.radius <= paddleRight
+        )
+            boo = 9
+        else console.log('goal')
 
         return (
             ball.y + ball.radius >= paddleTop &&
@@ -208,7 +216,100 @@ export class PongGame {
             ball.x - ball.radius <= paddleRight
         )
     }
+    // check if the ball collided with wall or paddle and update the score if it is out of bounds
+    private checkBallCollision(game: gameStatusDto): void {
+        const { ball, players } = game
 
+        this.checkWallCollision(ball)
+
+        // Check if the ball is within the horizontal range of the left paddle
+        if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
+            if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
+                // console.log(players[0].username)
+                this.analyzePlayer.get(players[0].username).BlockingShot += 1
+                // console.log(
+                //     'BlockingShot',
+                //     this.analyzePlayer.get(players[0].username).BlockingShot,
+                // )
+                this.reflectBall(ball, players[0].paddle)
+                this.handleHikenPowerUp(game, 0)
+                this.handleShinigamiPowerUp(game, 0)
+            } else if (ball.x < 0) {
+                // Ball crossed the left boundary
+                players[1].score += 1
+                this.grantPaddleSamuraiAchievement(players[0])
+                this.resetBallPosition(ball)
+            }
+        }
+        // Check if the ball is within the horizontal range of the right paddle
+        else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
+            if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
+                // console.log(players[1].username)
+                this.analyzePlayer.get(players[1].username).BlockingShot += 1
+                // console.log(
+                //     'BlockingShot',
+                //     this.analyzePlayer.get(players[1].username).BlockingShot,
+                // )
+                this.reflectBall(ball, players[1].paddle)
+                this.handleHikenPowerUp(game, 1)
+                this.handleShinigamiPowerUp(game, 1)
+            } else if (ball.x > 1) {
+                // Ball crossed the right boundary
+                players[0].score += 1
+                this.grantPaddleSamuraiAchievement(players[1])
+                this.resetBallPosition(ball)
+            }
+        }
+    }
+
+    // grant paddle sumaurai achievement if the player blocked 5 shots in a row
+    private grantPaddleSamuraiAchievement(player: PlayerDto): void {
+        if (this.analyzePlayer.get(player.username).BlockingShot > 5) {
+            if (
+                this.analyzePlayer.get(player.username).Achievements.indexOf('Paddle Samurai') ===
+                -1
+            ) {
+                this.analyzePlayer.get(player.username).Achievements.push('Paddle Samurai')
+                // console.log('Paddle Samurai')
+            }
+        }
+        this.analyzePlayer.get(player.username).BlockingShot = 0
+    }
+
+    // reflect the ball based on the paddle hit point
+    private reflectBall(ball: BallDto, paddle: PaddleDto): void {
+        ball.dx *= -1
+        const relativePos = ball.y - paddle.y
+        const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
+        const angle = paddleHitPoint * REFLECT_ANGLE
+        const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2)
+        ball.dy = ballSpeed * Math.sin(angle * (Math.PI / 180))
+    }
+    // reset the ball position to the center
+    private resetBallPosition(ball: BallDto): void {
+        ball.x = 0.5
+        ball.y = 0.5
+        ball.dx = Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED
+        ball.dy = Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED
+    }
+
+    // update the paddle position of the player based on the direction
+    public updatePaddlePosition(playerID: string, direction: string): void {
+        const player = this.game_status.players.find(player => player.username === playerID)
+
+        if (direction === 'up') {
+            player.paddle.y -= player.paddle.speed
+        } else if (direction === 'down') {
+            player.paddle.y += player.paddle.speed
+        }
+
+        player.paddle.y = Math.max(
+            0 + player.paddle.height / 2,
+            Math.min(1 - player.paddle.height / 2, player.paddle.y),
+        )
+    }
+
+    // ! POWER UPS ! //
     private handleShinigamiPowerUp(game: gameStatusDto, playerIndex: number): void {
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
@@ -237,37 +338,6 @@ export class PongGame {
 
             game.ball.dx = (game.ball.dx / currentSpeed) * originalSpeed
             game.ball.dy = (game.ball.dy / currentSpeed) * originalSpeed
-        }
-    }
-    // check if the ball collided with wall or paddle and update the score if it is out of bounds
-    private checkBallCollision(game: gameStatusDto): void {
-        const { ball, players } = game
-
-        this.checkWallCollision(ball)
-
-        // Check if the ball is within the horizontal range of the left paddle
-        if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
-            if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
-                this.reflectBall(ball, players[0].paddle)
-                this.handleHikenPowerUp(game, 0)
-                this.handleShinigamiPowerUp(game, 0)
-            } else if (ball.x < 0) {
-                // Ball crossed the left boundary
-                players[1].score += 1
-                this.resetBallPosition(ball)
-            }
-        }
-        // Check if the ball is within the horizontal range of the right paddle
-        else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
-            if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
-                this.reflectBall(ball, players[1].paddle)
-                this.handleHikenPowerUp(game, 1)
-                this.handleShinigamiPowerUp(game, 1)
-            } else if (ball.x > 1) {
-                // Ball crossed the right boundary
-                players[0].score += 1
-                this.resetBallPosition(ball)
-            }
         }
     }
 
@@ -313,39 +383,5 @@ export class PongGame {
             player.paddle.speed = PADDLE_SPEED
             player.paddle.color = 'white'
         }
-    }
-
-    // reflect the ball based on the paddle hit point
-    private reflectBall(ball: BallDto, paddle: PaddleDto): void {
-        ball.dx *= -1
-        const relativePos = ball.y - paddle.y
-        const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
-        const angle = paddleHitPoint * REFLECT_ANGLE
-        const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2)
-        ball.dy = ballSpeed * Math.sin(angle * (Math.PI / 180))
-    }
-    // reset the ball position to the center
-    private resetBallPosition(ball: BallDto): void {
-        ball.x = 0.5
-        ball.y = 0.5
-        ball.dx = Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED
-        ball.dy = Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED
-    }
-
-    // update the paddle position of the player based on the direction
-    public updatePaddlePosition(playerID: string, direction: string): void {
-        const player = this.game_status.players.find(player => player.username === playerID)
-        const game = this.game_status
-
-        if (direction === 'up') {
-            player.paddle.y -= player.paddle.speed
-        } else if (direction === 'down') {
-            player.paddle.y += player.paddle.speed
-        }
-
-        player.paddle.y = Math.max(
-            0 + player.paddle.height / 2,
-            Math.min(1 - player.paddle.height / 2, player.paddle.y),
-        )
     }
 }
