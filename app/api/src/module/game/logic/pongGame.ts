@@ -9,6 +9,8 @@ const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
 const COMPUTER_SPEED = 0.0075
 
+const leftCorners = [0.02, 0.94]
+
 interface gameAnalyzer {
     BlockingShot: number
     TableHit: number
@@ -198,17 +200,6 @@ export class PongGame {
         const paddleRight = playerIndex === 0 ? paddle.x + paddle.width : paddle.x
         const paddleTop = paddle.y - paddle.height / 2
         const paddleBottom = paddle.y + paddle.height / 2
-        let boo = 0
-
-        if (
-            ball.y + ball.radius >= paddleTop &&
-            ball.y - ball.radius <= paddleBottom &&
-            ball.x + ball.radius >= paddleLeft &&
-            ball.x - ball.radius <= paddleRight
-        )
-            boo = 9
-        else console.log('goal')
-
         return (
             ball.y + ball.radius >= paddleTop &&
             ball.y - ball.radius <= paddleBottom &&
@@ -227,16 +218,13 @@ export class PongGame {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
                 // console.log(players[0].username)
                 this.analyzePlayer.get(players[0].username).BlockingShot += 1
-                // console.log(
-                //     'BlockingShot',
-                //     this.analyzePlayer.get(players[0].username).BlockingShot,
-                // )
                 this.reflectBall(ball, players[0].paddle)
                 this.handleHikenPowerUp(game, 0)
                 this.handleShinigamiPowerUp(game, 0)
             } else if (ball.x < 0) {
                 // Ball crossed the left boundary
                 players[1].score += 1
+                this.grantBallWhispererAchievement(ball, players[1])
                 this.grantPaddleSamuraiAchievement(players[0])
                 this.resetBallPosition(ball)
             }
@@ -246,19 +234,31 @@ export class PongGame {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
                 // console.log(players[1].username)
                 this.analyzePlayer.get(players[1].username).BlockingShot += 1
-                // console.log(
-                //     'BlockingShot',
-                //     this.analyzePlayer.get(players[1].username).BlockingShot,
-                // )
                 this.reflectBall(ball, players[1].paddle)
                 this.handleHikenPowerUp(game, 1)
                 this.handleShinigamiPowerUp(game, 1)
             } else if (ball.x > 1) {
                 // Ball crossed the right boundary
                 players[0].score += 1
+                this.grantBallWhispererAchievement(ball, players[0])
                 this.grantPaddleSamuraiAchievement(players[1])
                 this.resetBallPosition(ball)
             }
+        }
+    }
+
+    private grantBallWhispererAchievement(ball: BallDto, player: PlayerDto): void {
+        if (ball.y > 1 && ball.y < 1) {
+            this.analyzePlayer.get(player.username).EdgeHit += 1
+            console.log('edge hit', ball.y)
+            this.analyzePlayer.get(player.username).EdgeHit = 0
+        }
+        if (
+            this.analyzePlayer.get(player.username).EdgeHit > 3 &&
+            this.analyzePlayer.get(player.username).Achievements.indexOf('Ball Whisperer') === -1
+        ) {
+            this.analyzePlayer.get(player.username).Achievements.push('Ball Whisperer')
+            console.log('Ball Whisperer')
         }
     }
 
@@ -270,7 +270,7 @@ export class PongGame {
                 -1
             ) {
                 this.analyzePlayer.get(player.username).Achievements.push('Paddle Samurai')
-                // console.log('Paddle Samurai')
+                console.log('Paddle Samurai')
             }
         }
         this.analyzePlayer.get(player.username).BlockingShot = 0
