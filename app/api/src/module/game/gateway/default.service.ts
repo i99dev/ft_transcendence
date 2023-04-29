@@ -3,7 +3,7 @@ import { ConnectedUser } from '../interface/game.interface'
 import { Socket } from 'socket.io'
 import { PongGame } from '../logic/pongGame'
 import { SocketService } from './socket.service'
-import { PlayerDto, gameStatusDto } from '../dto/game.dto'
+import { GameSelectDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
 
@@ -17,15 +17,14 @@ export class DefaultService {
     private custom_queue: string[] = []
     private gameAnalyzer = new gameAnalyzer()
 
-    constructor(private socketService: SocketService) {}
+    constructor(private socketService: SocketService) { }
 
     /* 
         Adds a new user to connected_users array
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-        console.log("USER CONNECTED TO SERVER")
-        if(temp) {
+        if (temp) {
             userSocket.disconnect(
                 true,
             )
@@ -44,7 +43,7 @@ export class DefaultService {
             * if in game -> set player a loser so game will end and other player will win.
     */
     public removeDisconnectedUser(userSocket: Socket) {
-        
+
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
             console.log("USER Disconnected From SERVER")
@@ -69,7 +68,7 @@ export class DefaultService {
     /* 
         Activate the power up requested by frontend
     */
-    public activatePowerUp(userSocket: Socket, powerUp: string) {
+    public activatePowerUp(userSocket: Socket, powerUp: number) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (player.game.getGameType() != 'custom') return
 
@@ -79,17 +78,20 @@ export class DefaultService {
     /* 
         called On Client's "Join-Game" event with mode = 'multi', it matches player with an opponent
     */
-    public matchPlayer(userSocket: Socket, gameType: string) {
+    public matchPlayer(userSocket: Socket, gameInfo: GameSelectDto) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (this.classic_queue.includes(player.id) || this.custom_queue.includes(player.id)) return
         if (player.status != 'online') return
 
         player.status = 'inqueue'
+        if (gameInfo.gameType == 'custom') {
+            player.powerUps = gameInfo.powerups;
+        }
 
-        const opponent = this.findOpponent(player.id, gameType)
+        const opponent = this.findOpponent(player.id, gameInfo.gameType)
 
         if (opponent) {
-            this.createMultiGame(player, opponent, gameType)
+            this.createMultiGame(player, opponent, gameInfo.gameType)
             player.status = 'ingame'
             opponent.status = 'ingame'
         }
@@ -124,9 +126,14 @@ export class DefaultService {
     /* 
         Creates a new pongGame object with "Computer" as opponent and emit the game setup to player
     */
-    public createSingleGame(player1Socket: Socket, gameType: string) {
+    public createSingleGame(player1Socket: Socket, gameInfo: GameSelectDto) {
         const player = this.connected_users.find(user => user.socket == player1Socket)
-        const game = new PongGame(player.id, 'Computer', gameType)
+        let game;
+        if (gameInfo.gameType == 'custom') {
+            game = new PongGame(player.id, "Computer", gameInfo.gameType, gameInfo.powerups, gameInfo.powerups)
+        } else {
+            game = new PongGame(player.id, "Computer", gameInfo.gameType)
+        }
         player.status = 'ingame'
         player.game = game
         player.socket.join(game.getGameID())
@@ -139,8 +146,13 @@ export class DefaultService {
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
-        
-        const game = new PongGame(player1.id, player2.id, gameType)
+        let game;
+        if (gameType == 'custom') {
+            game = new PongGame(player1.id, player2.id, gameType, player1.powerUps, player2.powerUps)
+        } else {
+            game = new PongGame(player1.id, player2.id, gameType)
+        }
+
         player1.game = game
         player2.game = game
         player1.socket.join(game.getGameID())
@@ -176,12 +188,10 @@ export class DefaultService {
         }
     }
 
-    // end the game and emit the end game event
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
         this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
 
-        // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
             this.clearData(game)
             return
@@ -207,16 +217,17 @@ export class DefaultService {
             player1.game = null
             player1.status = 'online'
             player1.socket.leave(game.getGameID())
+            player1.powerUps = []
         }
         const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player2) {
             player2.game = null
             player2.status = 'online'
             player2.socket.leave(game.getGameID())
+            player1.powerUps = []
         }
     }
 
-    // check if the player is a computer
     private isComputer(player: PlayerDto): boolean {
         return player.username === 'Computer'
     }

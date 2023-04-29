@@ -48,10 +48,9 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @SubscribeMessage('Join-Game')
     Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
-        console.log('Join game request from clinet, payload = ', payload)
         if (payload.gameMode == 'single')
-            this.gameService.createSingleGame(client, payload.gameType)
-        else if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload.gameType)
+            this.gameService.createSingleGame(client, payload)
+        else if (payload.gameMode == 'multi') this.gameService.matchPlayer(client, payload)
         // else if (payload.gameMode == 'invite')
         // this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
@@ -67,9 +66,9 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Power-Up')
-    PowerupStart(@ConnectedSocket() client: any, @MessageBody() type: string) {
-        console.log('powerup request from clinet, type = ', type)
-        this.gameService.activatePowerUp(client, type)
+    PowerupStart(@ConnectedSocket() client: any, @MessageBody() powerUp: number) {
+        console.log('powerup request from clinet, type = ', powerUp)
+        this.gameService.activatePowerUp(client, powerUp)
     }
 
     @SubscribeMessage('move')

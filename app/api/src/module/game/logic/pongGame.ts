@@ -1,4 +1,4 @@
-import { BallDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
+import { BallDto, GameSelectDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface';
 
 
@@ -6,21 +6,25 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
     {
         type: 'Hiken',
         active: false,
+        ready: true,
         duration: 0,
     },
     {
         type: 'Baika no Jutsu',
         active: false,
+        ready: true,
         duration: 5000,
     },
     {
         type: 'Shinigami',
         active: false,
+        ready: true,
         duration: 500,
     },
     {
         type: 'Shunshin no Jutsu',
         active: false,
+        ready: true,
         duration: 10000,
     },
 ];
@@ -37,20 +41,19 @@ export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
-    // private powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void;
 
-    constructor(player1ID: string, Player2ID: string, gameType: string/* , powerUpEventCallback?: (eventName: string, data: PowerUpInfoDto) => void */) {
+    constructor(player1ID: string, Player2ID: string, gameType: string, p1PowerUps?: string[], p2PowerUps?: string[]) {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
-        this.game_status = this.instanciateGame(player1ID, Player2ID)
-        // if(gameType == 'custom') {
-        //     this.powerUpEventCallback = powerUpEventCallback
-        // }
+        if (gameType == 'classic')
+            this.game_status = this.instanciateGame(player1ID, Player2ID)
+        else
+            this.game_status = this.instanciateGame(player1ID, Player2ID, p1PowerUps, p2PowerUps)
     }
 
-    private instanciateGame(player1ID: string, player2ID: string): gameStatusDto {
+    private instanciateGame(player1ID: string, player2ID: string, p1PowerUps?: string[], p2PowerUps?: string[]): gameStatusDto {
         return {
-            players: [this.createPlayer(player1ID, 1), this.createPlayer(player2ID, 2)],
+            players: [this.createPlayer(player1ID, 1, p1PowerUps), this.createPlayer(player2ID, 2, p2PowerUps)],
             ball: {
                 x: 0.5,
                 y: 0.5,
@@ -95,7 +98,7 @@ export class PongGame {
         return Math.random().toString(36) + Date.now().toString(36)
     }
 
-    private createPlayer(username: string, side: number): PlayerDto {
+    private createPlayer(username: string, side: number, pickedPowerUps: string[]): PlayerDto {
         return {
             username,
             score: 0,
@@ -108,29 +111,19 @@ export class PongGame {
                 color: 'white',
             },
             gameID: this.game_id,
-            powerUps: [
-                {
-                    type: 'Hiken',
-                    active: false,
-                    duration: 0,
-                },
-                {
-                    type: 'Baika no Jutsu',
-                    active: false,
-                    duration: 5000,
-                },
-                {
-                    type: 'Shinigami',
-                    active: false,
-                    duration: 500,
-                },
-                {
-                    type: 'Shunshin no Jutsu',
-                    active: false,
-                    duration: 10000,
-                },
-            ]
+            powerUps: this.createPowerUps(pickedPowerUps),
         }
+    }
+
+    private createPowerUps(pickedPowerUps: string[]): PowerUp[] {
+
+        if (this.gameType == 'classic' || !pickedPowerUps)
+            return []
+
+        let powerUps: PowerUp[] = DEFAULT_POWER_UPS.filter(powerUp => pickedPowerUps.includes(powerUp.type))
+            .map(powerUp => JSON.parse(JSON.stringify(powerUp)));
+
+        return powerUps
     }
 
     public setLoser(playerID: string): void {
@@ -227,7 +220,6 @@ export class PongGame {
 
         if (powerUp && powerUp.active) {
             game.ball.color = 'blue'
-            console.log('Hikennnnnnnnnnn')
             game.ball.color = 'red'
             game.ball.dx *= 2
             game.ball.dy *= 2
@@ -275,9 +267,9 @@ export class PongGame {
         }
     }
 
-    public activatePowerUp(playerID: string, type: string): void {
+    public activatePowerUp(playerID: string, powerUpNo: number): void {
         const player = this.game_status.players.find(player => player.username === playerID)
-        const powerUp = player.powerUps.find(powerUp => powerUp.type === type)
+        const powerUp = player.powerUps[powerUpNo - 1]
 
         if (powerUp && !powerUp.active) {
             powerUp.active = true
@@ -311,6 +303,7 @@ export class PongGame {
 
     private disablePowerUp(player: PlayerDto, powerUp: PowerUp): void {
 
+        console.log("Power up disabled", powerUp.type)
         powerUp.active = false
         if (powerUp.type == 'Hiken') {
             player.paddle.color = 'white';
@@ -344,8 +337,19 @@ export class PongGame {
     private resetBallPosition(ball: BallDto): void {
         ball.x = 0.5
         ball.y = 0.5
-        ball.dx = Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED
-        ball.dy = Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED
+        ball.dx = 0
+        if (this.gameType == 'custom') {
+            ball.dy = Math.random() * 0.02 - 0.01;
+        }
+        else {
+            ball.dy = 0
+        }
+        setTimeout(() => {
+            ball.dx = Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED
+            ball.dy = Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED
+        }, 1500)
+
+
     }
 
     // update the paddle position of the player based on the direction
