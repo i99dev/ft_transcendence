@@ -1,30 +1,40 @@
 <script setup lang="ts">
-import { getPlayerWinRate, getPlayerGameResult } from '../../composables/usePlayer'
+import { getPlayerWinRate, getPlayerGameResult } from '../../composables/useAchievement'
 import { useUserInfo, useUpdateUserInfo } from '../../composables/useMe'
 import { useFriends } from '../../composables/useFriends'
 import { useChat } from '../../composables/useChat'
 import { getUserbyUserName } from '../../composables/useUsers'
-
 import { computed, ref } from 'vue'
-const { user_info, setUserName, setUserAvatar } = useUserInfo()
 
 const props = defineProps({
 	username: {
-    type: String,
-    default: false
-  },
+		type: String,
+		default: false
+	},
 })
 
+const { user_info, setUserName, setUserAvatar } = useUserInfo()
 const user = await getUserbyUserName(props.username)
 
 console.log('usersss !!!!!!!', user)
 
+const isMe = ref(false)
+console.log('props', props.username)
 
 const userData = computed(() => {
-	return user.value
+	if (user_info.value.username === props.username)
+	{
+		const { username, image, xp, ladder } = user_info.value;
+		isMe.value = true
+		return { username, image, xp, ladder }
+	}
+	else
+	{
+		const { username, image, xp, ladder } = user;
+		return { username, image, xp, ladder }
+	}
 })
 
-console.log('props', props.username)
 /**
  * edit username
  */
@@ -99,11 +109,11 @@ function handleDropDown() {
     showstat.value = !showstat.value
 }
 
-const WinRate = await getPlayerWinRate()
+const WinRate = await getPlayerWinRate(userData.value.username)
 
-const totaLoses = await getPlayerGameResult('false', 'true')
+const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
 
-const totalWins = await getPlayerGameResult('true', 'false')
+const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
 
 const getLadderRank = (ladder: number) => {
     switch (ladder) {
@@ -141,7 +151,7 @@ const getLadderRank = (ladder: number) => {
                     />
 
                     <div class="flex sm:flex-col justify-center sm:p-6">
-                        <p class="sm:text-3xl text-lg text-black dark:text-white">Welcome</p>
+                        <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">Welcome</p>
                         <!-- update username -->
                         <div class="flex flex-row items-center w-full justify-between">
                             <div
@@ -162,7 +172,7 @@ const getLadderRank = (ladder: number) => {
                             <div
                                 class="flex justify-center"
                                 @click="editUsername"
-                                v-if="editBoolaen"
+                                v-if="editBoolaen && isMe"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -243,7 +253,7 @@ const getLadderRank = (ladder: number) => {
                     </div>
                 </div>
 
-                <div class="flex flex-row space-x-6">
+                <div v-if="isMe" class="flex flex-row space-x-6">
                     <div class="relative cursor-pointer" @click="openChatModel">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

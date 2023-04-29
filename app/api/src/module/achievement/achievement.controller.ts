@@ -8,23 +8,23 @@ export class AchievementController {
     constructor(private readonly achievementService: AchievementService) {}
 
     @UseGuards(JwtAuthGuard)
-    @Get('winningrate')
-    async getWinnigRate(@Req() req): Promise<number> {
-        return await this.achievementService.gameAnalyzer.calcWinRate(req.user.login)
+    @Get('winningrate/:login') // /achievement/winningrate/login
+    async getWinnigRate(@Param('login') login: string): Promise<number> {
+        return await this.achievementService.gameAnalyzer.calcWinRate(login)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('totalgames') // /achievement/totalgames?Win=true&Lose=false
+    @Get('totalgames/:login') // /achievement/totalgames/login?Win=true&Lose=false
     async getTotal(
         @Query('Win') win: string,
         @Query('Lose') lose: string,
-        @Req() req,
+        @Param('login') login: string,
     ): Promise<number> {
         if (lose === 'true' && win === 'false')
-            return await this.achievementService.gameAnalyzer.getTotalDefeats(req.user.login)
+            return await this.achievementService.gameAnalyzer.getTotalDefeats(login)
         else if (win === 'true' && lose === 'false')
-            return await this.achievementService.gameAnalyzer.getTotalVictories(req.user.login)
-        else return await this.achievementService.gameAnalyzer.getTotalMatches(req.user.login)
+            return await this.achievementService.gameAnalyzer.getTotalVictories(login)
+        else return await this.achievementService.gameAnalyzer.getTotalMatches(login)
     }
 
     @Get('playertotalgames/:login') // /achievement/playertotalgames/player?Win=true&Lose=false&login=player1

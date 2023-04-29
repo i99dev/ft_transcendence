@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { getPlayerAchievement } from '@/composables/usePlayer'
+import { getPlayerAchievement } from '@/composables/useAchievement'
 
 const plyracheivement = await getPlayerAchievement()
 
