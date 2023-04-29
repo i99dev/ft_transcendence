@@ -27,7 +27,7 @@ export function useSocket(gameOverCallback: (winner: string) => void) {
         })
 
         socket.value.on('Game-Over', payload => {
-            gameOverCallback(payload.winner)
+            gameOverCallback(payload.winner.username)
         })
     }
 

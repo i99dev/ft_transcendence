@@ -11,9 +11,10 @@
             <GameClosePopup v-if="exit" @closePopup="switchExistStatus(false)" @GiveUp="exitGame" summary="Exit Game"
                 detail="You will be considered a LOSER since you give up in middle of the game!!"
                 confirmation="Are you sure you want to exit the game?" />
-            <div   class="container">
+            <div class="container">
                 <div class="relative w-full h-full">
-                    <GameBoard  v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)" @ExitBtn="switchExistStatus(true)" ref="gameBoard" />
+                    <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)"
+                        @ExitBtn="switchExistStatus(true)" ref="gameBoard" />
                 </div>
             </div>
             <GameResult v-if="gameResult" @vnode-mounted="exit = false" :gameResultMessage="gameResultMessage"
@@ -48,7 +49,6 @@ const playAgain = (): void => {
     showSelector.value = true;
     showBoard.value = false;
     gameResult.value = false;
-
 }
 
 const gameOver = (message: string): void => {
@@ -67,7 +67,6 @@ const exitGame = (): void => {
     exit.value = false
     showSelector.value = true
     gameResult.value = false
-    navigateTo('/')
 }
 
 const powerup = (): void => {

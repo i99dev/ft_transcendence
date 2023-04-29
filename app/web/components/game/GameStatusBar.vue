@@ -75,7 +75,6 @@ watch(gameSetup, (newVal) => {
 });
 
 watchEffect(() => {
-  // console.log(props)
   if (gameData?.value?.players) {
     const newScores = [gameData.value.players[0].score, gameData.value.players[1].score];
     if (scores.value[0] != newScores[0] || scores.value[1] != newScores[1]) {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <GameStatusBar @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
+        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
             :cooldown21="p21Cooldown" :cooldown22="p22Cooldown" />
         <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
     </div>
@@ -19,6 +19,7 @@ const p11Cooldown = ref(false);
 const p12Cooldown = ref(false);
 const p21Cooldown = ref(false);
 const p22Cooldown = ref(false);
+const showStatusBar = ref(false);
 
 defineExpose({ setup, giveUp })
 const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
@@ -30,18 +31,30 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false
 };
 
+onMounted(() => {
+    window.addEventListener('popstate', handleArrows);
+});
+
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeyDown)
     document.removeEventListener('keyup', handleKeyUp)
+    window.removeEventListener('popstate', handleArrows);
     reset()
 })
 
+const handleArrows = (e: PopStateEvent): void => {
+    giveUp()
+}
+
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value.game.players[gameSetup.value.player].username)
+    if (winner == gameSetup.value.game.players[gameSetup.value.player].username) {
         emit('GameOver', 'you won')
-    else
+    }
+    else {
         emit('GameOver', 'you lost')
+    }
     reset()
+    showStatusBar.value = false
 }
 
 const { socket, emitStartGame, setupSocketHandlers, resetSocket } = useSocket(emitGameOver)
@@ -67,6 +80,7 @@ const windowEvents = (): void => {
 watch(gameSetup, (newVal, oldVal) => {
     if (newVal.game != oldVal.game) {
         emit('ReadyGame')
+        showStatusBar.value = true
         rescaleGameData(newVal.game)
         init_game(canvasRef as Ref<HTMLCanvasElement>)
     }
