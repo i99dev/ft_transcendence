@@ -113,7 +113,6 @@ const uploadImage = () => {
     user.value.imgSelected = true
 }
 const showAvatarWindow = () => {
-    console.log('TESTING :(')
     user.value.imgSelected = false
 }
 
