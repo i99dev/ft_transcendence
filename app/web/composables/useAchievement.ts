@@ -70,9 +70,9 @@ export async function getPlayerGameResult(player:string, isWin: string, isLose: 
 	return data.value
 }
 
-export async function getPlayerAchievement(): Promise<any | null> {
+export async function getPlayerAchievement(login: string): Promise<any | null> {
 	const api = useRuntimeConfig().API_URL
-	const { data, error: errorRef } = await useFetch<any>(`/achievement`, {
+	const { data, error: errorRef } = await useFetch<any>(`/achievement/${login}`, {
 		method: 'GET',
 		baseURL: api,
 		headers: {

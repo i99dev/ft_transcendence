@@ -41,9 +41,9 @@ export class AchievementController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('')
-    async getAchievements(@Req() req): Promise<AchievementDto[]> {
-        return await this.achievementService.getAchievements(req.user.login)
+    @Get('/:login')
+    async getAchievements(@Param('login') login: string): Promise<AchievementDto[]> {
+        return await this.achievementService.getAchievements(login)
     }
 
     @UseGuards(JwtAuthGuard)

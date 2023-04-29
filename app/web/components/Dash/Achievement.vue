@@ -19,10 +19,21 @@
     </div>
 </template>
 
-<script setup>
-import { getPlayerAchievement } from '@/composables/useAchievement'
+<script setup lang="ts">
+import { getPlayerAchievement } from '../../composables/useAchievement'
+import { getUserbyUserName } from '../../composables/useUsers'
+import { computed } from 'vue'
 
-const plyracheivement = await getPlayerAchievement()
+const props = defineProps({
+    username: {
+        type: String,
+        default: false,
+    },
+})
+
+const user = await getUserbyUserName(props.username)
+
+const plyracheivement = await getPlayerAchievement(user.login)
 
 const acheivements = computed(() => plyracheivement)
 

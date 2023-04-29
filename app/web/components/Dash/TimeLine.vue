@@ -232,7 +232,7 @@ onMounted(async () => {
 	currentFilter.value = 'all'
 	game_history.values = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
 	isPage.value.set(1, true)
-	console.log(game_history.values)
+	console.log(game_history?.values)
 	
 	console.log(games.value)
 })
