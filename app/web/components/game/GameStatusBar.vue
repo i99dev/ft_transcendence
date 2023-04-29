@@ -59,14 +59,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  player1: {
-    type: String,
-    default: ''
-  },
-  player2: {
-    type: String,
-    default: ''
-  },
 });
 
 defineEmits(['ExitBtn'])
@@ -77,9 +69,6 @@ scoreAudio.volume = 0.2
 
 let gameSetup = ref(useState<SetupDto>('gameSetup'))
 let gameData = ref(useState<gameStatusDto>('gameData'))
-
-watch(gameSetup, (newVal) => {
-});
 
 watchEffect(() => {
   if (gameData?.value?.players) {
