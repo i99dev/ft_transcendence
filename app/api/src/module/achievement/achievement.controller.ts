@@ -41,7 +41,7 @@ export class AchievementController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/:login')
+    @Get('user/:login')
     async getAchievements(@Param('login') login: string): Promise<AchievementDto[]> {
         return await this.achievementService.getAchievements(login)
     }
