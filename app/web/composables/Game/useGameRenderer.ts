@@ -38,7 +38,7 @@ export function useGameRenderer() {
         const height = window.innerHeight;
         const aspectRatio = width / height;
 
-        const cameraWidth = 50;
+        const cameraWidth = 45;
         const cameraHeight = cameraWidth / aspectRatio;
 
         camera.left = -cameraWidth / 2;
@@ -58,7 +58,7 @@ export function useGameRenderer() {
         renderer.setSize(window.innerWidth, window.innerHeight)
 
         const aspectRatio = window.innerWidth / window.innerHeight;
-        const width = 50;
+        const width = 45;
         const height = width / aspectRatio;
 
         camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 2000);

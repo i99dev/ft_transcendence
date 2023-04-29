@@ -9,16 +9,14 @@
               <li>
                 <button
                   class="w-full py-2 px-4 border border-transparent rounded-md text-white bg-blue-500 hover:bg-blue-600"
-                  @click="selectGame('classic')"
-                >
+                  @click="selectGame('classic')">
                   Classic Pong
                 </button>
               </li>
               <li>
                 <button
                   class="w-full py-2 px-4 border border-transparent rounded-md text-white bg-blue-500 hover:bg-blue-600"
-                  @click="selectGame('custom')"
-                >
+                  @click="selectGame('custom')">
                   Custom Pong
                 </button>
               </li>
@@ -28,52 +26,39 @@
             <h2 class="text-2xl mb-4 text-center">Select Game Mode</h2>
             <ul class="space-y-2">
               <li>
-                <button
-                  :class="selectedMode === 'single' ? 'bg-green-500' : 'bg-blue-500'"
+                <button :class="selectedMode === 'single' ? 'bg-green-500' : 'bg-blue-500'"
                   class="w-full py-2 px-4 border border-transparent rounded-md text-white hover:bg-blue-600"
-                  @click="selectMode('single')"
-                >
+                  @click="selectMode('single')">
                   Single Player
                 </button>
               </li>
               <li>
-                <button
-                  :class="selectedMode === 'multi' ? 'bg-green-500' : 'bg-blue-500'"
+                <button :class="selectedMode === 'multi' ? 'bg-green-500' : 'bg-blue-500'"
                   class="w-full py-2 px-4 border border-transparent rounded-md text-white hover:bg-blue-600"
-                  @click="selectMode('multi')"
-                >
+                  @click="selectMode('multi')">
                   Find Opponent
                 </button>
               </li>
             </ul>
             <div v-if="selectedGame === 'custom'">
-              <h3 class="text-xl text-center mt-4 mb-2">Pick Two PowerUps</h3>
+              <h3 class="text-xl text-bold text-center mt-4 mb-2">Pick Two PowerUps</h3>
+              <h3 class="text-s text-blue-500 text-center  mb-2">Powerups can be used with buttons 1, 2</h3>
               <div class="grid grid-cols-2 gap-2">
                 <div v-for="(powerup, index) in powerups" :key="index" class="flex items-center">
-                  <input
-                    type="checkbox"
-                    :id="powerup"
-                    :value="powerup"
-                    v-model="selectedPowerups"
-                    @change="checkPowerupLimit"
-                    class="form-checkbox text-blue-500"
-                  />
+                  <input type="checkbox" :id="powerup" :value="powerup" v-model="selectedPowerups"
+                    @change="checkPowerupLimit" class="form-checkbox text-blue-500" />
                   <label :for="powerup" class="ml-2">{{ powerup }}</label>
                 </div>
               </div>
             </div>
             <div class="mt-4 flex space-x-4 justify-center">
-              <button
-                class="py-2 px-4 border border-transparent rounded-md text-white bg-blue-700 hover:bg-blue-800"
-                @click="step = 1"
-              >
+              <button class="py-2 px-4 border border-transparent rounded-md text-white bg-blue-700 hover:bg-blue-800"
+                @click="step = 1">
                 Back
               </button>
-              <button
-                :disabled="!selectedMode || (selectedGame === 'custom' && selectedPowerups.length != 2)"
+              <button :disabled="!selectedMode || (selectedGame === 'custom' && selectedPowerups.length != 2)"
                 class="py-2 px-4 border border-transparent rounded-md text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50"
-                @click="emitGameSelected"
-              >
+                @click="emitGameSelected">
                 Start Game
               </button>
             </div>
@@ -101,12 +86,12 @@ const loadingMsg = ref('' as string);
 
 const emit = defineEmits(['gameSelected'])
 
-const selectGame = (game : string) => {
+const selectGame = (game: string) => {
   selectedGame.value = game;
   step.value = 2;
 };
 
-const reset = (game : string) => {
+const reset = (game: string) => {
   step.value = 1
   selectedGame.value = ''
   selectedMode.value = ''
@@ -115,14 +100,14 @@ const reset = (game : string) => {
 
 defineExpose({ reset });
 
-const selectMode = (mode : string) => {
+const selectMode = (mode: string) => {
   selectedMode.value = mode;
 };
 
 const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu'];
 const selectedPowerups = ref<string[]>([]);
 
-const checkPowerupLimit = ()=> {
+const checkPowerupLimit = () => {
   if (selectedPowerups.value.length > 2) {
     selectedPowerups.value.shift();
   }
@@ -145,42 +130,44 @@ const emitGameSelected = () => {
 </script>
 
 <style scoped>
-  .half-circle-spinner, .half-circle-spinner * {
-    box-sizing: border-box;
+.half-circle-spinner,
+.half-circle-spinner * {
+  box-sizing: border-box;
+}
+
+.half-circle-spinner {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  position: relative;
+}
+
+.half-circle-spinner .circle {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  border: calc(60px / 10) solid transparent;
+}
+
+.half-circle-spinner .circle.circle-1 {
+  border-top-color: #ff1d5e;
+  animation: half-circle-spinner-animation 1s infinite;
+}
+
+.half-circle-spinner .circle.circle-2 {
+  border-bottom-color: #00b6e9;
+  animation: half-circle-spinner-animation 1s infinite alternate;
+}
+
+@keyframes half-circle-spinner-animation {
+  0% {
+    transform: rotate(0deg);
   }
 
-  .half-circle-spinner {
-    width: 60px;
-    height: 60px;
-    border-radius: 100%;
-    position: relative;
+  100% {
+    transform: rotate(360deg);
   }
-
-  .half-circle-spinner .circle {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    border: calc(60px / 10) solid transparent;
-  }
-
-  .half-circle-spinner .circle.circle-1 {
-    border-top-color: #ff1d5e;
-    animation: half-circle-spinner-animation 1s infinite;
-  }
-
-  .half-circle-spinner .circle.circle-2 {
-    border-bottom-color: #00b6e9;
-    animation: half-circle-spinner-animation 1s infinite alternate;
-  }
-
-  @keyframes half-circle-spinner-animation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+}
 </style>

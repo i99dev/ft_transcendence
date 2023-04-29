@@ -58,7 +58,15 @@ const props = defineProps({
   cooldown22: {
     type: Boolean,
     default: false
-  }
+  },
+  player1: {
+    type: String,
+    default: ''
+  },
+  player2: {
+    type: String,
+    default: ''
+  },
 });
 
 defineEmits(['ExitBtn'])
@@ -69,6 +77,7 @@ scoreAudio.volume = 0.2
 
 let gameSetup = ref(useState<SetupDto>('gameSetup'))
 let gameData = ref(useState<gameStatusDto>('gameData'))
+
 watch(gameSetup, (newVal) => {
   usernames.value[0] = newVal.game.players[0].username
   usernames.value[1] = newVal.game.players[1].username

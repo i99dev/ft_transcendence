@@ -1,6 +1,6 @@
 <template>
     <div>
-        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
+        <GameStatusBar v-show="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
             :cooldown21="p21Cooldown" :cooldown22="p22Cooldown" />
         <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
     </div>

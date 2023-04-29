@@ -36,6 +36,10 @@ const gameBoard = ref()
 const gameSelector = ref()
 
 
+const emitStopQueue = (): void => {
+    gameBoard.value.stopQueue()
+}
+
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
 
