@@ -1,4 +1,4 @@
-import { Get, Param, Query, Delete } from '@nestjs/common'
+import { Get, Param, Query, Delete, Logger } from '@nestjs/common'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
@@ -22,7 +22,7 @@ export class NotificationController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('achievement')
+    @Delete('/achievement')
     async deleteAchievNotification(@Query('content') content: string, @Req() req) {
         console.log('delete Notification')
         return await this.notificationService.deleteAchievNotification(req.user.login, content)

@@ -25,7 +25,8 @@ export async function getNewAchievement(): Promise<string[] | null> {
 
 export async function deleteNewAchievement(content: string): Promise<void> {
 	console.log('delete achievement')
-    const response = await fetch(`/Notification/achievement?content=${content}`, {
+	const api = useRuntimeConfig().API_URL
+    const response = await fetch(`${api}/Notification/achievement?content=${content}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
