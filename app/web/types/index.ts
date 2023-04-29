@@ -23,14 +23,10 @@ declare global {
         image: string
         xp: number
         ladder: number
+		wr: number
         two_fac_auth: boolean
         friend_to?: UserGetDto[]
         friends?: UserGetDto[]
-        player?: PlayerStatusDto[]
-        total_wins: number
-        total_loses: number
-        exp_level: number
-        points: number
     }
 
     interface gameStatusDto {

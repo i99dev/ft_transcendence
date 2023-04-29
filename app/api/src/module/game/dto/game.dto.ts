@@ -12,10 +12,9 @@ export class UserGetDto {
     created_at: Date
     last_login: Date
     image: string
-    total_wins: number
-    total_loses: number
-    exp_level: number
-    points: number
+    xp: number
+    wr: number
+    ladder: number
     two_fac_auth: boolean
     friend_to?: UserGetDto[]
     friends?: UserGetDto[]

@@ -133,6 +133,7 @@ const getLB = async () => {
 		Ranknum.value += playersArray.length
 	}
 	if (data.value) lbPlayers.value = playersArray
+	console.log(lbPlayers.value)
 }
 
 const getLBTotalPages = async () => {

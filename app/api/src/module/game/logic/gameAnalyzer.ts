@@ -247,6 +247,18 @@ export class gameAnalyzer {
         })
     }
 
+    async updatePlayerWinningRate(player: string): Promise<void> {
+        const winRate = await this.calcWinRate(player)
+        await this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                wr: winRate,
+            },
+        })
+    }
+
     async calcWinStreak(player: string, winNum: number): Promise<number> {
         const matches = await this.getMatches(player)
         let winStreak = 0

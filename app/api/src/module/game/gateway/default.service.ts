@@ -207,6 +207,7 @@ export class DefaultService {
             )
             console.log(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
+            await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
             await this.unlockAchievement(game_status.players[i].username)
         }
         this.clearData(game)
