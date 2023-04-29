@@ -20,7 +20,7 @@
                     class="w-full sm:w-1/4 rounded-t sm:rounded-l sm:rounded-t-none shadow bg-white dark:bg-gray-800"
                 ></div>
                 <div class="w-full sm:w-1/2 dark:bg-gray-800">
-                    <DashTab />
+                    <DashTab :username="userName" />
                 </div>
                 <div
                     class="w-full sm:w-1/4 rounded-b sm:rounded-b-none shadow bg-white dark:bg-gray-800"
@@ -75,10 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-    getNewAchievement,
-    deleteNewAchievement,
-} from '../composables/useAchievement'
+import { getNewAchievement, deleteNewAchievement } from '../composables/useAchievement'
 import { ref, onMounted, computed } from 'vue'
 import { useUserInfo } from '../composables/useMe'
 
@@ -88,8 +85,6 @@ definePageMeta({
 
 const { user_info } = useUserInfo()
 const userName = user_info.value.username
-
-
 
 const newAchievement = await getNewAchievement()
 
@@ -106,19 +101,17 @@ const closeAcievPopUp = async (index: number) => {
 }
 
 const checkAnnounceAchiev = (index: number) => {
-	if (!announceAchiev.value[index] && newAchievement)
-		deleteNewAchievement(newAchievement[index])
-	return announceAchiev.value[index]
+    if (!announceAchiev.value[index] && newAchievement) deleteNewAchievement(newAchievement[index])
+    return announceAchiev.value[index]
 }
 
 console.log('newAchievement', newAchievement)
 const achievements = computed(() => newAchievement)
 
 onMounted(() => {
-	if (newAchievement && newAchievement.length > 0) {
-		showAciev.value = true
+    if (newAchievement && newAchievement.length > 0) {
+        showAciev.value = true
         announceAchiev.value = new Array(newAchievement.length).fill(true)
     }
 })
-
 </script>

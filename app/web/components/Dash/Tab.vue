@@ -60,39 +60,71 @@
 
             <DashTimeLine v-if="isActive(tabs[0])" />
             <DashAchievement v-if="isActive(tabs[1])" />
-            <DashLeaderBoard v-if="isActive(tabs[2])" />
+            <DashLeaderBoard v-if="isMe && isActive(tabs[2])" />
         </div>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { getUserbyUserName } from '../../composables/useUsers'
+import { computed, ref } from 'vue'
+import { useUserInfo } from '../../composables/useMe'
+
+const props = defineProps({
+    username: {
+        type: String,
+        default: false,
+    },
+})
+
+const user = await getUserbyUserName(props.username)
+const { user_info } = useUserInfo()
+
+
+const isMe = computed(() => {
+    return user_info.value.id === user.id
+})
+
 //tabs
-const tabs = [
-    {
-        name: 'Match History',
-        component: 'DashTimeLine',
-    },
-    {
-        name: 'Achievements',
-        component: 'DashAchievement',
-    },
-    {
-        name: 'Leader Board',
-        component: 'DashLeaderBoard',
-    },
-]
+const tabs = computed(() => {
+    if (isMe.value)
+        return [
+            {
+                name: 'Match History',
+                component: 'DashTimeLine',
+            },
+            {
+                name: 'Achievements',
+                component: 'DashAchievement',
+            },
+            {
+                name: 'Leaderboard',
+                component: 'DashLeaderBoard',
+            },
+        ]
+    return [
+        {
+            name: 'Match History',
+            component: 'DashTimeLine',
+        },
+        {
+            name: 'Achievements',
+            component: 'DashAchievement',
+        },
+    ]
+})
 
-const activeTab = ref(tabs[0])
+const activeTab = ref(tabs.value[0])
 
-const setActiveTab = tab => {
+const setActiveTab = (tab: any) => {
     activeTab.value = tab
 }
 
-const isActive = tab => {
+const isActive = (tab: any) => {
     return activeTab.value.name === tab.name
 }
 
-const getComponent = tab => {
+const getComponent = (tab: any) => {
     return isActive(tab) ? tab.component : null
 }
 </script>
