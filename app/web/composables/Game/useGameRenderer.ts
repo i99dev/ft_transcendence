@@ -213,7 +213,6 @@ export function useGameRenderer() {
         if (ball.material instanceof THREE.MeshStandardMaterial) {
             if (color == 'transparent') {
                 ball.material.opacity = 0;
-                console.log("CHANGED TO TRANSPARENTTT")
             }
             else {
                 ball.material.opacity = 0.9;
