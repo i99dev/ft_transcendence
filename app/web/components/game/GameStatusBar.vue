@@ -2,7 +2,7 @@
   <div
     class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-violet-900 bg-opacity-5 py-2 px-6 rounded-b-lg shadow-lg border border-violet-700 flex items-center space-x-8">
     <div class="flex flex-col items-center">
-      <div class="text-white font-bold">{{ usernames[0] }}</div>
+      <div class="text-white font-bold">{{ gameSetup.game.players[0].username }}</div>
       <div class="text-white font-bold">{{ scores[0] }}</div>
     </div>
     <div class="flex space-x-4">
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="flex flex-col items-center">
-      <div class="text-white font-bold">{{ usernames[1] }}</div>
+      <div class="text-white font-bold">{{ gameSetup.game.players[1].username }}</div>
       <div class="text-white font-bold">{{ scores[1] }}</div>
     </div>
   </div>
@@ -79,8 +79,6 @@ let gameSetup = ref(useState<SetupDto>('gameSetup'))
 let gameData = ref(useState<gameStatusDto>('gameData'))
 
 watch(gameSetup, (newVal) => {
-  usernames.value[0] = newVal.game.players[0].username
-  usernames.value[1] = newVal.game.players[1].username
 });
 
 watchEffect(() => {

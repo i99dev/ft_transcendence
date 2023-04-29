@@ -1,6 +1,6 @@
 <template>
     <div>
-        <GameStatusBar v-show="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
+        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
             :cooldown21="p21Cooldown" :cooldown22="p22Cooldown" />
         <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
     </div>
@@ -21,7 +21,7 @@ const p21Cooldown = ref(false);
 const p22Cooldown = ref(false);
 const showStatusBar = ref(false);
 
-defineExpose({ setup, giveUp })
+defineExpose({ setup, giveUp})
 const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
@@ -78,9 +78,9 @@ const windowEvents = (): void => {
 }
 
 watch(gameSetup, (newVal, oldVal) => {
+    showStatusBar.value = true
     if (newVal.game != oldVal.game) {
         emit('ReadyGame')
-        showStatusBar.value = true
         rescaleGameData(newVal.game)
         init_game(canvasRef as Ref<HTMLCanvasElement>)
     }
