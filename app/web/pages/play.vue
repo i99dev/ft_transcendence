@@ -58,6 +58,7 @@ const playAgain = (): void => {
 const gameOver = (message: string): void => {
     gameResult.value = true
     gameResultMessage.value = message
+    showBoard.value = false
 }
 
 const setGameReady = (): void => {
