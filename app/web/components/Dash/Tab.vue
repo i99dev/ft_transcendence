@@ -58,7 +58,7 @@
         <div class="w-full px-3">
             <component :is="getComponent(activeTab)" />
 
-            <DashTimeLine v-if="isActive(tabs[0])" />
+            <DashTimeLine v-if="isActive(tabs[0])" :username="props.username" />
             <DashAchievement v-if="isActive(tabs[1])" />
             <DashLeaderBoard v-if="isMe && isActive(tabs[2])" />
         </div>
