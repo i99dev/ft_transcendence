@@ -17,28 +17,26 @@ export function useSocket(gameOverCallback: (winner: string) => void) {
 
     const setupSocketHandlers = () => {
         socket.value.on('Game-Setup', (data: SetupDto) => {
-            console.log("Got game setup")
             gameSetup.value = data
 
         })
-    
+
         socket.value.on('Game-Data', (data: gameStatusDto) => {
             gameData.value = data
 
         })
 
         socket.value.on('Game-Over', payload => {
-            console.log("Got game over")
             gameOverCallback(payload.winner)
         })
     }
-        
-    return{
+
+    return {
         socket,
         emitStartGame,
         setupSocketHandlers,
         resetSocket
     }
-    
+
 }
 
