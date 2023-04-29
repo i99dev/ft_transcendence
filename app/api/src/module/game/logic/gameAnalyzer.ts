@@ -221,15 +221,22 @@ export class gameAnalyzer {
             },
         })
     }
-    async updatePlayerAcheivments(player: string, acheivment: string): Promise<void> {
-        this.prisma.user.update({
+    async updatePlayerAcheivments(player: string, achievement: string): Promise<void> {
+        const ach = await this.prisma.achievement.findUnique({
+            where: {
+                type: achievement,
+            },
+        })
+        console.log(player, ach)
+        if (ach == null) return
+        await this.prisma.user.update({
             where: {
                 login: player,
             },
             data: {
                 achievements: {
                     connect: {
-                        type: acheivment,
+                        id: ach.id,
                     },
                 },
             },
@@ -295,6 +302,7 @@ export class gameAnalyzer {
         if (achievements.length == 0) return
         achievements.forEach(async achievement => {
             await this.updatePlayerAcheivments(login, achievement)
+            console.log('update achievement', achievement)
         })
     }
 

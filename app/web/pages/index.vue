@@ -28,36 +28,38 @@
             </div>
 
             <!-- Acheivement popup -->
-            <div
-                v-if="announceAchei"
-                class="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"
-            >
+            <div v-if="announceAchei">
                 <div
-                    class="inline-block text-left bg-white rounded-lg overflow-hidden align-bottom transition-all transform shadow-2xl sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"
+                    v-for="(achv, index) in achievements" :key="index"
+                    class="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"
                 >
                     <div
-                        class="items-center w-full mr-auto ml-auto relative max-w-7xl md:px-12 lg:px-24"
+                        class="inline-block text-left bg-white rounded-lg overflow-hidden align-bottom transition-all transform shadow-2xl sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"
                     >
-                        <div class="grid grid-cols-1">
-                            <div class="mt-4 mr-auto mb-4 ml-auto bg-white max-w-lg">
-                                <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
-                                    <img src="../assets/devilfruit.png.png" />
-                                    <p
-                                        class="mt-8 text-2xl font-semibold leading-none text-gray tracking-tighter lg:text-3xl"
-                                    >
-                                        Acheivement
-                                    </p>
-                                    <p
-                                        class="mt-3 text-base leading-relaxed text-center text-gray-600"
-                                    >
-                                        Description
-                                    </p>
-                                    <div class="w-full mt-6">
-                                        <a
-                                            @click="closeAceiPopUp()"
-                                            class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                            >YAY !</a
+                        <div
+                            class="items-center w-full mr-auto ml-auto relative max-w-7xl md:px-12 lg:px-24"
+                        >
+                            <div class="grid grid-cols-1">
+                                <div class="mt-4 mr-auto mb-4 ml-auto bg-white max-w-lg">
+                                    <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
+                                        <img src="../assets/devilfruit.png" />
+                                        <p
+                                            class="mt-8 text-2xl font-semibold leading-none text-gray tracking-tighter lg:text-3xl"
                                         >
+                                            {{ achv }}
+                                        </p>
+                                        <p
+											class="mt-3 text-base leading-relaxed text-center text-gray-600"
+										>
+											Congratulations ! You just have unlocked " {{ achv }} " Achievement !
+										</p>
+                                        <div class="w-full mt-6">
+                                            <a
+                                                @click="closeAceiPopUp()"
+                                                class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                >YAY !</a
+                                            >
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -70,24 +72,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { Socket } from 'socket.io-client'
+import { useAchievement } from '../composables/useAchievement'
 
 definePageMeta({
     middleware: ['pages'],
 })
 
-const nuxtApp = useNuxtApp()
-
 const { achievement } = useAchievement()
-
-const socket = ref(nuxtApp.socket as Socket)
 
 const announceAchei = ref(false)
 
 const closeAceiPopUp = () => {
     announceAchei.value = false
 }
+
+const achievements = computed(() => achievement.value)
 
 onMounted(() => {
     console.log('mounted', achievement.value)

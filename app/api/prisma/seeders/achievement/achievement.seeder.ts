@@ -27,10 +27,10 @@ export class AchievementSeeder {
                 },
             }),
             await this.prisma.achievement.upsert({
-                where: { type: 'First blood' },
+                where: { type: 'First Blood' },
                 update: {},
                 create: {
-                    type: 'First blood',
+                    type: 'First Blood',
                     description: 'Winning  first game',
                     image: `../../assets/devilfruit.png`,
                 },
