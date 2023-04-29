@@ -18,18 +18,25 @@ const powerup2Cooldown = ref(false);
 defineExpose({ setup, giveUp })
 const emit = defineEmits(['ReadyGame', 'GameOver'])
 
-const { init_game, updatePlayer, updateBall, rescaleGameData } = useGameRenderer()
+const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
 
 const keys: { [key: string]: boolean } = {
     ArrowUp: false,
     ArrowDown: false
 };
 
+onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown)
+    document.removeEventListener('keyup', handleKeyUp)
+    reset()
+})
+
 const emitGameOver = (winner: string): void => {
     if (winner == gameSetup.value.game.players[gameSetup.value.player].username)
         emit('GameOver', 'you won')
     else
         emit('GameOver', 'you lost')
+    reset()
 }
 
 const { socket, emitStartGame, setupSocketHandlers, resetSocket } = useSocket(emitGameOver)
@@ -37,6 +44,7 @@ const { socket, emitStartGame, setupSocketHandlers, resetSocket } = useSocket(em
 function giveUp(): void {
     socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
     resetSocket()
+    reset()
 }
 
 function setup(mode: GameSelectDto): void {

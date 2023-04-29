@@ -8,12 +8,12 @@
     <div class="flex space-x-4">
       <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center relative">
         <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" />
-        <div v-if="cooldown1"
+        <div v-if="cooldown11"
           class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-full"></div>
       </div>
       <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center relative">
         <img src="/Ghost.png" alt="Icon 1" class="w-full h-full rounded-full" />
-        <div v-if="cooldown2"
+        <div v-if="cooldown12"
           class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-full"></div>
       </div>
     </div>
@@ -21,9 +21,13 @@
     <div class="flex space-x-4">
       <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center ">
         <img src="/Ghost.png" alt="Icon 1" class="w-full h-full rounded-full" />
+        <div v-if="cooldown22"
+          class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-full"></div>
       </div>
       <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center">
         <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" />
+        <div v-if="cooldown21"
+          class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-full"></div>
       </div>
     </div>
     <div class="flex flex-col items-center">
@@ -39,11 +43,19 @@
 
 <script setup lang='ts'>
 const props = defineProps({
-  cooldown1: {
+  cooldown11: {
     type: Boolean,
     default: false
   },
-  cooldown2: {
+  cooldown12: {
+    type: Boolean,
+    default: false
+  },
+  cooldown21: {
+    type: Boolean,
+    default: false
+  },
+  cooldown22: {
     type: Boolean,
     default: false
   }
