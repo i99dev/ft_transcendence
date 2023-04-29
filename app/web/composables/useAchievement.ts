@@ -9,18 +9,27 @@ export const useAchievement = () => {
 }
 
 export async function getNewAchievement(): Promise<string[] | null> {
-	const api = useRuntimeConfig().API_URL
-	const { data, error: errorRef } = await useFetch<string[]>(`/achievement/new`, {
-		method: 'GET',
-		baseURL: api,
-		headers: {
-			Authorization: `Bearer ${useCookie('access_token').value}`,
-		},
-	})
-	const error = errorRef.value
-	if (error)
-		console.error('Failed to get :', error)
-	else
-		console.log('new achievement: ', data.value)
-	return data.value
+    const api = useRuntimeConfig().API_URL
+    const { data, error: errorRef } = await useFetch<string[]>(`/achievement/new`, {
+        method: 'GET',
+        baseURL: api,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    const error = errorRef.value
+    if (error) console.error('Failed to get :', error)
+    else console.log('new achievement: ', data.value)
+    return data.value
+}
+
+export async function deleteNewAchievement(content: string): Promise<void> {
+	console.log('delete achievement')
+    const response = await fetch(`/Notification/achievement?content=${content}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+	console.log(response)
 }

@@ -311,24 +311,13 @@ export class gameAnalyzer {
         })
     }
 
-    createNotificationDto(
-        user_login: string,
-        content: string,
-        type: NotificationType,
-        target?: string,
-    ): CreateNotificationDto {
-        const notificationDto = new CreateNotificationDto()
-        notificationDto.user_login = user_login
-        notificationDto.content = content
-        notificationDto.type = type
-        notificationDto.target = target
-        return notificationDto
-    }
-
     async storeAchievementAsNotification(login: string, achievement: string): Promise<void> {
-        await this.notificationService.createNotification(
-            this.createNotificationDto(login, `${achievement}`, NotificationType.ACHIEVEMENT),
-        )
+        await this.notificationService.createNotification({
+            user_login: login,
+            content: achievement,
+            type: NotificationType.ACHIEVEMENT,
+            target: 'test',
+        })
         const notf = await this.prisma.notification.findMany({
             where: {
                 user_login: login,

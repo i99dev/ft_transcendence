@@ -5,7 +5,7 @@ import { CreateNotificationDto } from '@common/dtos/notification.dto'
 
 @Injectable()
 export class NotificationService {
-    private prisma: PrismaService
+    private prisma = new PrismaService()
 
     async createNotification(payload: CreateNotificationDto) {
         console.log(payload)
@@ -30,6 +30,21 @@ export class NotificationService {
                 where: {
                     id: id,
                     user_login: user_login,
+                },
+            })
+            return notification
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async deleteAchievNotification(user_login: string, content: string) {
+        try {
+            const notification = await this.prisma.notification.deleteMany({
+                where: {
+                    user_login: user_login,
+                    content: content,
+                    type: 'ACHIEVEMENT',
                 },
             })
             return notification
