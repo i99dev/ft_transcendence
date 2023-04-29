@@ -5,9 +5,10 @@ import { CreateNotificationDto } from '@common/dtos/notification.dto'
 
 @Injectable()
 export class NotificationService {
-    constructor(private prisma: PrismaService) {}
+    private prisma: PrismaService
 
     async createNotification(payload: CreateNotificationDto) {
+        console.log(payload)
         try {
             const notification = await this.prisma.notification.create({
                 data: {
@@ -19,7 +20,7 @@ export class NotificationService {
             })
             return notification
         } catch (error) {
-            console.log(error)
+            console.log('error---->', error)
         }
     }
 

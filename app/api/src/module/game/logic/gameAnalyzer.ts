@@ -15,7 +15,7 @@ const ladderLevel = {
 }
 export class gameAnalyzer {
     private prisma = new PrismaClient()
-    private notificationService: NotificationService
+    private notificationService = new NotificationService()
 
     // Data retrievals
     async getTotalVictories(player: string): Promise<number> {
@@ -225,15 +225,22 @@ export class gameAnalyzer {
             },
         })
     }
-    async updatePlayerAcheivments(player: string, acheivment: string): Promise<void> {
-        this.prisma.user.update({
+    async updatePlayerAcheivments(player: string, achievement: string): Promise<void> {
+        const ach = await this.prisma.achievement.findUnique({
+            where: {
+                type: achievement,
+            },
+        })
+        console.log(player, ach)
+        if (ach == null) return
+        await this.prisma.user.update({
             where: {
                 login: player,
             },
             data: {
                 achievements: {
                     connect: {
-                        type: acheivment,
+                        id: ach.id,
                     },
                 },
             },
@@ -299,7 +306,8 @@ export class gameAnalyzer {
         if (achievements.length == 0) return
         achievements.forEach(async achievement => {
             await this.updatePlayerAcheivments(login, achievement)
-            await this.storeAchievementAsNotification(login, achievement)
+            // await this.storeAchievementAsNotification(login, achievement)
+            console.log('update achievement', achievement)
         })
     }
 
@@ -318,9 +326,16 @@ export class gameAnalyzer {
     }
 
     async storeAchievementAsNotification(login: string, achievement: string): Promise<void> {
-        this.notificationService.createNotification(
+        await this.notificationService.createNotification(
             this.createNotificationDto(login, `${achievement}`, NotificationType.ACHIEVEMENT),
         )
+        const notf = await this.prisma.notification.findMany({
+            where: {
+                user_login: login,
+                type: NotificationType.ACHIEVEMENT,
+            },
+        })
+        console.log('notf', notf)
     }
 
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {
