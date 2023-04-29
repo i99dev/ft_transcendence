@@ -217,14 +217,12 @@ export class DefaultService {
             player1.game = null
             player1.status = 'online'
             player1.socket.leave(game.getGameID())
-            player1.powerUps = []
         }
         const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player2) {
             player2.game = null
             player2.status = 'online'
             player2.socket.leave(game.getGameID())
-            player1.powerUps = []
         }
     }
 

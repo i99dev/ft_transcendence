@@ -19,12 +19,12 @@
     </div>
     <div class="border-r border-white border-opacity-50 h-8 mx-4"></div>
     <div class="flex space-x-4">
-      <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center ">
+      <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center relative">
         <img src="/Ghost.png" alt="Icon 1" class="w-full h-full rounded-full" />
         <div v-if="cooldown22"
           class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-full"></div>
       </div>
-      <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center">
+      <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center relative">
         <img src="/Hiken.jpg" alt="Icon 1" class="w-full h-full rounded-full" />
         <div v-if="cooldown21"
           class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-full"></div>
@@ -75,6 +75,7 @@ watch(gameSetup, (newVal) => {
 });
 
 watchEffect(() => {
+  // console.log(props)
   if (gameData?.value?.players) {
     const newScores = [gameData.value.players[0].score, gameData.value.players[1].score];
     if (scores.value[0] != newScores[0] || scores.value[1] != newScores[1]) {
