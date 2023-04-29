@@ -5,7 +5,7 @@
     >
         <div class="flex flex-col w-full space-y-6 items-center">
             <div class="flex flex-row justify-center w-1/2 mobile:w-full">
-                <UserProfileCardOne class="w-full" />
+                <UserProfileCardOne class="w-full" :username="userName" />
             </div>
             <button
                 @click="() => navigateTo('/play')"
@@ -80,10 +80,15 @@ import {
     deleteNewAchievement,
 } from '../composables/useAchievement'
 import { ref, onMounted, computed } from 'vue'
+import { useUserInfo } from '../composables/useMe'
 
 definePageMeta({
     middleware: ['pages'],
 })
+
+const { user_info } = useUserInfo()
+const userName = user_info.value.username
+
 
 
 const newAchievement = await getNewAchievement()

@@ -91,4 +91,15 @@ export class UserService {
             console.log(error)
         }
     }
+
+    async getUserbyUserName(name: string): Promise<UserGetDto> {
+        const user: UserGetDto = await this.prisma.user.findUnique({
+            where: { username: name },
+            include: {
+                friend_to: true,
+                friends: true,
+            },
+        })
+        return user
+    }
 }
