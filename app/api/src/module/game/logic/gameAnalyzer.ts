@@ -318,7 +318,7 @@ export class gameAnalyzer {
         if (achievements.length == 0) return
         achievements.forEach(async achievement => {
             await this.updatePlayerAcheivments(login, achievement)
-            // await this.storeAchievementAsNotification(login, achievement)
+            await this.storeAchievementAsNotification(login, achievement)
             console.log('update achievement', achievement)
         })
     }

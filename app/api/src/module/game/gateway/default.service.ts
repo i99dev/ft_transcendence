@@ -191,7 +191,7 @@ export class DefaultService {
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
         this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
-        await this.gameAnalyzer.storeAchievementAsNotification('aaljaber', 'Rookie No More')
+        // await this.gameAnalyzer.storeAchievementAsNotification('aaljaber', 'Rookie No More')
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
             this.clearData(game)
