@@ -17,6 +17,10 @@
 <script lang="ts" setup>
 import { Socket } from 'socket.io-client';
 
+definePageMeta({
+    middleware: ['pages'],
+})
+
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { data, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
@@ -24,7 +28,7 @@ const { setUserInfo } = useUserInfo()
 if (data.value)
     await setUserInfo(data.value)
 else if (error?.status === 401)
-    useRouter().push('/login')
+    navigateTo('/login')
 
 chatSocket.value.on('exception', (payload)=>{
     console.log(`${payload}: ${payload.message}`)

@@ -6,6 +6,7 @@ export default defineNuxtConfig({
             CLIENT_SECRET: process.env.CLIENT_SECRET,
             REDIRECT_URI: process.env.REDIRECT_URI,
             API_URL: process.env.API_URL,
+            GAME_NAME: process.env.GAME_NAME,
         },
     },
     css: ['~/assets/css/main.css'],

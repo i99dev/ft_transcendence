@@ -24,9 +24,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-definePageMeta({
-    middleware: ['pages'],
-})
-</script>

@@ -199,6 +199,19 @@ function openFriendsModel() {
                             <div class="text-xs font-semibold text-center text-white">10</div>
                         </div>
                     </div>
+                    <button
+                        @click="useLogout"
+                        class="cursor-pointer relative rounded-full"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 stroke-1 stroke-current"
+                            viewBox="0 0 24 24" fill="none">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                            <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
