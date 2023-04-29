@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { getPlayerWinRate, getPlayerGameResult } from '@/composables/usePlayer'
+import { getPlayerWinRate, getPlayerGameResult } from '../../composables/usePlayer'
+import { useUserInfo, useUpdateUserInfo } from '../../composables/useMe'
+import { useFriends } from '../../composables/useFriends'
+import { useChat } from '../../composables/useChat'
+import { getUserbyUserName } from '../../composables/useUsers'
 
+import { computed, ref } from 'vue'
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
 
 const props = defineProps({
@@ -10,8 +15,13 @@ const props = defineProps({
   },
 })
 
+const user = await getUserbyUserName(props.username)
+
+console.log('usersss !!!!!!!', user)
+
+
 const userData = computed(() => {
-    return user_info.value
+	return user.value
 })
 
 console.log('props', props.username)
@@ -95,7 +105,7 @@ const totaLoses = await getPlayerGameResult('false', 'true')
 
 const totalWins = await getPlayerGameResult('true', 'false')
 
-const getLadderRank = ladder => {
+const getLadderRank = (ladder: number) => {
     switch (ladder) {
         case 1:
             return 'Kaizoku Ou'

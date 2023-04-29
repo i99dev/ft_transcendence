@@ -13,15 +13,24 @@
 import { useRoute } from 'vue-router'
 import { useUserInfo } from '../../composables/useMe'
 import { getUserbyUserName } from '../../composables/useUsers'
-
+import { computed } from 'vue'
 
 const route = useRoute()
 
+
+
 const { user_info } = useUserInfo()
 
-const userName = user_info.value.username
+const userName = computed(() => {
+	let username = ""
+	if (Array.isArray(route.params.username) && route.params.username.every((item) => typeof item === "string"))
+		username = route.params.username[0]
+	else
+		username = route.params.username
+	return username
+}) 
 
-const user = await getUserbyUserName(userName)
+const user = await getUserbyUserName(userName.value)
 
 
 console.log('usersss', user)
