@@ -68,7 +68,7 @@ export function useGameRenderer() {
             0.5,
             0.1
         );
-        composer.addPass(bloomPass);
+        // composer.addPass(bloomPass);
     };
 
 
