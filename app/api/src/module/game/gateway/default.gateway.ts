@@ -75,4 +75,3 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.movePaddle(client, direction)
     }
 }
- 

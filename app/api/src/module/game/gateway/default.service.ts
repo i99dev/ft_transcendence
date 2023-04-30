@@ -16,6 +16,7 @@ export class DefaultService {
     private classic_queue: string[] = []
     private custom_queue: string[] = []
     private gameAnalyzer = new gameAnalyzer()
+    private game_result: gameHistory | null = null
 
     constructor(private socketService: SocketService) { }
 
@@ -24,10 +25,9 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
+        console.log('USER CONNECTED TO SERVER')
         if (temp) {
-            userSocket.disconnect(
-                true,
-            )
+            userSocket.disconnect(true)
             return
         }
         console.log("USER Connected From SERVER")
@@ -45,10 +45,9 @@ export class DefaultService {
             * if in game -> set player a loser so game will end and other player will win.
     */
     public removeDisconnectedUser(userSocket: Socket) {
-
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
-            console.log("USER Disconnected From SERVER")
+            console.log('USER Disconnected From SERVER')
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
                 if (this.classic_queue.includes(user.id))
@@ -165,6 +164,7 @@ export class DefaultService {
     }
 
     private startGame(game: PongGame) {
+        this.game_result = new gameHistory(game.getGameStatus())
         const intervalId = setInterval(async () => {
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
 
@@ -190,26 +190,37 @@ export class DefaultService {
         }
     }
 
+    public async unlockAchievement(game: PongGame, username: string) {
+        const postGameAchiev = await this.gameAnalyzer.grantAchievements(username)
+        const midGameAchiev = game.analyzePlayer.get(username).Achievements
+        const achievements = [...postGameAchiev, ...midGameAchiev]
+        console.log(achievements, achievements.length)
+        if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(username, achievements)
+    }
+
+    // end the game and emit the end game event
     public async endGame(game: PongGame, winner: PlayerDto): Promise<void> {
         const game_status = game.getGameStatus()
         this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
-
+        // await this.gameAnalyzer.storeAchievementAsNotification('aaljaber', 'Rookie No More')
+        // dont save history if the game is against computer (It causes a crash when trying to save the game)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
             this.clearData(game)
             return
         }
 
-        const game_result: gameHistory = new gameHistory(game_status)
-        game_result.addHistory()
+        this.game_result.addHistory()
 
         for (let i = 0; i < game_status.players.length; i++) {
             await this.gameAnalyzer.updatePlayerXP(
                 game_status.players[i].username,
-                game_result.IsWinner(game_status.players[i]) ? true : false,
+                this.game_result.IsWinner(game_status.players[i]) ? true : false,
             )
+            console.log(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
+            await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
+            await this.unlockAchievement(game, game_status.players[i].username)
         }
-
         this.clearData(game)
     }
 
@@ -226,6 +237,7 @@ export class DefaultService {
             player2.status = 'online'
             player2.socket.leave(game.getGameID())
         }
+        this.game_result = null
     }
 
     private isComputer(player: PlayerDto): boolean {

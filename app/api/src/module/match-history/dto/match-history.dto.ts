@@ -23,7 +23,7 @@ export class PlayerDto {
     id: number
     score: number
     IsWinner: boolean
-    user: UserDto
+    user?: UserDto
     matches?: MatchHistoryDto
 }
 

@@ -18,4 +18,8 @@ export class SocketService {
         socket1.emit('Game-Setup', { game, player: 0 })
         if (socket2) socket2.emit('Game-Setup', { game, player: 1 })
     }
+
+    emitAcheivement(socket: Socket, achievement: string): void {
+        socket.emit('Achievement', achievement)
+    }
 }
