@@ -38,21 +38,6 @@ export class NotificationService {
         }
     }
 
-    async deleteAchievNotification(user_login: string, content: string) {
-        try {
-            const notification = await this.prisma.notification.deleteMany({
-                where: {
-                    user_login: user_login,
-                    content: content,
-                    type: 'ACHIEVEMENT',
-                },
-            })
-            return notification
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async getMyNotifications(user_login: string) {
         try {
             const notifications = await this.prisma.notification.findMany({

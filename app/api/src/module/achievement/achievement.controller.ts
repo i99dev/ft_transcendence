@@ -1,6 +1,6 @@
 import { AchievementService } from './achievement.service'
 import { Controller, Param } from '@nestjs/common'
-import { UseGuards, Req, Get, Query } from '@nestjs/common'
+import { UseGuards, Req, Get, Query, Delete } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { AchievementDto } from './dto/achievement.dto'
 @Controller('achievement')
@@ -38,6 +38,13 @@ export class AchievementController {
         else if (win === 'true' && lose === 'false')
             return await this.achievementService.gameAnalyzer.getTotalVictories(login)
         else return await this.achievementService.gameAnalyzer.getTotalMatches(login)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('/:content')
+    async deleteAchievNotification(@Param('content') content: string, @Req() req) {
+        console.log('delete Notification')
+        return await this.achievementService.deleteAchievNotification(req.user.login, content)
     }
 
     @UseGuards(JwtAuthGuard)

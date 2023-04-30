@@ -20,11 +20,4 @@ export class NotificationController {
         const idNumber = parseInt(id)
         return await this.notificationService.deleteNotification(idNumber, req.user.login)
     }
-
-    @UseGuards(JwtAuthGuard)
-    @Delete('/achievement')
-    async deleteAchievNotification(@Query('content') content: string, @Req() req) {
-        console.log('delete Notification')
-        return await this.notificationService.deleteAchievNotification(req.user.login, content)
-    }
 }
