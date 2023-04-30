@@ -6,10 +6,13 @@ export interface ConnectedUser {
     socket: Socket
     status: 'ingame' | 'inqueue' | 'online'
     game?: PongGame
+    powerUps?: string[]
 }
 
-export interface PowerUp {
-    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu'
-    active: boolean
-    duration: number
+export interface PowerUp{
+    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu';
+    active: boolean;
+    ready: boolean;
+    duration: number;
+    cooldown: number;
 }
