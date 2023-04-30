@@ -105,18 +105,18 @@ export class DefaultService {
         TODO: add matchmaking algorithm to find opponent with similar skill level
     */
     private async findOpponent(userID: string, gameType: string): Promise<ConnectedUser | null> {
-        const userLadder = await this.gameAnalyzer.getLadderLevel(userID)
-        let opponent = ''
+        // const userLadder = await this.gameAnalyzer.getLadderLevel(userID)
+        // let opponent = ''
         if (gameType == 'classic') {
             if (this.classic_queue.length > 0) {
-                // const opponent = this.classic_queue.shift()
-                this.classic_queue.forEach(async (user: string) => {
-                    const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
-                    if (ladderLevel === userLadder) {
-                        opponent = userID
-                        return
-                    }
-                })
+                const opponent = this.classic_queue.shift()
+                // this.classic_queue.forEach(async (user: string) => {
+                //     const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
+                //     if (ladderLevel === userLadder) {
+                //         opponent = userID
+                //         return
+                //     }
+                // })
                 return this.connected_users.find(user => user.id == opponent)
             } else {
                 this.classic_queue.push(userID)
@@ -124,14 +124,14 @@ export class DefaultService {
             }
         } else if (gameType == 'custom') {
             if (this.custom_queue.length > 0) {
-                // const opponent = this.custom_queue.shift()
-                this.classic_queue.forEach(async (user: string) => {
-                    const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
-                    if (ladderLevel === userLadder) {
-                        opponent = userID
-                        return
-                    }
-                })
+                const opponent = this.custom_queue.shift()
+                // this.classic_queue.forEach(async (user: string) => {
+                //     const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
+                //     if (ladderLevel === userLadder) {
+                //         opponent = userID
+                //         return
+                //     }
+                // })
                 return this.connected_users.find(user => user.id == opponent)
             } else {
                 this.custom_queue.push(userID)

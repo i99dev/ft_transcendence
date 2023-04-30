@@ -67,6 +67,8 @@ const getLB = async () => {
 	const playersArray = []
 	if (data.value) {
 
+		if (currentPage.value === 1)
+			Ranknum.value = 1
 		for (let i = 0; i < data.value.length; i++) {
 			playersArray.push({
 				rankNum: Ranknum.value + i,
@@ -74,8 +76,6 @@ const getLB = async () => {
 				TotalMatches: await getPlayerGameResult(data.value[i].login, 'false', 'false'),
 			})
 		}
-		if (currentPage.value === 1)
-			Ranknum.value = 1
 		Ranknum.value += playersArray.length
 	}
 	if (data.value) lbPlayers.value = playersArray
