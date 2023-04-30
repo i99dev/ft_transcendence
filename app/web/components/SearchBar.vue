@@ -1,7 +1,7 @@
 <template>
-	<div class="w-1/2 z-50 relative mx-auto">
+	<div class="z-50 relative mx-auto">
 	  <div class="bg-white w-30 h-11 rounded-xl mb-3 shadow-lg p-2">
-		<input type="text" placeholder="Search" class="w-full h-full text-2xl rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+		<input v-model="searchInput" @keyup.enter="$emit('userInput', searchInput)" type="text" placeholder="Search" class="w-full h-full text-2xl rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
 	  </div>
 	  <!-- <div class="bg-white w-full rounded-xl shadow-xl overflow-hidden p-1"> -->
 		<!-- items -->
@@ -53,3 +53,12 @@
 	  <!-- </div> -->
   </div>
   </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const searchInput = ref('')
+
+
+
+</script>
