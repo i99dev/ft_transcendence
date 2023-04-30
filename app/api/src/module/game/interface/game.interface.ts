@@ -8,9 +8,8 @@ export interface ConnectedUser {
     game?: PongGame
 }
 
-export interface PowerUp{
-    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu';
-    active: boolean;
-    duration: number;
+export interface PowerUp {
+    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu'
+    active: boolean
+    duration: number
 }
-

@@ -12,7 +12,7 @@ export class LeaderboardService {
         const users = await this.prisma.user.findMany({
             take: this.limit,
             skip: (page - 1) * this.limit,
-            orderBy: [{ ladder: 'asc' }, { xp: 'desc' }],
+            orderBy: [{ ladder: 'asc' }, { wr: 'desc' }],
         })
         return users
     }

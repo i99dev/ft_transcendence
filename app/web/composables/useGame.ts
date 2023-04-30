@@ -38,9 +38,9 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
 
 
 
-export async function useGameHistoryPages(): Promise<number | null> {
+export async function useGameHistoryPages(login: string): Promise<number | null> {
 	const api = useRuntimeConfig().API_URL
-	const { data, error: errorRef } = await useFetch<number>(`/match-history/totalPages`, {
+	const { data, error: errorRef } = await useFetch<number>(`/match-history/${login}/totalPages`, {
 		method: 'GET',
 		baseURL: api,
 		headers: {

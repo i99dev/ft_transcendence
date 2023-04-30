@@ -188,10 +188,25 @@
 <script setup lang="ts">
 
 import { ref, computed, onMounted } from 'vue'
+import { getUserbyUserName } from '../../composables/useUsers'
+import { useGameHistory, useGameHistoryPages } from '../../composables/useGame'
 
-const game_history = await useGameHistory(`/match-history?page=1`)
+const props = defineProps({
+    username: {
+        type: String,
+        default: false,
+    },
+})
 
-const games = computed(() => game_history.values)
+const user = await getUserbyUserName(props.username)
+
+const login = computed(() => user.login )
+
+console.log('LLOOGGINN', props.username, user.username, login.value)
+
+const game_history = await useGameHistory(`/match-history/${login.value}?page=1`)
+
+const games = computed(() => { return game_history ? game_history.values : []  })
 
 const showButton = ref(false)
 
@@ -203,7 +218,7 @@ const isPage = ref(new Map<number, boolean>())
 
 const isFilter = ref(new Map<string, boolean>())
 
-const pageNumber = await useGameHistoryPages()
+const pageNumber = await useGameHistoryPages(login.value)
 
 onMounted(async () => {
 	for (let i = 1; i <= (pageNumber ? pageNumber: 0); i++)
@@ -215,19 +230,19 @@ onMounted(async () => {
 	isFilter.value.set('desc', false);
 	currentPage.value = 1
 	currentFilter.value = 'all'
-	game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
+	game_history.values = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
 	isPage.value.set(1, true)
-	console.log(game_history.values)
+	console.log(game_history?.values)
 	
 	console.log(games.value)
 })
 
 const getOpponent = (game) => {
-  return game.opponents.find((opponent) => opponent.user.login !== useUserInfo().user_info.value.login)
+  return game.opponents.find((opponent) => opponent.user.login !== login.value)
 }
 
 const getMe = (game) => {
-  return game.opponents.find((opponent) => opponent.user.login === useUserInfo().user_info.value.login)
+  return game.opponents.find((opponent) => opponent.user.login === login.value)
 }
 
 const handleDropdown = () => {
@@ -236,14 +251,11 @@ const handleDropdown = () => {
 
 // temprorary solution for same login bug
 const isSameLogin = (game) => {
-	if (game.opponents[0].user.login === game.opponents[1].user.login)
-		return true
-	else
-		return false
+	return  (game.opponents[0].user.login === game.opponents[1].user.login ? true : false)
 }
 
 const handlePagination = async (page: number) => {
-	if (page < 1 || page > pageNumber) return
+	if (pageNumber && (page < 1 || page > pageNumber)) return
 	for (const key of isPage.value.keys())
 		isPage.value.set(key, false)
 	isPage.value.set(page, true)
@@ -257,15 +269,15 @@ const handleFilteration = async (filter: string) => {
 	for (const key of isFilter.value.keys())
 		isFilter.value.set(key, false)
 	if (filter == "all")
-		game_history.values = await useGameHistory(`/match-history?page=${currentPage.value}`)
+		game_history.values = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
 	else if (filter == "win")
-		game_history.values = await useGameHistory(`/match-history/result?page=${currentPage.value}&winning=true&losing=false`)
+		game_history.values = await useGameHistory(`/match-history/${login.value}/result?page=${currentPage.value}&winning=true&losing=false`)
 	else if (filter == "lose")
-		game_history.values = await useGameHistory(`/match-history/result?page=${currentPage.value}&winning=false&losing=true`)
+		game_history.values = await useGameHistory(`/match-history/${login.value}/result?page=${currentPage.value}&winning=false&losing=true`)
 	else if (filter == "asc")
-		game_history.values = await useGameHistory(`/match-history/score?page=${currentPage.value}&sort=asc`)
+		game_history.values = await useGameHistory(`/match-history/${login.value}/score?page=${currentPage.value}&sort=asc`)
 	else if (filter == "desc")
-		game_history.values = await useGameHistory(`/match-history/score?page=${currentPage.value}&sort=desc`)
+		game_history.values = await useGameHistory(`/match-history/${login.value}/score?page=${currentPage.value}&sort=desc`)
 	currentFilter.value = filter
 	isFilter.value.set(filter, true)
 	console.log(filter)

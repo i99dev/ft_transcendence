@@ -38,6 +38,9 @@ export class MatchHistoryService {
                     },
                 },
             },
+            orderBy: {
+                start: 'desc',
+            },
             include: {
                 opponents: {
                     include: {

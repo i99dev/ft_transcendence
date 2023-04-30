@@ -89,6 +89,11 @@ export class UserController {
         return await this.UserService.checkUser(await this.UserService.getUser(name))
     }
 
+    @Get('username/:name/')
+    async GetUserByUserName(@Param('name') name: string): Promise<UserGetDto> {
+        return await this.UserService.checkUser(await this.UserService.getUserbyUserName(name))
+    }
+
     @Patch('/:name')
     @ApiOperation({
         operationId: 'updateUser',

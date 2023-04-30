@@ -13,8 +13,7 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             image: 'string',
             status: 'ONLINE',
             two_fac_auth: true,
-            total_loses: 0,
-            total_wins: 0,
+            wr: 0,
         }
         return vari
     }

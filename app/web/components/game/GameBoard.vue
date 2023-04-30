@@ -86,6 +86,7 @@ const socketEvents = (): void => {
             emit('GameOver', 'you won')
         else emit('GameOver', 'you lost')
     })
+
 }
 
 const windowEvents = (): void => {
