@@ -20,6 +20,12 @@
             <GameResult v-if="gameResult" @vnode-mounted="exit = false" :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain" />
         </div>
+        <div v-if="showTab"  class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-md text-center">
+                <h2 class="text-xl font-semibold mb-4">You can't use the app on multiple tabs</h2>
+                <p>Please use the other tab.</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -27,6 +33,7 @@
 
 import { ref } from 'vue'
 import { useSocket, useTabEvent } from '@/composables/Game/useSocket'
+const emit = defineEmits(['showTabModal'])
 const exit = ref(false);
 const showSelector = ref(true)
 const showBoard = ref(false)
@@ -36,13 +43,14 @@ const gameBoard = ref()
 const gameSelector = ref()
 
 const { emitLeaveQueue } = useSocket()
+const { showTab } = useTabEvent()
 
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
 
     setTimeout(() => {
         gameBoard.value.setup(mode)
-    }, 1000);
+    }, 1000)
     gameResult.value = false
 }
 
@@ -67,6 +75,7 @@ const leaveQueue = (): void => {
     console.log('leave queue !!')
 
 }
+
 const setGameReady = (): void => {
     showSelector.value = false
     gameResult.value = false
@@ -80,10 +89,6 @@ const exitGame = (): void => {
     gameResult.value = false
 }
 
-const powerup = (): void => {
-    gameBoard.value.powerup()
-}
-
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
@@ -92,18 +97,5 @@ const switchExistStatus = (status: boolean): void => {
 <style>
 body {
     background-color: #202020;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 0vh;
-    padding: 0;
-    min-height: 100vh;
-    min-width: 100vw;
-    position: relative;
-    height: 100vh;
 }
 </style>

@@ -3,6 +3,7 @@ import { inject } from 'vue'
 
 export function useSocket(gameOverCallback: (winner: string) => void) {
     const nuxtApp = useNuxtApp()
+export function useSocket() {
     const socket = ref(nuxtApp.socket as Socket)
 
     const gameData = useState<gameStatusDto>('gameData', () => { return {} as gameStatusDto })
@@ -43,5 +44,15 @@ export function useSocket(gameOverCallback: (winner: string) => void) {
         resetSocket
     }
 
+export function useTabEvent() {
+    const showTab = ref(false)
+    const socket = ref(nuxtApp.socket as Socket)
+    
+    socket.value.on('Close-Tab', () => {
+        console.log("Close TAB RECIVED !")
+        showTab.value = true
+    })
+
+    return { showTab }
 }
 

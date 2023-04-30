@@ -27,8 +27,11 @@ export class DefaultService {
         const temp = this.connected_users.find(user => user.id == userID)
         console.log('USER CONNECTED TO SERVER')
         if (temp) {
-            userSocket.disconnect(true)
-            return
+            setTimeout(() => {
+                userSocket.emit('Close-Tab')
+                userSocket.disconnect(true)
+                return
+            }, 500)
         }
         console.log("USER Connected From SERVER")
 
