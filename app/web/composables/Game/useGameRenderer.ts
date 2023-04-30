@@ -2,6 +2,9 @@ import * as THREE from 'three'
 import { GLTFLoader, OrbitControls, TTFLoader, FontLoader, TextGeometry } from 'three-stdlib'
 import { watch } from 'vue'
 import * as GAME from '~/constants/'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 export function useGameRenderer() {
     const gameSetup = useState<SetupDto>('gameSetup')
@@ -11,7 +14,9 @@ export function useGameRenderer() {
     let controls: OrbitControls
     let gameGroup: THREE.Group, paddle: THREE.Mesh, paddle2: THREE.Mesh, sphere: THREE.Mesh
     let originalPaddleHeight: number, originalPaddle2Height: number
-
+    let wallsLayer = new THREE.Layers()
+    wallsLayer.set(1)
+    let composer: EffectComposer;
     const reset = () => {
         if (gameGroup) {
             gameGroup.children.forEach((child) => {
@@ -48,7 +53,24 @@ export function useGameRenderer() {
         camera.updateProjectionMatrix();
 
         renderer.setSize(width, height);
+        composer.setSize(width, height);
     };
+
+    const initPostProcessing = () => {
+        composer = new EffectComposer(renderer);
+
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.9,
+            0.5,
+            0.1
+        );
+        composer.addPass(bloomPass);
+    };
+
 
     const initScene = (canvasRef: Ref<HTMLCanvasElement>) => {
         scene = new THREE.Scene()
@@ -63,6 +85,7 @@ export function useGameRenderer() {
 
         camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 2000);
         camera.position.set(0, 0, 15);
+        camera.layers.enable(1);
     }
 
     const createGameObjects = async () => {
@@ -88,12 +111,13 @@ export function useGameRenderer() {
         gameGroup.add(paddle);
         gameGroup.add(paddle2);
 
+        //Ball
         /* ------------------------------- */
 
         const sphereRadius = 0.5;
         const spherePosition = new THREE.Vector3(0, 0, 0.5);
         sphere = createSphere(sphereRadius, spherePosition, 0xffffff, 0xffffff, 0.5);
-        addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 4, 6);
+        // addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 4, 4);
         gameGroup.add(sphere);
 
         /* ------------------------------- */
@@ -101,8 +125,9 @@ export function useGameRenderer() {
         const frameGeometry = createFrameGeometry(GAME.FRAME_WIDTH, GAME.FRAME_HEIGHT, GAME.FRAME_THICKNESS, GAME.FRAME_DEPTH)
         const frameMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
         const frame = new THREE.Mesh(frameGeometry, frameMaterial)
-        addPointLight(0, 8, 0, 0x6004d9, 3, 10)
-        addPointLight(0, -8, 0, 0x6004d9, 3, 10)
+        frame.layers.enable(1)
+        addPointLight(0, 8, 0, 0x6004d9, 3, 20)
+        addPointLight(0, -8, 0, 0x6004d9, 3, 20)
         // addPointLight(-14, 0, 0, 0x00ff00, 1, 7)
         // addPointLight(14, 0, 0, 0x00ff00, 1, 7)
         frame.position.set(0, 0, 0)
@@ -113,8 +138,7 @@ export function useGameRenderer() {
         const planeWidth = GAME.FRAME_WIDTH + 1.8
         const planeHeight = GAME.FRAME_HEIGHT + 0.85
         const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-        const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.position.set(0, 0, -1);
         gameGroup.add(plane);
@@ -130,6 +154,7 @@ export function useGameRenderer() {
 
     const init_game = async (canvasRef: Ref<HTMLCanvasElement>) => {
         initScene(canvasRef)
+        initPostProcessing();
         enableOrbitControls()
         await createGameObjects()
         addEventListener('resize', onWindowResize)
@@ -142,7 +167,7 @@ export function useGameRenderer() {
             function (gltf) {
                 gltf.scene.rotateX(Math.PI / 2);
                 gltf.scene.scale.set(1.5, 1.5, 1.5);
-                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 1, 0), 0xffffff, 2, 3);
+                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 2);
 
                 scene.add(gltf.scene);
             },
@@ -156,6 +181,13 @@ export function useGameRenderer() {
         scene.background = new THREE.Color(0x202020)
         animate()
     }
+
+    const animate = () => {
+        requestAnimationFrame(animate);
+        controls.update();
+        composer.render();
+        // renderer.render(scene, camera);
+    };
 
     const rescaleGameData = (game: gameStatusDto) => {
         rescalePlayers(game.players)
@@ -253,13 +285,8 @@ export function useGameRenderer() {
     function addPointLight(x: number, y: number, z: number, color: number = 0xffffff, intensity: number = 1, distance: number = 0) {
         const pointLight = new THREE.PointLight(color, intensity, distance);
         pointLight.position.set(x, y, z + 1.5);
+        pointLight.layers.enable(1);
         scene.add(pointLight);
-    }
-
-    function animate() {
-        requestAnimationFrame(animate)
-        controls.update()
-        renderer.render(scene, camera)
     }
 
     function createPaddle(width: number, height: number, depth: number, position: THREE.Vector3, color: number, emissive: number, emissiveIntensity: number): THREE.Mesh {
@@ -319,6 +346,12 @@ export function useGameRenderer() {
         });
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.copy(position);
+
+        // Add PointLight to the sphere
+        const pointLight = new THREE.PointLight(emissive, 1.5, 10);
+        pointLight.position.set(0, 0, 1.5);
+        pointLight.color.set(0xa3f1ff);
+        sphere.add(pointLight);
 
         return sphere;
     }

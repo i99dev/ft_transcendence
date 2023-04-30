@@ -30,6 +30,8 @@ export class DefaultService {
             )
             return
         }
+        console.log("USER Connected From SERVER")
+
         this.connected_users.push({
             id: userID,
             socket: userSocket,

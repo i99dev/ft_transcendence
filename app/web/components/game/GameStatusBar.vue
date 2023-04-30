@@ -42,6 +42,7 @@
 </template>
 
 <script setup lang='ts'>
+
 const props = defineProps({
   cooldown11: {
     type: Boolean,
@@ -62,7 +63,6 @@ const props = defineProps({
 });
 
 defineEmits(['ExitBtn'])
-const usernames = ref(['', ''] as string[]);
 const scores = ref([0, 0] as number[]);
 const scoreAudio = new Audio('/score.mp3')
 scoreAudio.volume = 0.2
