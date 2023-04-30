@@ -126,8 +126,8 @@ export function useGameRenderer() {
         const frameMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
         const frame = new THREE.Mesh(frameGeometry, frameMaterial)
         frame.layers.enable(1)
-        addPointLight(0, 8, 0, 0x6004d9, 3, 20)
-        addPointLight(0, -8, 0, 0x6004d9, 3, 20)
+        addPointLight(0, 16, 0, 0x6004d9, 10, 25)
+        addPointLight(0, -16, 0, 0x6004d9, 10, 25)
         // addPointLight(-14, 0, 0, 0x00ff00, 1, 7)
         // addPointLight(14, 0, 0, 0x00ff00, 1, 7)
         frame.position.set(0, 0, 0)
@@ -167,7 +167,7 @@ export function useGameRenderer() {
             function (gltf) {
                 gltf.scene.rotateX(Math.PI / 2);
                 gltf.scene.scale.set(1.5, 1.5, 1.5);
-                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 2);
+                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 4);
 
                 scene.add(gltf.scene);
             },
@@ -348,7 +348,7 @@ export function useGameRenderer() {
         sphere.position.copy(position);
 
         // Add PointLight to the sphere
-        const pointLight = new THREE.PointLight(emissive, 1.5, 10);
+        const pointLight = new THREE.PointLight(emissive, 1.5, 7);
         pointLight.position.set(0, 0, 1.5);
         pointLight.color.set(0xa3f1ff);
         sphere.add(pointLight);
