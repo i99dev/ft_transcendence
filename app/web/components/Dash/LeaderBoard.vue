@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-
+import { getPlayerGameResult } from '../../composables/useAchievement'
 
 const lbPlayers = ref([] as any)
 
@@ -71,7 +71,7 @@ const getLB = async () => {
 			playersArray.push({
 				rankNum: Ranknum.value + i,
 				...data.value[i],
-				TotalMatches: await getLBTotalMatches(data.value[i].login),
+				TotalMatches: await getPlayerGameResult(data.value[i].login, 'false', 'false'),
 			})
 		}
 		if (currentPage.value === 1)
@@ -82,19 +82,7 @@ const getLB = async () => {
 	console.log(lbPlayers.value, currentPage.value)
 }
 
-
-const getLBTotalMatches = async (player:string) => {
-	const { data } = await useFetch<number>(`/achievement/playertotalgames/${player}?Win=false&Lose=false`, {
-		method: 'GET',
-		baseURL: useRuntimeConfig().API_URL,
-		headers: {
-			Authorization: `Bearer ${useCookie('access_token').value}`,
-		},
-	})
-	return data.value
-}
-
-const getLadderRank = (ladder) => {
+const getLadderRank = (ladder: number) => {
 	switch (ladder) {
 		case 1:
 			return 'Kaizoku Ou'

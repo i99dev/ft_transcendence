@@ -14,33 +14,6 @@ export class AchievementController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('totalgames/:login') // /achievement/totalgames/login?Win=true&Lose=false
-    async getTotal(
-        @Query('Win') win: string,
-        @Query('Lose') lose: string,
-        @Param('login') login: string,
-    ): Promise<number> {
-        if (lose === 'true' && win === 'false')
-            return await this.achievementService.gameAnalyzer.getTotalDefeats(login)
-        else if (win === 'true' && lose === 'false')
-            return await this.achievementService.gameAnalyzer.getTotalVictories(login)
-        else return await this.achievementService.gameAnalyzer.getTotalMatches(login)
-    }
-
-    @Get('playertotalgames/:login') // /achievement/playertotalgames/player?Win=true&Lose=false&login=player1
-    async getPlayerTotal(
-        @Param('login') login: string,
-        @Query('Win') win: string,
-        @Query('Lose') lose: string,
-    ): Promise<number> {
-        if (lose === 'true' && win === 'false')
-            return await this.achievementService.gameAnalyzer.getTotalDefeats(login)
-        else if (win === 'true' && lose === 'false')
-            return await this.achievementService.gameAnalyzer.getTotalVictories(login)
-        else return await this.achievementService.gameAnalyzer.getTotalMatches(login)
-    }
-
-    @UseGuards(JwtAuthGuard)
     @Delete('/:content')
     async deleteAchievNotification(@Param('content') content: string, @Req() req) {
         console.log('delete Notification')

@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { JwtService } from '@nestjs/jwt'
+import { gameAnalyzer } from '../game/logic/gameAnalyzer'
+
 @Injectable()
 export class MatchHistoryService {
     private prisma = new PrismaClient()
     constructor(private jwtService: JwtService) {}
+    public gameAnalyzer = new gameAnalyzer()
     readonly limit = 3
 
     async getLoginFromToken(authHeader: string): Promise<string> {
