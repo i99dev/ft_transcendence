@@ -1,5 +1,5 @@
 <template>
-    <div class="z-50 relative mx-auto">
+    <div class="z-50 relative">
         <div class="bg-white w-30 h-11 rounded-xl mb-3 shadow-lg p-2">
             <input
                 v-model="searchInput"
