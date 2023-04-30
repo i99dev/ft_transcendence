@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="font-bold text-lg">UserName: {{ user.username }}</div>
+                        <div class="font-bold text-lg">{{ user.username }}</div>
                         <div class="text-xs text-gray-500">
                             <span class="mr-2">Ladder: {{ user.ladder }} </span>
                             <span class="mr-2">Name: {{ user.first_name }} </span>
