@@ -46,7 +46,6 @@ const currentPage = ref(1)
 const totalPagesURL =`/leaderboard/totalPages`
 
 
-
 onMounted(async () => {
 	await getLB()
 })

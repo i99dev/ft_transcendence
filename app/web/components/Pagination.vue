@@ -96,5 +96,4 @@ const getTotalPages = async () => {
 }
 
 
-
 </script>
