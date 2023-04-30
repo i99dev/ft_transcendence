@@ -3,7 +3,7 @@
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
-                <GameSelector @gameSelected="startGame" ref="gameSelector" />
+                <GameSelector @gameSelected="startGame" ref="gameSelector" @leaveQueue="leaveQueue" />
             </div>
         </div>
 
@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 
 import { ref } from 'vue'
-
+import { useSocket, useTabEvent } from '@/composables/Game/useSocket'
 const exit = ref(false);
 const showSelector = ref(true)
 const showBoard = ref(false)
@@ -35,10 +35,7 @@ const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
 
-
-const emitStopQueue = (): void => {
-    gameBoard.value.stopQueue()
-}
+const { emitLeaveQueue } = useSocket()
 
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
@@ -61,6 +58,15 @@ const gameOver = (message: string): void => {
     showBoard.value = false
 }
 
+const leaveQueue = (): void => {
+    emitLeaveQueue()
+    gameBoard.value.destroy()
+    setTimeout(() => {
+        showBoard.value = false
+    }, 1000)
+    console.log('leave queue !!')
+
+}
 const setGameReady = (): void => {
     showSelector.value = false
     gameResult.value = false

@@ -144,6 +144,20 @@ export class DefaultService {
     }
 
     /* 
+        Remove User From Queue 
+    */
+    public leaveQueue(userSocket: Socket) {
+        const player = this.connected_users.find(user => user.socket == userSocket)
+        if (!player || player.status != 'inqueue') return
+
+        if (this.classic_queue.includes(player.id))
+            this.classic_queue.splice(this.classic_queue.indexOf(player.id), 1)
+        if (this.custom_queue.includes(player.id))
+            this.custom_queue.splice(this.custom_queue.indexOf(player.id), 1)
+        player.status = 'online'
+    }
+
+    /* 
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {

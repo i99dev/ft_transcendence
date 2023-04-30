@@ -15,6 +15,10 @@ export function useSocket(gameOverCallback: (winner: string) => void) {
         socket.value.emit('Join-Game', mode)
     }
 
+    const emitLeaveQueue = () => {
+        socket.value.emit('Leave-Queue')
+    }
+
     const setupSocketHandlers = () => {
         socket.value.on('Game-Setup', (data: SetupDto) => {
             gameSetup.value = data
@@ -35,6 +39,7 @@ export function useSocket(gameOverCallback: (winner: string) => void) {
         socket,
         emitStartGame,
         setupSocketHandlers,
+        emitLeaveQueue,
         resetSocket
     }
 

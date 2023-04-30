@@ -19,8 +19,7 @@ const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 
 const showStatusBar = ref(false);
-
-defineExpose({ setup, giveUp })
+defineExpose({ setup, giveUp, destroy })
 const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
@@ -56,12 +55,14 @@ const emitGameOver = (winner: string): void => {
     showStatusBar.value = false
 }
 
-const { socket, emitStartGame, setupSocketHandlers, resetSocket } = useSocket(emitGameOver)
+function destroy(): void {
+    resetSocket()
+    reset()
+}
 
 function giveUp(): void {
     socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
-    resetSocket()
-    reset()
+    destroy()
 }
 
 function setup(mode: GameSelectDto): void {

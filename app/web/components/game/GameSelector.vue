@@ -4,7 +4,7 @@
       <div class="aspect-w-3 aspect-h-4">
         <div>
           <div v-if="step === 1" key="step1">
-            <h2 class="text-2xl mb-4 text-center">Select a Game</h2>
+            <h2 class="text-2xl mb-4 text-center">Select Game Type</h2>
             <ul class="space-y-2">
               <li>
                 <button
@@ -21,6 +21,12 @@
                 </button>
               </li>
             </ul>
+            <div class="mt-4 flex space-x-4 justify-center">
+              <button class="py-2 px-4 border border-transparent rounded-md text-white bg-red-500 hover:bg-red-600"
+                @click="goHome">
+                Home
+              </button>
+            </div>
           </div>
           <div v-if="step === 2" key="step2">
             <h2 class="text-2xl mb-4 text-center">Select Game Mode</h2>
@@ -70,6 +76,11 @@
                 <div class="circle circle-2"></div>
               </div>
               <p class="loading-text mt-2 text-lg font-bold">{{ loadingMsg }}</p>
+              <button v-if="selectedMode == 'multi'"
+                class="mt-4 py-2 px-4 border border-transparent rounded-md text-white bg-red-500 hover:bg-red-600"
+                @click="leaveQueue">
+                Leave Queue
+              </button>
             </div>
           </div>
         </div>
@@ -84,14 +95,14 @@ const selectedGame = ref('' as string);
 const selectedMode = ref('' as string);
 const loadingMsg = ref('' as string);
 
-const emit = defineEmits(['gameSelected'])
+const emit = defineEmits(['gameSelected', 'leaveQueue'])
 
 const selectGame = (game: string) => {
   selectedGame.value = game;
   step.value = 2;
 };
 
-const reset = (game: string) => {
+const reset = () => {
   step.value = 1
   selectedGame.value = ''
   selectedMode.value = ''
@@ -112,6 +123,16 @@ const checkPowerupLimit = () => {
     selectedPowerups.value.shift();
   }
 };
+
+const goHome = () => {
+  navigateTo('/');
+};
+
+const leaveQueue = () => {
+  emit('leaveQueue');
+  reset();
+};
+
 
 const emitGameSelected = () => {
   emit('gameSelected', {
