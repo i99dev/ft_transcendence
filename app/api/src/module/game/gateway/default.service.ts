@@ -174,17 +174,12 @@ export class DefaultService {
         }
     }
 
-    public async unlockAchievement(username: string) {
+    public async unlockAchievement(game: PongGame, username: string) {
         const postGameAchiev = await this.gameAnalyzer.grantAchievements(username)
-        const midGameAchiev = this.connected_users
-            .find(user => user.id == username)
-            .game.analyzePlayer.get(username).Achievements
+        const midGameAchiev = game.analyzePlayer.get(username).Achievements
         const achievements = [...postGameAchiev, ...midGameAchiev]
         console.log(achievements, achievements.length)
-        if (achievements.length > 0) {
-            this.gameAnalyzer.assignAcheivments(username, achievements)
-            // this.gameAnalyzer.announceAcheivment(this.connected_users, username, achievements)
-        }
+        if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(username, achievements)
     }
 
     // end the game and emit the end game event
@@ -208,7 +203,7 @@ export class DefaultService {
             console.log(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
-            await this.unlockAchievement(game_status.players[i].username)
+            await this.unlockAchievement(game, game_status.players[i].username)
         }
         this.clearData(game)
     }
