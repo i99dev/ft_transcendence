@@ -68,7 +68,7 @@ export function useGameRenderer() {
             0.5,
             0.1
         );
-        // composer.addPass(bloomPass);
+        composer.addPass(bloomPass);
     };
 
 
@@ -108,6 +108,8 @@ export function useGameRenderer() {
 
         addPointLightToObject(paddle, new THREE.Vector3(0, 0, 1.5), 0x00ff00, 6, 3);
         addPointLightToObject(paddle2, new THREE.Vector3(0, 0, 1.5), 0x00ff00, 6, 3);
+        paddle.layers.enable(1);
+        paddle2.layers.enable(1);
         gameGroup.add(paddle);
         gameGroup.add(paddle2);
 
@@ -125,9 +127,9 @@ export function useGameRenderer() {
         const frameGeometry = createFrameGeometry(GAME.FRAME_WIDTH, GAME.FRAME_HEIGHT, GAME.FRAME_THICKNESS, GAME.FRAME_DEPTH)
         const frameMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
         const frame = new THREE.Mesh(frameGeometry, frameMaterial)
-        frame.layers.enable(1)
-        addPointLight(0, 13, 0, 0x6004d9, 3, 20)
-        addPointLight(0, -13, 0, 0x6004d9, 3, 20)
+        // frame.layers.enable(1)
+        addPointLight(0, 11, 0, 0x6004d9, 3, 20)
+        addPointLight(0, -11, 0, 0x6004d9, 3, 20)
         // addPointLight(-14, 0, 0, 0x00ff00, 1, 7)
         // addPointLight(14, 0, 0, 0x00ff00, 1, 7)
         frame.position.set(0, 0, 0)
@@ -143,6 +145,32 @@ export function useGameRenderer() {
         plane.position.set(0, 0, -1);
         gameGroup.add(plane);
 
+        const halfHeight = GAME.FRAME_HEIGHT / 2;
+        const lineStart = new THREE.Vector3(0, -halfHeight, 0);
+        const lineEnd = new THREE.Vector3(0, halfHeight, 0);
+        const lineColor = 0xffffff;
+
+        const dashedLine = createDashedLine(lineStart, lineEnd, lineColor);
+        gameGroup.add(dashedLine);
+
+    }
+
+    function createDashedLine(start: THREE.Vector3, end: THREE.Vector3, color: number) {
+        const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
+
+        const material = new THREE.LineDashedMaterial({
+            color: color,
+            linewidth: 1,
+            scale: 1,
+            dashSize: 0.5,
+            gapSize: 0.5,
+        });
+
+        const line = new THREE.Line(geometry, material);
+
+        line.computeLineDistances();
+
+        return line;
     }
 
     const enableOrbitControls = () => {
@@ -164,8 +192,8 @@ export function useGameRenderer() {
                 gltf.scene.traverse((child) => {
                     if (child instanceof THREE.Mesh) {
                         if (child.material instanceof THREE.MeshStandardMaterial) {
-                            child.material.roughness = 0.3;
-                            child.material.metalness = 0.8;
+                            child.material.roughness = 0.1;
+                            child.material.metalness = 0.9;
                         }
                     }
                 });
@@ -365,6 +393,7 @@ export function useGameRenderer() {
         const pointLight = new THREE.PointLight(emissive, 1.5, 10);
         pointLight.position.set(0, 0, 1.5);
         pointLight.color.set(0xa3f1ff);
+        pointLight.layers.enable(1);
         sphere.add(pointLight);
 
         return sphere;
