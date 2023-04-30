@@ -1,12 +1,12 @@
 <template>
   <div>
-    <button class="cybr-btn text-white before:bg-primary before:border-r-4 before:border-r-accent text-4xl font-[CyberGlitch]"
+    <button class="cybr-btn text-white before:bg-primary group hover:before:opacity-80 before:border-r-4 before:border-r-accent text-4xl font-[CyberGlitch]"
       @click="$emit('click')"
     >
       {{ props.buttonName }}
       <span aria-hidden class=""></span>
       <span aria-hidden class="cybr-btn__glitch bg-primary before:border-r-4 before:border-r-accent">{{ props.buttonName }}_</span>
-      <span aria-hidden class="absolute -bottom-2 right-2 bg-accent w-1/6 h-1/4 centered text-sm rounded-sm font-[CyberpunkDefault] font-normal">42</span>
+      <span aria-hidden class="absolute -bottom-2 right-2 bg-accent group-hover:opacity-80 w-1/6 h-1/4 centered text-sm rounded-sm font-[CyberpunkDefault] font-normal">42</span>
     </button>
   </div>
 </template>
