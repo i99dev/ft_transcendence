@@ -55,6 +55,15 @@ const emitGameOver = (winner: string): void => {
     showStatusBar.value = false
 }
 
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
+
+watch(gameWinner, (newVal, oldVal) => {
+    if (newVal) {
+        console.log("game winner: ", newVal)
+        emitGameOver(newVal)
+    }
+})
+
 function destroy(): void {
     resetSocket()
     reset()

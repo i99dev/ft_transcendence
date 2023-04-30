@@ -1,15 +1,17 @@
 import { Socket } from 'socket.io-client'
 import { inject } from 'vue'
 
-export function useSocket(gameOverCallback: (winner: string) => void) {
-    const nuxtApp = useNuxtApp()
+const nuxtApp = useNuxtApp()
 export function useSocket() {
     const socket = ref(nuxtApp.socket as Socket)
 
+    const gameWinner = ref("")
     const gameData = useState<gameStatusDto>('gameData', () => { return {} as gameStatusDto })
     const gameSetup = useState<SetupDto>('gameSetup', () => { return {} as SetupDto })
+
     const resetSocket = () => {
         socket.value.off
+        gameWinner.value = ""
     }
 
     const emitStartGame = (mode: GameSelectDto) => {
@@ -32,17 +34,20 @@ export function useSocket() {
         })
 
         socket.value.on('Game-Over', payload => {
-            gameOverCallback(payload.winner.username)
+            gameWinner.value = payload.winner.username
         })
+
     }
 
     return {
         socket,
         emitStartGame,
         setupSocketHandlers,
+        gameWinner,
         emitLeaveQueue,
         resetSocket
     }
+}
 
 export function useTabEvent() {
     const showTab = ref(false)
@@ -55,4 +60,3 @@ export function useTabEvent() {
 
     return { showTab }
 }
-
