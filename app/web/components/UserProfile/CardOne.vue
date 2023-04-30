@@ -7,10 +7,10 @@ import { getUserbyUserName } from '../../composables/useUsers'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
-	username: {
-		type: String,
-		default: false
-	},
+    username: {
+        type: String,
+        default: false,
+    },
 })
 
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
@@ -22,18 +22,16 @@ const isMe = ref(false)
 console.log('props', props.username)
 
 const userData = computed(() => {
-	if (user_info.value.username === props.username)
-	{
-		const { username, image, xp, ladder } = user_info.value;
-		isMe.value = true
-		return { username, image, xp, ladder }
-	}
-	else
-	{
-		const { username, image, xp, ladder } = user;
-		return { username, image, xp, ladder }
-	}
+    if (user_info.value.username === props.username) {
+        const { username, image, xp, ladder } = user_info.value
+        isMe.value = true
+        return { username, image, xp, ladder }
+    } else {
+        const { username, image, xp, ladder } = user
+        return { username, image, xp, ladder }
+    }
 })
+
 
 /**
  * edit username
@@ -41,23 +39,26 @@ const userData = computed(() => {
 const editBoolaen = ref(true)
 const updatePhoto = ref(false)
 const editUsername = () => {
-    editBoolaen.value = !editBoolaen.value
+	editBoolaen.value = !editBoolaen.value
 }
-const updatePhotoBoolaen = () => {
-    updatePhoto.value = !updatePhoto.value
-}
+
 const updateUsername = async () => {
-    editBoolaen.value = !editBoolaen.value
+	editBoolaen.value = !editBoolaen.value
     setUserName(userData.value.username)
     await useUpdateUserInfo()
 }
+
 /**
  * edit avatar
  */
-const updateAvatar = async () => {
-    updatePhoto.value = !updatePhoto.value
-    setUserAvatar(userData.value.image)
+const updateAvatar = async (image: string) => {
+	updatePhoto.value = !updatePhoto.value
+    setUserAvatar(image)
     await useUpdateUserInfo()
+}
+
+const handleChaneImage = () => {
+	updatePhoto.value = !updatePhoto.value
 }
 
 const defaultImages = [
@@ -140,18 +141,48 @@ const getLadderRank = (ladder: number) => {
                 class="flex flex-col mobile:flex-col items-center shadow bg-white dark:bg-gray-800 space-y-4 sm:p-6 p-1 w-full"
             >
                 <div class="flex sm:flex-row flex-col items-center">
-                    <img
-                        v-if="userData"
-                        class="rounded-full border-2 sm:h-32 h-20 sm:w-32 w-20 object-cover"
-                        :src="
-                            userData?.image ||
-                            defaultImages[Math.floor(Math.random() * defaultImages.length)]
-                        "
-                        alt="logo"
-                    />
+                    <div class="relative">
+                        <img
+                            class="rounded-full border-2 sm:h-32 h-20 sm:w-32 w-20 object-cover"
+                            :src="
+                                userData?.image ||
+                                defaultImages[Math.floor(Math.random() * defaultImages.length)]
+                            "
+                            alt="logo"
+                        />
+                        <div
+                            v-if="isMe" @click="handleChaneImage" class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
+                        >
+                            <img
+                                class="absolute inset-0 w-full h-full object-cover rounded-full"
+                                src="https://icon-library.com/images/change-an-icon/change-an-icon-14.jpg"
+                                alt="hover image"
+                            />
+                        </div>
+						<div v-if="updatePhoto" class="relative">
+							<div
+								class="absolute right-7 bg-white rounded-lg shadow-lg"
+								style="width: 15rem;"
+							>
+								<div class="grid grid-cols-5 gap-4 p-4">
+									<div v-for="(image, index) in defaultImages" :key="index">
+										<img
+											class="w-20 h-10 object-cover rounded-lg"
+											:src="image"
+											@click="updateAvatar(image)"
+											alt="icon"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+                    </div>
+
 
                     <div class="flex sm:flex-col justify-center sm:p-6">
-                        <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">Welcome</p>
+                        <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">
+                            Welcome
+                        </p>
                         <!-- update username -->
                         <div class="flex flex-row items-center w-full justify-between">
                             <div

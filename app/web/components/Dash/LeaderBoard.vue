@@ -13,8 +13,8 @@
 							<span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
 						</td>
 						<td class="whitespace-nowrap px-2 py-4 flex items-center">
-							<img :src=player.image alt="image-description" class="mr-2 w-0.3 h-20 rounded-full self-center">
-							<span class="w-96 align-middle">{{ player.username }}</span>
+							<img :src=player.image alt="image-description" class="rounded-full border-2 flex sm:flex-row sm:h-32 h-20 sm:w-32 w-20 object-cover">
+							<span class="m-3 w-96 align-middle">{{ player.username }}</span>
 						</td>
 						<td class="whitespace-nowrap px-1 py-4 align-middle"> total games played {{ player.TotalMatches }} </td>
 					</tr>
