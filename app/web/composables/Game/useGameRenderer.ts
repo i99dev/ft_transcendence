@@ -152,6 +152,33 @@ export function useGameRenderer() {
         controls.screenSpacePanning = false
     }
 
+    const loadLogo = () => {
+        const loader = new GLTFLoader();
+        loader.load(
+            '/scene.gltf',
+            function (gltf) {
+                gltf.scene.rotateX(Math.PI / 2);
+                gltf.scene.scale.set(1.5, 1.5, 1.5);
+                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 4);
+
+                gltf.scene.traverse((child) => {
+                    if (child instanceof THREE.Mesh) {
+                        if (child.material instanceof THREE.MeshStandardMaterial) {
+                            child.material.roughness = 0.3;
+                            child.material.metalness = 0.8;
+                        }
+                    }
+                });
+
+                scene.add(gltf.scene);
+            },
+            undefined,
+            function (error) {
+                console.error(error);
+            }
+        );
+    }
+
     const init_game = async (canvasRef: Ref<HTMLCanvasElement>) => {
         initScene(canvasRef)
         initPostProcessing();
@@ -162,20 +189,7 @@ export function useGameRenderer() {
         originalPaddle2Height = gameSetup.value.game.players[1].paddle.height
         const loader = new GLTFLoader();
 
-        loader.load(
-            '/scene.gltf',
-            function (gltf) {
-                gltf.scene.rotateX(Math.PI / 2);
-                gltf.scene.scale.set(1.5, 1.5, 1.5);
-                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 4);
-
-                scene.add(gltf.scene);
-            },
-            undefined,
-            function (error) {
-                console.error(error);
-            }
-        );
+        loadLogo();
 
         scene.add(gameGroup)
         scene.background = new THREE.Color(0x202020)
