@@ -342,7 +342,6 @@ export class PongGame {
         }
         else
             game.ball.color = 'white'
-
     }
 
     private handleHikenPowerUp(game: gameStatusDto, playerIndex: number): void {
@@ -364,7 +363,6 @@ export class PongGame {
             game.ball.dx = (game.ball.dx / currentSpeed) * originalSpeed;
             game.ball.dy = (game.ball.dy / currentSpeed) * originalSpeed;
         }
-
     }
 
     public activatePowerUp(playerID: string, powerUpNo: number): void {
@@ -394,10 +392,7 @@ export class PongGame {
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration);
-
             }
-
-
         }
     }
 
