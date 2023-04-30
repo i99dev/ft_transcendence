@@ -1,7 +1,7 @@
 <template>
     <div>
-        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="p11Cooldown" :cooldown12="p12Cooldown"
-            :cooldown21="p21Cooldown" :cooldown22="p22Cooldown" />
+        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="pu1Cooldowns[0]"
+            :cooldown12="pu1Cooldowns[1]" :cooldown21="pu2Cooldowns[0]" :cooldown22="pu2Cooldowns[1]" />
         <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
     </div>
 </template>
@@ -15,13 +15,12 @@ let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = ref(useState<SetupDto>('gameSetup'))
 let gameData = ref(useState<gameStatusDto>('gameData'))
 
-const p11Cooldown = ref(false);
-const p12Cooldown = ref(false);
-const p21Cooldown = ref(false);
-const p22Cooldown = ref(false);
+const pu1Cooldowns = ref([false, false])
+const pu2Cooldowns = ref([false, false])
+
 const showStatusBar = ref(false);
 
-defineExpose({ setup, giveUp})
+defineExpose({ setup, giveUp })
 const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
@@ -96,41 +95,29 @@ watch(gameData, (newVal, oldVal) => {
     }
 })
 
-const startPowerCooldown = (player: number, key: string): void => {
+const startPowerCooldown = (player: number, key: number): void => {
     if (player == 0) {
-        if (key == '1') {
-            p11Cooldown.value = true;
-            setTimeout(() => {
-                p11Cooldown.value = false;
-            }, 5000);
-        } else if (key == '2') {
-            p12Cooldown.value = true;
-            setTimeout(() => {
-                p12Cooldown.value = false;
-            }, 5000);
-        }
+        if (pu1Cooldowns.value[key]) return;
+        pu1Cooldowns.value[key] = true;
+        setTimeout(() => {
+            pu1Cooldowns.value[key] = false;
+        }, 5000);
     } else if (player == 1) {
-        if (key == '1') {
-            p21Cooldown.value = true;
-            setTimeout(() => {
-                p21Cooldown.value = false;
-            }, 5000);
-        } else if (key == '2') {
-            p22Cooldown.value = true;
-            setTimeout(() => {
-                p22Cooldown.value = false;
-            }, 5000);
-        }
+        if (pu2Cooldowns.value[key]) return;
+        pu2Cooldowns.value[key] = true;
+        setTimeout(() => {
+            pu2Cooldowns.value[key] = false;
+        }, 5000);
     }
 };
 
 const activatePowerUp = (key: string): void => {
     if (key == '1') {
         socket.value.emit('Power-Up', 1);
-        startPowerCooldown(gameSetup.value.player, key);
+        startPowerCooldown(gameSetup.value.player, 0);
     } else if (key == '2') {
         socket.value.emit('Power-Up', 2);
-        startPowerCooldown(gameSetup.value.player, key);
+        startPowerCooldown(gameSetup.value.player, 1);
     }
 };
 

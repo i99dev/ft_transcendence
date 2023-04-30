@@ -215,7 +215,6 @@ export function useGameRenderer() {
         addEventListener('resize', onWindowResize)
         originalPaddleHeight = gameSetup.value.game.players[0].paddle.height
         originalPaddle2Height = gameSetup.value.game.players[1].paddle.height
-        const loader = new GLTFLoader();
 
         loadLogo();
 

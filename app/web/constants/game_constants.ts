@@ -5,7 +5,7 @@ export const FRAME_WIDTH = 31
 
 export const FRAME_HEIGHT = 15.7
 
-export const PG_WIDTH = 28
+export const PG_WIDTH = 29
 
 export const PG_HEIGHT = 14.5
 

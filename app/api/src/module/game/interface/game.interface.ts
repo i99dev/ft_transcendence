@@ -14,4 +14,5 @@ export interface PowerUp{
     active: boolean;
     ready: boolean;
     duration: number;
+    cooldown: number;
 }

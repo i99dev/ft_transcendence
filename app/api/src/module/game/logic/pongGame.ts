@@ -8,24 +8,28 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
         active: false,
         ready: true,
         duration: 0,
+        cooldown: 5000,
     },
     {
         type: 'Baika no Jutsu',
         active: false,
         ready: true,
         duration: 5000,
+        cooldown: 5000,
     },
     {
         type: 'Shinigami',
         active: false,
         ready: true,
         duration: 500,
+        cooldown: 5000,
     },
     {
         type: 'Shunshin no Jutsu',
         active: false,
         ready: true,
         duration: 10000,
+        cooldown: 5000,
     },
 ];
 
@@ -369,8 +373,9 @@ export class PongGame {
         const player = this.game_status.players.find(player => player.username === playerID)
         const powerUp = player.powerUps[powerUpNo - 1]
 
-        if (powerUp && !powerUp.active) {
+        if (powerUp && !powerUp.active && powerUp.ready === true) {
             powerUp.active = true
+            powerUp.ready = false
 
             if (powerUp.type == 'Baika no Jutsu') {
                 player.paddle.height *= 2;
@@ -393,6 +398,11 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration);
             }
+            setTimeout(() => {
+                powerUp.ready = true
+            }
+                , powerUp.cooldown)
+
         }
     }
 
