@@ -7,34 +7,33 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, defineExpose, onUnmounted, provide } from 'vue'
-import { useSocket, useSound } from '~/composables/Game/useSocket'
-import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 
-let canvasRef = ref<HTMLCanvasElement>()
-let gameSetup = ref(useState<SetupDto>('gameSetup'))
-let gameData = ref(useState<gameStatusDto>('gameData'))
+import { ref, defineEmits, defineExpose, onUnmounted, provide } from 'vue';
+import { useSocket, useSound } from '~/composables/Game/useSocket';
+import { useGameRenderer } from '~/composables/Game/useGameRenderer';
 
-const pu1Cooldowns = ref([false, false])
-const pu2Cooldowns = ref([false, false])
-
+let canvasRef = ref<HTMLCanvasElement>();
+let gameSetup = ref(useState<SetupDto>('gameSetup'));
+let gameData = ref(useState<gameStatusDto>('gameData'));
+const pu1Cooldowns = ref([false, false]);
+const pu2Cooldowns = ref([false, false]);
 const showStatusBar = ref(false);
-const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
-const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
-defineExpose({ setup, giveUp, destroy })
 
+const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer();
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket();
+
+const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"]);
+defineExpose({ setup, giveUp, destroy });
 
 const playSound = (sound: string): void => {
-    //generat random integer betwen 1 and 2
     const random = Math.floor(Math.random() * 2) + 1;
     const audio = new Audio(`/sounds/${sound}-${random}.mp3`);
-    console.log("playing sound: ", `/sounds/${sound+-random}.mp3`)
+    console.log("playing sound: ", `/sounds/${sound + -random}.mp3`);
     audio.volume = 0.2;
     audio.play();
 };
 
-useSound(playSound)
+useSound(playSound);
 
 const keys: { [key: string]: boolean } = {
     ArrowUp: false,
@@ -46,80 +45,77 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    document.removeEventListener('keydown', handleKeyDown)
-    document.removeEventListener('keyup', handleKeyUp)
+    document.removeEventListener('keydown', handleKeyDown);
+    document.removeEventListener('keyup', handleKeyUp);
     window.removeEventListener('popstate', handleArrows);
-    reset()
-})
+    reset();
+});
 
 const handleArrows = (e: PopStateEvent): void => {
-    // giveUp()
-}
+    giveUp()
+};
 
 const emitGameOver = (winner: string): void => {
     if (winner == gameSetup.value.game.players[gameSetup.value.player].username) {
-        emit('GameOver', 'you won')
-        const winSound = new Audio('/sounds/win.mp3')
-        winSound.play()
-    }
-    else {
-        emit('GameOver', 'you lost')
-        const loseSound = new Audio('/sounds/lose.mp3')
-        loseSound.play()
+        emit('GameOver', 'you won');
+        const winSound = new Audio('/sounds/win.mp3');
+        winSound.play();
+    } else {
+        emit('GameOver', 'you lost');
+        const loseSound = new Audio('/sounds/lose.mp3');
+        loseSound.play();
     }
 
-    reset()
-    showStatusBar.value = false
-}
-
+    reset();
+    showStatusBar.value = false;
+};
 
 watch(gameWinner, (newVal, oldVal) => {
     if (newVal) {
-        console.log("game winner: ", newVal)
-        emitGameOver(newVal)
+        console.log("game winner: ", newVal);
+        emitGameOver(newVal);
     }
-})
+});
 
 function destroy(): void {
-    resetSocket()
-    reset()
+    resetSocket();
+    reset();
 }
 
 function giveUp(): void {
-    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
-    destroy()
+    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player]);
+    destroy();
 }
 
 function setup(mode: GameSelectDto): void {
     resetSocket();
-    emitStartGame(mode)
-    setupSocketHandlers()
-    windowEvents()
+    emitStartGame(mode);
+    setupSocketHandlers();
+    windowEvents();
 }
 
 const windowEvents = (): void => {
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
-}
+};
 
 watch(gameSetup, (newVal, oldVal) => {
-    showStatusBar.value = true
+    showStatusBar.value = true;
     if (newVal.game != oldVal.game) {
-        emit('ReadyGame')
-        rescaleGameData(newVal.game)
-        init_game(canvasRef as Ref<HTMLCanvasElement>)
+        emit('ReadyGame');
+        rescaleGameData(newVal.game);
+        init_game(canvasRef as Ref<HTMLCanvasElement>);
     }
-})
+});
 
 watch(gameData, (newVal, oldVal) => {
-
     if (newVal) {
-        updatePaddleDirection()
-        rescaleGameData(newVal)
-        updatePlayer(gameData.value.players)
-        updateBall(gameData.value.ball)
+        updatePaddleDirection();
+        rescaleGameData(newVal);
+        updatePlayer(gameData.value.players);
+        updateBall(gameData.value.ball);
     }
-})
+});
 
 const startPowerCooldown = (player: number, key: number): void => {
     if (player == 0) {
@@ -148,15 +144,14 @@ const activatePowerUp = (key: string): void => {
 };
 
 const handleKeyDown = (event: KeyboardEvent): void => {
-
     if (keys.hasOwnProperty(event.key)) {
         event.preventDefault();
     }
 
-    if (event.key == 'ArrowUp' || event.key == 'ArrowDown')
+    if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
         keys[event.key] = true;
-    else if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
-        activatePowerUp(event.key)
+    } else if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
+        activatePowerUp(event.key);
     }
 };
 

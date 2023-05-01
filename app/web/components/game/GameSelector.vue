@@ -93,10 +93,12 @@
 </template>
 
 <script setup lang="ts">
+
 const step = ref(1);
 const selectedGame = ref('' as string);
 const selectedMode = ref('' as string);
 const loadingMsg = ref('' as string);
+const selectedPowerups = ref<string[]>([]);
 
 const emit = defineEmits(['gameSelected', 'leaveQueue'])
 
@@ -106,20 +108,15 @@ const selectGame = (game: string) => {
 };
 
 const reset = () => {
-  step.value = 1
-  selectedGame.value = ''
-  selectedMode.value = ''
-  selectedPowerups.value = []
+  step.value = 1;
+  selectedGame.value = '';
+  selectedMode.value = '';
+  selectedPowerups.value = [];
 };
-
-defineExpose({ reset });
 
 const selectMode = (mode: string) => {
   selectedMode.value = mode;
 };
-
-const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu'];
-const selectedPowerups = ref<string[]>([]);
 
 const checkPowerupLimit = () => {
   if (selectedPowerups.value.length > 2) {
@@ -136,7 +133,6 @@ const leaveQueue = () => {
   reset();
 };
 
-
 const emitGameSelected = () => {
   emit('gameSelected', {
     gameType: selectedGame.value,
@@ -151,7 +147,12 @@ const emitGameSelected = () => {
   }
   step.value = 3;
 };
+
+defineExpose({ reset });
+
+const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu'];
 </script>
+
 
 <style scoped>
 .half-circle-spinner,
@@ -193,4 +194,5 @@ const emitGameSelected = () => {
   100% {
     transform: rotate(360deg);
   }
-}</style>
+}
+</style>
