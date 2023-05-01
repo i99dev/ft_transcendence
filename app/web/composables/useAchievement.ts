@@ -23,10 +23,37 @@ export async function getNewAchievement(): Promise<string[] | null> {
     return data.value
 }
 
+export async function getNewRank(): Promise<{ rank: string; isUp: boolean } | null> {
+    const api = useRuntimeConfig().API_URL
+    const { data, error: errorRef } = await useFetch<{ rank: string; isUp: boolean }>(`/achievement/newRank`, {
+        method: 'GET',
+        baseURL: api,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    const error = errorRef.value
+    if (error) console.error('Failed to get :', error)
+    else console.log('new Rank: ', data.value)
+    return data.value
+}
+
 export async function deleteNewAchievement(content: string): Promise<void> {
 	console.log('delete achievement')
 	const api = useRuntimeConfig().API_URL
-    const response = await fetch(`${api}/achievement/${content}`, {
+    const response = await fetch(`${api}/achievement/${content}?type=ACHIEVEMENT`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+	console.log(response)
+}
+
+export async function deleteNewRank(content: string, type:string): Promise<void> {
+	console.log('delete rank')
+	const api = useRuntimeConfig().API_URL
+    const response = await fetch(`${api}/achievement/${content}?type=${type}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -52,6 +79,7 @@ export async function getPlayerWinRate(player: string): Promise<number | null> {
 		console.log('Win Rate :', data.value)
 	return data.value
 }
+
 
 export async function getPlayerGameResult(player:string, isWin: string, isLose: string): Promise<number | null> {
 	const api = useRuntimeConfig().API_URL

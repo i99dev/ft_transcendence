@@ -191,13 +191,20 @@ export class gameAnalyzer {
         if (
             this.RankUp(ladder, xp, winningrate, totalWins) != ladder &&
             this.RankDown(ladder, winningrate) == ladder
-        )
-            return await this.RankUp(ladder, xp, winningrate, totalWins)
-        else if (
+        ) {
+            await this.storeRankingAsNotification(
+                player,
+                this.RankUp(ladder, xp, winningrate, totalWins),
+                true,
+            )
+            return this.RankUp(ladder, xp, winningrate, totalWins)
+        } else if (
             this.RankUp(ladder, xp, winningrate, totalWins) == ladder &&
             this.RankDown(ladder, winningrate) != ladder
-        )
-            return await this.RankDown(ladder, winningrate)
+        ) {
+            await this.storeRankingAsNotification(player, this.RankDown(ladder, winningrate), false)
+            return this.RankDown(ladder, winningrate)
+        }
 
         return ladder
     }
@@ -330,13 +337,29 @@ export class gameAnalyzer {
             type: NotificationType.ACHIEVEMENT,
             target: 'test',
         })
-        const notf = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.ACHIEVEMENT,
-            },
+        // const notf = await this.prisma.notification.findMany({
+        //     where: {
+        //         user_login: login,
+        //         type: NotificationType.ACHIEVEMENT,
+        //     },
+        // })
+        // console.log('notf', notf)
+    }
+
+    async storeRankingAsNotification(login: string, rank: number, newRank: boolean): Promise<void> {
+        await this.notificationService.createNotification({
+            user_login: login,
+            content: rank.toString(),
+            type: newRank ? NotificationType.RANK_UP : NotificationType.RANK_DOWN,
+            target: 'test',
         })
-        console.log('notf', notf)
+        // const notf = await this.prisma.notification.findMany({
+        //     where: {
+        //         user_login: login,
+        //         type: NotificationType.ACHIEVEMENT,
+        //     },
+        // })
+        // console.log('notf', notf)
     }
 
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {
