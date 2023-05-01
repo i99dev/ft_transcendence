@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="flex bg-gray-50 w-full justify-center py-6">
+    <div class="bg-gray-50">
+        <div class="flex w-full justify-center py-6">
             <SearchBar @userInput="handleUserSearch" class="w-1/2" />
             <button
                 @click="() => navigateTo('/')"
