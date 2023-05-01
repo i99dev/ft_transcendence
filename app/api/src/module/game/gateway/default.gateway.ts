@@ -77,7 +77,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
-        console.log('leave queue Even Recicved !!')
         this.gameService.leaveQueue(client)
     }
 }

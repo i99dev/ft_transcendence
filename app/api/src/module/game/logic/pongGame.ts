@@ -414,7 +414,6 @@ export class PongGame {
 
     private disablePowerUp(player: PlayerDto, powerUp: PowerUp): void {
 
-        console.log("Power up disabled", powerUp.type)
         powerUp.active = false
         if (powerUp.type == 'Hiken') {
             player.paddle.color = 'white';

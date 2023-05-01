@@ -25,7 +25,6 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-        console.log('USER CONNECTED TO SERVER')
         if (temp) {
             setTimeout(() => {
                 userSocket.emit('Close-Tab')
@@ -33,7 +32,6 @@ export class DefaultService {
                 return
             }, 1000)
         }
-        console.log("USER Connected From SERVER")
 
         this.connected_users.push({
             id: userID,
@@ -50,7 +48,6 @@ export class DefaultService {
     public removeDisconnectedUser(userSocket: Socket) {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
-            console.log('USER Disconnected From SERVER')
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
                 if (this.classic_queue.includes(user.id))
@@ -184,7 +181,6 @@ export class DefaultService {
         this.game_result = new gameHistory(game.getGameStatus())
         game.events.on('play-sound', (sound: string) => {
             this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
-            console.log("play-sound", sound)
         })
 
         const intervalId = setInterval(async () => {

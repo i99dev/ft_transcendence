@@ -28,7 +28,6 @@ defineExpose({ setup, giveUp, destroy });
 const playSound = (sound: string): void => {
     const random = Math.floor(Math.random() * 2) + 1;
     const audio = new Audio(`/sounds/${sound}-${random}.mp3`);
-    console.log("playing sound: ", `/sounds/${sound + -random}.mp3`);
     audio.volume = 0.2;
     audio.play();
 };
@@ -72,7 +71,6 @@ const emitGameOver = (winner: string): void => {
 
 watch(gameWinner, (newVal, oldVal) => {
     if (newVal) {
-        console.log("game winner: ", newVal);
         emitGameOver(newVal);
     }
 });
