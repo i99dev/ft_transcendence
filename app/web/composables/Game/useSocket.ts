@@ -52,11 +52,22 @@ export function useSocket() {
 export function useTabEvent() {
     const showTab = ref(false)
     const socket = ref(nuxtApp.socket as Socket)
-    
+
     socket.value.on('Close-Tab', () => {
         console.log("Close TAB RECIVED !")
         showTab.value = true
     })
 
     return { showTab }
+}
+
+export function useSound(playSoundCallback: (sound: string) => void) {
+    const socket = ref(nuxtApp.socket as Socket)
+
+    socket.value.on('play-sound', (payload: string) => {
+        console.log("play-sound RECIVED !")
+        playSoundCallback(payload)
+    })
+
+    return {}
 }
