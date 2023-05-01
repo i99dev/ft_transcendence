@@ -18,7 +18,7 @@ export class DefaultService {
     private gameAnalyzer = new gameAnalyzer()
     private game_result: gameHistory | null = null
 
-    constructor(private socketService: SocketService) { }
+    constructor(private socketService: SocketService) {}
 
     /* 
         Adds a new user to connected_users array
@@ -30,7 +30,7 @@ export class DefaultService {
             userSocket.disconnect(true)
             return
         }
-        console.log("USER Connected From SERVER")
+        console.log('USER Connected From SERVER')
 
         this.connected_users.push({
             id: userID,
@@ -79,17 +79,17 @@ export class DefaultService {
     /* 
         called On Client's "Join-Game" event with mode = 'multi', it matches player with an opponent
     */
-    public matchPlayer(userSocket: Socket, gameInfo: GameSelectDto) {
+    public async matchPlayer(userSocket: Socket, gameInfo: GameSelectDto) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (this.classic_queue.includes(player.id) || this.custom_queue.includes(player.id)) return
         if (player.status != 'online') return
 
         player.status = 'inqueue'
         if (gameInfo.gameType == 'custom') {
-            player.powerUps = gameInfo.powerups;
+            player.powerUps = gameInfo.powerups
         }
 
-        const opponent = this.findOpponent(player.id, gameInfo.gameType)
+        const opponent = await this.findOpponent(player.id, gameInfo.gameType)
 
         if (opponent) {
             this.createMultiGame(player, opponent, gameInfo.gameType)
@@ -104,10 +104,19 @@ export class DefaultService {
             * if there is no opponent -> add player to queue and return null
         TODO: add matchmaking algorithm to find opponent with similar skill level
     */
-    private findOpponent(userID: string, gameType: string): ConnectedUser | null {
+    private async findOpponent(userID: string, gameType: string): Promise<ConnectedUser | null> {
+        // const userLadder = await this.gameAnalyzer.getLadderLevel(userID)
+        // let opponent = ''
         if (gameType == 'classic') {
             if (this.classic_queue.length > 0) {
                 const opponent = this.classic_queue.shift()
+                // this.classic_queue.forEach(async (user: string) => {
+                //     const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
+                //     if (ladderLevel === userLadder) {
+                //         opponent = userID
+                //         return
+                //     }
+                // })
                 return this.connected_users.find(user => user.id == opponent)
             } else {
                 this.classic_queue.push(userID)
@@ -116,6 +125,13 @@ export class DefaultService {
         } else if (gameType == 'custom') {
             if (this.custom_queue.length > 0) {
                 const opponent = this.custom_queue.shift()
+                // this.classic_queue.forEach(async (user: string) => {
+                //     const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
+                //     if (ladderLevel === userLadder) {
+                //         opponent = userID
+                //         return
+                //     }
+                // })
                 return this.connected_users.find(user => user.id == opponent)
             } else {
                 this.custom_queue.push(userID)
@@ -129,11 +145,17 @@ export class DefaultService {
     */
     public createSingleGame(player1Socket: Socket, gameInfo: GameSelectDto) {
         const player = this.connected_users.find(user => user.socket == player1Socket)
-        let game;
+        let game
         if (gameInfo.gameType == 'custom') {
-            game = new PongGame(player.id, "Computer", gameInfo.gameType, gameInfo.powerups, gameInfo.powerups)
+            game = new PongGame(
+                player.id,
+                'Computer',
+                gameInfo.gameType,
+                gameInfo.powerups,
+                gameInfo.powerups,
+            )
         } else {
-            game = new PongGame(player.id, "Computer", gameInfo.gameType)
+            game = new PongGame(player.id, 'Computer', gameInfo.gameType)
         }
         player.status = 'ingame'
         player.game = game
@@ -147,9 +169,15 @@ export class DefaultService {
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
-        let game;
+        let game
         if (gameType == 'custom') {
-            game = new PongGame(player1.id, player2.id, gameType, player1.powerUps, player2.powerUps)
+            game = new PongGame(
+                player1.id,
+                player2.id,
+                gameType,
+                player1.powerUps,
+                player2.powerUps,
+            )
         } else {
             game = new PongGame(player1.id, player2.id, gameType)
         }

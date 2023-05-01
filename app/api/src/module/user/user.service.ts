@@ -102,4 +102,26 @@ export class UserService {
         })
         return user
     }
+
+    async SearchUserNames(name: string) {
+        try {
+            const users = await this.prisma.user.findMany({
+                where: {
+                    username: {
+                        contains: name,
+                        mode: 'insensitive',
+                    },
+                },
+                select: {
+                    username: true,
+                    image: true,
+                    ladder: true,
+                    first_name: true,
+                },
+            })
+            return users
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

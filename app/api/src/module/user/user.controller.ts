@@ -14,6 +14,10 @@ import {
     Req,
     UsePipes,
     Logger,
+    UseInterceptors,
+    CacheKey,
+    CacheTTL,
+    CacheInterceptor,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import {
@@ -70,6 +74,12 @@ export class UserController {
     @Get('/search')
     async SearchUser(@Query('search') search: string, @Req() req) {
         return await this.UserService.SearchUser(search)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/search/:name')
+    async SearchUserByName(@Param('name') name: string) {
+        return await this.UserService.SearchUserNames(name)
     }
 
     @Get('/:name')
