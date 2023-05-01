@@ -174,4 +174,6 @@ enum NotificationType {
     FRIEND_REQUEST_ACCEPTED
     MATCH_INVITE
     CHAT_INVITE
+	RANK_UP
+	RANK_DOWN
 }

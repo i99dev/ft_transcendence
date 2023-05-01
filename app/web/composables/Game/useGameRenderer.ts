@@ -64,8 +64,8 @@ export function useGameRenderer() {
 
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(window.innerWidth, window.innerHeight),
-            0.9,
-            0.5,
+            0.1,
+            0.1,
             0.1
         );
         composer.addPass(bloomPass);

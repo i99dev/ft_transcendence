@@ -15,9 +15,13 @@ export class AchievementController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('/:content')
-    async deleteAchievNotification(@Param('content') content: string, @Req() req) {
+    async deleteAchievNotification(
+        @Param('content') content: string,
+        @Query() type: string,
+        @Req() req,
+    ) {
         console.log('delete Notification')
-        return await this.achievementService.deleteAchievNotification(req.user.login, content)
+        return await this.achievementService.deleteAchievNotification(req.user.login, content, type)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -30,5 +34,11 @@ export class AchievementController {
     @Get('new')
     async getNewAchievements(@Req() req): Promise<string[]> {
         return await this.achievementService.getNewAchievements(req.user.login)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('newRank')
+    async getNewRank(@Req() req): Promise<{ rank: string; isUp: boolean }> {
+        return await this.achievementService.getNewRank(req.user.login)
     }
 }
