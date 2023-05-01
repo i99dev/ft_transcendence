@@ -92,6 +92,10 @@ onBeforeUnmount(() => {
     // audio.pause()
 })
 
+onUnmounted(() => {
+	audio.pause()
+})
+
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
 
