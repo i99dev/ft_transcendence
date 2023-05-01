@@ -54,10 +54,17 @@
                                         </p>
                                         <div class="w-full mt-6">
                                             <a
+                                                v-if="achv.type == 'RANK_DOWN'"
                                                 @click="closeAcievPopUp(index)"
                                                 class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                                 >YAY !</a
                                             >
+											<a
+											v-else
+											@click="closeAcievPopUp(index)"
+											class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+											> Oops !</a
+										>
                                         </div>
                                     </div>
                                 </div>
@@ -79,9 +86,9 @@ import {
 } from '../composables/useAchievement'
 import { ref, onMounted, computed } from 'vue'
 
-const newAchievement = await getNewAchievement()
+let newAchievement = await getNewAchievement()
 
-const newRank = await getNewRank()
+let newRank = await getNewRank()
 
 const announceAchiev = ref([] as boolean[])
 
@@ -112,11 +119,10 @@ const checkAnnounceAchiev = (index: number) => {
         !announceAchiev.value[index] &&
         achievements.value != undefined &&
         achievements.value[index].type == 'RANK_DOWN'
-    )
-       {
-		console.log('rank down')
-		deleteNewRank(achievements.value[index].content, achievements.value[index].type)
-	   }
+    ) {
+        console.log('rank down')
+        deleteNewRank(achievements.value[index].content, achievements.value[index].type)
+    }
     return announceAchiev.value[index]
 }
 
@@ -136,7 +142,10 @@ const achievements = computed(() => {
     return value
 })
 
-onMounted(() => {
+onMounted(async () => {
+    newAchievement = await getNewAchievement()
+
+    newRank = await getNewRank()
     if (newAchievement && newAchievement.length > 0) {
         showAciev.value = true
         announceAchiev.value = new Array(newAchievement.length).fill(true)
