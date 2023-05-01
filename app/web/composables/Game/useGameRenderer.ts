@@ -9,14 +9,15 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 export function useGameRenderer() {
     const gameSetup = useState<SetupDto>('gameSetup')
     const gameData = useState<gameStatusDto>('gameData')
-
     let scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.WebGLRenderer
     let controls: OrbitControls
     let gameGroup: THREE.Group, paddle: THREE.Mesh, paddle2: THREE.Mesh, sphere: THREE.Mesh
     let originalPaddleHeight: number, originalPaddle2Height: number
     let wallsLayer = new THREE.Layers()
     wallsLayer.set(1)
+    let bloomPass: UnrealBloomPass
     let composer: EffectComposer;
+
     const reset = () => {
         if (gameGroup) {
             gameGroup.children.forEach((child) => {
@@ -54,6 +55,7 @@ export function useGameRenderer() {
 
         renderer.setSize(width, height);
         composer.setSize(width, height);
+        // bloomPass.setSize(width, height);
     };
 
     const initPostProcessing = () => {
@@ -62,13 +64,9 @@ export function useGameRenderer() {
         const renderPass = new RenderPass(scene, camera);
         composer.addPass(renderPass);
 
-        const bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(window.innerWidth, window.innerHeight),
-            0.9,
-            0.5,
-            0.1
-        );
-        composer.addPass(bloomPass);
+        // bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.1, 0.1);
+
+        // composer.addPass(bloomPass);
     };
 
 
@@ -187,7 +185,7 @@ export function useGameRenderer() {
             function (gltf) {
                 gltf.scene.rotateX(Math.PI / 2);
                 gltf.scene.scale.set(1.5, 1.5, 1.5);
-                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 4);
+                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 6);
 
                 gltf.scene.traverse((child) => {
                     if (child instanceof THREE.Mesh) {
@@ -226,8 +224,8 @@ export function useGameRenderer() {
     const animate = () => {
         requestAnimationFrame(animate);
         controls.update();
-        composer.render();
-        // renderer.render(scene, camera);
+        // composer.render();
+        renderer.render(scene, camera);
     };
 
     const rescaleGameData = (game: gameStatusDto) => {

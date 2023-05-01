@@ -21,7 +21,7 @@
             <GameResult v-if="gameResult" @vnode-mounted="exit = false" :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain" />
         </div>
-        <div v-if="showTab"  class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+        <div v-if="showTab" class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center">
             <div class="bg-white p-6 rounded-md text-center">
                 <h2 class="text-xl font-semibold mb-4">You can't use the app on multiple tabs</h2>
                 <p>Please use the other tab.</p>
@@ -45,6 +45,21 @@ const gameSelector = ref()
 
 const { emitLeaveQueue } = useSocket()
 const { showTab } = useTabEvent()
+const audio = new Audio('/sounds/ost.mp3');
+
+
+onMounted(() => {
+    audio.loop = true;
+    audio.volume = 0.1;
+    audio.play().catch(e => console.error('Failed to play audio:', e));
+});
+
+onBeforeUnmount(() => {
+    if (audio) {
+        audio.pause();
+    }
+});
+
 
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
