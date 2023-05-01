@@ -46,4 +46,18 @@ export class MatchHistoryController {
     async getTotalPages(@Param('login') login: string): Promise<number> {
         return await this.matchHistoryService.getTotalPages(login)
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('totalgames') // /match-history/totalgames/login?Win=true&Lose=false
+    async getTotal(
+        @Query('Win') win: string,
+        @Query('Lose') lose: string,
+        @Param('login') login: string,
+    ): Promise<number> {
+        if (lose === 'true' && win === 'false')
+            return await this.matchHistoryService.gameAnalyzer.getTotalDefeats(login)
+        else if (win === 'true' && lose === 'false')
+            return await this.matchHistoryService.gameAnalyzer.getTotalVictories(login)
+        else return await this.matchHistoryService.gameAnalyzer.getTotalMatches(login)
+    }
 }
