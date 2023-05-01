@@ -1,5 +1,7 @@
 <template>
     <div>
+        <img src="/audio.png" alt="Stop audio" @click="toggleAudio"
+            class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50" />
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
@@ -45,19 +47,16 @@ const gameSelector = ref()
 
 const { emitLeaveQueue } = useSocket()
 const { showTab } = useTabEvent()
-const audio = new Audio('/sounds/ost.mp3');
+const audio = new Audio('/sounds/ost1.mp3');
+audio.loop = true;
+audio.volume = 0.1;
 
 
 onMounted(() => {
-    audio.loop = true;
-    audio.volume = 0.1;
-    audio.play().catch(e => console.error('Failed to play audio:', e));
 });
 
 onBeforeUnmount(() => {
-    if (audio) {
-        audio.pause();
-    }
+    audio.pause();
 });
 
 
@@ -105,6 +104,14 @@ const exitGame = (): void => {
     gameResult.value = false
 }
 
+const toggleAudio = (): void => {
+    console.log('toggle audio')
+    if (audio.paused) {
+        audio.play();
+    } else {
+        audio.pause();
+    }
+}
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
