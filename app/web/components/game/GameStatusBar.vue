@@ -75,7 +75,8 @@ watchEffect(() => {
     const newScores = [gameData.value.players[0].score, gameData.value.players[1].score];
     if (scores.value[0] != newScores[0] || scores.value[1] != newScores[1]) {
       scores.value = newScores;
-      scoreAudio.play()
+      if(!(scores.value[0] == 11 || scores.value[1] == 11))
+        scoreAudio.play()
     }
   }
 });

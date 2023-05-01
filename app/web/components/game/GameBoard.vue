@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { ref, defineEmits, defineExpose, onUnmounted, provide } from 'vue'
-import { useSocket } from '~/composables/Game/useSocket'
+import { useSocket, useSound } from '~/composables/Game/useSocket'
 import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 
 let canvasRef = ref<HTMLCanvasElement>()
@@ -19,10 +19,22 @@ const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 
 const showStatusBar = ref(false);
-defineExpose({ setup, giveUp, destroy })
-const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
-
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
+const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"])
+defineExpose({ setup, giveUp, destroy })
+
+
+const playSound = (sound: string): void => {
+    //generat random integer betwen 1 and 2
+    const random = Math.floor(Math.random() * 2) + 1;
+    const audio = new Audio(`/sounds/${sound}-${random}.mp3`);
+    console.log("playing sound: ", `/sounds/${sound+-random}.mp3`)
+    audio.volume = 0.2;
+    audio.play();
+};
+
+useSound(playSound)
 
 const keys: { [key: string]: boolean } = {
     ArrowUp: false,
@@ -41,21 +53,25 @@ onUnmounted(() => {
 })
 
 const handleArrows = (e: PopStateEvent): void => {
-    giveUp()
+    // giveUp()
 }
 
 const emitGameOver = (winner: string): void => {
     if (winner == gameSetup.value.game.players[gameSetup.value.player].username) {
         emit('GameOver', 'you won')
+        const winSound = new Audio('/sounds/win.mp3')
+        winSound.play()
     }
     else {
         emit('GameOver', 'you lost')
+        const loseSound = new Audio('/sounds/lose.mp3')
+        loseSound.play()
     }
+
     reset()
     showStatusBar.value = false
 }
 
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
 
 watch(gameWinner, (newVal, oldVal) => {
     if (newVal) {

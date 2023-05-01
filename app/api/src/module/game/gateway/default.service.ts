@@ -31,7 +31,7 @@ export class DefaultService {
                 userSocket.emit('Close-Tab')
                 userSocket.disconnect(true)
                 return
-            }, 500)
+            }, 1000)
         }
         console.log("USER Connected From SERVER")
 
@@ -182,6 +182,11 @@ export class DefaultService {
 
     private startGame(game: PongGame) {
         this.game_result = new gameHistory(game.getGameStatus())
+        game.events.on('play-sound', (sound: string) => {
+            this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
+            console.log("play-sound", sound)
+        })
+
         const intervalId = setInterval(async () => {
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
 
