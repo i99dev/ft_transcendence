@@ -16,7 +16,9 @@
                             <div class="grid grid-cols-1">
                                 <div class="mt-4 mr-auto mb-4 ml-auto bg-white max-w-lg">
                                     <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
-                                        <img src="../assets/devilfruit.png" />
+                                        <img v-if="achv.type == 'ACHIEVEMENT'" class="rounded-full" src="https://64.media.tumblr.com/9c998d1404f7cf724478ca05cda2e4c7/tumblr_mtn7vqKgkU1s2axdno1_500.gif" />
+                                        <img v-if="achv.type == 'RANK_UP'" class="rounded-full" src="../assets/achiev.webp" />
+                                        <img v-if="achv.type == 'RANK_DOWN'" class="rounded-full" src="https://media.tenor.com/bxgJUis76N8AAAAC/chopper-chopper-one-piece.gif" />
                                         <p
                                             v-if="achv.type == 'ACHIEVEMENT'"
                                             class="mt-8 text-2xl font-semibold leading-none text-gray tracking-tighter lg:text-3xl"
@@ -37,16 +39,14 @@
                                             {{ achv.content }} " Achievement !
                                         </p>
                                         <p
-                                            v-else
-                                            if="achv.type == 'RANK_UP'"
+                                            v-if="achv.type == 'RANK_UP'"
                                             class="mt-3 text-base leading-relaxed text-center text-gray-600"
                                         >
                                             Congratulations ! You just have ranked up to "
                                             {{ getLadderRank(achv.content) }} " !
                                         </p>
                                         <p
-                                            v-else
-                                            if="achv.type == 'RANK_DOWN'"
+                                            v-if="achv.type == 'RANK_DOWN'"
                                             class="mt-3 text-base leading-relaxed text-center text-gray-600"
                                         >
                                             Sorry ! You just have ranked down to "
@@ -57,13 +57,13 @@
                                                 v-if="achv.type == 'RANK_DOWN'"
                                                 @click="closeAcievPopUp(index)"
                                                 class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                >YAY !</a
+                                                >Oops !</a
                                             >
 											<a
 											v-else
 											@click="closeAcievPopUp(index)"
 											class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-											> Oops !</a
+											> YAY !</a
 										>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@ const achievements = computed(() => {
     if (newRank)
         value?.push({
             content: newRank.rank,
-            type: newRank.isUp ? 'RANK_UP' : 'RANK_DOWN',
+            type: newRank.isUp ? 'RANK_DOWN' : 'RANK_UP',
         })
     return value
 })
