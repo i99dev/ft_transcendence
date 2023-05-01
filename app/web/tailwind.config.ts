@@ -41,6 +41,7 @@ export default <Partial<Config>>{
                 '7/8': '87.5%',
                 '9/10': '90%',
             },
+            
         },
     },
     variants: {

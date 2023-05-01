@@ -1,5 +1,5 @@
 <template>
-    <div class="canvas-wrapper bg-slate-700 flex justify-center">
+    <div class="canvas-wrapper flex justify-center">
         <canvas
             ref="canvas"
             class="bg-slate-800 border-2 rounded-xl shadow-2xl shadow-slate-900"

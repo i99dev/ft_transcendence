@@ -5,6 +5,12 @@
 @layer base {
 
   @font-face {
+    font-family: primary;
+    src: url('~/assets/fonts/RussoOne-Regular.ttf');
+    font-display: swap;
+  }
+
+  @font-face {
     font-family: CyberpunkSpecial;
     src: url("~/assets/fonts/Cyberpunk.ttf");
     font-display: swap;
@@ -28,9 +34,9 @@
     font-display: swap;
   }
 
-  /* body {
-    @apply bg-background text-white font-Cyber;
-  } */
+  body {
+    @apply bg-background text-[primary];
+  }
 }
 
 @layer utilities {

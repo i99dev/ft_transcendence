@@ -61,10 +61,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private logger = new Logger('ChatWsGateway')
 
     async handleConnection(client: Socket, ...args: any[]) {
-        this.logger.log(`Client "${client.id}" connected to chat`)
+        if (!this.getID(client)) return
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
         this.joinAllRooms(client, this.getID(client) as string)
+        this.logger.log(`Client "${client.id}" connected to chat`)
     }
 
     async handleDisconnect(client: Socket) {
@@ -509,7 +510,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             user = this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
                 this.logger.error('Invalid token')
-                return client.disconnect()
+                if (client.connected)
+                    client.disconnect()
+                return null
             }
         }
         return user

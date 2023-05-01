@@ -78,9 +78,6 @@ const switchExistStatus = (status: boolean): void => {
 </script>
 
 <style>
-body {
-    background-color: #334155;
-}
 .container {
     display: flex;
     justify-content: center;
