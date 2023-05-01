@@ -63,22 +63,24 @@ const props = defineProps({
 });
 
 defineEmits(['ExitBtn'])
-const scores = ref([0, 0] as number[]);
-const scoreAudio = new Audio('/score.mp3')
-scoreAudio.volume = 0.2
 
-let gameSetup = ref(useState<SetupDto>('gameSetup'))
-let gameData = ref(useState<gameStatusDto>('gameData'))
+const scores = ref([0, 0] as number[]);
+const gameSetup = ref(useState<SetupDto>('gameSetup'));
+const gameData = ref(useState<gameStatusDto>('gameData'));
+
+const scoreAudio = new Audio('/score.mp3');
+scoreAudio.volume = 0.2;
 
 watchEffect(() => {
   if (gameData?.value?.players) {
     const newScores = [gameData.value.players[0].score, gameData.value.players[1].score];
     if (scores.value[0] != newScores[0] || scores.value[1] != newScores[1]) {
       scores.value = newScores;
-      scoreAudio.play()
+      if (!(scores.value[0] == 11 || scores.value[1] == 11)) {
+        scoreAudio.play();
+      }
     }
   }
 });
-
 </script>
 

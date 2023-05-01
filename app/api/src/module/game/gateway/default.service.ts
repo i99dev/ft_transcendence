@@ -25,12 +25,13 @@ export class DefaultService {
     */
     public addConnectedUser(userID: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.id == userID)
-        console.log('USER CONNECTED TO SERVER')
         if (temp) {
-            userSocket.disconnect(true)
-            return
+            setTimeout(() => {
+                userSocket.emit('Close-Tab')
+                userSocket.disconnect(true)
+                return
+            }, 1000)
         }
-        console.log('USER Connected From SERVER')
 
         this.connected_users.push({
             id: userID,
@@ -47,7 +48,6 @@ export class DefaultService {
     public removeDisconnectedUser(userSocket: Socket) {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
-            console.log('USER Disconnected From SERVER')
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
                 if (this.classic_queue.includes(user.id))
@@ -166,6 +166,20 @@ export class DefaultService {
     }
 
     /* 
+        Remove User From Queue 
+    */
+    public leaveQueue(userSocket: Socket) {
+        const player = this.connected_users.find(user => user.socket == userSocket)
+        if (!player || player.status != 'inqueue') return
+
+        if (this.classic_queue.includes(player.id))
+            this.classic_queue.splice(this.classic_queue.indexOf(player.id), 1)
+        if (this.custom_queue.includes(player.id))
+            this.custom_queue.splice(this.custom_queue.indexOf(player.id), 1)
+        player.status = 'online'
+    }
+
+    /* 
         Creates a new pongGame object and emit the game setup to both players
     */
     private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
@@ -193,6 +207,10 @@ export class DefaultService {
 
     private startGame(game: PongGame) {
         this.game_result = new gameHistory(game.getGameStatus())
+        game.events.on('play-sound', (sound: string) => {
+            this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
+        })
+
         const intervalId = setInterval(async () => {
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
 

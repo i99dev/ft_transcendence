@@ -1,12 +1,7 @@
-import {
-    BallDto,
-    GameSelectDto,
-    PaddleDto,
-    PlayerDto,
-    PowerUpInfoDto,
-    gameStatusDto,
-} from '../dto/game.dto'
-import { PowerUp } from '../interface/game.interface'
+import { BallDto, GameSelectDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
+import { PowerUp } from '../interface/game.interface';
+import { EventEmitter } from 'events';
+
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -58,6 +53,7 @@ export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
+    public events: EventEmitter
     public analyzePlayer = new Map<string, gameAnalyzer>()
     constructor(
         player1Login: string,
@@ -68,6 +64,7 @@ export class PongGame {
     ) {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
+        this.events = new EventEmitter()
         if (gameType == 'classic')
             this.game_status = this.instanciateGame(player1Login, Player2Login)
         else
@@ -227,6 +224,8 @@ export class PongGame {
     private checkWallCollision(ball: BallDto): void {
         if ((ball.y <= ball.radius && ball.dy < 0) || (ball.y >= 1 - ball.radius && ball.dy > 0)) {
             ball.dy *= -1
+            this.events.emit('play-sound', 'ball-hit')
+
             console.log('Wall collision')
         }
     }
@@ -321,6 +320,7 @@ export class PongGame {
         const angle = paddleHitPoint * REFLECT_ANGLE
         const ballSpeed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2)
         ball.dy = ballSpeed * Math.sin(angle * (Math.PI / 180))
+        this.events.emit('play-sound', 'ball-hit')
     }
     // reset the ball position to the center
     private resetBallPosition(ball: BallDto): void {
@@ -418,7 +418,6 @@ export class PongGame {
     }
 
     private disablePowerUp(player: PlayerDto, powerUp: PowerUp): void {
-        console.log('Power up disabled', powerUp.type)
         powerUp.active = false
         if (powerUp.type == 'Hiken') {
             player.paddle.color = 'white'
