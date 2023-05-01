@@ -21,13 +21,24 @@ export class AchievementService {
         return user.achievements
     }
 
-    async deleteAchievNotification(user_login: string, content: string) {
+    findType(type: string): NotificationType {
+        switch (type) {
+            case 'ACHIEVEMENT':
+                return NotificationType.ACHIEVEMENT
+            case 'RANK_UP':
+                return NotificationType.RANK_UP
+            case 'RANK_DOWN':
+                return NotificationType.RANK_DOWN
+        }
+    }
+
+    async deleteAchievNotification(user_login: string, content: string, type: string) {
         try {
             const notification = await this.prisma.notification.deleteMany({
                 where: {
                     user_login: user_login,
                     content: content,
-                    type: 'ACHIEVEMENT',
+                    type: this.findType(type),
                 },
             })
             return notification
@@ -49,5 +60,27 @@ export class AchievementService {
             achievements.push(notif.content)
         }
         return achievements
+    }
+    async getNewRank(login: string): Promise<{ rank: string; isUp: boolean }> {
+        const RankUp = await this.prisma.notification.findMany({
+            where: {
+                user_login: login,
+                type: NotificationType.RANK_UP,
+            },
+        })
+        const RankDown = await this.prisma.notification.findMany({
+            where: {
+                user_login: login,
+                type: NotificationType.RANK_DOWN,
+            },
+        })
+        console.log(RankUp)
+        console.log(RankDown)
+        if (RankUp.length !== 0 && RankUp[0].content !== null)
+            return { rank: RankUp[0].content, isUp: false }
+        if (RankDown.length !== 0 && RankDown[0].content !== null)
+            return { rank: RankDown[0].content, isUp: true }
+        console.log('rank not found')
+        return { rank: null, isUp: null }
     }
 }
