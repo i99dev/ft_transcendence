@@ -110,7 +110,7 @@ const switchExistStatus = (status: boolean): void => {
 }
 </script>
 
-<style>
+<style scoped>
 body {
     background-color: #202020;
 }
