@@ -20,8 +20,16 @@ export async function useLogin(code: string): Promise<any> {
     return { data, error }
 }
 
+export async function useResendVerificationCode(user: string): Promise<any> {
+    const { data, error: errorRef } = await useFetch(`auth/2fa/resend/${user}`, {
+        baseURL: useRuntimeConfig().API_URL,
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
+}
+
 export async function useSubmitConfirmationCode(user: string, code: string): Promise<any> {
-    const { data, error: errorRef } = await useFetch(`auth/confirm/${user}`, {
+    const { data, error: errorRef } = await useFetch(`auth/2fa/confirm/${user}`, {
         method: 'POST',
         body: {
             code: code,

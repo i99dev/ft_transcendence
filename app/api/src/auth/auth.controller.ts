@@ -41,18 +41,8 @@ export class AuthController {
 
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth) {
-            if (await this.twoFacAuthService.send2FAConfirmationEmail(user))
-                return res
-                    .status(HttpStatus.OK)
-                    .json({
-                        "login": user.login,
-                        "two_fac_auth": true,
-                        "type": 'email',
-                        "code_length": 6,
-                        "period": 240,
-                    })
-            else
-                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json('2FA Email failed to send')
+            const {status, two_fac_auth_info} = await this.twoFacAuthService.handle2FA(user)
+            return res.status(status).json(two_fac_auth_info)
         }
 
         const token: string = await this.authService.getJwt(user)
@@ -60,7 +50,22 @@ export class AuthController {
         return res.status(httpStatus).json(new AccessTokenDto(token))
     }
 
-    @Post('confirm/:login')
+    @Get('2fa/resend/:login')
+    async resendVerificationCode(@Param('login') login: string, @Req() req, @Res() res): Promise<AccessTokenDto> {
+        const user = await this.userService.getUser(login)
+        console.log(user)
+        if (!user) return res.status(HttpStatus.NOT_FOUND).json('User not found')
+
+        const secret = await this.twoFacAuthService.getUser(login)
+        if (!secret) return res.status(HttpStatus.NOT_FOUND).json('No 2FA requested for this user')
+
+        if (!this.twoFacAuthService.getIsAllowedToSend(login)) return res.status(HttpStatus.UNAUTHORIZED).json(`User can't resend OTP within 30s`)
+
+        const {status, two_fac_auth_info} = await this.twoFacAuthService.handle2FA(user)
+        return res.status(status).json(two_fac_auth_info)
+    }
+
+    @Post('2fa/confirm/:login')
     async confirm2FA(@Param('login') login: string, @Req() req, @Res() res): Promise<any> {
         const { code } = req.body
         if (!code) return res.status(HttpStatus.BAD_REQUEST).json('No code provided')
@@ -76,6 +81,6 @@ export class AuthController {
         if (isValid) {
             const token: string = await this.authService.getJwt(user)
             return res.status(HttpStatus.OK).json(new AccessTokenDto(token))
-        } else return res.status(HttpStatus.BAD_REQUEST).json('Invalid code')
+        } else return res.status(HttpStatus.NOT_FOUND).json('Invalid code')
     }
 }

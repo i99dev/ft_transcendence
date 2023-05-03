@@ -9,7 +9,12 @@ export default defineNuxtConfig({
             GAME_NAME: process.env.GAME_NAME,
         },
     },
-    css: ['~/assets/css/main.css'],
+    css: [
+        '~/assets/css/main.css',
+        'primevue/resources/themes/saga-blue/theme.css',
+        'primevue/resources/primevue.css',
+        'primeicons/primeicons.css',
+    ],
     build: {
         transpile: ['primevue'],
     },
