@@ -66,7 +66,7 @@ export const useAuth = async (route: any) => {
                 "login": data.value.login,
                 "two_fac_auth": data.value.two_fac_auth,
                 "type": data.value.type,
-                "code-length": data.value.code_length,
+                "code_length": data.value.code_length,
                 "period": data.value.period,
             }
         })

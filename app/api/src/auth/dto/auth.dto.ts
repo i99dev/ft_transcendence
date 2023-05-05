@@ -16,6 +16,14 @@ export class AccessTokenDto {
         this.created_at = Date.now()
     }
 }
+export class TwoFacAuthDto {
+    login: string
+    two_fac_auth: boolean
+    type: string
+    code_length: number
+    period: number
+
+}
 
 export class AuthPostDto {
     @IsString()

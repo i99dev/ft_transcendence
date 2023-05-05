@@ -7,14 +7,11 @@ import {
     Req,
     Res,
     UseGuards,
-    UseInterceptors,
 } from '@nestjs/common'
 import { FtAuthGuard } from '../common/guards/ft.auth.gaurd'
 import { AuthService } from './auth.service'
-import { AccessTokenDto } from './dto/auth.dto'
+import { AccessTokenDto, TwoFacAuthDto } from './dto/auth.dto'
 import { ApiOperation } from '@nestjs/swagger'
-import { ConfigService } from '@nestjs/config'
-import { authenticator } from 'otplib'
 import { TwoFacAuthService } from './twoFacAuth.service'
 import { UserService } from '../module/user/user.service'
 
@@ -22,7 +19,6 @@ import { UserService } from '../module/user/user.service'
 export class AuthController {
     constructor(
         private authService: AuthService,
-        private configService: ConfigService,
         private twoFacAuthService: TwoFacAuthService,
         private userService: UserService,
     ) {}
@@ -36,7 +32,7 @@ export class AuthController {
         tags: ['auth'],
     })
     @Post()
-    async GetAuth(@Req() req, @Res() res): Promise<AccessTokenDto> {
+    async GetAuth(@Req() req, @Res() res): Promise<AccessTokenDto | TwoFacAuthDto | string> {
         const { httpStatus, user } = await this.authService.getOrCreateUserAccountOnDb(req.user)
 
         // 2FA
@@ -51,9 +47,8 @@ export class AuthController {
     }
 
     @Get('2fa/resend/:login')
-    async resendVerificationCode(@Param('login') login: string, @Req() req, @Res() res): Promise<AccessTokenDto> {
+    async resendVerificationCode(@Param('login') login: string, @Res() res): Promise< TwoFacAuthDto| string> {
         const user = await this.userService.getUser(login)
-        console.log(user)
         if (!user) return res.status(HttpStatus.NOT_FOUND).json('User not found')
 
         const secret = await this.twoFacAuthService.getUser(login)
@@ -66,12 +61,11 @@ export class AuthController {
     }
 
     @Post('2fa/confirm/:login')
-    async confirm2FA(@Param('login') login: string, @Req() req, @Res() res): Promise<any> {
+    async confirm2FA(@Param('login') login: string, @Req() req, @Res() res): Promise<AccessTokenDto | string> {
         const { code } = req.body
         if (!code) return res.status(HttpStatus.BAD_REQUEST).json('No code provided')
 
         const user = await this.userService.getUser(login)
-        console.log(user)
         if (!user) return res.status(HttpStatus.NOT_FOUND).json('User not found')
 
         const secret = await this.twoFacAuthService.getUser(login)
