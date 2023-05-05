@@ -65,8 +65,8 @@ const props = defineProps({
 defineEmits(['ExitBtn'])
 
 const scores = ref([0, 0] as number[]);
-const gameSetup = ref(useState<SetupDto>('gameSetup'));
-const gameData = ref(useState<gameStatusDto>('gameData'));
+const gameSetup = useState<SetupDto>('gameSetup');
+const gameData = useState<gameStatusDto>('gameData');
 
 const scoreAudio = new Audio('/score.mp3');
 scoreAudio.volume = 0.2;
