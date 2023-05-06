@@ -91,10 +91,12 @@ const submitCode = async (code: string) => {
 }
 
 const resendCode = async () => {
-    const login = useRoute().query.login
-    if (login) {
-        const { data, error } = await useResendVerificationCode(login.toString())
-        if (data.value)
+    const login = useRoute().query.login as string
+    if (!login) return
+
+    const { data, error } = await useResendVerificationCode(login.toString())
+    console.log(data.value)
+    if (data.value) {
         toast.add({
             severity: 'success',
             summary: 'Sent',
@@ -104,5 +106,12 @@ const resendCode = async () => {
         window.clearInterval(timerId)
         timerCountdown()
     }
+    else
+    toast.add({
+        severity: 'error',
+        summary: 'Cannot send',
+        detail: 'Cannot send new verification code yet. Please try again after 30 seconds',
+        life: 3000,
+    })
 }
 </script>

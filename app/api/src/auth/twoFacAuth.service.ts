@@ -1,6 +1,5 @@
 import { UserGetDto } from '../module/user/dto/user.dto'
-import { Injectable, HttpStatus } from '@nestjs/common'
-import { authenticator } from 'otplib'
+import { Injectable, HttpStatus, InternalServerErrorException } from '@nestjs/common'
 import { User } from '@prisma/client'
 import { MailerService } from '@nestjs-modules/mailer'
 import { twoFacAuthConstants } from '../common/constants/setting'
@@ -18,30 +17,10 @@ export class TwoFacAuthService {
 
     async send2FAConfirmationEmail(user: User): Promise<boolean> {
         this.users.delete(user.login)
-        const secret = authenticator.generateSecret()
-        console.log(secret)
-        this.users.set(user.login, secret)
-        // authenticator.options = {
-        //     step: twoFacAuthConstants.period,
-        //     window: 1,
-        // }
-        const TFA: string = authenticator.generate(this.users.get(user.login))
-        await this.mailerService
-            .sendMail({
-                to: user.email, // list of receivers
-                from: twoFacAuthConstants.from, // sender address
-                subject: twoFacAuthConstants.subject,
-                template: twoFacAuthConstants.template,
-                context: {
-                    name: user.username,
-                    code: TFA,
-                    expiresIn: Math.trunc(twoFacAuthConstants.period / 60),
-                },
-            })
-            .catch(error => {
-                console.log(error)
-                return false
-            })
+
+        const verificationCode: string = this.generateOTP()
+        this.users.set(user.login, verificationCode)
+        await this.sendEmail(user, verificationCode)
 
         this.userPermission.set(user.login, false)
         setTimeout(() => {
@@ -54,33 +33,24 @@ export class TwoFacAuthService {
         return true
     }
 
-    async handle2FA(user: User): Promise<{status: HttpStatus, two_fac_auth_info: TwoFacAuthDto | string}> {
+    async handle2FA(user: User): Promise<TwoFacAuthDto> {
         if (await this.send2FAConfirmationEmail(user))
             return {
-                status: HttpStatus.OK,
-                two_fac_auth_info: {
-                    login: user.login,
-                    two_fac_auth: true,
-                    type: twoFacAuthConstants.type,
-                    code_length: twoFacAuthConstants.length,
-                    period: twoFacAuthConstants.period,
-                },
+                login: user.login,
+                two_fac_auth: true,
+                type: twoFacAuthConstants.type,
+                code_length: twoFacAuthConstants.length,
+                period: twoFacAuthConstants.period,
             }
         else
-            return {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                two_fac_auth_info: '2FA Email failed to send',
-            }
+            throw new InternalServerErrorException('2FA Email failed to send')
     }
 
     verify2FA(login: string, code: string): boolean {
-        const secret: string = this.users.get(login)
-        if (secret) {
-            // const isValid: boolean = authenticator.check(code, secret)
-            // if (isValid) {
-                this.users.delete(login)
-                return true
-            // }
+        const verificationCode: string = this.users.get(login)
+        if (verificationCode && code === verificationCode) {
+            this.users.delete(login)
+            return true
         }
         return false
     }
@@ -88,4 +58,34 @@ export class TwoFacAuthService {
     getIsAllowedToSend(login: string): boolean {
         return this.userPermission.get(login)
     }
+
+    generateOTP = (length = 6) => {
+        let otp = ''
+
+        for (let i = 0; i < length; i++)
+            otp += Math.floor(Math.random() * 10)
+
+        return otp
+    }
+
+    async sendEmail(user: User, code: string): Promise<boolean> {
+        await this.mailerService
+            .sendMail({
+                to: user.email, // list of receivers
+                from: twoFacAuthConstants.from, // sender address
+                subject: twoFacAuthConstants.subject,
+                template: twoFacAuthConstants.template,
+                context: {
+                    name: user.username,
+                    code: code,
+                    expiresIn: Math.trunc(twoFacAuthConstants.period / 60),
+                },
+            })
+            .catch(error => {
+                console.log(error)
+                return false
+            })
+        return true
+    }
+        
 }

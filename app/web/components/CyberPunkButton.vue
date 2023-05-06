@@ -1,11 +1,11 @@
 <template>
   <div>
     <button class="cybr-btn text-white before:bg-primary group hover:before:opacity-80 before:border-r-4 before:border-r-accent text-4xl font-[CyberGlitch]"
-      @click="$emit('click')"
+      @click="clickButton"
     >
-      {{ props.buttonName }}
+      {{ buttonName }}
       <span aria-hidden class=""></span>
-      <span aria-hidden class="cybr-btn__glitch bg-primary before:border-r-4 before:border-r-accent">{{ props.buttonName }}_</span>
+      <span aria-hidden class="cybr-btn__glitch bg-tertiary before:border-r-4 before:border-r-accent">{{ props.buttonName }}_</span>
       <span aria-hidden class="absolute -bottom-2 right-2 bg-accent group-hover:opacity-80 w-1/6 h-1/4 centered text-sm rounded-sm font-normal">42</span>
     </button>
   </div>
@@ -13,12 +13,22 @@
 
 <script lang="ts" setup>
 
+const buttonName = ref('Click Me!')
 const props = defineProps({
   buttonName: {
     type: String,
-    default: 'Click Me!'
   }
 })
+onMounted(()=>{
+  if (props.buttonName)
+    buttonName.value = props.buttonName
+})
+const emit = defineEmits(['click'])
+
+const clickButton = () => {
+  buttonName.value = buttonName.value.concat('...')
+  emit('click')
+}
 
 </script>
 

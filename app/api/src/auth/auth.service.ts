@@ -62,15 +62,5 @@ export class AuthService {
             maxAge: 30 * 24 * 60 * 60 * 1000, // Set the cookie to expire in 30 days
             expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Fallback for older browsers
         }
-    }
-
-    extractRefreshTokenFromCookies(cookies: string): string {
-        let token = undefined
-        cookies.split(';').forEach(cookie => {
-            if (cookie.split('=')[0].trim() === 'refresh_token') {
-                token = cookie.split('=')[1]
-            }
-        })
-        return token
-    }   
+    }  
 }

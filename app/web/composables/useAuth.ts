@@ -12,7 +12,8 @@ export const refreshAccessToken = async () => {
     const { data, error: errorRef } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
     })
-    if (data.value) useCookie('access_token').value = data.value?.access_token
+    const tokenInfo = data.value as AccessTokenDto | null
+    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
     return errorRef.value?.status
 }
 
@@ -29,10 +30,14 @@ export async function useLogin(code: string): Promise<any> {
 }
 
 export async function useResendVerificationCode(user: string): Promise<any> {
+    console.log('resend')
     const { data, error: errorRef } = await useFetch(`auth/2fa/resend/${user}`, {
         baseURL: useRuntimeConfig().API_URL,
     })
+    console.log('done')
+    console.log(data.value)
     const error = errorRef.value as FetchError<any> | null
+    console.log(error)
     return { data, error }
 }
 
@@ -73,7 +78,8 @@ export const useAuth = async (route: any) => {
 
     const { data, error } = await useLogin(route.query.code.toString())
 
-    if (data.value.access_token) useCookie('access_token').value = data.value.access_token
+    const tokenInfo = data.value as AccessTokenDto | null
+    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
 
     return data.value.access_token
         ? navigateTo('/')

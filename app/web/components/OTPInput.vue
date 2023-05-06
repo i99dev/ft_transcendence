@@ -34,9 +34,6 @@ const bindModal = ref("");
   text-align: center;
 }
 /* Background colour of an input field with value */
-.otp-input.is-complete {
-  /* background-color: #e4e4e4; */
-}
 .otp-input::-webkit-inner-spin-button,
 .otp-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
