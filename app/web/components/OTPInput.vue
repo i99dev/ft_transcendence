@@ -20,10 +20,6 @@ import VOtpInput from "vue3-otp-input";
 const otpInput = ref<InstanceType<typeof VOtpInput> | null>(null);
 const bindModal = ref("");
 
-const handleOnComplete = (value: string) => {
-  console.log("OTP completed: ", value);
-};
-
 </script>
 
 <style>

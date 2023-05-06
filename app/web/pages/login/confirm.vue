@@ -53,8 +53,10 @@ definePageMeta({
     layout: false,
 })
 
+if (await useIsAuth())
+    navigateTo('/')
+
 const timer = ref()
-// const timeInterval = ref()
 
 onMounted(() => {
     timerCountdown()
@@ -67,13 +69,6 @@ const timerCountdown = () => {
             if (timer.value > 0) timer.value -= 1
             else window.clearInterval(timerId)
         }, 1000)
-        // console.log(id)
-        // setTimeout(() => {
-        //   console.log(id)
-        //     // clearInterval(id)
-            
-        //     // id = null
-        // }, 10000)
     }
 }
 
@@ -85,7 +80,6 @@ const submitCode = async (code: string) => {
             useCookie('access_token').value = data.value.access_token
             navigateTo('/')
         } else {
-            console.log('code is incorrect')
             toast.add({
                 severity: 'error',
                 summary: 'Incorrect',
@@ -100,7 +94,7 @@ const resendCode = async () => {
     const login = useRoute().query.login
     if (login) {
         const { data, error } = await useResendVerificationCode(login.toString())
-        if (data.value) console.log('code resent successfully')
+        if (data.value)
         toast.add({
             severity: 'success',
             summary: 'Sent',

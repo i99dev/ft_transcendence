@@ -9,7 +9,7 @@ export async function useMe(): Promise<any> {
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
-        server: false,
+        // server: false,
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }

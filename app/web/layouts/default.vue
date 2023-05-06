@@ -17,10 +17,6 @@
 <script lang="ts" setup>
 import { Socket } from 'socket.io-client';
 
-definePageMeta({
-    middleware: ['pages'],
-})
-
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { data, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()

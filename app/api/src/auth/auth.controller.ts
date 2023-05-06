@@ -10,10 +10,11 @@ import {
 } from '@nestjs/common'
 import { FtAuthGuard } from '../common/guards/ft.auth.gaurd'
 import { AuthService } from './auth.service'
-import { AccessTokenDto, TwoFacAuthDto } from './dto/auth.dto'
+import { TokenDto, TwoFacAuthDto } from './dto/auth.dto'
 import { ApiOperation } from '@nestjs/swagger'
 import { TwoFacAuthService } from './twoFacAuth.service'
 import { UserService } from '../module/user/user.service'
+import { JwtAuthGuard } from '../common/guards/jwt.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +23,8 @@ export class AuthController {
         private twoFacAuthService: TwoFacAuthService,
         private userService: UserService,
     ) {}
+    
 
-    // @UseInterceptors(LoggingInterceptor)
     @UseGuards(FtAuthGuard)
     @ApiOperation({
         operationId: 'getAuth',
@@ -31,8 +32,8 @@ export class AuthController {
         summary: 'Get user by token',
         tags: ['auth'],
     })
-    @Post()
-    async GetAuth(@Req() req, @Res() res): Promise<AccessTokenDto | TwoFacAuthDto | string> {
+    @Post('login')
+    async GetAuth(@Req() req, @Res() res): Promise<TokenDto | TwoFacAuthDto | string> {
         const { httpStatus, user } = await this.authService.getOrCreateUserAccountOnDb(req.user)
 
         // 2FA
@@ -41,9 +42,31 @@ export class AuthController {
             return res.status(status).json(two_fac_auth_info)
         }
 
-        const token: string = await this.authService.getJwt(user)
+        const {accessToken, refreshToken} = this.authService.getUserTokens(user)
+        res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
 
-        return res.status(httpStatus).json(new AccessTokenDto(token))
+        return res.status(httpStatus).json(new TokenDto(accessToken))
+    }
+
+    @Get('logout')
+    @UseGuards(JwtAuthGuard)
+    async Logout(@Res() res): Promise<string> {
+        res.clearCookie('refresh_token')
+        return res.status(HttpStatus.OK).json('Logout success')
+    }
+
+    @Get('refresh')
+    async GetNewAccessToken(@Req() req, @Res() res): Promise<TokenDto | string> {
+        console.log(req.headers.cookie)
+
+        const tok = this.authService.extractRefreshTokenFromCookies(req.headers.cookie)
+        const user = await this.authService.getUserByToken(tok)
+        if (!user) return res.status(HttpStatus.NOT_FOUND).json('User not found')
+
+        const {accessToken, refreshToken} = this.authService.getUserTokens(user)
+        res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
+
+        return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
     }
 
     @Get('2fa/resend/:login')
@@ -54,14 +77,12 @@ export class AuthController {
         const secret = await this.twoFacAuthService.getUser(login)
         if (!secret) return res.status(HttpStatus.NOT_FOUND).json('No 2FA requested for this user')
 
-        if (!this.twoFacAuthService.getIsAllowedToSend(login)) return res.status(HttpStatus.UNAUTHORIZED).json(`User can't resend OTP within 30s`)
-
         const {status, two_fac_auth_info} = await this.twoFacAuthService.handle2FA(user)
         return res.status(status).json(two_fac_auth_info)
     }
 
     @Post('2fa/confirm/:login')
-    async confirm2FA(@Param('login') login: string, @Req() req, @Res() res): Promise<AccessTokenDto | string> {
+    async confirm2FA(@Param('login') login: string, @Req() req, @Res() res): Promise<TokenDto | string> {
         const { code } = req.body
         if (!code) return res.status(HttpStatus.BAD_REQUEST).json('No code provided')
 
@@ -73,8 +94,10 @@ export class AuthController {
 
         const isValid = this.twoFacAuthService.verify2FA(login, code)
         if (isValid) {
-            const token: string = await this.authService.getJwt(user)
-            return res.status(HttpStatus.OK).json(new AccessTokenDto(token))
+            const {accessToken, refreshToken} = this.authService.getUserTokens(user)
+            res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj());  
+    
+            return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
         } else return res.status(HttpStatus.NOT_FOUND).json('Invalid code')
     }
 }

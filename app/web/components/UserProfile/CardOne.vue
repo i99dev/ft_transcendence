@@ -30,7 +30,6 @@ const updateAvatar = async () => {
 }
 const updateTwoFacAuth = async () => {
     setUserTwoFacAuth(!user_info.value.two_fac_auth)
-    console.log(user_info.value.two_fac_auth)
     await useUpdateUserInfo()
 }
 

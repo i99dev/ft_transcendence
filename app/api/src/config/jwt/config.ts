@@ -1,4 +1,5 @@
 export const jwt = {
     secret: process.env.JWT_SECRET || 'jwtSecuredSecret',
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
+    refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
 }

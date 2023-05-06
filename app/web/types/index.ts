@@ -5,6 +5,13 @@ declare global {
   type UserStatus = "OFFLINE" | "ONLINE" | "LIVE"
   type ChatRoomType = "GROUP" | "DM"
 
+  interface AccessTokenDto {
+      access_token: string
+      token_type: string
+      expires_in: string
+      created_at: number
+  }
+
   interface User {
       id: number
       login: string

@@ -1,15 +1,23 @@
 export const useIsAuth = async () => {
-    const { data, error: errorRef } = await useFetch('/users/me', {
+    const { data } = await useMe()
+    if (!data.value) {
+        await refreshAccessToken()
+        const { data, error } = await useMe()
+        if (!data.value) return false
+    }
+    return true
+}
+
+export const refreshAccessToken = async () => {
+    const { data, error: errorRef } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
-        headers: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
     })
-    return data.value
+    if (data.value) useCookie('access_token').value = data.value?.access_token
+    return errorRef.value?.status
 }
 
 export async function useLogin(code: string): Promise<any> {
-    const { data, error: errorRef } = await useFetch('auth', {
+    const { data, error: errorRef } = await useFetch('auth/login', {
         method: 'POST',
         body: {
             code: code,
@@ -45,9 +53,19 @@ interface FetchError<T> extends Error {
     statusText: string
 }
 
-export const useLogout = () => {
-    useCookie('access_token').value = ''
-    return useRouter().push('/login')
+export const useLogout = async () => {
+    const { data, error: errorRef } = await useFetch('auth/logout', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    if (data.value) {
+        useCookie('access_token').value = ''
+        return useRouter().push('/login')
+    }
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
 }
 
 export const useAuth = async (route: any) => {
@@ -70,5 +88,5 @@ export const useAuth = async (route: any) => {
                 "period": data.value.period,
             }
         })
-        : navigateTo('/login')
+        : await useIsAuth()
 }

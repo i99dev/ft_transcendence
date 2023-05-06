@@ -17,10 +17,11 @@
 // remove the layout in login page
 definePageMeta({
     layout: false,
+    // middleware: ['pages'],
 })
 
-if (await useIsAuth()) navigateTo('/')
-
+if (await useIsAuth())
+    navigateTo('/')
 const loginWithIntra = () => {
     window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${
         useRuntimeConfig().CLIENT_ID

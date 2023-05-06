@@ -37,4 +37,40 @@ export class AuthService {
         }
         return this.jwtService.sign(payload)
     }
+
+    async getUserByToken(token: string): Promise<UserGetDto> {
+        const payload = this.jwtService.verify(token)
+        return payload? await this.userService.getUser(payload.login) : undefined
+    }
+
+    getUserTokens(user: UserGetDto): {accessToken: string, refreshToken: string} {
+        const payload = {
+            id: user.id,
+            login: user.login,
+        }
+        return {
+            accessToken: this.jwtService.sign(payload),
+            refreshToken: this.jwtService.sign(payload, {expiresIn: '30d'}),
+        }
+    }
+
+    getRefreshTokenObj() {
+        return {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000, // Set the cookie to expire in 30 days
+            expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Fallback for older browsers
+        }
+    }
+
+    extractRefreshTokenFromCookies(cookies: string): string {
+        let token = undefined
+        cookies.split(';').forEach(cookie => {
+            if (cookie.split('=')[0].trim() === 'refresh_token') {
+                token = cookie.split('=')[1]
+            }
+        })
+        return token
+    }   
 }

@@ -22,7 +22,7 @@ export const pageInfoConstants = {
 export const twoFacAuthConstants = {
     type: 'email',
     length: 6,
-    period: 215,
+    period: 300,
     from: 'noreply@nestjs.com',
     subject: 'Your confirmation code',
     template: 'send-2fa-pass',

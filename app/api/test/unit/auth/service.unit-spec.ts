@@ -65,7 +65,7 @@ describe('AuthService', () => {
                     useFactory: (configService: ConfigService) => ({
                         secret: configService.get<string>('JWT_SECRET', 'jwt_secret'),
                         signOptions: {
-                            expiresIn: configService.get<string>('JWT_EXPIRES_IN', '1d'),
+                            expiresIn: configService.get<string>('ACCESS_TOKEN_EXPIRES_IN', '1d'),
                         },
                     }),
                 }),
