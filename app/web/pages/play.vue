@@ -1,7 +1,7 @@
 <template>
     <div>
         <img
-            src="/audio.png"
+            src="/imgs/audio.png"
             alt="Stop audio"
             @click="toggleAudio"
             class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50"

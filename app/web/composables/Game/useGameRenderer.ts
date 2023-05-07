@@ -181,7 +181,7 @@ export function useGameRenderer() {
     const loadLogo = () => {
         const loader = new GLTFLoader();
         loader.load(
-            '/scene.gltf',
+            '/scenes/scene.gltf',
             function (gltf) {
                 gltf.scene.rotateX(Math.PI / 2);
                 gltf.scene.scale.set(1.5, 1.5, 1.5);

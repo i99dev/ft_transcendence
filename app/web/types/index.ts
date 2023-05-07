@@ -48,12 +48,20 @@ declare global {
         color: string
     }
 
+    export interface PowerUp{
+        type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu';
+        active: boolean;
+        ready: boolean;
+        duration: number;
+        cooldown: number;
+    }
+    
     interface PlayerDto {
         username: string
         score: number
         paddle: PaddleDto
-        gameId?: string
-        powerUp?: boolean
+        gameID?: string
+        powerUps: PowerUp[]
     }
 
     interface PaddleDto {
