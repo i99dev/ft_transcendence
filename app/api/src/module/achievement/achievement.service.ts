@@ -74,13 +74,12 @@ export class AchievementService {
                 type: NotificationType.RANK_DOWN,
             },
         })
-        console.log(RankUp)
-        console.log(RankDown)
+
         if (RankUp.length !== 0 && RankUp[0].content !== null)
             return { rank: RankUp[0].content, isUp: false }
         if (RankDown.length !== 0 && RankDown[0].content !== null)
             return { rank: RankDown[0].content, isUp: true }
-        console.log('rank not found')
+
         return { rank: null, isUp: null }
     }
 }

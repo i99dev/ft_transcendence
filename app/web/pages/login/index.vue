@@ -20,8 +20,7 @@ definePageMeta({
     // middleware: ['pages'],
 })
 
-if (await useIsAuth())
-    navigateTo('/')
+if (await useIsAuth()) navigateTo('/')
 const loginWithIntra = () => {
     window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${
         useRuntimeConfig().CLIENT_ID

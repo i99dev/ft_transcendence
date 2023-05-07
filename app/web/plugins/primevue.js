@@ -4,8 +4,8 @@ import InputText from 'primevue/inputtext'
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
 import SpeedDial from 'primevue/speeddial'
-import ConfirmPopup from 'primevue/confirmpopup';
-import ConfirmationService from 'primevue/confirmationservice';
+import ConfirmPopup from 'primevue/confirmpopup'
+import ConfirmationService from 'primevue/confirmationservice'
 
 export default defineNuxtPlugin(nuxtApp => {
     nuxtApp.vueApp.use(PrimeVue, { ripple: true })

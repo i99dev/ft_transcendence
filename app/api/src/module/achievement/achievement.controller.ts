@@ -20,7 +20,6 @@ export class AchievementController {
         @Query() type: string,
         @Req() req,
     ) {
-        console.log('delete Notification')
         return await this.achievementService.deleteAchievNotification(req.user.login, content, type)
     }
 

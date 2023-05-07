@@ -66,7 +66,6 @@ const exitGame = (): void => {
     gameResult.value = false
 }
 
-
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }

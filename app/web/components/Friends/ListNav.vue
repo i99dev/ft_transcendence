@@ -114,19 +114,8 @@
 </template>
 
 <script setup>
-import {
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    TransitionChild,
-    TransitionRoot,
-} from '@headlessui/vue'
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
 const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
 

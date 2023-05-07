@@ -66,10 +66,6 @@
 </template>
 
 <script setup lang="ts">
-import { getUserbyUserName } from '../../composables/useUsers'
-import { computed, ref } from 'vue'
-import { useUserInfo } from '../../composables/useMe'
-
 const props = defineProps({
     username: {
         type: String,
@@ -79,7 +75,6 @@ const props = defineProps({
 
 const user = await getUserbyUserName(props.username)
 const { user_info } = useUserInfo()
-
 
 const isMe = computed(() => {
     return user_info.value.id === user.id

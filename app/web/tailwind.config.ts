@@ -28,7 +28,7 @@ export default <Partial<Config>>{
                 secondary: '#1E22AA',
                 tertiary: '#201547',
                 background: '#051C2C',
-                accent: '#59CBE8'
+                accent: '#59CBE8',
             },
             fontSize: {
                 '1/10': '10%',
@@ -41,12 +41,11 @@ export default <Partial<Config>>{
                 '7/8': '87.5%',
                 '9/10': '90%',
             },
-            
         },
     },
     variants: {
         extend: {
-            display: ["group-hover"],
+            display: ['group-hover'],
         },
     },
 }

@@ -44,7 +44,16 @@ export const useUserInfo = () => {
         )
     }
 
-    return { user_info, setUserInfo, removeUserInfo, setUserName, setUserAvatar, setUserTwoFacAuth, removeFriends }
+    return {
+        user_info,
+        setUserInfo,
+        removeUserInfo,
+        setUserName,
+        setUserAvatar,
+        setUserTwoFacAuth,
+        setFriends,
+        removeFriends,
+    }
 }
 
 export async function useUpdateUserInfo(): Promise<any> {
@@ -55,7 +64,7 @@ export async function useUpdateUserInfo(): Promise<any> {
         body: {
             username,
             image,
-            two_fac_auth
+            two_fac_auth,
         },
         baseURL: useRuntimeConfig().API_URL,
         headers: {

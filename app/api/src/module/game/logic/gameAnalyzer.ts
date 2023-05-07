@@ -238,7 +238,7 @@ export class gameAnalyzer {
                 type: achievement,
             },
         })
-        console.log(player, ach)
+
         if (ach == null) return
         await this.prisma.user.update({
             where: {
@@ -272,7 +272,6 @@ export class gameAnalyzer {
         for (let i = 0; i < matches.length; i++) {
             for (let j = 0; j < matches[i].opponents.length; j++) {
                 if (matches[i].opponents[j].user.login == player) {
-                    // console.log('player', player, 'match num', i)
                     if (matches[i].opponents[j].IsWinner) {
                         winStreak++
                     } else {
@@ -281,7 +280,6 @@ export class gameAnalyzer {
                 }
             }
         }
-        console.log('winstreak', winStreak)
         return winStreak
     }
 
@@ -326,7 +324,6 @@ export class gameAnalyzer {
         achievements.forEach(async achievement => {
             await this.updatePlayerAcheivments(login, achievement)
             await this.storeAchievementAsNotification(login, achievement)
-            console.log('update achievement', achievement)
         })
     }
 
@@ -343,7 +340,6 @@ export class gameAnalyzer {
         //         type: NotificationType.ACHIEVEMENT,
         //     },
         // })
-        // console.log('notf', notf)
     }
 
     async storeRankingAsNotification(login: string, rank: number, newRank: boolean): Promise<void> {
@@ -359,7 +355,6 @@ export class gameAnalyzer {
         //         type: NotificationType.ACHIEVEMENT,
         //     },
         // })
-        // console.log('notf', notf)
     }
 
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {

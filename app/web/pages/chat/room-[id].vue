@@ -47,8 +47,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { ref, computed } from 'vue'
 const router = useRouter()
 const { id } = router.currentRoute.value.params
 const messages = useState('message', () => []) as any

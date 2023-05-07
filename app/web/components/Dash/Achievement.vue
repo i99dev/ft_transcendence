@@ -9,9 +9,9 @@
                 class="p-10 flex flex-col items-center text-center group md:lg:xl:border-r md:lg:xl:border-b hover:bg-slate-50 cursor-pointer"
             >
                 <span class="p-5 rounded-full bg-white text-white shadow-lg shadow-blue-800">
-					<img src="../../assets/devilfruit.png" alt="Achievement Image" />
+                    <img src="../../assets/devilfruit.png" alt="Achievement Image" />
                 </span>
-			<!-- <div> {{ acheivement.image }}</div> -->
+                <!-- <div> {{ acheivement.image }}</div> -->
                 <p class="text-xl font-medium text-slate-700 mt-3">{{ acheivement.type }}</p>
                 <p class="mt-2 text-sm text-slate-500">{{ acheivement.description }}</p>
             </div>
@@ -20,10 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { getPlayerAchievement } from '../../composables/useAchievement'
-import { getUserbyUserName } from '../../composables/useUsers'
-import { computed } from 'vue'
-
 const props = defineProps({
     username: {
         type: String,
@@ -36,11 +32,6 @@ const user = await getUserbyUserName(props.username)
 const plyracheivement = await getPlayerAchievement(user.login)
 
 const acheivements = computed(() => plyracheivement)
-
-console.log('test ---> ', plyracheivement)
-console.log('kkk', plyracheivement[0].image)
-
 </script>
 
-<style>
-</style>
+<style></style>

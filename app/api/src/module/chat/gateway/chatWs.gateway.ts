@@ -510,8 +510,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             user = this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
                 this.logger.error('Invalid token')
-                if (client.connected)
-                    client.disconnect()
+                if (client.connected) client.disconnect()
                 return null
             }
         }

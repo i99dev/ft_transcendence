@@ -9,10 +9,10 @@ export interface ConnectedUser {
     powerUps?: string[]
 }
 
-export interface PowerUp{
-    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu';
-    active: boolean;
-    ready: boolean;
-    duration: number;
-    cooldown: number;
+export interface PowerUp {
+    type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu'
+    active: boolean
+    ready: boolean
+    duration: number
+    cooldown: number
 }

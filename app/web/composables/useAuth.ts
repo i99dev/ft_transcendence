@@ -30,14 +30,10 @@ export async function useLogin(code: string): Promise<any> {
 }
 
 export async function useResendVerificationCode(user: string): Promise<any> {
-    console.log('resend')
     const { data, error: errorRef } = await useFetch(`auth/2fa/resend/${user}`, {
         baseURL: useRuntimeConfig().API_URL,
     })
-    console.log('done')
-    console.log(data.value)
     const error = errorRef.value as FetchError<any> | null
-    console.log(error)
     return { data, error }
 }
 
@@ -85,14 +81,14 @@ export const useAuth = async (route: any) => {
         ? navigateTo('/')
         : data.value.two_fac_auth
         ? navigateTo({
-            path: '/login/confirm',
-            query: {
-                "login": data.value.login,
-                "two_fac_auth": data.value.two_fac_auth,
-                "type": data.value.type,
-                "code_length": data.value.code_length,
-                "period": data.value.period,
-            }
-        })
+              path: '/login/confirm',
+              query: {
+                  login: data.value.login,
+                  two_fac_auth: data.value.two_fac_auth,
+                  type: data.value.type,
+                  code_length: data.value.code_length,
+                  period: data.value.period,
+              },
+          })
         : await useIsAuth()
 }

@@ -44,9 +44,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SearchUserNames } from '../composables/useUsers'
-
 const searchInput = ref('')
 
 const users = ref([] as any[])
@@ -88,11 +85,8 @@ const getLadderRank = (ladder: number) => {
 }
 
 const onInputChange = () => {
-    console.log('oninp', searchInput.value)
     debounce(async () => {
-        console.log('debounce', searchInput.value)
         const data = await SearchUserNames(searchInput.value)
-        console.log('data', data, data?.length)
         showSuggestions.value = data && data?.length > 0 ? true : false
         users.value = data ? data : []
         if (users.value.length > 10) users.value = users.value.slice(0, 10)
