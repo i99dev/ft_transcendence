@@ -66,7 +66,7 @@ export class MatchHistorySeeder {
             { username: 'oal-tena', score: 4, isWinner: false, gameId: gameid },
         ])
         gameid = '33s4'
-        await this.createMatch(gameid, new Date('2052-01-31T23:59:59.000Z'))
+        await this.createMatch(gameid, new Date('2022-01-31T23:59:59.000Z'))
         await this.assignOponents(gameid, [
             { username: 'aaljaber', score: 18, isWinner: true, gameId: gameid },
             { username: 'mal-guna', score: 2, isWinner: false, gameId: gameid },
@@ -84,7 +84,7 @@ export class MatchHistorySeeder {
             { username: 'isaad', score: 0, isWinner: false, gameId: gameid },
         ])
         gameid = 'hhsj'
-        await this.createMatch(gameid, new Date('2024-11-31T23:59:59.000Z'))
+        await this.createMatch(gameid, new Date('2020-11-31T23:59:59.000Z'))
         await this.assignOponents(gameid, [
             { username: 'mal-guna', score: 11, isWinner: true, gameId: gameid },
             { username: 'isaad', score: 0, isWinner: false, gameId: gameid },

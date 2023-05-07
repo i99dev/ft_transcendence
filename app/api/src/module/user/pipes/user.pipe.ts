@@ -13,54 +13,35 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
             image: 'string',
             status: 'ONLINE',
             two_fac_auth: true,
-            total_loses: 0,
-            total_wins: 0,
+            wr: 0,
         }
         return vari
     }
 
-    async transform(value: any) {
-        const userPatch = new UserValidPatchDto()
-        const vari = this.createAssignValue()
-        Object.assign(userPatch, vari)
-        const userPatchKeys = Object.keys(userPatch)
+    async transform(value: UserPatchDto) {
+        const chatRoom = new UserPatchDto()
+        Object.assign(chatRoom, this.createAssignValue())
+        const userPatchKeys = Object.keys(chatRoom)
         const valueKeys = Object.keys(value)
-
-        const validationPromises = valueKeys.map(async key => {
-            if (!isNaN(parseFloat(key))) {
-                return
-            }
+        console.log(valueKeys)
+        for (const key of valueKeys) {
             if (!userPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`)
-            }
-            const valueType = typeof value[key]
-            const expectedType = typeof vari[key]
-            if (valueType !== expectedType) {
-                throw new BadRequestException(
-                    `Invalid type for field ${key}: expected ${expectedType}, but got ${valueType}`,
-                )
-            }
-            if ((typeof value[key] === 'number' && value[key] > 2147483647) || value[key] < 0) {
-                throw new BadRequestException(`The value of ${key} is out of range`)
             }
             if (
                 key === 'status' &&
                 value[key] !== 'ONLINE' &&
                 value[key] !== 'OFFLINE' &&
-                value[key] !== 'Live'
+                value[key] !== 'LIVE'
             ) {
-                throw new BadRequestException(`Invalid status value`)
+                throw new BadRequestException(`Invalid type value`)
             }
-            return
-        })
-
-        await Promise.all(validationPromises)
-
-        const errors = await validate(Object.assign(userPatch, value))
-        if (errors.length > 0) {
-            const message = errors.map(error => Object.values(error.constraints)).join(', ')
-            throw new BadRequestException(message)
         }
+
+        // const errors = await validate(value)
+        // if (errors.length > 0) {
+        //     throw new BadRequestException('Validation failed')
+        // }
         return value
     }
 }
