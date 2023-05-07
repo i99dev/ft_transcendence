@@ -11,8 +11,8 @@ export class UserDto {
     created_at: Date
     last_login: Date
     image: string
-    exp_level: number
-    points: number
+    xp: number
+    ladder: number
     two_fac_auth: boolean
     friend_to?: UserDto[]
     friends?: UserDto[]
@@ -23,13 +23,13 @@ export class PlayerDto {
     id: number
     score: number
     IsWinner: boolean
-    user: UserDto
-    // matches: MatchHistoryDto
+    user?: UserDto
+    matches?: MatchHistoryDto
 }
 
 export class MatchHistoryDto {
     gameID: string
     start: Date
     end: Date
-    opponents: PlayerDto[]
+    opponents?: PlayerDto[]
 }

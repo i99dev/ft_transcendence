@@ -24,5 +24,6 @@ export default defineNuxtConfig({
             autoprefixer: {},
         },
     },
-    plugins: ['~/plugins/chat-socket.ts'],
+    modules: ['@nuxtjs/tailwindcss'],
+    plugins: ['~/plugins/socket-io.ts','~/plugins/chat-socket.ts'],
 })

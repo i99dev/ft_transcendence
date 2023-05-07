@@ -1,36 +1,68 @@
-<script setup>
-const { user_info, setUserName, setUserAvatar, setUserTwoFacAuth } = useUserInfo()
+<script setup lang="ts">
+import { getPlayerWinRate, getPlayerGameResult } from '../../composables/useAchievement'
+import { useUserInfo, useUpdateUserInfo } from '../../composables/useMe'
+import { useFriends } from '../../composables/useFriends'
+import { useChat } from '../../composables/useChat'
+import { getUserbyUserName } from '../../composables/useUsers'
+import { computed, ref } from 'vue'
+
+const props = defineProps({
+    username: {
+        type: String,
+        default: false,
+    },
+})
+
+const { user_info, setUserName, setUserAvatar } = useUserInfo()
+const user = await getUserbyUserName(props.username)
+
+console.log('usersss !!!!!!!', user)
+
+const isMe = ref(false)
+console.log('props', props.username)
 
 const userData = computed(() => {
-    return user_info.value
+    if (user_info.value.username === props.username) {
+        const { username, image, xp, ladder } = user_info.value
+        isMe.value = true
+        return { username, image, xp, ladder }
+    } else {
+        const { username, image, xp, ladder } = user
+        return { username, image, xp, ladder }
+    }
 })
+
+
 /**
  * edit username
  */
 const editBoolaen = ref(true)
 const updatePhoto = ref(false)
 const editUsername = () => {
-    editBoolaen.value = !editBoolaen.value
+	editBoolaen.value = !editBoolaen.value
 }
-const updatePhotoBoolaen = () => {
-    updatePhoto.value = !updatePhoto.value
-}
+
 const updateUsername = async () => {
-    editBoolaen.value = !editBoolaen.value
+	editBoolaen.value = !editBoolaen.value
     setUserName(userData.value.username)
     await useUpdateUserInfo()
 }
+
 /**
  * edit avatar
  */
-const updateAvatar = async () => {
-    updatePhoto.value = !updatePhoto.value
-    setUserAvatar(userData.value.image)
+const updateAvatar = async (image: string) => {
+	updatePhoto.value = !updatePhoto.value
+    setUserAvatar(image)
     await useUpdateUserInfo()
 }
 const updateTwoFacAuth = async () => {
     setUserTwoFacAuth(!user_info.value.two_fac_auth)
     await useUpdateUserInfo()
+}
+
+const handleChaneImage = () => {
+	updatePhoto.value = !updatePhoto.value
 }
 
 const defaultImages = [
@@ -75,6 +107,35 @@ function openFriendsModel() {
         setFriendsModalOpen(true)
     }
 }
+
+// Handle player stat drop down
+const showstat = ref(false)
+function handleDropDown() {
+    showstat.value = !showstat.value
+}
+
+const WinRate = await getPlayerWinRate(userData.value.username)
+
+const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
+
+const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
+
+const getLadderRank = (ladder: number) => {
+    switch (ladder) {
+        case 1:
+            return 'Kaizoku Ou'
+        case 2:
+            return 'Yonkou'
+        case 3:
+            return 'Shichibukai'
+        case 4:
+            return 'Super Rookie'
+        case 5:
+            return 'Kaizoku'
+        case 6:
+            return 'Capin Boy'
+    }
+}
 </script>
 
 <template>
@@ -84,18 +145,48 @@ function openFriendsModel() {
                 class="flex flex-col mobile:flex-col items-center shadow bg-white dark:bg-gray-800 space-y-4 sm:p-6 p-1 w-full"
             >
                 <div class="flex sm:flex-row flex-col items-center">
-                    <img
-                        v-if="userData"
-                        class="rounded-full border-2 sm:h-32 h-20 sm:w-32 w-20 object-cover"
-                        :src="
-                            userData?.image ||
-                            defaultImages[Math.floor(Math.random() * defaultImages.length)]
-                        "
-                        alt="logo"
-                    />
+                    <div class="relative">
+                        <img
+                            class="rounded-full border-2 sm:h-32 h-20 sm:w-32 w-20 object-cover"
+                            :src="
+                                userData?.image ||
+                                defaultImages[Math.floor(Math.random() * defaultImages.length)]
+                            "
+                            alt="logo"
+                        />
+                        <div
+                            v-if="isMe" @click="handleChaneImage" class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
+                        >
+                            <img
+                                class="absolute inset-0 w-full h-full object-cover rounded-full"
+                                src="https://icon-library.com/images/change-an-icon/change-an-icon-14.jpg"
+                                alt="hover image"
+                            />
+                        </div>
+						<div v-if="updatePhoto" class="relative">
+							<div
+								class="absolute right-7 bg-white rounded-lg shadow-lg"
+								style="width: 15rem;"
+							>
+								<div class="grid grid-cols-5 gap-4 p-4">
+									<div v-for="(image, index) in defaultImages" :key="index">
+										<img
+											class="w-20 h-10 object-cover rounded-lg"
+											:src="image"
+											@click="updateAvatar(image)"
+											alt="icon"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+                    </div>
+
 
                     <div class="flex sm:flex-col justify-center sm:p-6">
-                        <p class="sm:text-3xl text-lg text-black dark:text-white">Welcome</p>
+                        <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">
+                            Welcome
+                        </p>
                         <!-- update username -->
                         <div class="flex flex-row items-center w-full justify-between">
                             <div
@@ -116,7 +207,7 @@ function openFriendsModel() {
                             <div
                                 class="flex justify-center"
                                 @click="editUsername"
-                                v-if="editBoolaen"
+                                v-if="editBoolaen && isMe"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -133,6 +224,45 @@ function openFriendsModel() {
                                     />
                                 </svg>
                             </div>
+
+                            <!----
+						rank dropdown
+					-->
+                            <div class="relative">
+                                <div class="flex sm:flex-col justify-end sm:p-2">
+                                    <div class="ml-14">
+                                        <button
+                                            @click="handleDropDown"
+                                            class="sm:text-3xl text-lg text-black dark:text-white hover:text-blue-800 focus:outline-none"
+                                            title="Your Rank"
+                                        >
+                                            {{ getLadderRank(userData.ladder) }}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div
+                                    v-if="showstat"
+                                    class="absolute left-14 mt-2 py-2 w-48 bg-white rounded-lg shadow-lg z-10"
+                                >
+                                    <span
+                                        class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
+                                        >XP level: {{ userData.xp }}</span
+                                    >
+                                    <span
+                                        class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
+                                        >Winning Rate: {{ (WinRate * 100).toFixed(2) }}%
+                                    </span>
+                                    <span
+                                        class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
+                                        >Total Wins: {{ totalWins }}
+                                    </span>
+                                    <span
+                                        class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
+                                        >Total Loses: {{ totaLoses }}</span
+                                    >
+                                </div>
+                            </div>
+
                             <!-- save -->
                             <div
                                 class="flex justify-center"
@@ -158,7 +288,7 @@ function openFriendsModel() {
                     </div>
                 </div>
 
-                <div class="flex flex-row space-x-6">
+                <div v-if="isMe" class="flex flex-row space-x-6">
                     <div class="relative cursor-pointer" @click="openChatModel">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

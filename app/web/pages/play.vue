@@ -1,5 +1,24 @@
 <template>
     <div>
+        <img
+            src="/audio.png"
+            alt="Stop audio"
+            @click="toggleAudio"
+            class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50"
+        />
+        <div
+            v-if="showSelector"
+            class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center"
+        >
+            <div class="flex flex-col items-center">
+                <GameSelector
+                    @gameSelected="startGame"
+                    ref="gameSelector"
+                    @leaveQueue="leaveQueue"
+                />
+            </div>
+        </div>
+
         <div>
             <GameClosePopup
                 v-if="exit"
@@ -9,17 +28,18 @@
                 detail="You will be considered a LOSER since you give up in middle of the game!!"
                 confirmation="Are you sure you want to exit the game?"
             />
-            <div class="container">
-                <div class="w-1/3 flex justify-between">
-                    <button class="bg-slate-400 text-sm p-2 rounded-t-md" @click="powerup">
-                        PowerUp
-                    </button>
-                    <Button @click="switchExistStatus(true)" icon="pi pi-times" />
-                    <button class="bg-slate-400 text-xs p-2 rounded-t-md" @click="powerup">
-                        PowerUp
-                    </button>
+            <div
+                class="container flex justify-center items-center flex-col m-0 p-0 min-h-screen min-w-screen relative h-screen"
+            >
+                <div class="relative w-full h-full">
+                    <GameBoard
+                        v-if="showBoard"
+                        @ReadyGame="setGameReady"
+                        @GameOver="gameOver($event)"
+                        @ExitBtn="switchExistStatus(true)"
+                        ref="gameBoard"
+                    />
                 </div>
-                <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
             <GameResult
                 v-if="gameResult"
@@ -28,67 +48,112 @@
                 @playAgain="playAgain"
             />
         </div>
+        <div
+            v-if="showTab"
+            class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center"
+        >
+            <div class="bg-white p-6 rounded-md text-center">
+                <h2 class="text-xl font-semibold mb-4">You can't use the app on multiple tabs</h2>
+                <p>Please use the other tab.</p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-let exit = ref(false)
-let ready = ref(false)
-let gameResult = ref(false)
-let gameResultMessage = ref('')
-let gameBoard = ref()
+import { ref } from 'vue'
+import { useSocket, useTabEvent } from '@/composables/Game/useSocket'
+const emit = defineEmits(['showTabModal'])
+const exit = ref(false)
+const showSelector = ref(true)
+const showBoard = ref(false)
+const gameResult = ref(false)
+const gameResultMessage = ref('')
+const gameBoard = ref()
+const gameSelector = ref()
+
+const { emitLeaveQueue } = useSocket()
+const { showTab } = useTabEvent()
+const audio = new Audio('/sounds/ost1.mp3')
+audio.loop = true
+audio.volume = 0.1
 
 onMounted(() => {
-    gameBoard.value.setup()
-    gameResult.value = false
+    // audio.play().catch(err => {
+    //     console.log(err)
+    //     audio.pause()
+    //     document.addEventListener('click', function () {
+    //         audio.play()
+    //     })
+    // })
 })
 
+onBeforeUnmount(() => {
+    // audio.pause()
+})
+
+onUnmounted(() => {
+	audio.pause()
+})
+
+const startGame = (mode: GameSelectDto): void => {
+    showBoard.value = true
+
+    setTimeout(() => {
+        gameBoard.value.setup(mode)
+    }, 1000)
+    gameResult.value = false
+}
+
 const playAgain = (): void => {
-    gameBoard.value.setup()
+    showSelector.value = true
+    showBoard.value = false
+    gameResult.value = false
 }
 
 const gameOver = (message: string): void => {
-    gameBoard.value.destroy()
-    ready.value = false
     gameResult.value = true
     gameResultMessage.value = message
+    showBoard.value = false
+}
+
+const leaveQueue = (): void => {
+    emitLeaveQueue()
+    gameBoard.value.destroy()
+    setTimeout(() => {
+        showBoard.value = false
+    }, 1000)
+    console.log('leave queue !!')
 }
 
 const setGameReady = (): void => {
-    ready.value = true
+    showSelector.value = false
     gameResult.value = false
 }
 
 const exitGame = (): void => {
     gameBoard.value.giveUp()
-    gameBoard.value.destroy()
+    showBoard.value = false
     exit.value = false
-    ready.value = false
+    showSelector.value = true
     gameResult.value = false
-    navigateTo('/')
 }
 
-const powerup = (): void => {
-    gameBoard.value.powerup()
+const toggleAudio = (): void => {
+    console.log('toggle audio')
+    if (audio.paused) {
+        audio.play()
+    } else {
+        audio.pause()
+    }
 }
-
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
 </script>
 
 <style>
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 0vh;
-    padding: 0;
-    min-height: 100vh;
-    min-width: 100vw;
-    position: relative;
-    height: 100vh;
-    /* overflow-y: hidden; */
+body {
+    background-color: #202020;
 }
 </style>

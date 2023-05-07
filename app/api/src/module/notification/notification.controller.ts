@@ -1,4 +1,4 @@
-import { Get, Param, Query } from '@nestjs/common'
+import { Get, Param, Query, Delete, Logger } from '@nestjs/common'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
@@ -10,14 +10,14 @@ export class NotificationController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/me')
-    getMyNotifications(@Req() req) {
-        return this.notificationService.getMyNotifications(req.user.login)
+    async getMyNotifications(@Req() req) {
+        return await this.notificationService.getMyNotifications(req.user.login)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/delete/:id')
-    deleteNotification(@Param('id') id: string, @Req() req) {
+    @Delete('/:id')
+    async deleteNotification(@Param('id') id: string, @Req() req) {
         const idNumber = parseInt(id)
-        return this.notificationService.deleteNotification(idNumber, req.user.login)
+        return await this.notificationService.deleteNotification(idNumber, req.user.login)
     }
 }
