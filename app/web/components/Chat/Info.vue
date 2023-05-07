@@ -224,7 +224,7 @@ const isAddUserOpened = ref(false)
 const { user_info } = useUserInfo()
 const { currentChat } = useCurrentChat()
 
-const users = ref([] as User[])
+const users = ref([] as UserGetDto[])
 
 onMounted(() => {
     chatSocket.value.on('group-chat-users', (payload: ChatUser[]) => {
@@ -342,7 +342,7 @@ const addUsers = () => {
     closeAddUsersPopup()
 }
 
-const selectUser = (user: User) => {
+const selectUser = (user: UserGetDto) => {
     if (
         !users.value.find(u => u.login === user.login) &&
         user.login !== user_info.value.login &&
@@ -351,7 +351,7 @@ const selectUser = (user: User) => {
         users.value.push(user)
 }
 
-const removeUser = (user: User) => {
+const removeUser = (user: UserGetDto) => {
     users.value = users.value.filter(u => u.id !== user.id)
 }
 
