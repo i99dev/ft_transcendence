@@ -1,6 +1,6 @@
 <template>
-    <div class="z-50 relative">
-        <div class="bg-white w-30 h-11 rounded-xl mb-3 shadow-lg p-2">
+    <div class="z-0 relative">
+        <div class="bg-white w-30 h-11 rounded-xl mb-3 shadow-sm p-2">
             <input
                 v-model="searchInput"
                 @keyup.enter="$emit('userInput', searchInput)"
@@ -95,7 +95,7 @@ const onInputChange = () => {
         console.log('data', data, data?.length)
         showSuggestions.value = data && data?.length > 0 ? true : false
         users.value = data ? data : []
-		if (users.value.length > 10) users.value = users.value.slice(0, 10);
+        if (users.value.length > 10) users.value = users.value.slice(0, 10)
     }, 500)()
 }
 </script>

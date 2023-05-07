@@ -3,9 +3,9 @@
         id="Home"
         class="flex min-h-screen justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
     >
-	<div class="flex flex-col w-full space-y-6 items-center">
-		<SearchBar @userInput="handleUserSearch" class="w-1/2 inline-block z-10" />
-		<div class="flex flex-row justify-center w-1/2 mobile:w-full">
+        <div class="flex flex-col w-full space-y-6 items-center">
+            <SearchBar @userInput="handleUserSearch" class="w-1/2 inline-block" />
+            <div class="flex flex-row justify-center w-1/2 mobile:w-full">
                 <UserProfileCardOne class="w-full" :username="userName" />
             </div>
             <button
@@ -29,13 +29,12 @@
             </div>
 
             <!-- Acheivement popup -->
-			<AchievPoPUp />
+            <AchievPoPUp />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-
 import { useUserInfo } from '../composables/useMe'
 
 definePageMeta({
@@ -45,11 +44,8 @@ definePageMeta({
 const { user_info } = useUserInfo()
 const userName = user_info.value.username
 
-
 const handleUserSearch = (username: string) => {
-	console.log('handleUserSearch', username)
-	navigateTo(`/users/${username}`)
-
+    console.log('handleUserSearch', username)
+    navigateTo(`/users/${username}`)
 }
-
 </script>
