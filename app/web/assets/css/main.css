@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+
+  @font-face {
+    font-family: primary;
+    src: url('~/assets/fonts/RussoOne-Regular.ttf');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: CyberpunkSpecial;
+    src: url("~/assets/fonts/Cyberpunk.ttf");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: CyberpunkDefault;
+    src: url("~/assets/fonts/Cybergame-Regular-Italic.ttf");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: CyberpunkItalic;
+    src: url("~/assets/fonts/GrandnessDemoRegular.ttf");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: CyberGlitch;
+    src: url("~/assets/fonts/SDGlitch_Demo.ttf");
+    font-display: swap;
+  }
+
+  body {
+    @apply bg-background text-[primary];
+  }
+}
+
+@layer utilities {
+  .centered {
+    @apply flex justify-center items-center;
+  }
+}

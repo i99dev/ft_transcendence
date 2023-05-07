@@ -1,17 +1,48 @@
 export const useIsAuth = async () => {
-    return useCookie('access_token').value
+    const { data } = await useMe()
+    if (!data.value) {
+        await refreshAccessToken()
+        const { data, error } = await useMe()
+        if (!data.value) return false
+    }
+    return true
+}
 
-    // const { data, error: errorRef } = await useFetch('/users/me', {
-    //     baseURL: useRuntimeConfig().API_URL,
-    //     headers: {
-    //         Authorization: `Bearer ${useCookie('access_token').value}`,
-    //     },
-    // })
-    // return  true
+export const refreshAccessToken = async () => {
+    const { data, error: errorRef } = await useFetch('/auth/refresh', {
+        baseURL: useRuntimeConfig().API_URL,
+    })
+    const tokenInfo = data.value as AccessTokenDto | null
+    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
+    return errorRef.value?.status
 }
 
 export async function useLogin(code: string): Promise<any> {
-    const { data, error: errorRef } = await useFetch('auth', {
+    const { data, error: errorRef } = await useFetch('auth/login', {
+        method: 'POST',
+        body: {
+            code: code,
+        },
+        baseURL: useRuntimeConfig().API_URL,
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
+}
+
+export async function useResendVerificationCode(user: string): Promise<any> {
+    console.log('resend')
+    const { data, error: errorRef } = await useFetch(`auth/2fa/resend/${user}`, {
+        baseURL: useRuntimeConfig().API_URL,
+    })
+    console.log('done')
+    console.log(data.value)
+    const error = errorRef.value as FetchError<any> | null
+    console.log(error)
+    return { data, error }
+}
+
+export async function useSubmitConfirmationCode(user: string, code: string): Promise<any> {
+    const { data, error: errorRef } = await useFetch(`auth/2fa/confirm/${user}`, {
         method: 'POST',
         body: {
             code: code,
@@ -27,8 +58,41 @@ interface FetchError<T> extends Error {
     statusText: string
 }
 
-export const useLogout = () => {
-    useCookie('access_token').value = ''
-    useCookie('authCode').value = ''
-    return useRouter().push('/login')
+export const useLogout = async () => {
+    const { data, error: errorRef } = await useFetch('auth/logout', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+    })
+    if (data.value) {
+        useCookie('access_token').value = ''
+        return useRouter().push('/login')
+    }
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error }
+}
+
+export const useAuth = async (route: any) => {
+    if (route.path === '/callback' && !route.query.code) return navigateTo('/login')
+
+    const { data, error } = await useLogin(route.query.code.toString())
+
+    const tokenInfo = data.value as AccessTokenDto | null
+    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
+
+    return data.value.access_token
+        ? navigateTo('/')
+        : data.value.two_fac_auth
+        ? navigateTo({
+            path: '/login/confirm',
+            query: {
+                "login": data.value.login,
+                "two_fac_auth": data.value.two_fac_auth,
+                "type": data.value.type,
+                "code_length": data.value.code_length,
+                "period": data.value.period,
+            }
+        })
+        : await useIsAuth()
 }

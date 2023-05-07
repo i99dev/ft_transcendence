@@ -1,4 +1,4 @@
-export {}
+export { }
 
 declare global {
     type UserStatus = 'OFFLINE' | 'ONLINE' | 'LIVE'
@@ -23,7 +23,7 @@ declare global {
         image: string
         xp: number
         ladder: number
-		wr: number
+        wr: number
         two_fac_auth: boolean
         friend_to?: UserGetDto[]
         friends?: UserGetDto[]
