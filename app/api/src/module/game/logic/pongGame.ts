@@ -225,8 +225,6 @@ export class PongGame {
         if ((ball.y <= ball.radius && ball.dy < 0) || (ball.y >= 1 - ball.radius && ball.dy > 0)) {
             ball.dy *= -1
             this.events.emit('play-sound', 'ball-hit')
-
-            console.log('Wall collision')
         }
     }
 
@@ -400,12 +398,9 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             } else if (powerUp.type == 'Hiken') {
-                console.log('Hiken activated')
                 player.paddle.color = 'orange'
             } else if (powerUp.type == 'Shinigami') {
-                console.log('Shinigami activated')
             } else if (powerUp.type == 'Shunshin no Jutsu') {
-                console.log('Shunshin activated')
                 player.paddle.speed *= 1.5
                 player.paddle.color = 'cyan'
                 setTimeout(() => {

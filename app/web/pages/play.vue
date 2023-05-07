@@ -123,7 +123,6 @@ const leaveQueue = (): void => {
     setTimeout(() => {
         showBoard.value = false
     }, 1000)
-    console.log('leave queue !!')
 }
 
 const setGameReady = (): void => {
@@ -140,7 +139,6 @@ const exitGame = (): void => {
 }
 
 const toggleAudio = (): void => {
-    console.log('toggle audio')
     if (audio.paused) {
         audio.play()
     } else {
