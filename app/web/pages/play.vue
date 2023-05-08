@@ -1,7 +1,7 @@
 <template>
     <div>
         <img
-            src="/audio.png"
+            src="/imgs/audio.png"
             alt="Stop audio"
             @click="toggleAudio"
             class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50"
@@ -123,7 +123,6 @@ const leaveQueue = (): void => {
     setTimeout(() => {
         showBoard.value = false
     }, 1000)
-    console.log('leave queue !!')
 }
 
 const setGameReady = (): void => {
@@ -140,7 +139,6 @@ const exitGame = (): void => {
 }
 
 const toggleAudio = (): void => {
-    console.log('toggle audio')
     if (audio.paused) {
         audio.play()
     } else {

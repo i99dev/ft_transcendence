@@ -13,8 +13,8 @@ import { useSocket, useSound } from '~/composables/Game/useSocket';
 import { useGameRenderer } from '~/composables/Game/useGameRenderer';
 
 let canvasRef = ref<HTMLCanvasElement>();
-let gameSetup = ref(useState<SetupDto>('gameSetup'));
-let gameData = ref(useState<gameStatusDto>('gameData'));
+let gameSetup = useState<SetupDto>('gameSetup');
+let gameData = useState<gameStatusDto>('gameData');
 const pu1Cooldowns = ref([false, false]);
 const pu2Cooldowns = ref([false, false]);
 const showStatusBar = ref(false);
@@ -98,12 +98,12 @@ const windowEvents = (): void => {
 };
 
 watch(gameSetup, (newVal, oldVal) => {
-    showStatusBar.value = true;
     if (newVal.game != oldVal.game) {
         emit('ReadyGame');
         rescaleGameData(newVal.game);
         init_game(canvasRef as Ref<HTMLCanvasElement>);
     }
+    showStatusBar.value = true;
 });
 
 watch(gameData, (newVal, oldVal) => {

@@ -9,28 +9,28 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
         active: false,
         ready: true,
         duration: 0,
-        cooldown: 5000,
+        cooldown: 7000,
     },
     {
         type: 'Baika no Jutsu',
         active: false,
         ready: true,
         duration: 5000,
-        cooldown: 5000,
+        cooldown: 7000,
     },
     {
         type: 'Shinigami',
         active: false,
         ready: true,
         duration: 500,
-        cooldown: 5000,
+        cooldown: 8000,
     },
     {
         type: 'Shunshin no Jutsu',
         active: false,
         ready: true,
         duration: 10000,
-        cooldown: 5000,
+        cooldown: 8000,
     },
 ]
 
@@ -225,8 +225,6 @@ export class PongGame {
         if ((ball.y <= ball.radius && ball.dy < 0) || (ball.y >= 1 - ball.radius && ball.dy > 0)) {
             ball.dy *= -1
             this.events.emit('play-sound', 'ball-hit')
-
-            console.log('Wall collision')
         }
     }
 
@@ -370,7 +368,6 @@ export class PongGame {
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Hiken')
 
         if (powerUp && powerUp.active) {
-            game.ball.color = 'blue'
             game.ball.color = 'red'
             game.ball.dx *= 2
             game.ball.dy *= 2
@@ -387,9 +384,11 @@ export class PongGame {
 
     public activatePowerUp(playerID: string, powerUpNo: number): void {
         const player = this.game_status.players.find(player => player.username === playerID)
-        const powerUp = player.powerUps[powerUpNo - 1]
 
-        if (powerUp && !powerUp.active && powerUp.ready === true) {
+        // if any power up is active, don't activate another one
+        if (player.powerUps.some(powerUp => powerUp.active)) return
+        const powerUp = player.powerUps[powerUpNo - 1]
+        if (powerUp && powerUp.ready === true) {
             powerUp.active = true
             powerUp.ready = false
 
@@ -399,21 +398,15 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             } else if (powerUp.type == 'Hiken') {
-                console.log('Hiken activated')
                 player.paddle.color = 'orange'
             } else if (powerUp.type == 'Shinigami') {
-                console.log('Shinigami activated')
             } else if (powerUp.type == 'Shunshin no Jutsu') {
-                console.log('Shunshin activated')
                 player.paddle.speed *= 1.5
                 player.paddle.color = 'cyan'
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             }
-            setTimeout(() => {
-                powerUp.ready = true
-            }, powerUp.cooldown)
         }
     }
 
@@ -431,5 +424,8 @@ export class PongGame {
             player.paddle.speed = PADDLE_SPEED
             player.paddle.color = 'white'
         }
+        setTimeout(() => {
+            powerUp.ready = true
+        }, powerUp.cooldown)
     }
 }
