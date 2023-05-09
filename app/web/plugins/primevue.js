@@ -10,10 +10,10 @@ import ConfirmationService from 'primevue/confirmationservice';
 export default defineNuxtPlugin(nuxtApp => {
     nuxtApp.vueApp.use(PrimeVue, { ripple: true })
     nuxtApp.vueApp.use(ToastService)
-    nuxtApp.vueApp.use(ConfirmationService)
+    // nuxtApp.vueApp.use(ConfirmationService)
     nuxtApp.vueApp.component('Button', Button)
     nuxtApp.vueApp.component('InputText', InputText)
     nuxtApp.vueApp.component('Toast', Toast)
-    nuxtApp.vueApp.component('SpeedDial', SpeedDial)
+    // nuxtApp.vueApp.component('SpeedDial', SpeedDial)
     //other components that you need
 })

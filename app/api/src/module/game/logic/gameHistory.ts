@@ -8,6 +8,7 @@ export class gameHistory {
 
     constructor(game: gameStatusDto) {
         this.game = game
+        this.createGame()
     }
 
     public async findID(login: string): Promise<number> {
@@ -19,14 +20,14 @@ export class gameHistory {
         return user.id
     }
 
-    private IsWinner(player: PlayerDto): boolean {
+    public IsWinner(player: PlayerDto): boolean {
         let isWinner = false
         this.game.players.forEach(pl => {
             if (pl.username !== player.username) {
                 if (pl.score > player.score) {
-                    isWinner = true
-                } else {
                     isWinner = false
+                } else {
+                    isWinner = true
                 }
             }
         })
@@ -34,14 +35,25 @@ export class gameHistory {
     }
 
     public async addHistory(): Promise<void> {
-        await this.createGame()
+        await this.setTimeEnded()
         await this.assignOponents()
+    }
+
+    private async setTimeEnded(): Promise<void> {
+        await this.prisma.match.update({
+            where: {
+                gameID: this.game.players[0].gameID,
+            },
+            data: {
+                end: new Date(),
+            },
+        })
     }
 
     private async assignOponents(): Promise<void> {
         await this.prisma.match.update({
             where: {
-                gameID: this.game.players[0].gameId,
+                gameID: this.game.players[0].gameID,
             },
             data: {
                 opponents: {
@@ -55,7 +67,7 @@ export class gameHistory {
         const pl = await this.prisma.player.create({
             data: {
                 matches: {
-                    connect: { gameID: player.gameId },
+                    connect: { gameID: player.gameID },
                 },
                 user: {
                     connect: { login: player.username },
@@ -78,7 +90,8 @@ export class gameHistory {
     public async createGame(): Promise<void> {
         await this.prisma.match.create({
             data: {
-                gameID: this.game.players[0].gameId,
+                gameID: this.game.players[0].gameID,
+                start: new Date(),
             },
         })
     }

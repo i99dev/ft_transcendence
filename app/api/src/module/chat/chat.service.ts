@@ -1,4 +1,4 @@
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
@@ -149,11 +149,11 @@ export class ChatService {
                     chat_room_id: room_id,
                     content: message,
                     sender_login: user_login,
-                    type: type
+                    type: type,
                 },
                 include: {
-                    sender: true
-                }
+                    sender: true,
+                },
             })
             return chatRoomMessage
         } catch (error) {

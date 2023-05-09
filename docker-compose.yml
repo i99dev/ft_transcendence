@@ -56,9 +56,12 @@ services:
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
             - DATABASE_URL=${DATABASE_URL}
-            - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+            - ACCESS_TOKEN_EXPIRES_IN=${ACCESS_TOKEN_EXPIRES_IN}
+            - REFRESH_TOKEN_EXPIRES_IN=${REFRESH_TOKEN_EXPIRES_IN}
             - JWT_SECRET=${JWT_SECRET}
             - PORT=${PORT}
+            - EMAIL_USER=${EMAIL_USER}
+            - EMAIL_PASSWORD=${EMAIL_PASSWORD}
 
         networks:
             - proxy_backend_net

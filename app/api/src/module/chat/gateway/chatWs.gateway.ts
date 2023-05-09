@@ -9,7 +9,13 @@ import {
     WebSocketGateway,
     ConnectedSocket,
 } from '@nestjs/websockets'
-import { MessageType, ChatUserStatus, ChatUserRole, ChatUser, NotificationType } from '@prisma/client'
+import {
+    MessageType,
+    ChatUserStatus,
+    ChatUserRole,
+    ChatUser,
+    NotificationType,
+} from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
 import {
@@ -55,15 +61,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private logger = new Logger('ChatWsGateway')
 
     async handleConnection(client: Socket, ...args: any[]) {
-        if (this.clients.has(this.getID(client) as unknown as string)) {
-            this.logger.log(`Client "${client.id}" is already connected to chat`)
-            return client.disconnect()
-        }
-
-        this.logger.log(`Client "${client.id}" connected to chat`)
+        if (!this.getID(client)) return
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
         this.joinAllRooms(client, this.getID(client) as string)
+        this.logger.log(`Client "${client.id}" connected to chat`)
     }
 
     async handleDisconnect(client: Socket) {
@@ -80,15 +82,18 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: CreateGroupChatDto,
     ) {
-        if (!(await this.chatService.getUser((this.getID(client)) as string)))
-        return this.socketError('User not found')
-        const chatRoom = await this.chatWsService.setupGroupChat(payload, (this.getID(client)) as string)
+        if (!(await this.chatService.getUser(this.getID(client) as string)))
+            return this.socketError('User not found')
+        const chatRoom = await this.chatWsService.setupGroupChat(
+            payload,
+            this.getID(client) as string,
+        )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)
 
         client.emit('create-group-chat', { room_id: chatRoom.room_id })
         await this.setupSpecialMessage(
-            (this.getID(client)),
+            this.getID(client),
             chatRoom.room_id,
             `${this.getID(client) as string} created a group chat`,
         )
@@ -167,8 +172,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (await this.chatWsService.validatePassword(payload.room_id, payload.password))
             await this.chatWsService.joinGroupChat(payload.room_id, this.getID(client) as string)
-        else
-            return this.socketError('Invalid password')
+        else return this.socketError('Invalid password')
         client.join(payload.room_id)
 
         await this.setupSpecialMessage(
@@ -204,7 +208,10 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
             return this.socketError('User is already outside the chat room')
 
-        const chatUsers = await this.chatWsService.leaveGroupChat(payload.room_id, (this.getID(client)) as string)
+        const chatUsers = await this.chatWsService.leaveGroupChat(
+            payload.room_id,
+            this.getID(client) as string,
+        )
 
         this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
         await this.setupSpecialMessage(
@@ -243,18 +250,31 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleAdmin(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: SetUserDto,
-    ) : Promise<ChatUser[]> {
+    ): Promise<ChatUser[]> {
         if (
             !(await this.chatService.getUser(this.getID(client) as string)) ||
             !(await this.chatService.getUser(payload.user_login))
         )
-            return (this.socketError('User not found'), [])
-        if (!(await this.chatService.validateChatRoom(payload.room_id, (this.getID(client)) as string)))
-            return (this.socketError('Invalid reciever'), [])
-        if (!(await this.chatWsService.canChangeAdmin(payload.room_id, (this.getID(client)) as string)))
-            return (this.socketError('User is neither admin nor owner'), [])
+            return this.socketError('User not found'), []
+        if (
+            !(await this.chatService.validateChatRoom(
+                payload.room_id,
+                this.getID(client) as string,
+            ))
+        )
+            return this.socketError('Invalid reciever'), []
+        if (
+            !(await this.chatWsService.canChangeAdmin(
+                payload.room_id,
+                this.getID(client) as string,
+            ))
+        )
+            return this.socketError('User is neither admin nor owner'), []
 
-        const groupChat = await this.chatWsService.handleAdminSetup(payload, (this.getID(client)) as string) // 'upgrade' , 'downgrade', 'owner'
+        const groupChat = await this.chatWsService.handleAdminSetup(
+            payload,
+            this.getID(client) as string,
+        ) // 'upgrade' , 'downgrade', 'owner'
         this.wss.to(payload.room_id).emit('group-chat-users', groupChat.chat_user)
     }
 
@@ -262,20 +282,33 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleAdminAction(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: SetUserDto,
-    ) {
+    ): Promise<ChatUser[]> {
         if (
             !(await this.chatService.getUser(this.getID(client) as string)) ||
             !(await this.chatService.getUser(payload.user_login))
         )
-            return (this.socketError('User not found'), [])
-        if (!(await this.chatService.validateChatRoom(payload.room_id, (this.getID(client)) as string)))
-            return (this.socketError('Invalid reciever'), [])
-        if (!(await this.chatWsService.canChangeAdmin(payload.room_id, (this.getID(client)) as string)))
-            return (this.socketError('User is neither admin nor owner'), [])
-        if (payload.user_login === (this.getID(client)) as string)
-            return (this.socketError('User cannot change himself'), [])
-        if ('OWNER' === (await this.chatService.getChatUser(payload.room_id, payload.user_login)).role)
-            return (this.socketError('User cannot change owner'), [])
+            return this.socketError('User not found'), []
+        if (
+            !(await this.chatService.validateChatRoom(
+                payload.room_id,
+                this.getID(client) as string,
+            ))
+        )
+            return this.socketError('Invalid reciever'), []
+        if (
+            !(await this.chatWsService.canChangeAdmin(
+                payload.room_id,
+                this.getID(client) as string,
+            ))
+        )
+            return this.socketError('User is neither admin nor owner'), []
+        if (payload.user_login === (this.getID(client) as string))
+            return this.socketError('User cannot change himself'), []
+        if (
+            'OWNER' ===
+            (await this.chatService.getChatUser(payload.room_id, payload.user_login)).role
+        )
+            return this.socketError('User cannot change owner'), []
 
         if (payload.action === 'add') {
             if (await this.chatService.countUsersInChatRoom(payload.room_id) >= 256)
@@ -283,24 +316,24 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const chatUsers = await this.chatWsService.addUser(payload.room_id, payload.user_login)
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.join(payload.room_id)
-            await this.groupChatService.getGroupChatForUser((this.getID(client)) as string)
+            await this.groupChatService.getGroupChatForUser(this.getID(client) as string)
 
             this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
 
             await this.setupSpecialMessage(
-                (this.getID(client)),
+                this.getID(client),
                 payload.room_id,
                 `${this.getID(client) as string} added ${payload.user_login}`,
             )
 
             if (clientSocket) {
                 clientSocket.emit('new-group-list', {
-                    content: await this.groupChatService.getGroupChatForUser((this.getID(clientSocket)) as string),
+                    content: await this.groupChatService.getGroupChatForUser(
+                        this.getID(clientSocket) as string,
+                    ),
                     type: MessageType.SPECIAL,
                 })
             }
-
-
         } else if (payload.action === 'kick') {
             const chatUsers = await this.chatWsService.kickUser(
                 payload.room_id,
@@ -347,9 +380,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 payload.user_login,
                 this.getID(client) as string,
             )
-            
-            this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
 
+            this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
         } else if (payload.action === 'ban') {
             const chatUsers = await this.chatWsService.banUser(
                 payload.room_id,
@@ -361,7 +393,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.leave(payload.room_id)
-
         } else if (payload.action === 'reset') {
             const chatUsers = await this.chatWsService.resetUser(
                 payload.room_id,
@@ -370,10 +401,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )
 
             this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
-
-        } else return (this.socketError('Invalid action'), [])
-        
-
+        } else return this.socketError('Invalid action'), []
     }
 
     @SubscribeMessage('add-message')
@@ -416,7 +444,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )
                 return this.socketError('This user can not interfer in this DM')
         }
-        
+
         if (!payload.message || payload.message === '') return this.socketError('Empty Message')
 
         const message = await this.chatService.createMessage(
@@ -487,7 +515,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             user = this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
                 this.logger.error('Invalid token')
-                return client.disconnect()
+                if (client.connected)
+                    client.disconnect()
+                return null
             }
         }
         return user

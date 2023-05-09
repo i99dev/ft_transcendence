@@ -1,338 +1,171 @@
 <template>
-    <div class="canvas-wrapper bg-slate-700 flex justify-center">
-        <canvas
-            ref="canvas"
-            class="bg-slate-800 border-2 rounded-xl shadow-2xl shadow-slate-900"
-        ></canvas>
+    <div>
+        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="pu1Cooldowns[0]"
+            :cooldown12="pu1Cooldowns[1]" :cooldown21="pu2Cooldowns[0]" :cooldown22="pu2Cooldowns[1]" />
+        <canvas ref="canvasRef" style="width: 100%; height: 100%;"></canvas>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { io, Socket } from 'socket.io-client'
 
-// refs
-let canvas = ref({} as HTMLCanvasElement)
-let ctx = ref({} as CanvasRenderingContext2D)
-let objsSizes = ref({} as gameObjects)
-let gameSetup = ref({} as SetupDto)
-let gameData = ref({} as gameStatusDto)
-let grabbed = ref(false as boolean)
-let offsetY = ref(0 as number)
-const socket = ref({} as Socket)
+import { ref, defineEmits, defineExpose, onUnmounted, provide } from 'vue';
+import { useSocket, useSound } from '~/composables/Game/useSocket';
+import { useGameRenderer } from '~/composables/Game/useGameRenderer';
 
-// game settings
-const sensitivity = 3 // for mouse movements or touch movements
-const canvasRatio = 1.5 // board width / board height
+let canvasRef = ref<HTMLCanvasElement>();
+let gameSetup = ref(useState<SetupDto>('gameSetup'));
+let gameData = ref(useState<gameStatusDto>('gameData'));
+const pu1Cooldowns = ref([false, false]);
+const pu2Cooldowns = ref([false, false]);
+const showStatusBar = ref(false);
 
-// Defines
-const emit = defineEmits(['ReadyGame', 'GameOver'])
-defineExpose({ setup, destroy, giveUp, powerup })
+const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer();
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket();
 
-function setup(): void {
-    // setup socket connection and events
-    socketSetup()
-    socketEvents()
+const emit = defineEmits(['ReadyGame', 'GameOver', "ExitBtn"]);
+defineExpose({ setup, giveUp, destroy });
 
-    // setup canvas values
-    setUpCanvas()
+const playSound = (sound: string): void => {
+    const random = Math.floor(Math.random() * 2) + 1;
+    const audio = new Audio(`/sounds/${sound}-${random}.mp3`);
+    audio.volume = 0.2;
+    audio.play();
+};
 
-    // handle window events
-    windowEvents()
+useSound(playSound);
 
-    // draw the game board
-    draw()
-}
+const keys: { [key: string]: boolean } = {
+    ArrowUp: false,
+    ArrowDown: false
+};
+
+onMounted(() => {
+    window.addEventListener('popstate', handleArrows);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown);
+    document.removeEventListener('keyup', handleKeyUp);
+    window.removeEventListener('popstate', handleArrows);
+    reset();
+});
+
+const handleArrows = (e: PopStateEvent): void => {
+    giveUp()
+};
+
+const emitGameOver = (winner: string): void => {
+    if (winner == gameSetup.value.game.players[gameSetup.value.player].username) {
+        emit('GameOver', 'you won');
+        const winSound = new Audio('/sounds/win.mp3');
+        winSound.play();
+    } else {
+        emit('GameOver', 'you lost');
+        const loseSound = new Audio('/sounds/lose.mp3');
+        loseSound.play();
+    }
+
+    reset();
+    showStatusBar.value = false;
+};
+
+watch(gameWinner, (newVal, oldVal) => {
+    if (newVal) {
+        emitGameOver(newVal);
+    }
+});
 
 function destroy(): void {
-    if (socket.value.connected) socket.value.disconnect()
-}
-
-function powerup(): void {
-    socket.value.emit('powerup', 'start')
-    setTimeout(() => {
-        socket.value.emit('powerup', 'end')
-    }, 10000)
+    resetSocket();
+    reset();
 }
 
 function giveUp(): void {
-    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player - 1])
+    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player]);
+    destroy();
 }
 
-const socketSetup = (): void => {
-    socket.value = socket.value = io('http://localhost/games', {
-        withCredentials: true,
-        extraHeaders: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-        path: '/socket.io',
-    })
-}
-
-const socketEvents = (): void => {
-    socket.value.on('Game-Setup', (payload: SetupDto) => {
-        emit('ReadyGame')
-        gameSetup.value = payload
-        storeGameData(gameSetup.value.game)
-        draw()
-    })
-
-    socket.value.on('Game-Data', payload => {
-        storeGameData(payload)
-        draw()
-    })
-
-    socket.value.on('Game-Over', payload => {
-        if (payload.username == gameSetup.value.game.players[gameSetup.value.player])
-            emit('GameOver', 'you won')
-        else emit('GameOver', 'you won')
-    })
+function setup(mode: GameSelectDto): void {
+    resetSocket();
+    emitStartGame(mode);
+    setupSocketHandlers();
+    windowEvents();
 }
 
 const windowEvents = (): void => {
-    // Handle Window resize
-    window.addEventListener('resize', () => redraw())
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+};
 
-    // Handle Keyboard events
-    document.addEventListener('keydown', handleKeyDown)
-    // Handle Mouse and Touch events
-    window.addEventListener('mousedown', holdPaddle)
-    window.addEventListener('mousemove', movePaddle)
-    window.addEventListener('mouseup', leavePaddle)
-    window.addEventListener('touchstart', holdPaddle)
-    window.addEventListener('touchmove', movePaddle)
-    window.addEventListener('touchend', leavePaddle)
-}
-
-const holdPaddle = (e: Event): void => {
-    const curOffsetY = getCurrentHoldPosY(e as MouseEvent & TouchEvent)
-    offsetY.value = curOffsetY
-    grabbed.value = true
-}
-
-const movePaddle = (e: Event): void => {
-    const curOffsetY = getCurrentHoldPosY(e as MouseEvent & TouchEvent)
-    if (grabbed.value) {
-        if (curOffsetY < offsetY.value - sensitivity) {
-            socket.value.emit('move', 'up')
-            offsetY.value = curOffsetY
-        } else if (curOffsetY > offsetY.value + sensitivity) {
-            socket.value.emit('move', 'down')
-            offsetY.value = curOffsetY
-        }
+watch(gameSetup, (newVal, oldVal) => {
+    showStatusBar.value = true;
+    if (newVal.game != oldVal.game) {
+        emit('ReadyGame');
+        rescaleGameData(newVal.game);
+        init_game(canvasRef as Ref<HTMLCanvasElement>);
     }
-}
+});
 
-const getCurrentHoldPosY = (e: MouseEvent & TouchEvent): number => {
-    return e.changedTouches ? e.changedTouches[0].clientY : e.offsetY
-}
-
-const leavePaddle = (e: any): void => {
-    if (grabbed.value) {
-        offsetY.value = 0
-        grabbed.value = false
+watch(gameData, (newVal, oldVal) => {
+    if (newVal) {
+        updatePaddleDirection();
+        rescaleGameData(newVal);
+        updatePlayer(gameData.value.players);
+        updateBall(gameData.value.ball);
     }
-}
+});
 
-const initialize = (): void => {
-    objsSizes.value = {
-        score: {
-            size: canvas.value.width / 20,
-        },
+const startPowerCooldown = (player: number, key: number): void => {
+    if (player == 0) {
+        if (pu1Cooldowns.value[key]) return;
+        pu1Cooldowns.value[key] = true;
+        setTimeout(() => {
+            pu1Cooldowns.value[key] = false;
+        }, 5000);
+    } else if (player == 1) {
+        if (pu2Cooldowns.value[key]) return;
+        pu2Cooldowns.value[key] = true;
+        setTimeout(() => {
+            pu2Cooldowns.value[key] = false;
+        }, 5000);
     }
-}
+};
 
-const storeGameData = (payload: gameStatusDto): void => {
-    gameData.value = payload
-    storePlayersData(gameData.value.players)
-    storeBallData(gameData.value.ball)
-}
-
-const storePlayersData = (players: PlayerDto[]): void => {
-    for (let i = 0; i < players.length; i++) {
-        players[i].paddle.width *= canvas.value.width
-        players[i].paddle.height *= canvas.value.height
-        players[i].y = players[i].y * canvas.value.height - players[i].paddle.height / 2
+const activatePowerUp = (key: string): void => {
+    if (key == '1') {
+        socket.value.emit('Power-Up', 1);
+        startPowerCooldown(gameSetup.value.player, 0);
+    } else if (key == '2') {
+        socket.value.emit('Power-Up', 2);
+        startPowerCooldown(gameSetup.value.player, 1);
     }
-}
-
-const storeBallData = (ball: BallDto): void => {
-    ball.x *= canvas.value.width
-    ball.y *= canvas.value.height
-    ball.radius *= canvas.value.height
-}
-
-const setUpCanvas = (): void => {
-    const canvasWrapper = document.querySelector('.canvas-wrapper') as HTMLCanvasElement
-    const parent = canvasWrapper.parentNode as HTMLElement
-
-    if (parent && parent.offsetHeight * canvasRatio >= parent.offsetWidth)
-        canvasWrapper.style.height =
-            (canvasWrapper.offsetWidth / canvasRatio / parent.offsetHeight) * 100 + '%'
-    else canvasWrapper.style.height = '90%'
-
-    canvas.value.height = canvasWrapper.offsetHeight
-    canvas.value.width = canvas.value.height * canvasRatio
-
-    ctx.value = canvas.value.getContext('2d') as CanvasRenderingContext2D
-
-    initialize()
-}
-
-onUnmounted((): void => {
-    destroy()
-})
-
-const redraw = (): void => {
-    // Draw it all again.
-    setUpCanvas()
-    draw()
-}
-
-const draw = (): void => {
-    if (isObjEmpty(gameData.value)) return
-
-    ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
-    drawPlayer(gameData.value.players)
-    drawPlayersInfo()
-    drawScore()
-    drawBall()
-
-    // temporary decision for winner
-    checkWinner()
-}
-
-const isObjEmpty = (obj: any): boolean => {
-    return Object.values(obj).length === 0 && obj.constructor === Object
-}
-
-// temporay function for winner. need to be removed
-const checkWinner = (): void => {
-    let gameFinished = false
-    for (let p = 0; p < gameData.value.players.length; p++)
-        if (gameData.value.players[p].score == 11) gameFinished = true
-
-    if (gameFinished) {
-        for (let p = 0; p < gameData.value.players.length; p++) {
-            if (p == gameSetup.value.player - 1) {
-                if (gameData.value.players[p].score == 11) emit('GameOver', 'you won')
-                else emit('GameOver', 'you Lost')
-            }
-        }
-    }
-}
+};
 
 const handleKeyDown = (event: KeyboardEvent): void => {
-    switch (event.key) {
-        case 'ArrowUp':
-            socket.value.emit('move', 'up')
-            break
-        case 'ArrowDown':
-            socket.value.emit('move', 'down')
-            break
+    if (keys.hasOwnProperty(event.key)) {
+        event.preventDefault();
     }
-}
 
-const drawBall = (): void => {
-    ctx.value.beginPath()
-    ctx.value.arc(
-        gameData.value.ball.x,
-        gameData.value.ball.y,
-        gameData.value.ball.radius,
-        0,
-        Math.PI * 2,
-    )
-    ctx.value.fillStyle = 'white'
-    ctx.value.fill()
-    ctx.value.closePath()
-}
-
-const drawPlayer = (players: PlayerDto[]): void => {
-    for (let i = 0; i < players.length; i++) {
-        const p = players[i]
-        const posy = p.y * canvas.value.height - p.paddle.height / 2
-        const posx = i == 0 ? 0 : canvas.value.width - p.paddle.width
-        ctx.value.fillStyle = 'white'
-        ctx.value.fillRect(posx, p.y, p.paddle.width, p.paddle.height)
+    if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
+        keys[event.key] = true;
+    } else if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
+        activatePowerUp(event.key);
     }
-}
+};
 
-const drawScore = (): void => {
-    // draw player 1 score
-    let text = `${gameData.value.players[0].score}\t\t`
-    let { w: w1, h: h1 } = textSetup(text, objsSizes.value.score.size)
-    drawText(
-        text,
-        objsSizes.value.score.size,
-        -w1 / 2,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
+const handleKeyUp = (event: KeyboardEvent): void => {
+    if (keys.hasOwnProperty(event.key)) {
+        event.preventDefault();
+        keys[event.key] = false;
+    }
+};
 
-    // draw player 2 score
-    text = `\t\t${gameData.value.players[1].score}`
-    let { w: w2, h: h2 } = textSetup(text, objsSizes.value.score.size)
-    drawText(
-        text,
-        objsSizes.value.score.size,
-        w2 / 2,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
+const updatePaddleDirection = (): void => {
+    if (keys.ArrowUp) {
+        socket.value.emit('move', 'up');
+    } else if (keys.ArrowDown) {
+        socket.value.emit('move', 'down');
+    }
+};
 
-    // draw : in the middle
-    drawText(
-        `:`,
-        objsSizes.value.score.size,
-        0,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
-}
-
-const drawPlayersInfo = (): void => {
-    // draw player 1 username
-    drawText(
-        `${gameData.value.players[0].username}`,
-        objsSizes.value.score.size,
-        -canvas.value.width / 4,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
-
-    // draw player 2 username
-    drawText(
-        `${gameData.value.players[1].username}`,
-        objsSizes.value.score.size,
-        canvas.value.width / 4,
-        -canvas.value.height / 2 + objsSizes.value.score.size * 2,
-    )
-}
-
-const drawText = (text: string, size: number, posx = 0, posy = 0): void => {
-    const { w, h } = textSetup(text, size)
-    clearText(text, size, w, h, posx, posy)
-    ctx.value.fillText(
-        text,
-        canvas.value.width / 2 - w / 2 + posx,
-        canvas.value.height / 2 - h / 2 + posy,
-    )
-}
-
-const clearText = (text: string, size: number, w: number, h: number, posx = 0, posy = 0) => {}
-
-const textSetup = (text: string, size: number): { w: number; h: number } => {
-    ctx.value.font = `${size}px Arial`
-    const w = ctx.value.measureText(text).width
-    const h =
-        ctx.value.measureText(text).fontBoundingBoxAscent +
-        ctx.value.measureText(text).fontBoundingBoxDescent
-    return { w, h }
-}
 </script>
-
-<style scoped>
-.canvas-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    margin: 0;
-    padding: 0;
-}
-</style>

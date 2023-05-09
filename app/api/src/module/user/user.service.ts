@@ -1,6 +1,6 @@
 import { UserGetDto, UserPatchDto } from './dto/user.dto'
 import { User } from '@prisma/client'
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { UserRepository } from './repository/user.repository'
 import { Me } from '../../auth/interface/intra.interface'
@@ -80,10 +80,43 @@ export class UserService {
         try {
             const users = await this.prisma.user.findMany({
                 where: {
-                    username: {
+                    login: {
                         contains: search,
                         mode: 'insensitive',
                     },
+                },
+            })
+            return users
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getUserbyUserName(name: string): Promise<UserGetDto> {
+        const user: UserGetDto = await this.prisma.user.findUnique({
+            where: { username: name },
+            include: {
+                friend_to: true,
+                friends: true,
+            },
+        })
+        return user
+    }
+
+    async SearchUserNames(name: string) {
+        try {
+            const users = await this.prisma.user.findMany({
+                where: {
+                    username: {
+                        contains: name,
+                        mode: 'insensitive',
+                    },
+                },
+                select: {
+                    username: true,
+                    image: true,
+                    ladder: true,
+                    first_name: true,
                 },
             })
             return users

@@ -1,5 +1,6 @@
 import { UserStatus } from '@prisma/client'
 import { IsString, IsEnum, IsOptional, IsBoolean, IsNumber } from 'class-validator'
+import { isFloat32Array } from 'util/types'
 
 export class UserGetDto {
     id: number
@@ -12,8 +13,9 @@ export class UserGetDto {
     created_at: Date
     last_login: Date
     image: string
-    exp_level: number
-    points: number
+    xp: number
+    ladder: number
+    wr: number
     two_fac_auth: boolean
     friend_to?: UserGetDto[]
     friends?: UserGetDto[]
@@ -40,17 +42,13 @@ export class UserPatchDto {
     @IsEnum(UserStatus)
     status?: UserStatus
 
+    @IsNumber()
+    @IsOptional()
+    wr?: number
+
     @IsOptional()
     @IsBoolean()
     two_fac_auth?: boolean
-
-    @IsOptional()
-    @IsNumber()
-    total_loses?: number
-
-    @IsOptional()
-    @IsNumber()
-    total_wins?: number
 }
 export class UserValidPatchDto {
     username: string
@@ -59,6 +57,4 @@ export class UserValidPatchDto {
     image: string
     status: UserStatus
     two_fac_auth: boolean
-    total_loses: number
-    total_wins: number
 }
