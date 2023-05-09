@@ -282,7 +282,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleAdminAction(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: SetUserDto,
-    ): Promise<ChatUser[]> {
+    ) {
         if (
             !(await this.chatService.getUser(this.getID(client) as string)) ||
             !(await this.chatService.getUser(payload.user_login))
