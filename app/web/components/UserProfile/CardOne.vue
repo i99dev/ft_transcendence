@@ -65,10 +65,6 @@ const handleChaneImage = () => {
 	updatePhoto.value = !updatePhoto.value
 }
 
-const handleChaneImage = () => {
-	updatePhoto.value = !updatePhoto.value
-}
-
 const defaultImages = [
     'https://i1.ae/img/icons/1.png',
     'https://i1.ae/img/icons/2.png',
