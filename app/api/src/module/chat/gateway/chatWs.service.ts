@@ -1,3 +1,4 @@
+import { Image } from './../../../auth/interface/intra.interface';
 import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
@@ -47,6 +48,8 @@ export class ChatWsService {
 
         const room_id = crypto.randomUUID()
         let password = null
+        if (payload.image === undefined || payload.image === null || payload.image === '')
+            payload.image = `http://127.0.0.1/api/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
