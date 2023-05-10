@@ -10,6 +10,7 @@
             type="semi-circle"
             direction="up"
         />
+        <Button>click</Button>
     </div>
 </template>
 

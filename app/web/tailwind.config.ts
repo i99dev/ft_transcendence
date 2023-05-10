@@ -23,6 +23,25 @@ export default <Partial<Config>>{
             scale: {
                 '-100': '-1',
             },
+            colors: {
+                primary: '#E93CAC',
+                secondary: '#1E22AA',
+                tertiary: '#201547',
+                background: '#051C2C',
+                accent: '#59CBE8'
+            },
+            fontSize: {
+                '1/10': '10%',
+                '1/5': '20%',
+                '1/4': '25%',
+                '1/3': '33.333333%',
+                '1/2': '50%',
+                '3/4': '75%',
+                '5/6': '83.333333%',
+                '7/8': '87.5%',
+                '9/10': '90%',
+            },
+            
         },
     },
     variants: {

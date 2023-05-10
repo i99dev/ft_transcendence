@@ -1,19 +1,3 @@
-<script lang="ts" setup>
-import { Socket } from 'socket.io-client';
-
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
-const { data, error, pending, refresh, execute } = await useMe()
-const { setUserInfo } = useUserInfo()
-
-if (data) {
-    await setUserInfo(data.value)
-}
-
-chatSocket.value.on('exception', (payload)=>{
-    console.log(`${payload}: ${payload.message}`)
-})
-</script>
-
 <template>
     <div>
         <!-- loading -->
@@ -23,9 +7,24 @@ chatSocket.value.on('exception', (payload)=>{
         <!-- success -->
         <div v-if="data">
             <!-- <Header /> -->
-            <ChatNavBar />
-            <FriendsListNav />
+            <ChatNavBar class="z-10" />
+            <FriendsListNav class="z-10" />
             <slot />
         </div>
     </div>
 </template>
+
+<script lang="ts" setup>
+import { Socket } from 'socket.io-client'
+
+const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { data, error, pending, refresh, execute } = await useMe()
+const { setUserInfo } = useUserInfo()
+
+if (data.value) await setUserInfo(data.value)
+else if (error?.status === 401) navigateTo('/login')
+
+chatSocket.value.on('exception', payload => {
+    console.log(`${payload}: ${payload.message}`)
+})
+</script>

@@ -56,6 +56,14 @@ const updateAvatar = async (image: string) => {
     setUserAvatar(image)
     await useUpdateUserInfo()
 }
+const updateTwoFacAuth = async () => {
+    setUserTwoFacAuth(!user_info.value.two_fac_auth)
+    await useUpdateUserInfo()
+}
+
+const handleChaneImage = () => {
+	updatePhoto.value = !updatePhoto.value
+}
 
 const handleChaneImage = () => {
 	updatePhoto.value = !updatePhoto.value
@@ -329,6 +337,46 @@ const getLadderRank = (ladder: number) => {
                             <div class="text-xs font-semibold text-center text-white">10</div>
                         </div>
                     </div>
+                    <button
+                        @click="useLogout"
+                        class="cursor-pointer relative rounded-full"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 stroke-1 stroke-current"
+                            viewBox="0 0 24 24" fill="none">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                            <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+                        </svg>
+                    </button>
+                    <button
+                        @click="updateTwoFacAuth"
+                        class="cursor-pointer relative rounded-full"
+                    >
+                    <svg
+                        v-if="user_info.two_fac_auth"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 fill-white stroke-black stroke-1"
+                        viewBox="0 0 24 24"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" stroke-width="0" fill="currentColor"></path>
+                    </svg>
+                    <svg
+                        v-else
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 fill-white stroke-black stroke-1"
+                        viewBox="0 0 24 24"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"></path>
+                    </svg>
+                    </button>
                 </div>
             </div>
         </div>

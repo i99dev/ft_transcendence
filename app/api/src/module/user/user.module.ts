@@ -4,8 +4,8 @@ import { UserRepository } from './repository/user.repository'
 import { UserService } from './user.service'
 import { UserController } from './user.controller'
 import { forwardRef, Module } from '@nestjs/common'
-import { AuthModule } from '@auth/auth.module'
-import { PrismaModule } from '@providers/prisma/prisma.module'
+import { AuthModule } from '../../auth/auth.module'
+import { PrismaModule } from '../../providers/prisma/prisma.module'
 
 @Module({
     imports: [forwardRef(() => AuthModule), FriendModule, PrismaModule],

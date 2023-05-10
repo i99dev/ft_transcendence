@@ -18,3 +18,13 @@ export const accessTokenConstants = {
 export const pageInfoConstants = {
     defaultPage: 20,
 }
+
+export const twoFacAuthConstants = {
+    type: 'email',
+    length: 6,
+    period: 300,
+    from: 'noreply@nestjs.com',
+    subject: 'Your confirmation code',
+    template: 'send-2fa-pass',
+    resend_period: 30,
+}

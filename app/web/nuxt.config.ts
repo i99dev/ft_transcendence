@@ -6,9 +6,15 @@ export default defineNuxtConfig({
             CLIENT_SECRET: process.env.CLIENT_SECRET,
             REDIRECT_URI: process.env.REDIRECT_URI,
             API_URL: process.env.API_URL,
+            GAME_NAME: process.env.GAME_NAME,
         },
     },
-    css: ['~/assets/css/main.css'],
+    css: [
+        '~/assets/css/main.css',
+        'primevue/resources/themes/saga-blue/theme.css',
+        'primevue/resources/primevue.css',
+        'primeicons/primeicons.css',
+    ],
     build: {
         transpile: ['primevue'],
     },

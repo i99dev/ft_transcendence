@@ -284,8 +284,8 @@ const MenuHandler = (el, val) => {
 }
 const showProfile = ref(false)
 
-const logout = () => {
-    useLogout()
+const logout = async () => {
+    await useLogout()
 }
 
 const go = path => {

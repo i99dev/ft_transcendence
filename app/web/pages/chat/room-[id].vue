@@ -51,7 +51,6 @@ import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 const router = useRouter()
 const { id } = router.currentRoute.value.params
-console.log(id)
 const messages = useState('message', () => []) as any
 const newMessage = ref('')
 const sendMessage = () => {

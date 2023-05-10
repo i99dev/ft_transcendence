@@ -1,6 +1,6 @@
 import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto, ChatUserDto } from './dto/chat.dto'
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ChatRoom } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
