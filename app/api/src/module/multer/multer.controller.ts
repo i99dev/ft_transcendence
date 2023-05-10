@@ -59,7 +59,7 @@ export class MulterController {
         return { message: 'File uploaded successfully' }
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('/download/:target/files/:filename')
     async getFile(
         @Param('target') target: string,
