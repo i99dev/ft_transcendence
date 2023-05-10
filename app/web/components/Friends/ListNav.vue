@@ -55,22 +55,22 @@
                                     </div>
                                     <!-- friends list -->
                                     <div class="border-b border-gray-200">
-                                        <div class="px-6">
+                                        <div class="px-5">
                                             <nav
-                                                class="-mb-px flex space-x-6 flex-col"
+                                                class="-mb-px flex flex-col"
                                                 x-descriptions="Tab component"
                                             >
                                                 <div
                                                     v-for="friend in friends_list"
                                                     :key="friend.id"
-                                                    class="p-2 rounded-full bg-white flex flex-row justify-between"
+                                                    class="p-2 rounded-full bg-white flex flex-row justify-between "
                                                 >
                                                     <div class="flex flex-row">
                                                         <div class="relative">
                                                             <img
                                                                 :src="friend.photo"
                                                                 alt="User Photo"
-                                                                class="rounded-full w-10 h-10"
+                                                                class="rounded-full w-12 h-12"
                                                             />
                                                             <!-- online badge -->
                                                             <span
@@ -128,7 +128,7 @@ import {
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
-const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
+const { friends_info, setFriendsModalOpen, add_friend } =  await useFriends()
 
 const open = computed(() => friends_info.value.friendsModalOpen)
 const friends_list = computed(() => friends_info.value.friends)
