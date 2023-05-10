@@ -83,20 +83,35 @@
                                                     </div>
                                                     <div class="self-center">
                                                         <!-- burger menu -->
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke-width="1.5"
-                                                            stroke="currentColor"
-                                                            class="w-6 h-6"
-                                                        >
-                                                            <path
-                                                                stroke-linecap="round"
-                                                                stroke-linejoin="round"
-                                                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                                                            />
-                                                        </svg>
+                                                        <Menu>
+                                                            <MenuButton>
+                                                              <EllipsisVerticalIcon class="w-6 h-6" />
+                                                            </MenuButton>
+                                                            <MenuItems class="absolute right-0 z-10 w-48 mt-2 origin-top-right bg-white divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                              <div class="py-1">
+                                                                <MenuItem class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900" @click="viewProfile(friend.name)">
+                                                                  <span class="flex items-center">
+                                                                    View Profile
+                                                                  </span>
+                                                                </MenuItem>
+                                                                <MenuItem class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900" @click="sendMsg(friend.name)">
+                                                                  <span class="flex items-center">
+                                                                    Send MSG
+                                                                  </span>
+                                                                </MenuItem>
+                                                                <MenuItem class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900" @click="remove(friend.name)">
+                                                                  <span class="flex items-center">
+                                                                    Remove
+                                                                  </span>
+                                                                </MenuItem>
+                                                                <MenuItem class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900" @click="block(friend.name)">
+                                                                  <span class="flex items-center">
+                                                                    Block
+                                                                  </span>
+                                                                </MenuItem>
+                                                              </div>
+                                                            </MenuItems>
+                                                          </Menu>
                                                     </div>
                                                 </div>
                                             </nav>
@@ -132,7 +147,28 @@ const { friends_info, setFriendsModalOpen, add_friend } =  await useFriends()
 
 const open = computed(() => friends_info.value.friendsModalOpen)
 const friends_list = computed(() => friends_info.value.friends)
-function add_new_friend() {}
+function add_new_friend() {
+    console.log('add new friend')
+}
+
+function viewProfile(name) {
+  console.log("View profile:", name);
+  navigateTo(`/users/${name}`)
+}
+
+function sendMsg(name) {
+  console.log("Send message:", name);
+}
+
+function remove(name) {
+  console.log("Remove:", name);
+}
+
+function block(name) {
+  console.log("Block:", name);
+}
+
+
 </script>
 
 <style>
