@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 import { BlockService } from "./block.service";
 import { JwtAuthGuard } from "@common/guards/jwt.guard";
 
@@ -23,4 +23,12 @@ export class BlockController {
         return
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Delete("/:login")
+    async deleteBlock(@Req() req, @Param('login') login: string) {
+        const unblocked = await this.blockService.autoUnblock(req.user.login, login)
+        if (unblocked)
+            return unblocked
+        return
+    }
 }

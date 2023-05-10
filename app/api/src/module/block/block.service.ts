@@ -6,6 +6,22 @@ import { PrismaService } from "@providers/prisma/prisma.service";
 export class BlockService {
     constructor(private prisma: PrismaService) {}
 
+    async validateUser(user_login: string) {
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    login: user_login
+                }
+            })
+            if (!user)
+                return false
+            return true
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
     async checkBlock(user_login: string, blocked_user_login: string) {
         try {
             const block = await this.prisma.user.findUnique({
@@ -89,14 +105,28 @@ export class BlockService {
     }
 
     async autoBlock(user_login: string, blocked_user_login: string) {
-        if (await this.checkBlock(user_login, blocked_user_login))
+        if (!await this.validateUser(user_login) || !await this.validateUser(blocked_user_login))
             return null
-        await this.blockUser(user_login, blocked_user_login)
+        if (await this.checkBlock(user_login, blocked_user_login)){
+            console.log("mamma mia")
+            return null
+        }
+        return await this.blockUser(user_login, blocked_user_login)
     }
 
     async autoUnblock(user_login: string, blocked_user_login: string) {
+        if (!await this.validateUser(user_login) || !await this.validateUser(blocked_user_login))
+            return null
         if (!await this.checkBlock(user_login, blocked_user_login))
             return null
-        await this.unblockUser(user_login, blocked_user_login)
+        return await this.unblockUser(user_login, blocked_user_login)
+    }
+    
+    async checkIfAvailableFromBlock(user_login: string, blocked_user_login: string) {
+        if (await this.checkBlock(user_login, blocked_user_login))
+            return false
+        if (await this.checkBlock(blocked_user_login, user_login))
+            return false
+        return true
     }
 }
