@@ -107,10 +107,8 @@ export class BlockService {
     async autoBlock(user_login: string, blocked_user_login: string) {
         if (!await this.validateUser(user_login) || !await this.validateUser(blocked_user_login))
             return null
-        if (await this.checkBlock(user_login, blocked_user_login)){
-            console.log("mamma mia")
+        if (await this.checkBlock(user_login, blocked_user_login))
             return null
-        }
         return await this.blockUser(user_login, blocked_user_login)
     }
 
