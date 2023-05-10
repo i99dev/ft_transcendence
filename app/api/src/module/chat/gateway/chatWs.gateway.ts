@@ -456,12 +456,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.room_id,
             payload.message,
         )
-        // const user = await this.chatService.getDirectChatOtherUser(payload.room_id, this.getID(client) as string)
-        // const socket = this.getSocket(user)
-        // console.log(user)
-        // if (socket) {
-        //     socket.emit('add-message', message)
-        // }
         this.wss.to(payload.room_id).emit('add-message', message)
     }
 
