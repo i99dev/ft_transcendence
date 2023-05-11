@@ -30,9 +30,9 @@
                             >
                                 <!-- Popup content -->
 
-                                <form @submit.prevent="handleForm" class="w-full max-w-sm">
+                                <div class="w-full max-w-sm">
                                     <!-- Stage 1 -->
-                                    <div v-if="stage === firstStage">
+                                    <form class="chat-form" @submit.prevent="" v-if="stage === firstStage">
                                         <DialogTitle
                                             as="h3"
                                             class="text-lg font-medium leading-6 text-gray-900"
@@ -51,6 +51,7 @@
                                                 />
                                                 <button
                                                     @click="() => fileInput.click()"
+                                                    type="button"
                                                     class="bg-blue-100 rounded-full focus:outline-indigo-400"
                                                     :class="{ 'p-2': !chatImage }"
                                                 >
@@ -101,16 +102,26 @@
                                                 required
                                             />
                                         </div>
-                                    </div>
+                                        <div class="flex justify-end mt-4">
+                                            <button
+                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                type="button"
+                                                @click="nextStage"
+                                            >
+                                                next
+                                            </button>
+                                        </div>
+                                    </form>
 
                                     <!-- Stage 2 -->
-                                    <div v-else-if="stage === 2">
+                                    <form class="chat-form" @submit.prevent="" v-else-if="stage === 2">
                                         <div
                                             v-for="user in users"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
                                                 class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative focus:outline-indigo-400"
+                                                type="button"
                                                 @click="removeUser(user)"
                                             >
                                                 <img
@@ -125,11 +136,31 @@
                                                 </div>
                                             </button>
                                         </div>
-                                        <UserProfileList @selectUser="selectUser" :search="true" />
-                                    </div>
+                                        <UserProfileList
+                                            @selectUser="selectUser"
+                                            :search="true"
+                                            :unwanted-users="users"
+                                        />
+                                        <div class="flex justify-end mt-4">
+                                            <button
+                                                class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                type="button"
+                                                @click="prevStage"
+                                            >
+                                                back
+                                            </button>
+                                            <button
+                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                type="button"
+                                                @click="nextStage"
+                                            >
+                                                next
+                                            </button>
+                                        </div>
+                                    </form>
 
                                     <!-- Stage 3 -->
-                                    <div v-else-if="stage === lastStage">
+                                    <form class="chat-form" @submit.prevent="" v-else-if="stage === lastStage">
                                         <RadioGroup v-model="groupChat.chatType">
                                             <RadioGroupLabel class="sr-only"
                                                 >Server size</RadioGroupLabel
@@ -277,35 +308,24 @@
                                                 </RadioGroupOption>
                                             </div>
                                         </RadioGroup>
-                                    </div>
-
-                                    <div class="flex justify-end mt-4">
-                                        <button
-                                            v-if="stage !== firstStage"
-                                            class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
-                                            type="button"
-                                            @click="prevStage"
-                                        >
-                                            back
-                                        </button>
-                                        <button
-                                            v-if="stage !== lastStage"
-                                            class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
-                                            type="button"
-                                            @click="nextStage"
-                                        >
-                                            next
-                                        </button>
-                                        <button
-                                            v-else
-                                            class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
-                                            type="button"
-                                            @click="createGroupChat"
-                                        >
-                                            create
-                                        </button>
-                                    </div>
-                                </form>
+                                        <div class="flex justify-end mt-4">
+                                            <button
+                                                class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                type="button"
+                                                @click="prevStage"
+                                            >
+                                                back
+                                            </button>
+                                            <button
+                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                type="button"
+                                                @click="createGroupChat"
+                                            >
+                                                create
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </DialogPanel>
                         </TransitionChild>
                     </div>
@@ -332,10 +352,12 @@ import { Socket } from 'socket.io-client'
 
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { user_info } = useUserInfo()
+const { chats } = useChats()
 const users = ref([] as UserGetDto[])
 const stage = ref(1)
 const chatImage = ref(null as any)
 const fileInput = ref()
+const formData = ref(new FormData())
 const firstStage = 1
 const lastStage = 3
 const chatTypes = [
@@ -354,7 +376,7 @@ const groupChat = ref({
 })
 
 onMounted(() => {
-    chatSocket.value.on('create-group-chat', payload => {
+    chatSocket.value.on('create-group-chat', async payload => {
         for (let i = 0; i < users.value.length; i++) {
             chatSocket.value.emit(
                 'user-group-chat',
@@ -366,6 +388,20 @@ onMounted(() => {
             )
         }
         closePopup()
+
+        const { data, error } = await useUplaod(payload.room_id, formData.value)
+        if (error) console.log(error)
+        else {
+            console.log(chats.value)
+            chats.value.forEach((chat: GroupChat) => {
+                console.log(chat.chat_room_id)
+                console.log(payload.room_id)
+                if (chat.chat_room_id === payload.room_id) {
+                    console.log(data.value)
+                    chat.image = data.value.file_url
+                }
+            })
+        }
     })
 })
 
@@ -394,7 +430,16 @@ const removeUser = (user: UserGetDto) => {
 }
 
 const nextStage = () => {
-    if (stage.value !== 3) stage.value++
+    const formElement = document.getElementsByClassName(
+        'chat-form',
+    ) as HTMLCollectionOf<HTMLFormElement>
+    console.log(formElement[stage.value - 1])
+    if (
+        stage.value !== 3 &&
+        (!formElement[stage.value - 1] || formElement[stage.value - 1].reportValidity())
+    ) {
+        stage.value++
+    }
 }
 
 const prevStage = () => {
@@ -435,10 +480,9 @@ const createGroupChat = () => {
 
 const handleForm = () => {}
 
-const handleFileUpload = () => {
+const handleFileUpload = async () => {
     const file = fileInput.value.files[0]
-    const formData = new FormData()
-    formData.append('file', file)
+    formData.value.append('file', file)
 
     const reader = new FileReader()
 

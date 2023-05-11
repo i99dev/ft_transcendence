@@ -55,16 +55,15 @@ export class MulterController {
         if (!(await this.multerService.updateTargetAvatar(target, currentUri)))
             throw new NotFoundException('updating failed')
         fs.writeFileSync(filePath, file.buffer)
-        return { message: 'File uploaded successfully' }
+        return { file_url:  currentUri}
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/download/:target/files/:filename')
     async getFile(
         @Param('target') target: string,
         @Param('filename') filename: string,
         @Res() res: any,
-        @Req() request: any,
     ) {
         const userDir = `./uploads/${target}`
         const filePath = `${userDir}/${filename}`

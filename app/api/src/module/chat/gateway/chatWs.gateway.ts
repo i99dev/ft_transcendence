@@ -301,9 +301,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User is neither admin nor owner'), []
         if (payload.user_login === (this.getID(client) as string))
             return this.socketError('User cannot change himself'), []
+        console.log(payload)
+        console.log(await this.chatService.getChatUser(payload.room_id, payload.user_login))
         if (
             'OWNER' ===
-            (await this.chatService.getChatUser(payload.room_id, payload.user_login)).role
+            (await this.chatService.getChatUser(payload.room_id, payload.user_login))?.role
         )
             return this.socketError('User cannot change owner'), []
 

@@ -32,8 +32,7 @@ export class MulterService {
 
     async updateTargetAvatar(targetId: string, avatar: string) {
         try {
-            let target = null
-            target = await this.prisma.user.update({
+            return await this.prisma.user.update({
                 where: {
                     login: targetId,
                 },
@@ -41,8 +40,9 @@ export class MulterService {
                     image: avatar,
                 },
             })
-            if (!target) {
-                target = await this.prisma.groupChat.update({
+        } catch (error) {
+            try {
+                return await this.prisma.groupChat.update({
                     where: {
                         chat_room_id: targetId,
                     },
@@ -50,12 +50,10 @@ export class MulterService {
                         image: avatar,
                     },
                 })
+            } catch (error) {
+                console.log(error)
+                return undefined
             }
-            if (target) return target
-            return null
-        } catch (error) {
-            console.log(error)
-            return null
         }
     }
 }

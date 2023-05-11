@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="search" class="flex justify-start items-center pt-5 pb-2 relative">
+        <div v-if="props.search" class="flex justify-start items-center pt-5 pb-2 relative">
             <input
                 id="search-input"
                 v-model="searchedUsers"
@@ -39,7 +39,7 @@
                     <button
                         v-if="
                             user.login !== user_info.login ||
-                            (user.login === user_info.login && isMe === true)
+                            (user.login === user_info.login && props.isMe === true)
                         "
                         type="button"
                         @click="$emit('selectUser', user)"
@@ -63,35 +63,38 @@
 
 <script lang="ts" setup>
 const { user_info } = useUserInfo()
-const dimmedUsers = ref([] as ChatUser[])
 const searchedUsers = ref('')
 
-const { isMe, search, unwantedUsers } = defineProps(['isMe', 'search', 'unwantedUsers'])
+const props = defineProps(['isMe', 'search', 'unwantedUsers'])
 
 watch(searchedUsers, async val => {
     if (val === '') {
-        users.value = allUsers.value
+        setUsersList(allUsers.value)
     }
 })
 const { data: allUsers } = await useUsers()
 const users = ref()
 
 onMounted(() => {
-    if (allUsers) users.value = allUsers.value
+    if (allUsers) setUsersList(allUsers.value)
 
-    if (unwantedUsers) dimmedUsers.value = unwantedUsers
+    if (props.search) document.getElementById('search-input')?.focus()
 
-    if (search) document.getElementById('search-input')?.focus()
 })
 
 const getFilteredUsers = async () => {
     const { data } = await useUsersSearch(searchedUsers.value)
-    users.value = data.value
+    setUsersList(data.value)
 }
 
 const isUserDimmed = (login: string) => {
-    return dimmedUsers.value.find((u: ChatUser) => u.user_login === login)
+    return props.unwantedUsers.find((u: UserGetDto) => u.login === login)
 }
+
+const setUsersList = (usersList: UserGetDto) => {
+    users.value = usersList
+}
+
 </script>
 
 <style scoped>
@@ -102,6 +105,7 @@ const isUserDimmed = (login: string) => {
 }
 
 #users-list::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
+    display: none;
 }
+
 </style>

@@ -24,7 +24,7 @@ export async function useUsersSearch(username: string): Promise<any> {
     } = await useFetch('users/search', {
         baseURL: useRuntimeConfig().API_URL,
         query: {
-            username: username,
+            search: username,
         },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
