@@ -1,4 +1,4 @@
-import { Logger, UseGuards, UsePipes } from '@nestjs/common'
+import { Logger, Req, UseGuards, UsePipes } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
@@ -81,12 +81,14 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async createGroupChat(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: CreateGroupChatDto,
+        @Req() request: any,
     ) {
         if (!(await this.chatService.getUser(this.getID(client) as string)))
             return this.socketError('User not found')
         const chatRoom = await this.chatWsService.setupGroupChat(
             payload,
             this.getID(client) as string,
+            `${request.protocol}://${request.get('host')}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)

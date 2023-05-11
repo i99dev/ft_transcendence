@@ -37,10 +37,10 @@ export class ChatWsService {
         return !decode ? null : decode['login']
     }
 
-    async setupGroupChat(payload: any, user_login: string): Promise<ChatRoom> {
+    async setupGroupChat(payload: any, user_login: string, protocol: string): Promise<ChatRoom> {
         if (
             payload.type === chatType.PROTECTED &&
-            (payload.password === undefined || payload.password === null || payload.password === '')
+            (!payload.password || payload.password === '')
         )
             throw new WsException('No password provided')
 
@@ -49,7 +49,7 @@ export class ChatWsService {
         const room_id = crypto.randomUUID()
         let password = null
         if (payload.image === undefined || payload.image === null || payload.image === '')
-            payload.image = `http://127.0.0.1/api/multer/download/default_image/files/default.png`
+            payload.image = `${protocol}/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
