@@ -1,4 +1,3 @@
-import * as fs from 'fs'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@providers/prisma/prisma.service'
 
@@ -57,19 +56,6 @@ export class MulterService {
         } catch (error) {
             console.log(error)
             return null
-        }
-    }
-
-    async updateTargetImageFile(userDir: string, file) {
-        if (!fs.existsSync('./uploads'))
-            fs.mkdirSync('./uploads')
-        if (!fs.existsSync(userDir)) {
-            fs.mkdirSync(userDir)
-        } else {
-            const files = fs.readdirSync(userDir)
-            for (const file of files) {
-                fs.unlinkSync(`${userDir}/${file}`)
-            }
         }
     }
 }
