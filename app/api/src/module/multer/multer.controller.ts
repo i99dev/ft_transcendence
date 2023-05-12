@@ -16,10 +16,11 @@ import { MulterService } from './multer.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
 import { JwtAuthGuard } from '@common/guards/jwt.guard'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
 @Controller('/multer')
 export class MulterController {
-    constructor(private multerService: MulterService) {}
+    constructor(private multerService: MulterService, private configService: ConfigService) {}
 
     @UseGuards(JwtAuthGuard)
     @Post('/upload/:target')
@@ -50,13 +51,11 @@ export class MulterController {
             }
         }
         const filePath = `${userDir}/${file.originalname}`
-        const currentUri = `${request.protocol}://${request.get(
-            'host',
-        )}/api/multer/download/${target}/files/${file.originalname}`
+        const currentUri = `${this.configService.get<string>('server.protocol')}://${this.configService.get<string>('server.host')}/api/multer/download/${target}/files/${file.originalname}`
         if (!(await this.multerService.updateTargetAvatar(target, currentUri)))
             throw new NotFoundException('updating failed')
         fs.writeFileSync(filePath, file.buffer)
-        return { message: 'File uploaded successfully' }
+        return { message: currentUri }
     }
 
     @UseGuards(JwtAuthGuard)
