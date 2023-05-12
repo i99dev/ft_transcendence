@@ -27,6 +27,8 @@ model User {
     ladder       Int            @default(6)
     wr           Float          @default(0)
     two_fac_auth Boolean        @default(false)
+    block_list   User[]         @relation("UserBlockList")
+    blocked_by   User[]         @relation("UserBlockList")
     achievements Achievement[]  @relation("UserAchievements")
     power_ups    PowerUp[]      @relation("UserPowerUps")
     friend_to    User[]         @relation("UserFriends")

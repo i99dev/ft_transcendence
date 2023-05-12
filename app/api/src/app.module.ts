@@ -16,6 +16,7 @@ import { NotificationModule } from '@module/notification/notification.module'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
+import { BlockModule } from '@module/block/block.module'
 @Module({
     imports: [
         MailerModule.forRootAsync({
@@ -57,6 +58,7 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
         MulterModule,
         NotificationModule,
         FriendWsModule,
+        BlockModule,
     ],
     controllers: [AppController],
     providers: [AppService],

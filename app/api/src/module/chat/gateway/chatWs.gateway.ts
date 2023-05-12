@@ -35,6 +35,7 @@ import { ChatService } from '../chat.service'
 import { UserService } from '../../user/user.service'
 import { GroupChatService } from '../groupChat.service'
 import { NotificationService } from '../../notification/notification.service'
+import { BlockService } from '@module/block/block.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -56,6 +57,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private userService: UserService,
         private jwtService: JwtService,
         private notificationService: NotificationService,
+        private blockService: BlockService,
     ) {}
 
     private logger = new Logger('ChatWsGateway')
@@ -115,6 +117,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (!(await this.userService.getUser(payload.user)))
             return this.socketError('Reciever not found')
+
+        if (!await this.blockService.checkIfAvailableFromBlock(this.getID(client) as string, payload.user))
+            return this.socketError(`This user is unreachable`), []
 
         const room_id = await this.chatWsService.createDirectChat(
             this.getID(client) as string,
@@ -440,6 +445,10 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 ))
             )
                 return this.socketError('This user can not interfer in this DM')
+            const user = await this.chatService.getDirectChatOtherUser(payload.room_id, this.getID(client) as string)
+            console.log(user)
+            if (!await this.blockService.checkIfAvailableFromBlock(this.getID(client) as string, user))
+                return this.socketError(`This user is unreachable`), []
         }
 
         if (!payload.message || payload.message === '') return this.socketError('Empty Message')
@@ -449,7 +458,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.room_id,
             payload.message,
         )
-
         this.wss.to(payload.room_id).emit('add-message', message)
     }
 
