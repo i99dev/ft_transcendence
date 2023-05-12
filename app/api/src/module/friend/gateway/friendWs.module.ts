@@ -9,6 +9,7 @@ import { NotificationService } from '@module/notification/notification.service'
 import { JwtService } from '@nestjs/jwt'
 import { FriendService } from '../friend.service'
 import { FriendRepository } from '../repository/friend.repository'
+import { BlockService } from '@module/block/block.service'
 
 @Module({
     imports: [AuthModule, PrismaModule, forwardRef(() => FriendModule)],
@@ -21,6 +22,7 @@ import { FriendRepository } from '../repository/friend.repository'
         JwtService,
         FriendService,
         FriendRepository,
+        BlockService,
     ],
 })
 export class FriendWsModule {}
