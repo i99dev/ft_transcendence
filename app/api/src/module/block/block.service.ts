@@ -1,10 +1,12 @@
+import { FriendWsService } from '@module/friend/gateway/friendWs.service';
+import { FriendService } from './../friend/friend.service';
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@providers/prisma/prisma.service";
 
 
 @Injectable()
 export class BlockService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private friendWsService: FriendWsService) {}
 
     async validateUser(user_login: string) {
         try {
@@ -108,6 +110,8 @@ export class BlockService {
         if (!await this.validateUser(user_login) || !await this.validateUser(blocked_user_login))
             return null
         if (await this.checkBlock(user_login, blocked_user_login))
+            return null
+        if (!(await this.friendWsService.deleteFriend(user_login, blocked_user_login)))
             return null
         return await this.blockUser(user_login, blocked_user_login)
     }
