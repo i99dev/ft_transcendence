@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, Req, UseGuards, HttpStatus } from "@nestjs/common";
 import { BlockService } from "./block.service";
 import { JwtAuthGuard } from "@common/guards/jwt.guard";
 
@@ -19,8 +19,8 @@ export class BlockController {
     async checkBlock(@Req() req, @Param('login') login: string) {
         const blocked = await this.blockService.autoBlock(req.user.login, login)
         if (blocked)
-            return blocked
-        return
+            return { statusCode: HttpStatus.CREATED, data: blocked };
+        return { statusCode: HttpStatus.OK, message: 'Blocking Failed'}
     }
 
     @UseGuards(JwtAuthGuard)
@@ -28,7 +28,7 @@ export class BlockController {
     async deleteBlock(@Req() req, @Param('login') login: string) {
         const unblocked = await this.blockService.autoUnblock(req.user.login, login)
         if (unblocked)
-            return unblocked
-        return
+            return { statusCode: HttpStatus.CREATED, data: unblocked };
+        return { statusCode: HttpStatus.OK, message: 'Unblocking Failed'}
     }
 }
