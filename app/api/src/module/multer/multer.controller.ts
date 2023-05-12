@@ -39,24 +39,13 @@ export class MulterController {
             throw new NotFoundException('Target not found')
         }
         const userDir = `./uploads/${target}`
-        if (!fs.existsSync('./uploads'))
-            fs.mkdirSync('./uploads')
-        if (!fs.existsSync(userDir)) {
-            fs.mkdirSync(userDir)
-        } else {
-            const files = fs.readdirSync(userDir)
-            for (const file of files) {
-                fs.unlinkSync(`${userDir}/${file}`)
-            }
-        }
+        this.multerService.updateTargetImageFile(userDir, file)
         const filePath = `${userDir}/${file.originalname}`
         const currentUri = `${request.protocol}://${request.get(
             'host',
         )}/api/multer/download/${target}/files/${file.originalname}`
-        if (!(await this.multerService.updateTargetAvatar(target, currentUri)))
-            throw new NotFoundException('updating failed')
         fs.writeFileSync(filePath, file.buffer)
-        return { message: 'File uploaded successfully' }
+        return { URI: currentUri }
     }
 
     @UseGuards(JwtAuthGuard)
