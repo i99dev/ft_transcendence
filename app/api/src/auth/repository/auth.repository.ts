@@ -6,7 +6,10 @@ import { HttpService } from '@nestjs/axios'
 
 @Injectable()
 export class AuthRepository {
-    constructor(private readonly configService: ConfigService, private readonly httpService: HttpService) {}
+    constructor(
+        private readonly configService: ConfigService,
+        private readonly httpService: HttpService,
+    ) {}
 
     async getIntraAccessToken(authCode: string): Promise<IntraAccessToken> {
         try {

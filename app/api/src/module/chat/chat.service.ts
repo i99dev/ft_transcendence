@@ -147,7 +147,7 @@ export class ChatService {
                     users: true,
                 },
             })
-            let check: string = '';
+            let check: string = ''
             chatUser.users.map(user => {
                 if (user.login !== user_login) {
                     check = user.login

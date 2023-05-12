@@ -61,7 +61,15 @@ async function main() {
 
     const getBlocks = await new BlockSeeder().seedBlock()
 
-    console.log({ users, powerUps, achievements, updateUsers, matchHistory, getAchievements, getBlocks })
+    console.log({
+        users,
+        powerUps,
+        achievements,
+        updateUsers,
+        matchHistory,
+        getAchievements,
+        getBlocks,
+    })
 }
 
 // execute the main function

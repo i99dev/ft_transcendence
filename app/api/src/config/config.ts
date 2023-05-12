@@ -1,4 +1,4 @@
-import { server } from './server/config';
+import { server } from './server/config'
 import { app } from './app/config'
 import { auth } from './auth/config'
 import { database } from './database/config'

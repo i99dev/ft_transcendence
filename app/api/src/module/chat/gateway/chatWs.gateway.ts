@@ -118,7 +118,12 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.userService.getUser(payload.user)))
             return this.socketError('Reciever not found')
 
-        if (!await this.blockService.checkIfAvailableFromBlock(this.getID(client) as string, payload.user))
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.user,
+            ))
+        )
             return this.socketError(`This user is unreachable`), []
 
         const room_id = await this.chatWsService.createDirectChat(
@@ -445,9 +450,17 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 ))
             )
                 return this.socketError('This user can not interfer in this DM')
-            const user = await this.chatService.getDirectChatOtherUser(payload.room_id, this.getID(client) as string)
+            const user = await this.chatService.getDirectChatOtherUser(
+                payload.room_id,
+                this.getID(client) as string,
+            )
             console.log(user)
-            if (!await this.blockService.checkIfAvailableFromBlock(this.getID(client) as string, user))
+            if (
+                !(await this.blockService.checkIfAvailableFromBlock(
+                    this.getID(client) as string,
+                    user,
+                ))
+            )
                 return this.socketError(`This user is unreachable`), []
         }
 
@@ -520,8 +533,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             user = this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
                 this.logger.error('Invalid token')
-                if (client.connected)
-                    client.disconnect()
+                if (client.connected) client.disconnect()
                 return null
             }
         }

@@ -1,4 +1,4 @@
-import { Image } from './../../../auth/interface/intra.interface';
+import { Image } from './../../../auth/interface/intra.interface'
 import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
@@ -18,6 +18,7 @@ import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
 import { GroupChatService } from '../groupChat.service'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class ChatWsService {
@@ -27,6 +28,7 @@ export class ChatWsService {
         private groupChatService: GroupChatService,
         private jwtService: JwtService,
         private userService: UserService,
+        private configService: ConfigService,
     ) {}
     private chatRooms: ChatRoom[]
 
@@ -38,18 +40,19 @@ export class ChatWsService {
     }
 
     async setupGroupChat(payload: any, user_login: string, protocol: string): Promise<ChatRoom> {
-        if (
-            payload.type === chatType.PROTECTED &&
-            (!payload.password || payload.password === '')
-        )
+        if (payload.type === chatType.PROTECTED && (!payload.password || payload.password === ''))
             throw new WsException('No password provided')
 
         const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
         let password = null
-        if (payload.image === undefined || payload.image === null || payload.image === '')
-            payload.image = `${protocol}/multer/download/default_image/files/default.png`
+        if (!payload.image || payload.image === '')
+            payload.image = `${this.configService.get<string>(
+                'server.protocol',
+            )}://${this.configService.get<string>(
+                'server.host',
+            )}/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
