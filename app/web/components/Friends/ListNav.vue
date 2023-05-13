@@ -30,20 +30,21 @@
                                                     x-descriptions="Tab component">
                                                     <button @click="add_new_friend"
                                                         class="p-2 rounded relative bg-blue-500 self-end text-white">
-                                                        Add friends
+                                                        Add friend
                                                     </button>
                                                 </nav>
                                             </div>
                                         </div>
                                         <div class="border-b border-gray-200">
                                             <div class="px-5">
-                                                <nav class="-mb-px flex flex-col" x-descriptions="Tab component">
+                                                <nav class="overflow-y-auto max-h-screen -mb-px flex flex-col space-y-1"
+                                                    x-descriptions="Tab component">
                                                     <div v-for="friend in friends_list" :key="friend.id"
-                                                        class="p-2 rounded-full bg-white flex flex-row justify-between ">
-                                                        <div class="flex flex-row">
+                                                        class="p-2 bg-white flex flex-row justify-between transition-colors duration-200">
+                                                        <div class="flex flex-row items-center">
                                                             <div class="relative">
                                                                 <img :src="friend.photo" alt="User Photo"
-                                                                    class="rounded-full w-12 h-12" />
+                                                                    class="border border-gray-200 rounded-full w-12 h-12" />
                                                                 <!-- Color is green when status = online, blue if status = INGAME OR INQUEUE , gray if status=OFFLINE-->
                                                                 <span
                                                                     class="absolute bottom-0 left-0 block h-3 w-3 rounded-full border-2 border-white"
@@ -54,14 +55,15 @@
                                                                         'bg-gray-500': friend.status === 'OFFLINE',
                                                                     }" />
                                                             </div>
-                                                            <div class="text-start self-center pl-2">
+                                                            <div class="text-start self-center pl-4">
                                                                 {{ friend.name }}
                                                             </div>
                                                         </div>
                                                         <div class="self-center">
                                                             <Menu>
                                                                 <MenuButton>
-                                                                    <EllipsisVerticalIcon class="w-6 h-6" />
+                                                                    <EllipsisVerticalIcon
+                                                                        class="w-6 h-6 text-gray-500 hover:text-gray-900 transition-colors duration-200" />
                                                                 </MenuButton>
                                                                 <MenuItems
                                                                     class="absolute right-0 z-10 w-48 mt-2 origin-top-right bg-white divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
@@ -74,7 +76,7 @@
                                                                         </span>
                                                                         </MenuItem>
                                                                         <MenuItem
-                                                                            class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
+                                                                            class="text-gray-200 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
                                                                             @click="sendMsg(friend.name)">
                                                                         <span class="flex items-center">
                                                                             Send MSG
@@ -88,7 +90,7 @@
                                                                         </span>
                                                                         </MenuItem>
                                                                         <MenuItem
-                                                                            class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
+                                                                            class="text-gray-200 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
                                                                             @click="block(friend.name)">
                                                                         <span class="flex items-center">
                                                                             Block
