@@ -8,7 +8,7 @@
         <div v-if="data">
             <!-- <Header /> -->
             <ChatNavBar class="z-10" />
-            <FriendsListNav class="z-10" />
+            <FriendsListNav />
             <slot />
         </div>
     </div>
