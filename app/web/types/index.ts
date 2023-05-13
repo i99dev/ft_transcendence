@@ -1,7 +1,7 @@
 export {}
 
 declare global {
-    type UserStatus = 'OFFLINE' | 'ONLINE' | 'LIVE'
+    type UserStatus = 'OFFLINE' | 'ONLINE' | 'INGAME' | 'INQUEUE'
     type ChatRoomType = 'GROUP' | 'DM'
     type NotificationType =
         | 'ACHIEVEMENT'

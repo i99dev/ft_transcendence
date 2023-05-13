@@ -53,7 +53,8 @@ export const useFriends = async () => {
                 return {
                     id: friend.id,
                     name: friend.login,
-                    photo: friend.image
+                    photo: friend.image,
+                    status: friend.status
                 }
             })
         })

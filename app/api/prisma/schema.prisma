@@ -136,6 +136,8 @@ enum UserStatus {
     OFFLINE
     ONLINE
     LIVE
+    INGAME
+    INQUEUE
 }
 
 enum chatType {

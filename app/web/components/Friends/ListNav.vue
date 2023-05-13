@@ -139,7 +139,7 @@ setupSocketHandlers()
 
 function add_new_friend() {
     addFriendOpen.value = true
-    console.log("Frinedlist isss ->>>>>   ", friends_list.value.friends)
+    console.log("Frinedlist isss ->>>>>   ", friends_list.value)
     console.log('add new friend')
 }
 

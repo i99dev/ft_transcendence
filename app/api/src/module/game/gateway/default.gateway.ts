@@ -56,7 +56,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
-        this.gameService.removeDisconnectedUser(client)
+        this.gameService.removeUser(client)
     }
 
     @SubscribeMessage('Give-Up')

@@ -6,6 +6,7 @@ import { SocketService } from './socket.service'
 import { GameSelectDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
+import { GameRepository } from '../repository/game.repository'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
@@ -17,6 +18,7 @@ export class DefaultService {
     private custom_queue: string[] = []
     private gameAnalyzer = new gameAnalyzer()
     private game_result: gameHistory | null = null
+    private repo: GameRepository = new GameRepository()
 
     constructor(private socketService: SocketService) {}
 
@@ -38,6 +40,14 @@ export class DefaultService {
             socket: userSocket,
             status: 'online',
         })
+        this.repo.updatePlayerStatus('ONLINE', userID)
+
+    }
+
+    public checkIfUserIsConnected(login: string) {
+        const temp = this.connected_users.find(user => user.id == login)
+        if (temp) return true
+        return false
     }
 
     /* 
@@ -45,7 +55,7 @@ export class DefaultService {
             * if in queue -> remove user from queue
             * if in game -> set player a loser so game will end and other player will win.
     */
-    public removeDisconnectedUser(userSocket: Socket) {
+    public removeUser(userSocket: Socket) {
         const index = this.connected_users.findIndex(user => user.socket == userSocket)
         if (index > -1) {
             const user = this.connected_users[index]
@@ -58,6 +68,7 @@ export class DefaultService {
                 user.game.setLoser(user.id)
             }
             this.connected_users.splice(index, 1)
+            this.repo.updatePlayerStatus('OFFLINE', user.id)
         }
     }
 
@@ -65,6 +76,7 @@ export class DefaultService {
         const player = this.connected_users.find(user => user.socket == userSocket)
         player.game.setLoser(player.id)
     }
+
 
     /* 
         Activate the power up requested by frontend
@@ -85,6 +97,7 @@ export class DefaultService {
         if (player.status != 'online') return
 
         player.status = 'inqueue'
+        this.repo.updatePlayerStatus('INQUEUE', player.id)
         if (gameInfo.gameType == 'custom') {
             player.powerUps = gameInfo.powerups
         }
@@ -158,6 +171,7 @@ export class DefaultService {
             game = new PongGame(player.id, 'Computer', gameInfo.gameType)
         }
         player.status = 'ingame'
+        this.repo.updatePlayerStatus('INGAME', player.id)
         player.game = game
         player.socket.join(game.getGameID())
         this.socketService.emitGameSetup(player.socket, null, game.getGameStatus())
@@ -176,7 +190,9 @@ export class DefaultService {
             this.classic_queue.splice(this.classic_queue.indexOf(player.id), 1)
         if (this.custom_queue.includes(player.id))
             this.custom_queue.splice(this.custom_queue.indexOf(player.id), 1)
+
         player.status = 'online'
+        this.repo.updatePlayerStatus('ONLINE', player.id)
     }
 
     /* 
@@ -201,7 +217,8 @@ export class DefaultService {
         player1.socket.join(game.getGameID())
         player2.socket.join(game.getGameID())
         this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
-
+        this.repo.updatePlayerStatus('INGAME', player1.id)
+        this.repo.updatePlayerStatus('INGAME', player2.id)
         this.startGame(game)
     }
 
@@ -275,12 +292,14 @@ export class DefaultService {
         if (player1) {
             player1.game = null
             player1.status = 'online'
+            this.repo.updatePlayerStatus('ONLINE', player1.id)
             player1.socket.leave(game.getGameID())
         }
         const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player2) {
             player2.game = null
             player2.status = 'online'
+            this.repo.updatePlayerStatus('ONLINE', player2.id)
             player2.socket.leave(game.getGameID())
         }
         this.game_result = null
