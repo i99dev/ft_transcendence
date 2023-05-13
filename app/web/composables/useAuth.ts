@@ -1,20 +1,15 @@
 export const useIsAuth = async () => {
     const { data } = await useMe()
-    if (!data.value) {
-        await refreshAccessToken()
-        const { data, error } = await useMe()
-        if (!data.value) return false
-    }
-    return true
+    return data.value ? true : false
 }
 
 export const refreshAccessToken = async () => {
-    const { data, error: errorRef } = await useFetch('/auth/refresh', {
+    const { data, error } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
     })
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
-    return errorRef.value?.status
+    if (tokenInfo) setCookies(tokenInfo)
+    return error.value?.status
 }
 
 export async function useLogin(code: string): Promise<any> {
@@ -75,7 +70,8 @@ export const useAuth = async (route: any) => {
     const { data, error } = await useLogin(route.query.code.toString())
 
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
+    if (tokenInfo)
+        setCookies(tokenInfo)
 
     return data.value.access_token
         ? navigateTo('/')
@@ -91,4 +87,10 @@ export const useAuth = async (route: any) => {
               },
           })
         : await useIsAuth()
+}
+
+export const setCookies = (tokenInfo: AccessTokenDto) => {
+    useCookie('access_token').value = tokenInfo.access_token
+    useCookie('created_at').value = tokenInfo.created_at.toString()
+    useCookie('expires_at').value = tokenInfo.expires_at
 }

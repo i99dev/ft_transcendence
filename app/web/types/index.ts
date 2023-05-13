@@ -13,7 +13,7 @@ declare global {
     interface AccessTokenDto {
         access_token: string
         token_type: string
-        expires_in: string
+        expires_at: string
         created_at: number
     }
 

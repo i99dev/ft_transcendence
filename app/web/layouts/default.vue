@@ -21,6 +21,17 @@ const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { data, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
 
+if (data.value) {
+    setInterval(() => {
+        const exp = useCookie('expires_at').value as string
+        if (exp === undefined) return
+        const expires_at = parseInt(exp) * 1000
+        
+        if (Date.now() + 60 * 1000 > expires_at)
+            refreshAccessToken()
+    }, 10 * 1000)
+}
+
 if (data.value) await setUserInfo(data.value)
 else if (error?.status === 401) navigateTo('/login')
 
