@@ -1,10 +1,8 @@
-import { ConfigService } from '@nestjs/config'
 import { IsString } from 'class-validator'
 import { accessTokenConstants } from '../../common/constants/setting'
 import { JwtService } from '@nestjs/jwt'
-const configService = new ConfigService()
 const jwtService = new JwtService()
-// (jwtService.decode(accessToken)['exp'] - jwtService.decode(accessToken)['iat']) * 1000
+
 export class TokenDto {
     access_token: string
     token_type: string
