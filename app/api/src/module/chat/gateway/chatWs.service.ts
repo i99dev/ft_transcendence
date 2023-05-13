@@ -52,7 +52,7 @@ export class ChatWsService {
                 'server.protocol',
             )}://${this.configService.get<string>(
                 'server.host',
-            )}/multer/download/default_image/files/default.png`
+            )}/api/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
