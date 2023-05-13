@@ -28,7 +28,7 @@
                 >
                     code is expired
                 </h3>
-                <OTPInput @submitCode="submitCode" />
+                <LoginOTPInput @submitCode="submitCode" />
                 <h2 class="text-white text-md md:text-lg lg:text-xl text-center capitalize m-5 p-2">
                     Didn't receive the code?
                     <button

@@ -32,7 +32,11 @@
 
                                 <div class="w-full max-w-sm">
                                     <!-- Stage 1 -->
-                                    <form class="chat-form" @submit.prevent="" v-if="stage === firstStage">
+                                    <form
+                                        class="chat-form"
+                                        @submit.prevent=""
+                                        v-if="stage === firstStage"
+                                    >
                                         <DialogTitle
                                             as="h3"
                                             class="text-lg font-medium leading-6 text-gray-900"
@@ -114,7 +118,11 @@
                                     </form>
 
                                     <!-- Stage 2 -->
-                                    <form class="chat-form" @submit.prevent="" v-else-if="stage === 2">
+                                    <form
+                                        class="chat-form"
+                                        @submit.prevent=""
+                                        v-else-if="stage === 2"
+                                    >
                                         <div
                                             v-for="user in users"
                                             class="flex-row inline-flex flex-nowrap"
@@ -160,7 +168,11 @@
                                     </form>
 
                                     <!-- Stage 3 -->
-                                    <form class="chat-form" @submit.prevent="" v-else-if="stage === lastStage">
+                                    <form
+                                        class="chat-form"
+                                        @submit.prevent=""
+                                        v-else-if="stage === lastStage"
+                                    >
                                         <RadioGroup v-model="groupChat.chatType">
                                             <RadioGroupLabel class="sr-only"
                                                 >Server size</RadioGroupLabel

@@ -79,7 +79,6 @@ onMounted(() => {
     if (allUsers) setUsersList(allUsers.value)
 
     if (props.search) document.getElementById('search-input')?.focus()
-
 })
 
 const getFilteredUsers = async () => {
@@ -94,7 +93,6 @@ const isUserDimmed = (login: string) => {
 const setUsersList = (usersList: UserGetDto) => {
     users.value = usersList
 }
-
 </script>
 
 <style scoped>
@@ -107,5 +105,4 @@ const setUsersList = (usersList: UserGetDto) => {
 #users-list::-webkit-scrollbar {
     display: none;
 }
-
 </style>

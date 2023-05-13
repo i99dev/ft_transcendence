@@ -70,8 +70,7 @@ export const useAuth = async (route: any) => {
     const { data, error } = await useLogin(route.query.code.toString())
 
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo)
-        setCookies(tokenInfo)
+    if (tokenInfo) setCookies(tokenInfo)
 
     return data.value.access_token
         ? navigateTo('/')

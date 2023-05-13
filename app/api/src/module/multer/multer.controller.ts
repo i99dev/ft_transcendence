@@ -55,7 +55,7 @@ export class MulterController {
         if (!(await this.multerService.updateTargetAvatar(target, currentUri)))
             throw new NotFoundException('updating failed')
         fs.writeFileSync(filePath, file.buffer)
-        return { file_url:  currentUri}
+        return { file_url: currentUri }
     }
 
     // @UseGuards(JwtAuthGuard)

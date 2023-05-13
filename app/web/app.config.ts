@@ -5,5 +5,5 @@ export default defineAppConfig({
         tertiary: '#533A71',
         background: '#051C2C',
         accent: '#59CBE8',
-    }
-})  
+    },
+})

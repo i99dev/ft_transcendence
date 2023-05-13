@@ -5,9 +5,7 @@
         >
             <img src="/crack-icon.png" alt="cracked ball" class="h-full w-full p-3 pt-1 pl-1" />
         </div>
-        <h1
-            class="text-primary w-fit text-4xl -mt-4 text-center whitespace-nowrap font-[CyberpunkSpecial]"
-        >
+        <h1 class="text-primary w-fit text-4xl text-center whitespace-nowrap font-[CyberGlitch]">
             {{ useRuntimeConfig().GAME_NAME }}
         </h1>
     </div>

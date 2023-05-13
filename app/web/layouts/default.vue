@@ -26,9 +26,8 @@ if (data.value) {
         const exp = useCookie('expires_at').value as string
         if (exp === undefined) return
         const expires_at = parseInt(exp) * 1000
-        
-        if (Date.now() + 60 * 1000 > expires_at)
-            refreshAccessToken()
+
+        if (Date.now() + 60 * 1000 > expires_at) refreshAccessToken()
     }, 10 * 1000)
 }
 
