@@ -50,6 +50,8 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
                 await this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string),
             )
         }, 1000)
+        this.friendWsService.updateClientWithList(client, this.getID(client) as unknown as string)
+
     }
 
     handleDisconnect(client: Socket) {
