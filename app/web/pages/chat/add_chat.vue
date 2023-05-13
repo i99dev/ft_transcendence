@@ -69,7 +69,6 @@ export default {
                         }
                     }
                     // Place your API call here to submit your payload.
-                    // console.log("payload", payload);
                 },
                 true,
             )

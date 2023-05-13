@@ -1,10 +1,10 @@
-import io from 'socket.io-client';
+import io from 'socket.io-client'
 
 import { defineNuxtPlugin } from '#app'
 
-const socket = ref();
+const socket = ref()
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(nuxtApp => {
     socket.value = socket.value = io('http://localhost/games', {
         withCredentials: true,
         extraHeaders: {
@@ -12,5 +12,5 @@ export default defineNuxtPlugin((nuxtApp) => {
         },
         path: '/socket.io',
     })
-	nuxtApp.socket = socket;
+    nuxtApp.socket = socket
 })

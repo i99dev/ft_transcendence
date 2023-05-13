@@ -24,7 +24,7 @@ export async function useUsersSearch(username: string): Promise<any> {
     } = await useFetch('users/search', {
         baseURL: useRuntimeConfig().API_URL,
         query: {
-            username: username
+            search: username,
         },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -36,10 +36,7 @@ export async function useUsersSearch(username: string): Promise<any> {
 }
 
 export async function SearchUserNames(username: string): Promise<any[] | null> {
-    const {
-        data,
-        error: errorRef,
-    } = await useFetch<any[]>(`users/search/${username}`, {
+    const { data, error: errorRef } = await useFetch<any[]>(`users/search/${username}`, {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -59,7 +56,6 @@ export async function getUserInfo(player: string): Promise<any> {
         },
     })
     const error = errorRef.value as FetchError<any> | null
-    console.log(data, error)
     return data.value
 }
 
@@ -72,7 +68,6 @@ export async function getUserbyUserName(player: string): Promise<any> {
         },
     })
     const error = errorRef.value as FetchError<any> | null
-    console.log(data, error)
     return data.value
 }
 

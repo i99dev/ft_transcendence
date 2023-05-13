@@ -13,7 +13,6 @@ export class MatchHistoryController {
         @Param('login') login: string,
         @Query('page') page: number,
     ): Promise<MatchHistoryDto[]> {
-        console.log('REQUEST!!!!', login)
         return await this.matchHistoryService.getPlayerMatchHistory(page, login)
     }
 

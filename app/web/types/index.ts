@@ -1,4 +1,4 @@
-export { }
+export {}
 
 declare global {
     type UserStatus = 'OFFLINE' | 'ONLINE' | 'LIVE'
@@ -9,6 +9,13 @@ declare global {
         | 'FRIEND_REQUEST_ACCEPTED'
         | 'MATCH_INVITE'
         | 'CHAT_INVITE'
+
+    interface AccessTokenDto {
+        access_token: string
+        token_type: string
+        expires_at: string
+        created_at: number
+    }
 
     interface UserGetDto {
         id: number
@@ -81,7 +88,7 @@ declare global {
         gameID: string
         start: Date
         end: Date
-        opponents: PlayerDto[]
+        opponents: PlayerStatusDto[]
     }
 
     interface GameSelectDto {

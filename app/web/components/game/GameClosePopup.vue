@@ -5,7 +5,7 @@
             class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
         >
             <div
-                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all "
+                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all"
             >
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">

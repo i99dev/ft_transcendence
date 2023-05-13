@@ -14,9 +14,7 @@ export class AuthService {
         private authrepository: AuthRepository,
     ) {}
 
-    async getOrCreateUserAccountOnDb(
-        intraUser,
-    ): Promise<{ httpStatus: HttpStatus; user: UserGetDto }> {
+    async getOrCreateUserAccountOnDb(intraUser): Promise<{ httpStatus: HttpStatus; user: User }> {
         const myuser: UserGetDto = await this.userService.getUser(intraUser.login)
         if (!myuser) {
             return {

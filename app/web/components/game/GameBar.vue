@@ -24,7 +24,6 @@ const items = ref([
         label: 'Add',
         icon: 'pi pi-pencil',
         command: () => {
-            console.log('Add')
             toast.add({ severity: 'info', summary: 'Add', detail: 'Data Added' })
         },
     },

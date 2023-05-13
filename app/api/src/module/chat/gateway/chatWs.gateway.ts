@@ -36,6 +36,7 @@ import { UserService } from '../../user/user.service'
 import { GroupChatService } from '../groupChat.service'
 import { NotificationService } from '../../notification/notification.service'
 import { BlockService } from '@module/block/block.service'
+import { ConfigService } from '@nestjs/config'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -58,6 +59,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private jwtService: JwtService,
         private notificationService: NotificationService,
         private blockService: BlockService,
+        private configService: ConfigService,
     ) {}
 
     private logger = new Logger('ChatWsGateway')
@@ -83,14 +85,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async createGroupChat(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: CreateGroupChatDto,
-        @Req() request: any,
     ) {
         if (!(await this.chatService.getUser(this.getID(client) as string)))
             return this.socketError('User not found')
         const chatRoom = await this.chatWsService.setupGroupChat(
             payload,
             this.getID(client) as string,
-            `${request.protocol}://${request.get('host')}`,
+            `${this.configService.get<string>('server.protocol',)}://${this.configService.get<string>('server.host')}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)
@@ -313,9 +314,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User is neither admin nor owner'), []
         if (payload.user_login === (this.getID(client) as string))
             return this.socketError('User cannot change himself'), []
+        console.log(payload)
+        console.log(await this.chatService.getChatUser(payload.room_id, payload.user_login))
         if (
             'OWNER' ===
-            (await this.chatService.getChatUser(payload.room_id, payload.user_login)).role
+            (await this.chatService.getChatUser(payload.room_id, payload.user_login))?.role
         )
             return this.socketError('User cannot change owner'), []
 

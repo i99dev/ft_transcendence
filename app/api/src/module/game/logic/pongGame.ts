@@ -231,8 +231,6 @@ export class PongGame {
         if ((ball.y <= ball.radius && ball.dy < 0) || (ball.y >= 1 - ball.radius && ball.dy > 0)) {
             ball.dy *= -1
             this.events.emit('play-sound', 'ball-hit')
-
-            console.log('Wall collision')
         }
     }
 
@@ -258,7 +256,6 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the left paddle
         if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
-                // console.log(players[0].username)
                 this.analyzePlayer.get(players[0].username).BlockingShot += 1
                 this.reflectBall(ball, players[0].paddle)
                 this.handleHikenPowerUp(game, 0)
@@ -274,7 +271,6 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the right paddle
         else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
-                // console.log(players[1].username)
                 this.analyzePlayer.get(players[1].username).BlockingShot += 1
                 this.reflectBall(ball, players[1].paddle)
                 this.handleHikenPowerUp(game, 1)
@@ -292,7 +288,6 @@ export class PongGame {
     private grantBallWhispererAchievement(ball: BallDto, player: PlayerDto): void {
         if (ball.y > 1 && ball.y < 0) {
             this.analyzePlayer.get(player.username).EdgeHit += 1
-            console.log('edge hit', ball.y)
             this.analyzePlayer.get(player.username).EdgeHit = 0
         }
         if (
@@ -300,7 +295,6 @@ export class PongGame {
             this.analyzePlayer.get(player.username).Achievements.indexOf('Ball Whisperer') === -1
         ) {
             this.analyzePlayer.get(player.username).Achievements.push('Ball Whisperer')
-            console.log('Ball Whisperer')
         }
     }
 
@@ -312,7 +306,6 @@ export class PongGame {
                 -1
             ) {
                 this.analyzePlayer.get(player.username).Achievements.push('Paddle Samurai')
-                console.log('Paddle Samurai')
             }
         }
         this.analyzePlayer.get(player.username).BlockingShot = 0
@@ -405,12 +398,8 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             } else if (powerUp.type == 'Hiken') {
-                console.log('Hiken activated')
                 player.paddle.color = 'orange'
-            } else if (powerUp.type == 'Shinigami') {
-                console.log('Shinigami activated')
             } else if (powerUp.type == 'Shunshin no Jutsu') {
-                console.log('Shunshin activated')
                 player.paddle.speed *= 1.5
                 player.paddle.color = 'cyan'
                 setTimeout(() => {
