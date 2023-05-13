@@ -142,11 +142,16 @@ import {
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
+import { Socket } from 'socket.io-client'
+import { useFriends } from '~/composables/Friends/useFriends'
 
-const { friends_info, setFriendsModalOpen, add_friend } =  await useFriends()
-
+const addFriendOpen = ref(false);
+const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } = await useFriends()
+const nuxtApp = useNuxtApp()
+const friendsSocket = ref(nuxtApp.friendsSocket as Socket)
 const open = computed(() => friends_info.value.friendsModalOpen)
 const friends_list = computed(() => friends_info.value.friends)
+setupSocketHandlers()
 function add_new_friend() {
     console.log('add new friend')
 }

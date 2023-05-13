@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getPlayerWinRate, getPlayerGameResult } from '../../composables/useAchievement'
 import { useUserInfo, useUpdateUserInfo } from '../../composables/useMe'
-import { useFriends } from '../../composables/useFriends'
+import { useFriends } from '../../composables/Friends/useFriends'
 import { useChat } from '../../composables/useChat'
 import { getUserbyUserName } from '../../composables/useUsers'
 import { computed, ref } from 'vue'
@@ -90,7 +90,7 @@ const defaultImages = [
 
 // messages
 const { chat_info, setChatModalOpen, send_message } = useChat()
-const { friends_info, setFriendsModalOpen, add_friend } = await useFriends()
+const { friends_info, setFriendsModalOpen, addFriend } = await useFriends()
 
 function openChatModel() {
     if (chat_info.value.chatModalOpen) {
