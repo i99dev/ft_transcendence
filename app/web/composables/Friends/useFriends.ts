@@ -63,11 +63,11 @@ export const useFriends = async () => {
     }
 
     const addFriend = (friend: string) => {
-        socket.value.emit("add-friend", { friend_login: friend })
+        socket.value.emit("add-friend", JSON.stringify({ friend_login: friend }))
     }
 
     const removeFriend = (friend: string) => {
-        socket.value.emit('delete-friend', { friend_login: friend })
+        socket.value.emit('delete-friend', JSON.stringify({ friend_login: friend }))
     }
 
     return { friends_info, setFriendsModalOpen, addFriend, setupSocketHandlers, notifications, removeFriend }

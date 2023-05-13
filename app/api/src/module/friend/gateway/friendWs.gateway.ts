@@ -34,7 +34,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         private friendWsService: FriendWsService,
         private notification: NotificationService,
         private friendService: FriendService,
-    ) {}
+    ) { }
 
     handleConnection(client: Socket, ...args: any[]) {
         if (this.clients.has(this.getID(client) as unknown as string)) {
@@ -44,11 +44,11 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         this.logger.log(`Client "${client.id}" connected to friends`)
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
-        setTimeout( async () => {
-        this.notification.setUpNotificationMessage(
-            client,
+        setTimeout(async () => {
+            this.notification.setUpNotificationMessage(
+                client,
                 await this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string),
-        )
+            )
         }, 1000)
     }
 
