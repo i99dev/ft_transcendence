@@ -2,7 +2,6 @@
     <TransitionRoot as="template" :show="open">
         <Dialog as="div" class="relative z-10" @close="open = false">
             <div class="fixed inset-0" />
-
             <div class="fixed inset-0 overflow-hidden">
                 <div class="absolute inset-0 overflow-hidden">
                     <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
@@ -25,9 +24,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- Strat friends list -->
-                                        <!-- button to add friends -->
                                         <div class="border-b border-gray-200">
                                             <div class="px-6">
                                                 <nav class="-mb-px flex space-x-6 justify-end pb-4"
@@ -39,7 +35,6 @@
                                                 </nav>
                                             </div>
                                         </div>
-                                        <!-- friends list -->
                                         <div class="border-b border-gray-200">
                                             <div class="px-5">
                                                 <nav class="-mb-px flex flex-col" x-descriptions="Tab component">
@@ -58,7 +53,6 @@
                                                             </div>
                                                         </div>
                                                         <div class="self-center">
-                                                            <!-- burger menu -->
                                                             <Menu>
                                                                 <MenuButton>
                                                                     <EllipsisVerticalIcon class="w-6 h-6" />
@@ -102,7 +96,6 @@
                                                 </nav>
                                             </div>
                                         </div>
-                                        <!-- End friendds list -->
                                     </div>
                                     <div v-for="(notification, index) in notifications" :key="notification.id">
                                         <FriendsNotification :notification="notification"
@@ -123,7 +116,6 @@
 import {
     Dialog,
     DialogPanel,
-    DialogTitle,
     Menu,
     MenuButton,
     MenuItem,
@@ -137,27 +129,17 @@ import { Socket } from 'socket.io-client'
 import { useFriends } from '~/composables/Friends/useFriends'
 import { useNotifications } from '~~/composables/Notifications/useNotifications'
 
-
-
 const addFriendOpen = ref(false);
 const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } = await useFriends()
-const nuxtApp = useNuxtApp()
-const friendsSocket = ref(nuxtApp.friendsSocket as Socket)
 const open = computed(() => friends_info.value.friendsModalOpen)
 const friends_list = computed(() => friends_info.value.friends)
 const { deleteNotification } = await useNotifications()
-
-// console.log("ALL NOTIFICATIONS:", await getNotifications())
-// await deleteNotification(11)
-// await deleteNotification(14)
-// await deleteNotification(15)
-
-// console.log("Delete Notifc No 4", await getNotifications())
 
 setupSocketHandlers()
 
 function add_new_friend() {
     addFriendOpen.value = true
+    console.log("Frinedlist isss ->>>>>   ", friends_list.value.friends)
     console.log('add new friend')
 }
 
@@ -180,13 +162,10 @@ function block(name: string) {
 }
 
 const removeNotification = (index: number) => {
-    console.log("Remove notification::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::", index)
     if (notifications.value && notifications.value[index]) {
         deleteNotification(notifications.value[index].id);
     }
-
     notifications.value?.splice(index, 1)
-    //Delete notification from database here
 }
 
 </script>
