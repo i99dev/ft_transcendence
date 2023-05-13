@@ -74,8 +74,3 @@ export async function useUpdateUserInfo(): Promise<any> {
     const error = errorRef.value as FetchError<any> | null
     return { data, error }
 }
-
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
-}

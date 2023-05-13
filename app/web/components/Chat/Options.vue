@@ -85,7 +85,5 @@ const handleChatSearch = (e: any) => {
 const switchChatType = (type: ChatRoomType) => {
     searching.value = false
     setChatType(type)
-    setChatView(true)
-    setCurrentChat(null)
 }
 </script>

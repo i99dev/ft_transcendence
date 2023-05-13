@@ -148,4 +148,9 @@ declare global {
         type: NotificationType
         target: string
     }
+
+    interface FetchError<T> extends Error {
+        status: number
+        statusText: string
+    }    
 }

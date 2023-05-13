@@ -52,7 +52,7 @@ export class BlockService {
                     block_list: true,
                 },
             })
-            return blockList
+            return blockList?.block_list
         } catch (error) {
             console.log(error)
         }

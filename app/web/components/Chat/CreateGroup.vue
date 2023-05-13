@@ -382,7 +382,7 @@ const chatTypes = [
 ]
 const groupChat = ref({
     name: '',
-    image: 'https://picsum.photos/200',
+    image: '',
     chatType: chatTypes[0],
     password: '',
 })

@@ -63,8 +63,7 @@
             >
                 <div
                     class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
-                    v-for="(message, index) in messages"
-                    :key="index"
+                    v-for="message in messages"
                     :class="{
                         'bg-indigo-200':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
@@ -94,13 +93,19 @@
                     >
                         {{ message.sender.username }}
                     </div>
-                    <div
+                    <div v-if="(chatType === 'DM') || (chatType === 'GROUP' && !isBlocked(message.sender))"
                         class="break-words"
                         :class="{
                             'text-sm': message.type === 'SPECIAL',
                         }"
                     >
                         {{ message.content }}
+                    </div>
+                    <div
+                        v-else
+                        class="text-sm opacity-50 centered capitalize"
+                    >
+                        blocked content 
                     </div>
                     <button
                         v-if="
@@ -135,7 +140,7 @@
                         placeholder="Message"
                         class="w-11/12 p-3 border-2 border-gray-300 rounded-xl focus:border-indigo-400"
                         style="outline: none"
-                        :disabled="AmIMuted"
+                        :disabled="AmIAllowed"
                     />
                     <button
                         type="submit"
@@ -171,6 +176,7 @@ import { TrashIcon } from '@heroicons/vue/24/outline'
 import { Socket } from 'socket.io-client'
 
 const { user_info } = useUserInfo()
+const { isBlocked } = useBlock()
 
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const messages = ref()
@@ -179,8 +185,8 @@ const isChatInfoOpened = ref(false)
 const { participants, setParticipants, updateParticipants } = useGroupChatParticipants()
 const me = ref()
 const participantsColors = ref(new Map<string, string>())
-const AmIMuted = computed(() => {
-    return chatType.value === 'GROUP' && me.value?.status === 'MUTE'
+const AmIAllowed = computed(() => {
+    return (chatType.value === 'GROUP' && me.value?.status === 'MUTE') || (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
 })
 const { chatType } = useChatType()
 

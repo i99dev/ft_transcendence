@@ -1,132 +1,3 @@
-<script setup lang="ts">
-const props = defineProps({
-    username: {
-        type: String,
-        default: false,
-    },
-})
-
-const { user_info, setUserName, setUserAvatar, setUserTwoFacAuth } = useUserInfo()
-const user = await getUserbyUserName(props.username)
-
-const isMe = ref(false)
-
-const userData = computed(() => {
-    if (user_info.value.username === props.username) {
-        const { username, image, xp, ladder } = user_info.value
-        isMe.value = true
-        return { username, image, xp, ladder }
-    } else {
-        const { username, image, xp, ladder } = user
-        return { username, image, xp, ladder }
-    }
-})
-
-/**
- * edit username
- */
-const editBoolaen = ref(true)
-const updatePhoto = ref(false)
-const editUsername = () => {
-    editBoolaen.value = !editBoolaen.value
-}
-
-const updateUsername = async () => {
-    editBoolaen.value = !editBoolaen.value
-    setUserName(userData.value.username)
-    await useUpdateUserInfo()
-}
-
-/**
- * edit avatar
- */
-const updateAvatar = async (image: string) => {
-    updatePhoto.value = !updatePhoto.value
-    setUserAvatar(image)
-    await useUpdateUserInfo()
-}
-const updateTwoFacAuth = async () => {
-    setUserTwoFacAuth(!user_info.value.two_fac_auth)
-    await useUpdateUserInfo()
-}
-
-const handleChangeImage = () => {
-    updatePhoto.value = !updatePhoto.value
-}
-
-const defaultImages = [
-    'https://i1.ae/img/icons/1.png',
-    'https://i1.ae/img/icons/2.png',
-    'https://i1.ae/img/icons/3.png',
-    'https://i1.ae/img/icons/4.png',
-    'https://i1.ae/img/icons/5.png',
-    'https://i1.ae/img/icons/6.png',
-    'https://i1.ae/img/icons/7.png',
-    'https://i1.ae/img/icons/15.png',
-    'https://i1.ae/img/icons/8.png',
-    'https://i1.ae/img/icons/9.png',
-    'https://i1.ae/img/icons/10.png',
-    'https://i1.ae/img/icons/11.png',
-    'https://i1.ae/img/icons/12.png',
-    'https://i1.ae/img/icons/13.png',
-    'https://i1.ae/img/icons/14.png',
-    'https://i1.ae/img/icons/16.png',
-    'https://i1.ae/img/icons/17.png',
-    'https://i1.ae/img/icons/18.png',
-    'https://i1.ae/img/icons/19.png',
-    'https://i1.ae/img/icons/20.png',
-]
-
-// messages
-const { chat_info, setChatModalOpen, send_message } = useChat()
-const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
-
-function openChatModel() {
-    if (chat_info.value.chatModalOpen) {
-        setChatModalOpen(false)
-    } else {
-        setChatModalOpen(true)
-    }
-}
-
-function openFriendsModel() {
-    if (friends_info.value.friendsModalOpen) {
-        setFriendsModalOpen(false)
-    } else {
-        setFriendsModalOpen(true)
-    }
-}
-
-// Handle player stat drop down
-const showstat = ref(false)
-function handleDropDown() {
-    showstat.value = !showstat.value
-}
-
-const WinRate = (await getPlayerWinRate(userData.value.username)) as number
-
-const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
-
-const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
-
-const getLadderRank = (ladder: number) => {
-    switch (ladder) {
-        case 1:
-            return 'Kaizoku Ou'
-        case 2:
-            return 'Yonkou'
-        case 3:
-            return 'Shichibukai'
-        case 4:
-            return 'Super Rookie'
-        case 5:
-            return 'Kaizoku'
-        case 6:
-            return 'Capin Boy'
-    }
-}
-</script>
-
 <template>
     <div>
         <div class="">
@@ -367,9 +238,168 @@ const getLadderRank = (ladder: number) => {
                         </svg>
                     </button>
                 </div>
+                <div v-else class="flex space-x-6">
+                    <button
+                        @click=""
+                        :title="'Add to friend list'"
+                        class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
+                    >
+                        <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
+                        <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
+                    </button>
+                    <button
+                        @click="isBlocked(user) ? removeUserFromBlockList(user) : addUserToBlockList(user)"
+                        :title="isBlocked(user) ? 'unblock user' : 'block user'"
+                        class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
+                    >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 stroke-2 stroke-current"
+                        :class="{ 'fill-none' : !isBlocked(user)}"
+                        viewBox="0 0 24 24"
+                    >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"></path>
+                        <path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"></path>
+                        <path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"></path>
+                        <path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
+                    </svg>
+                    </button>
+
+                </div>
             </div>
         </div>
     </div>
 </template>
 
-<style></style>
+<script setup lang="ts">
+import { UserPlusIcon, UserMinusIcon } from '@heroicons/vue/24/outline'
+
+const props = defineProps({
+    username: {
+        type: String,
+        default: false,
+    },
+})
+
+const { user_info, setUserName, setUserAvatar, setUserTwoFacAuth } = useUserInfo()
+const user = await getUserbyUserName(props.username)
+const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBlock()
+
+const isMe = ref(false)
+
+const userData = computed(() => {
+    if (user_info.value.username === props.username) {
+        const { username, image, xp, ladder } = user_info.value
+        isMe.value = true
+        return { username, image, xp, ladder }
+    } else {
+        const { username, image, xp, ladder } = user
+        return { username, image, xp, ladder }
+    }
+})
+
+/**
+ * edit username
+ */
+const editBoolaen = ref(true)
+const updatePhoto = ref(false)
+const editUsername = () => {
+    editBoolaen.value = !editBoolaen.value
+}
+
+const updateUsername = async () => {
+    editBoolaen.value = !editBoolaen.value
+    setUserName(userData.value.username)
+    await useUpdateUserInfo()
+}
+
+/**
+ * edit avatar
+ */
+const updateAvatar = async (image: string) => {
+    updatePhoto.value = !updatePhoto.value
+    setUserAvatar(image)
+    await useUpdateUserInfo()
+}
+const updateTwoFacAuth = async () => {
+    setUserTwoFacAuth(!user_info.value.two_fac_auth)
+    await useUpdateUserInfo()
+}
+
+const handleChangeImage = () => {
+    updatePhoto.value = !updatePhoto.value
+}
+
+const defaultImages = [
+    'https://i1.ae/img/icons/1.png',
+    'https://i1.ae/img/icons/2.png',
+    'https://i1.ae/img/icons/3.png',
+    'https://i1.ae/img/icons/4.png',
+    'https://i1.ae/img/icons/5.png',
+    'https://i1.ae/img/icons/6.png',
+    'https://i1.ae/img/icons/7.png',
+    'https://i1.ae/img/icons/15.png',
+    'https://i1.ae/img/icons/8.png',
+    'https://i1.ae/img/icons/9.png',
+    'https://i1.ae/img/icons/10.png',
+    'https://i1.ae/img/icons/11.png',
+    'https://i1.ae/img/icons/12.png',
+    'https://i1.ae/img/icons/13.png',
+    'https://i1.ae/img/icons/14.png',
+    'https://i1.ae/img/icons/16.png',
+    'https://i1.ae/img/icons/17.png',
+    'https://i1.ae/img/icons/18.png',
+    'https://i1.ae/img/icons/19.png',
+    'https://i1.ae/img/icons/20.png',
+]
+
+// messages
+const { chat_info, setChatModalOpen, send_message } = useChat()
+const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
+
+function openChatModel() {
+    if (chat_info.value.chatModalOpen) {
+        setChatModalOpen(false)
+    } else {
+        setChatModalOpen(true)
+    }
+}
+
+function openFriendsModel() {
+    if (friends_info.value.friendsModalOpen) {
+        setFriendsModalOpen(false)
+    } else {
+        setFriendsModalOpen(true)
+    }
+}
+
+// Handle player stat drop down
+const showstat = ref(false)
+function handleDropDown() {
+    showstat.value = !showstat.value
+}
+
+const WinRate = (await getPlayerWinRate(userData.value.username)) as number
+
+const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
+
+const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
+
+const getLadderRank = (ladder: number) => {
+    switch (ladder) {
+        case 1:
+            return 'Kaizoku Ou'
+        case 2:
+            return 'Yonkou'
+        case 3:
+            return 'Shichibukai'
+        case 4:
+            return 'Super Rookie'
+        case 5:
+            return 'Kaizoku'
+        case 6:
+            return 'Capin Boy'
+    }
+}
+</script>
