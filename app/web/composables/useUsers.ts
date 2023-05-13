@@ -70,8 +70,3 @@ export async function getUserbyUserName(player: string): Promise<any> {
     const error = errorRef.value as FetchError<any> | null
     return data.value
 }
-
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
-}

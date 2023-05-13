@@ -205,8 +205,3 @@ export const useChatView = () => {
 
     return { chatView, setChatView }
 }
-
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
-}

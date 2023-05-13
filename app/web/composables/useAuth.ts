@@ -44,11 +44,6 @@ export async function useSubmitConfirmationCode(user: string, code: string): Pro
     return { data, error }
 }
 
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
-}
-
 export const useLogout = async () => {
     const { data, error: errorRef } = await useFetch('auth/logout', {
         baseURL: useRuntimeConfig().API_URL,
