@@ -44,10 +44,12 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         this.logger.log(`Client "${client.id}" connected to friends`)
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
+        setTimeout( async () => {
         this.notification.setUpNotificationMessage(
             client,
-            this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string),
+                await this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string),
         )
+        }, 1000)
     }
 
     handleDisconnect(client: Socket) {

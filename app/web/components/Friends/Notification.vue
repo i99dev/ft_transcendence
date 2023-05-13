@@ -25,33 +25,29 @@ import { XMarkIcon } from '@heroicons/vue/24/outline';
 import { useFriends } from '~~/composables/Friends/useFriends';
 const props = defineProps({
   notification: {
-    type: Notification
+    type: Object,
+    required: true,
   }
 });
 
 const { addFriend, removeFriend } = await useFriends();
 
 const show = ref(true);
-const type = ref('request');
-const user = ref('USERX');
-
+const emit = defineEmits(['close']);
 const accept = () => {
-  // Handle accept action
-  console.log('accept');
   addFriend(props.notification?.target as string);
+  emit('close');
   show.value = false;
-  // emit('accepted');
 };
 
 const decline = () => {
-  // Handle decline action
-  console.log('Declined');
   removeFriend(props.notification?.target as string);
+  emit('close');
   show.value = false;
-  // emit('declined');
 };
 
 const close = () => {
+  emit('close');
   show.value = false;
 };
 </script>

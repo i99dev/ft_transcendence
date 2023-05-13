@@ -150,7 +150,7 @@ declare global {
         target: string
     }
     
-    interface Notification{
+    interface NotificationDto {
         id: number
         created_at: Date
         user_login: string

@@ -105,7 +105,8 @@
                                         <!-- End friendds list -->
                                     </div>
                                     <div v-for="(notification, index) in notifications" :key="notification.id">
-                                        <FriendsNotification :notification="notification" @close="removeNotification(index)" />
+                                        <FriendsNotification :notification="notification"
+                                            @close="removeNotification(index)" />
                                     </div>
                                 </div>
                             </DialogPanel>
@@ -134,6 +135,9 @@ import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 import { Socket } from 'socket.io-client'
 import { useFriends } from '~/composables/Friends/useFriends'
+import { useNotifications } from '~~/composables/Notifications/useNotifications'
+
+
 
 const addFriendOpen = ref(false);
 const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } = await useFriends()
@@ -141,6 +145,15 @@ const nuxtApp = useNuxtApp()
 const friendsSocket = ref(nuxtApp.friendsSocket as Socket)
 const open = computed(() => friends_info.value.friendsModalOpen)
 const friends_list = computed(() => friends_info.value.friends)
+const { deleteNotification } = await useNotifications()
+
+// console.log("ALL NOTIFICATIONS:", await getNotifications())
+// await deleteNotification(11)
+// await deleteNotification(14)
+// await deleteNotification(15)
+
+// console.log("Delete Notifc No 4", await getNotifications())
+
 setupSocketHandlers()
 
 function add_new_friend() {
@@ -167,7 +180,13 @@ function block(name: string) {
 }
 
 const removeNotification = (index: number) => {
-    notifications.value.splice(index, 1)
+    console.log("Remove notification::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::", index)
+    if (notifications.value && notifications.value[index]) {
+        deleteNotification(notifications.value[index].id);
+    }
+
+    notifications.value?.splice(index, 1)
+    //Delete notification from database here
 }
 
 </script>

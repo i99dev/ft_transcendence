@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client'
 
 const nuxtApp = useNuxtApp()
 export const useFriends = async () => {
-    const notifications = useState<any | null>('notifications', () => {
+    const notifications = useState<NotificationDto[] | null>('notifications', () => {
         return []
     })
 
@@ -35,11 +35,19 @@ export const useFriends = async () => {
     const setupSocketHandlers = () => {
         console.log("Setup Socket Handlers!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         socket.value.on('notification', (payload) => {
-            notifications.value.push(payload)
+            if (!Array.isArray(payload)) {
+                payload = [payload];
+            }
+            payload.forEach((notif: NotificationDto) => {
+                if (!notifications.value?.find((currentNotif: NotificationDto) => currentNotif.id === notif.id)) {
+                    notifications.value?.push(notif);
+                    console.log("NOTIFICATION ADDED TO ARRAY iD => ", notif.id)
+                }
+            });
+
         })
 
         socket.value.on('friends-list', (payload) => {
-            console.log("freind Listtttt", payload)
             friends_info.value.friends = payload.map((friend: UserGetDto) => {
                 return {
                     id: friend.id,
