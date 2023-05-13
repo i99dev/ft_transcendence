@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client'
 
 const nuxtApp = useNuxtApp()
 export const useFriends = async () => {
+    const order = ['ONLINE', 'INQUEUE', 'INGAME', 'OFFLINE'];
     const notifications = useState<NotificationDto[] | null>('notifications', () => {
         return []
     })
@@ -32,7 +33,6 @@ export const useFriends = async () => {
             })
         }
     })
-
     const setupSocketHandlers = () => {
         console.log("Setup Socket Handlers!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         socket.value.on('notification', (payload) => {
@@ -45,7 +45,6 @@ export const useFriends = async () => {
                     console.log("NOTIFICATION ADDED TO ARRAY iD => ", notif.id)
                 }
             });
-
         })
 
         socket.value.on('friends-list', (payload) => {
@@ -57,6 +56,14 @@ export const useFriends = async () => {
                     status: friend.status
                 }
             })
+            sortFriends()
+
+        })
+    }
+
+    const sortFriends = () => {
+        friends_info.value.friends.sort((friend1: any, friend2: any) => {
+            return order.indexOf(friend1.status) - order.indexOf(friend2.status);
         })
     }
 
@@ -71,6 +78,8 @@ export const useFriends = async () => {
     const removeFriend = (friend: string) => {
         socket.value.emit('delete-friend', JSON.stringify({ friend_login: friend }))
     }
+
+    sortFriends()
 
     return { friends_info, setFriendsModalOpen, addFriend, setupSocketHandlers, notifications, removeFriend }
 }

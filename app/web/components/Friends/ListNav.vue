@@ -44,9 +44,15 @@
                                                             <div class="relative">
                                                                 <img :src="friend.photo" alt="User Photo"
                                                                     class="rounded-full w-12 h-12" />
-                                                                <!-- online badge -->
+                                                                <!-- Color is green when status = online, blue if status = INGAME OR INQUEUE , gray if status=OFFLINE-->
                                                                 <span
-                                                                    class="absolute bottom-0 left-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white" />
+                                                                    class="absolute bottom-0 left-0 block h-3 w-3 rounded-full border-2 border-white"
+                                                                    :class="{
+                                                                        'bg-green-500': friend.status === 'ONLINE',
+                                                                        'bg-blue-500': friend.status === 'INQUEUE'
+                                                                            || friend.status === 'INGAME',
+                                                                        'bg-gray-500': friend.status === 'OFFLINE',
+                                                                    }" />
                                                             </div>
                                                             <div class="text-start self-center pl-2">
                                                                 {{ friend.name }}
