@@ -149,4 +149,14 @@ declare global {
         type: NotificationType
         target: string
     }
+    
+    interface Notification{
+        id: number
+        created_at: Date
+        user_login: string
+        content: string
+        type: NotificationType
+        target: string
+        user: UserGetDto
+    }
 }

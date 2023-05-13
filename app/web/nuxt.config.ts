@@ -25,5 +25,5 @@ export default defineNuxtConfig({
         },
     },
     modules: ['@nuxtjs/tailwindcss'],
-    plugins: ['~/plugins/socket-io.ts','~/plugins/chat-socket.ts'],
+    plugins: ['~/plugins/socket-io.ts','~/plugins/chat-socket.ts', '~/plugins/friends-socket.ts'],
 })
