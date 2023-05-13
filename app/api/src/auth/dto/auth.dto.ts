@@ -22,7 +22,6 @@ export class TwoFacAuthDto {
     type: string
     code_length: number
     period: number
-
 }
 
 export class AuthPostDto {

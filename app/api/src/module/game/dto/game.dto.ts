@@ -61,7 +61,7 @@ export class GameSelectDto {
 
     gameMode: 'single' | 'multi'
 
-    powerups: string []
+    powerups: string[]
     invitedId?: string
 }
 

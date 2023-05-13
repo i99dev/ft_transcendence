@@ -42,8 +42,7 @@ export class TwoFacAuthService {
                 code_length: twoFacAuthConstants.length,
                 period: twoFacAuthConstants.period,
             }
-        else
-            throw new InternalServerErrorException('2FA Email failed to send')
+        else throw new InternalServerErrorException('2FA Email failed to send')
     }
 
     verify2FA(login: string, code: string): boolean {
@@ -62,8 +61,7 @@ export class TwoFacAuthService {
     generateOTP = (length = 6) => {
         let otp = ''
 
-        for (let i = 0; i < length; i++)
-            otp += Math.floor(Math.random() * 10)
+        for (let i = 0; i < length; i++) otp += Math.floor(Math.random() * 10)
 
         return otp
     }
@@ -87,5 +85,4 @@ export class TwoFacAuthService {
             })
         return true
     }
-        
 }

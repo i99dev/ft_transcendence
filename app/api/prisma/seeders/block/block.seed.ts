@@ -18,7 +18,12 @@ export class BlockSeeder {
             where: { login: 'isaad' },
             data: {
                 block_list: {
-                    connect: [{ login: 'bnaji' }, { login: 'oal-tena' }, { login: 'aaljaber' }, { login: 'mal-guna' }],
+                    connect: [
+                        { login: 'bnaji' },
+                        { login: 'oal-tena' },
+                        { login: 'aaljaber' },
+                        { login: 'mal-guna' },
+                    ],
                 },
             },
         })

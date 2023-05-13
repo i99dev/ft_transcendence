@@ -64,7 +64,12 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
-        if (!await this.blockService.checkIfAvailableFromBlock(this.getID(client) as string, payload.friend_login))
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
             return this.socketError(`This user is unreachable`), []
         if (this.getID(client) === payload.friend_login)
             return this.socketError('cannot add yourself'), []
@@ -152,10 +157,19 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     ) {
         if (this.getID(client) === payload.friend_login)
             return this.socketError('cannot block yourself'), []
-        if (await this.blockService.autoBlock(this.getID(client) as string, payload.friend_login) == null)
+        if (
+            (await this.blockService.autoBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            )) == null
+        )
             return this.socketError(`error blocking user ${payload.friend_login}`), []
         if (
-            !(await this.friendWsService.deleteFriend(this.getID(client) as string, payload.friend_login,)))
+            !(await this.friendWsService.deleteFriend(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
             return this.socketError('error deleting friend'), []
         client.emit('block-user', { content: `you blocked ${payload.friend_login}` })
         const socket = this.getSocket(payload.friend_login)
@@ -175,7 +189,12 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     ) {
         if (this.getID(client) === payload.friend_login)
             return this.socketError('cannot block yourself'), []
-        if (await this.blockService.autoUnblock(this.getID(client) as string, payload.friend_login) == null)
+        if (
+            (await this.blockService.autoUnblock(
+                this.getID(client) as string,
+                payload.friend_login,
+            )) == null
+        )
             return this.socketError(`error unblocking user ${payload.friend_login}`), []
         client.emit('unblock-user', { content: `you unblocked ${payload.friend_login}` })
     }
@@ -185,7 +204,12 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
-        if (!await this.blockService.checkIfAvailableFromBlock(this.getID(client) as string, payload.friend_login))
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
             return this.socketError(`This user is unreachable`), []
         if (
             !(await this.friendWsService.checkIfFriend(
