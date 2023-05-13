@@ -1,3 +1,4 @@
+import { server } from './server/config'
 import { app } from './app/config'
 import { auth } from './auth/config'
 import { database } from './database/config'
@@ -10,4 +11,5 @@ export default () => ({
     database: database,
     jwt: jwt,
     email: email,
+    server: server,
 })

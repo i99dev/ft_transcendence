@@ -15,6 +15,7 @@ import { NotificationService } from '@module/notification/notification.service'
 import { FriendService } from '../friend.service'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { FriendWs } from './dto/friend.dto'
+import { BlockService } from '@module/block/block.service'
 
 @WebSocketGateway({
     namespace: '/friend',
@@ -34,6 +35,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         private friendWsService: FriendWsService,
         private notification: NotificationService,
         private friendService: FriendService,
+        private blockService: BlockService,
     ) {}
 
     handleConnection(client: Socket, ...args: any[]) {
@@ -62,6 +64,13 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError(`This user is unreachable`), []
         if (this.getID(client) === payload.friend_login)
             return this.socketError('cannot add yourself'), []
         if (
@@ -141,11 +150,67 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         }
     }
 
+    @SubscribeMessage('block-user')
+    async blockFriend(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new SocketValidationPipe()) payload: FriendWs,
+    ) {
+        if (this.getID(client) === payload.friend_login)
+            return this.socketError('cannot block yourself'), []
+        if (
+            (await this.blockService.autoBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            )) == null
+        )
+            return this.socketError(`error blocking user ${payload.friend_login}`), []
+        if (
+            !(await this.friendWsService.deleteFriend(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError('error deleting friend'), []
+        client.emit('block-user', { content: `you blocked ${payload.friend_login}` })
+        const socket = this.getSocket(payload.friend_login)
+        if (socket) {
+            socket.emit('friends-list', await this.friendService.getFriends(payload.friend_login))
+        }
+        client.emit(
+            'friends-list',
+            await this.friendService.getFriends(this.getID(client) as string),
+        )
+    }
+
+    @SubscribeMessage('unblock-user')
+    async unblockFriend(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new SocketValidationPipe()) payload: FriendWs,
+    ) {
+        if (this.getID(client) === payload.friend_login)
+            return this.socketError('cannot block yourself'), []
+        if (
+            (await this.blockService.autoUnblock(
+                this.getID(client) as string,
+                payload.friend_login,
+            )) == null
+        )
+            return this.socketError(`error unblocking user ${payload.friend_login}`), []
+        client.emit('unblock-user', { content: `you unblocked ${payload.friend_login}` })
+    }
+
     @SubscribeMessage('delete-friend')
     async deleteFriend(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError(`This user is unreachable`), []
         if (
             !(await this.friendWsService.checkIfFriend(
                 this.getID(client) as string,

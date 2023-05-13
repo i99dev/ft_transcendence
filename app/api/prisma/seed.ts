@@ -13,6 +13,7 @@ import { DirectChatSeeder } from './seeders/direct_chat/direct_chat.seeder'
 import { ChatRoomSeeder } from './seeders/chatRoom/chat_room.seeder'
 import { MatchHistorySeeder } from './seeders/match-history/match-history.seeder'
 import { NotificationSeeder } from './seeders/notification/notification.seeder'
+import { BlockSeeder } from './seeders/block/block.seed'
 // import { SeederService   } from './seeders/user/user.seeder.service';
 
 // initialize Prisma Client
@@ -58,7 +59,17 @@ async function main() {
 
     const getAchievements = await new NotificationSeeder().seedNotifications()
 
-    console.log({ users, powerUps, achievements, updateUsers, matchHistory, getAchievements })
+    const getBlocks = await new BlockSeeder().seedBlock()
+
+    console.log({
+        users,
+        powerUps,
+        achievements,
+        updateUsers,
+        matchHistory,
+        getAchievements,
+        getBlocks,
+    })
 }
 
 // execute the main function

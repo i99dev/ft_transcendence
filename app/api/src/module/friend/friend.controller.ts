@@ -7,6 +7,12 @@ import { UseGuards, Req } from '@nestjs/common'
 export class FriendController {
     constructor(private readonly FriendService: FriendService) {}
 
+    @UseGuards(JwtAuthGuard)
+    @Get('')
+    async GetFriends(@Req() req): Promise<UserGetDto[]> {
+        return await this.FriendService.getFriends(req.user.login)
+    }
+
     @Post('/:friend')
     async UpdateFriend(
         @Param('user') user: string,
@@ -21,11 +27,5 @@ export class FriendController {
         @Param('friend') friend: string,
     ): Promise<UserGetDto> {
         return await this.FriendService.DeleteFriend(friend, user)
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get('')
-    async GetFriends(@Req() req): Promise<UserGetDto[]> {
-        return await this.FriendService.getFriends(req.user.login)
     }
 }
