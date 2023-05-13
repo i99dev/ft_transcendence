@@ -20,7 +20,7 @@ export class DefaultService {
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService) {}
+    constructor(private socketService: SocketService) { }
 
     /* 
         Adds a new user to connected_users array
@@ -42,12 +42,6 @@ export class DefaultService {
         })
         this.repo.updatePlayerStatus('ONLINE', userID)
 
-    }
-
-    public checkIfUserIsConnected(login: string) {
-        const temp = this.connected_users.find(user => user.id == login)
-        if (temp) return true
-        return false
     }
 
     /* 

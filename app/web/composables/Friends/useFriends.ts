@@ -19,7 +19,6 @@ export const useFriends = async () => {
         }
     )
 
-    console.log("FRIENDS =>>>> ||", data.value, "||")
     const friends_info = useState<any | null>('friends_info', () => {
         return {
             friendsModalOpen: false,
@@ -34,7 +33,6 @@ export const useFriends = async () => {
         }
     })
     const setupSocketHandlers = () => {
-        console.log("Setup Socket Handlers!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         socket.value.on('notification', (payload) => {
             if (!Array.isArray(payload)) {
                 payload = [payload];
@@ -42,7 +40,6 @@ export const useFriends = async () => {
             payload.forEach((notif: NotificationDto) => {
                 if (!notifications.value?.find((currentNotif: NotificationDto) => currentNotif.id === notif.id)) {
                     notifications.value?.push(notif);
-                    console.log("NOTIFICATION ADDED TO ARRAY iD => ", notif.id)
                 }
             });
         })

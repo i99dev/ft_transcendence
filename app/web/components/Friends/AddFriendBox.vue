@@ -42,9 +42,7 @@ const addFriendOpen = ref(true)
 const emit = defineEmits(['close'])
 
 function addNewFriend() {
-  console.log("Add friend:", friendNameToAdd.value);
   addFriend(friendNameToAdd.value)
-  // Add logic to add the friend
   emit('close')
 }
 

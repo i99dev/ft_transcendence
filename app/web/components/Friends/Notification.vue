@@ -31,9 +31,9 @@ const props = defineProps({
 });
 
 const { addFriend, removeFriend } = await useFriends();
-
 const show = ref(true);
 const emit = defineEmits(['close']);
+
 const accept = () => {
   addFriend(props.notification?.target as string);
   emit('close');

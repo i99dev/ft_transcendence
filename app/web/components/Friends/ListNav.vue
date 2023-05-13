@@ -131,7 +131,6 @@ import {
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
-import { Socket } from 'socket.io-client'
 import { useFriends } from '~/composables/Friends/useFriends'
 import { useNotifications } from '~~/composables/Notifications/useNotifications'
 
@@ -145,26 +144,20 @@ setupSocketHandlers()
 
 function add_new_friend() {
     addFriendOpen.value = true
-    console.log("Frinedlist isss ->>>>>   ", friends_list.value)
-    console.log('add new friend')
 }
 
 function viewProfile(name: string) {
-    console.log("View profile:", name);
     navigateTo(`/users/${name}`)
 }
 
 function sendMsg(name: string) {
-    console.log("Send message:", name);
 }
 
 function remove(name: string) {
-    console.log("Remove:", name);
     removeFriend(name)
 }
 
 function block(name: string) {
-    console.log("Block:", name);
 }
 
 const removeNotification = (index: number) => {
