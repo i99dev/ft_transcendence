@@ -35,7 +35,7 @@
         "@nestjs/axios": "^2.0.0",
         "@nestjs/common": "^9.3.9",
         "@nestjs/config": "^2.3.1",
-        "@nestjs/core": "^9.3.9",
+        "@nestjs/core": "^9.4.0",
         "@nestjs/jwt": "^10.0.1",
         "@nestjs/passport": "^9.0.3",
         "@nestjs/platform-express": "^9.4.0",
@@ -113,7 +113,7 @@
         "coverageDirectory": "../coverage",
         "testEnvironment": "node",
         "moduleNameMapper": {
-            "axios": "./node_modules/axios/dist/node/axios.cjs"
+            "^axios$": "axios/dist/axios.min.js"
         }
     },
     "prisma": {
