@@ -56,7 +56,7 @@
                             >
                                 {{ userData?.username }}
                             </div>
-							<div>
+							<div v-if="!isMe || isProfile">
 								<img :src="getStatusIcon(userData.status)" class="h-4 w-4" :title="userData.status"/>
 							</div>
                             <input
