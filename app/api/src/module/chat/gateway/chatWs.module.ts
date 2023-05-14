@@ -12,6 +12,9 @@ import { FriendWsService } from '@module/friend/gateway/friendWs.service'
 import { FriendService } from '@module/friend/friend.service'
 import { FriendRepository } from '@module/friend/repository/friend.repository'
 import { ConfigService } from '@nestjs/config'
+import { ChatService } from '../chat.service'
+import { DirectChatService } from '../directChat.service'
+import { ChatRepository } from '../repository/chat.repository'
 
 @Module({
     imports: [AuthModule, PrismaModule, forwardRef(() => ChatModule), UserModule],
@@ -25,6 +28,8 @@ import { ConfigService } from '@nestjs/config'
         FriendService,
         FriendRepository,
         ConfigService,
+        DirectChatService,
+        ChatRepository,
     ],
 })
 export class ChatWsModule {}
