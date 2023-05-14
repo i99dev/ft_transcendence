@@ -21,7 +21,7 @@ describe('AuthService', () => {
         id: 1,
         login: 'bnaji',
         username: 'bnaji',
-        status: 'LIVE',
+        status: 'OFFLINE',
         first_name: 'bassam',
         last_name: 'naji',
         email: 'bnaji@student.42abudhabi.ae',
