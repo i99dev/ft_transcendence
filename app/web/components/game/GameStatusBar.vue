@@ -14,7 +14,7 @@
     </div>
     <div class="border-r border-white border-opacity-50 h-12 mx-4"></div>
     <div class="flex space-x-4">
-      <div v-for="(powerUp, i) in players[1].powerUps.slice().reverse()" :key="i" class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative">
+      <div v-for="(powerUp, i) in players[1].powerUps" :key="i" class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative">
         <img :src="`/imgs/${powerUp.type}.png`" :alt="`Icon ${i + 1}`" class="w-full h-full rounded-md" />
         <div v-if="!powerUp.ready"
           class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
@@ -33,23 +33,23 @@
 
 <script setup lang='ts'>
 const props = defineProps({
-    cooldown11: {
-        type: Boolean,
-        default: false,
-    },
-    cooldown12: {
-        type: Boolean,
-        default: false,
-    },
-    cooldown21: {
-        type: Boolean,
-        default: false,
-    },
-    cooldown22: {
-        type: Boolean,
-        default: false,
-    },
-})
+  cooldown11: {
+    type: Boolean,
+    default: false
+  },
+  cooldown12: {
+    type: Boolean,
+    default: false
+  },
+  cooldown21: {
+    type: Boolean,
+    default: false
+  },
+  cooldown22: {
+    type: Boolean,
+    default: false
+  },
+});
 
 defineEmits(['ExitBtn'])
 
