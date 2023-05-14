@@ -13,5 +13,5 @@ export class CreateNotificationDto {
 
     @IsString()
     @IsOptional()
-    target: string
+    target?: string
 }

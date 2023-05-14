@@ -9,30 +9,30 @@ export class GroupChatSeeder {
     async seedGroupChats(): Promise<GroupChat[]> {
         this.chats = [
             await this.prisma.groupChat.upsert({
-                where: { chat_room_id: 'room1' },
+                where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
                 update: {},
                 create: {
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                     name: 'Mayers',
                     type: chatType.PUBLIC,
                     image: 'http://localhost/api/multer/download/default_image/files/default.png',
                 },
             }),
             await this.prisma.groupChat.upsert({
-                where: { chat_room_id: 'room2' },
+                where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618' },
                 update: {},
                 create: {
-                    chat_room_id: 'room2',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618',
                     name: 'Novembers',
                     type: chatType.PRIVATE,
                     image: 'http://localhost/api/multer/download/default_image/files/default.png',
                 },
             }),
             await this.prisma.groupChat.upsert({
-                where: { chat_room_id: 'room3' },
+                where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' },
                 update: {},
                 create: {
-                    chat_room_id: 'room3',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619',
                     name: 'Master Class',
                     type: chatType.PUBLIC,
                     image: 'http://localhost/api/multer/download/default_image/files/default.png',

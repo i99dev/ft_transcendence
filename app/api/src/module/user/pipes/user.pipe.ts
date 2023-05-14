@@ -1,7 +1,6 @@
 import { UserPatchDto } from './../dto/user.dto'
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common'
 import { validate } from 'class-validator'
-import { UserValidPatchDto } from '../dto/user.dto'
 
 @Injectable()
 export class UserPatchValidationPipe implements PipeTransform<any> {

@@ -12,13 +12,13 @@ export class ChatUserSeeder {
                 where: {
                     chat_user: {
                         user_login: 'bnaji',
-                        chat_room_id: 'room1',
+                        chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                     },
                 },
                 update: {},
                 create: {
                     user_login: 'bnaji',
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                     role: ChatUserRole.OWNER,
                 },
             }),
@@ -29,11 +29,11 @@ export class ChatUserSeeder {
     async assignUsersToChats(): Promise<void> {
         // Room 1
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room1' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'bnaji', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
                         update: {},
                         create: {
                             user_login: 'bnaji',
@@ -44,11 +44,11 @@ export class ChatUserSeeder {
             },
         })
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room1' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'isaad', chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'isaad', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
                         update: {},
                         create: {
                             user_login: 'isaad',
@@ -59,11 +59,11 @@ export class ChatUserSeeder {
             },
         })
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room1' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
                         update: {},
                         create: {
                             user_login: 'oal-tena',
@@ -74,11 +74,11 @@ export class ChatUserSeeder {
             },
         })
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room1' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'mal-guna', chat_room_id: 'room1' } },
+                        where: { chat_user: { user_login: 'mal-guna', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
                         update: {},
                         create: {
                             user_login: 'mal-guna',
@@ -91,11 +91,11 @@ export class ChatUserSeeder {
 
         // Room 2
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room2' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'isaad', chat_room_id: 'room2' } },
+                        where: { chat_user: { user_login: 'isaad', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618' } },
                         update: {},
                         create: {
                             user_login: 'isaad',
@@ -106,11 +106,11 @@ export class ChatUserSeeder {
             },
         })
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room3' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'bnaji', chat_room_id: 'room3' } },
+                        where: { chat_user: { user_login: 'bnaji', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' } },
                         update: {},
                         create: {
                             user_login: 'bnaji',
@@ -123,11 +123,11 @@ export class ChatUserSeeder {
 
         // Room 3
         await this.prisma.groupChat.update({
-            where: { chat_room_id: 'room3' },
+            where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' },
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: 'room3' } },
+                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' } },
                         update: {},
                         create: {
                             user_login: 'oal-tena',

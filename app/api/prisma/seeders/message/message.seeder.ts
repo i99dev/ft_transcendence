@@ -13,49 +13,49 @@ export class MessageSeeder {
                 data: {
                     content: 'Hello I am bnaji',
                     sender_login: 'bnaji',
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: "It's been 2 years in 42, Aren't we done yet?",
                     sender_login: 'bnaji',
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am aaljaber',
                     sender_login: 'aaljaber',
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am mal-guna',
                     sender_login: 'mal-guna',
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am oal-tena',
                     sender_login: 'oal-tena',
-                    chat_room_id: 'room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Hello I am isaad',
                     sender_login: 'isaad',
-                    chat_room_id: 'room2',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618',
                 },
             }),
             await this.prisma.message.create({
                 data: {
                     content: 'Why am I here?',
                     sender_login: 'isaad',
-                    chat_room_id: 'room2',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618',
                 },
             }),
         ]
@@ -64,7 +64,7 @@ export class MessageSeeder {
 
     async assignMessagesToChats(): Promise<void> {
         await this.prisma.chatRoom.update({
-            where: { room_id: 'room1' },
+            where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
             data: {
                 messages: {
                     createMany: {
@@ -95,7 +95,7 @@ export class MessageSeeder {
             },
         })
         await this.prisma.chatRoom.update({
-            where: { room_id: 'room2' },
+            where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618' },
             data: {
                 messages: {
                     createMany: {
@@ -114,7 +114,7 @@ export class MessageSeeder {
             },
         })
         await this.prisma.chatRoom.update({
-            where: { room_id: 'room3' },
+            where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' },
             data: {
                 messages: {
                     createMany: {
@@ -135,7 +135,7 @@ export class MessageSeeder {
 
         // Direct Chat
         await this.prisma.chatRoom.update({
-            where: { room_id: 'direct_room1' },
+            where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7614' },
             data: {
                 messages: {
                     createMany: {
@@ -154,7 +154,7 @@ export class MessageSeeder {
             },
         })
         await this.prisma.chatRoom.update({
-            where: { room_id: 'direct_room2' },
+            where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7615' },
             data: {
                 messages: {
                     createMany: {
@@ -173,7 +173,7 @@ export class MessageSeeder {
             },
         })
         await this.prisma.chatRoom.update({
-            where: { room_id: 'direct_room3' },
+            where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7616' },
             data: {
                 messages: {
                     createMany: {
