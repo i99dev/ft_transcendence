@@ -357,8 +357,7 @@ const defaultImages = [
 
 // messages
 const { chat_info, setChatModalOpen, send_message } = useChat()
-const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
-
+const { friends_info, setFriendsModalOpen, addFriend } = await useFriends()
 function openChatModel() {
     if (chat_info.value.chatModalOpen) {
         setChatModalOpen(false)
