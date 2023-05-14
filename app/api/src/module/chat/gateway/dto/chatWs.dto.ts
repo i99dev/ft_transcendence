@@ -110,19 +110,24 @@ export class UpdateChatDto {
     @IsNotEmpty()
     room_id: string
 
-    @IsOptional()
+    @IsAscii()
     @IsString()
+    @IsNotEmpty()
+    @IsOptional()
+    @Length(1, 50)
     name?: string
 
-    @IsOptional()
     @IsString()
+    @IsOptional()
+    @Length(0, 255)
     image?: string
 
-    @IsOptional()
     @IsString()
+    @IsOptional()
+    @Length(0, 100)
     password?: string
 
     @IsOptional()
-    @IsString()
+    @IsEnum(chatType)
     type?: chatType
 }

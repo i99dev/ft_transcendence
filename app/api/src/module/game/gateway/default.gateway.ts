@@ -14,6 +14,7 @@ import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
 import { GameSelectDto, PlayerDto } from '../dto/game.dto'
 import { SocketService } from './socket.service'
+import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 @WebSocketGateway({
     namespace: '/games',
     cors: { origin: '*' },
@@ -47,7 +48,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Join-Game')
-    async Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
+    async Join(@ConnectedSocket() client: any, @MessageBody(new SocketValidationPipe()) payload: GameSelectDto) {
         if (payload.gameMode == 'single') this.gameService.createSingleGame(client, payload)
         else if (payload.gameMode == 'multi') await this.gameService.matchPlayer(client, payload)
         // else if (payload.gameMode == 'invite')

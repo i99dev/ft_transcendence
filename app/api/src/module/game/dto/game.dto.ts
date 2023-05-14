@@ -1,4 +1,4 @@
-import { UserStatus } from '@prisma/client'
+import { IsAscii, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Length, Min, Validate } from 'class-validator'
 import { PowerUp } from '../interface/game.interface'
 
 export class gameStatusDto {
@@ -21,28 +21,76 @@ export class BallDto {
 }
 
 export class PlayerDto {
+    @IsAscii()
+    @IsString()
+    @IsNotEmpty()
+    @Length(1, 30)
     username: string
+
+    @Min(0)
+    @IsNumber()
     score: number
+
     paddle: PaddleDto
+
+    @IsUUID()
+    @IsNotEmpty()
+    @IsOptional()
     gameID?: string
+
     powerUps: PowerUp[]
 }
 
 export class PaddleDto {
+    @IsNumber()
+    @IsNotEmpty()
     x: number
+
+    @IsNumber()
+    @IsNotEmpty()
     y: number
+
+    @IsNumber()
+    @IsNotEmpty()
     width: number
+
+    @IsNumber()
+    @IsNotEmpty()
     height: number
+
+    @IsNumber()
+    @IsNotEmpty()
     speed: number
+
+    @IsString()
+    @Length(0, 100)
     color: string
 }
 
-export class GameSelectDto {
-    gameType: 'classic' | 'custom'
+enum gameType {
+    classic = 'classic',
+    custom = 'custom'
+}
 
-    gameMode: 'single' | 'multi'
+enum gameMode {
+    single = 'single',
+    multi = 'multi'
+}
+
+export class GameSelectDto {
+    @IsNotEmpty()
+    @IsEnum(gameType)
+    gameType: gameType
+
+    @IsNotEmpty()
+    @IsEnum(gameMode)
+    gameMode: gameMode
 
     powerups: string[]
+
+    @IsString()
+    @IsOptional()
+    @Length(0, 100)
     invitedId?: string
 }
 
