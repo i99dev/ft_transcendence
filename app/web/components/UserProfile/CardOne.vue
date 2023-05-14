@@ -56,6 +56,9 @@
                             >
                                 {{ userData?.username }}
                             </div>
+							<div>
+								<img :src="getStatusIcon(userData.status)" class="h-4 w-4" :title="userData.status"/>
+							</div>
                             <input
                                 v-if="!editBoolaen"
                                 :disabled="editBoolaen"
@@ -407,5 +410,18 @@ const getLadderRank = (ladder: number) => {
         case 6:
             return 'Capin Boy'
     }
+}
+
+const getStatusIcon = (status: string) => {
+	switch (status) {
+		case 'ONLINE':
+			return 'https://www.vippng.com/png/full/127-1270264_green-dot-icon-png-circle.png'
+		case 'OFFLINE':
+			return 'https://icon-library.com/images/grey-icon/grey-icon-10.jpg'
+		case 'INQUEUE':
+			return 'https://www.clker.com/cliparts/e/i/5/h/r/P/orange-circle-icon-hi.png'
+		case 'INGAME':
+			return 'https://www.seekpng.com/png/detail/206-2066026_purple-dot-png-violet-icon.png'
+	}
 }
 </script>
