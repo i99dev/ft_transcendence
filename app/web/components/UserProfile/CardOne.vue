@@ -240,7 +240,7 @@
                 </div>
                 <div v-else class="flex space-x-6">
                     <button
-                        @click=""
+                        @click="addFriend(username)"
                         :title="'Add to friend list'"
                         class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                     >
