@@ -98,6 +98,8 @@ export class ChatWsService {
     }
 
     async isUserNormal(room_id: string, user_login: string) {
+        if (await this.chatService.getDirectChatUser(room_id, user_login)) return true
+
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
         return false

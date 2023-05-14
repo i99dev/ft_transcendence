@@ -9,7 +9,7 @@ export class FriendWsService {
         private friendService: FriendService,
         private prisma: PrismaClient,
         private jwtService: JwtService,
-    ) {}
+    ) { }
 
     extractUserFromJwt(jwt: string) {
         if (!jwt) return null
@@ -42,4 +42,18 @@ export class FriendWsService {
         if (!(await this.friendService.DeleteFriend(user, friend))) return false
         return true
     }
+
+    async updateClientWithList(client: any, id: string) {
+        const interval = setInterval(async () => {
+            client.emit(
+                'friends-list',
+                await this.friendService.getFriends(id),
+            )
+        }, 2000)
+
+        client.on('disconnect', async () => {
+            clearInterval(interval)
+        });
+    }
+
 }
