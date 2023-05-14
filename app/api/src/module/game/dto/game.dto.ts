@@ -1,4 +1,4 @@
-import { IsAscii, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Length, Min, Validate } from 'class-validator'
+import { IsAscii, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Length, Min } from 'class-validator'
 import { PowerUp } from '../interface/game.interface'
 
 export class gameStatusDto {

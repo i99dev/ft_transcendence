@@ -1,4 +1,4 @@
-import { UserGetDto, UserPatchDto } from './dto/user.dto'
+import { UserGetDto } from './dto/user.dto'
 import { User } from '@prisma/client'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'

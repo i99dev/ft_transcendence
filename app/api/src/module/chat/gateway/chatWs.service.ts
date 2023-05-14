@@ -1,4 +1,3 @@
-import { Image } from './../../../auth/interface/intra.interface'
 import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
@@ -7,13 +6,10 @@ import * as bcrypt from 'bcrypt'
 import {
     ChatRoom,
     chatType,
-    GroupChat,
     ChatRoomType,
     ChatUserRole,
     ChatUserStatus,
-    ChatUser,
 } from '@prisma/client'
-import { decode } from 'punycode'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'

@@ -1,5 +1,3 @@
-import { UserPatchValidationPipe } from './pipes/user.pipe'
-import { User } from '@prisma/client'
 import { UserGetDto, UserPatchDto } from './dto/user.dto'
 import { UserService } from './user.service'
 import {
@@ -12,12 +10,6 @@ import {
     Query,
     UseGuards,
     Req,
-    UsePipes,
-    Logger,
-    UseInterceptors,
-    CacheKey,
-    CacheTTL,
-    CacheInterceptor,
     ValidationPipe,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
@@ -27,7 +19,6 @@ import {
     ApiResponse,
     ApiTags,
     ApiParam,
-    ApiQuery,
     ApiBody,
 } from '@nestjs/swagger'
 

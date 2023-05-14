@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common'
 import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
-import { UseGuards, Req } from '@nestjs/common'
+import { UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 @Controller('match-history/:login')
 export class MatchHistoryController {

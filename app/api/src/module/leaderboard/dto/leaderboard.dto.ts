@@ -1,5 +1,4 @@
 import { UserGetDto } from '@module/user/dto/user.dto'
-import { UserStatus } from '@prisma/client'
 
 export class PlayerDto {
     id: number

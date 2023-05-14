@@ -1,7 +1,5 @@
-import { Controller, UseGuards, Get, Req, Query } from '@nestjs/common'
-import { JwtAuthGuard } from '../../common/guards/jwt.guard'
+import { Controller, Get, Query } from '@nestjs/common'
 import { LeaderboardService } from './leaderboard.service'
-import { promises } from 'dns'
 import { UserGetDto } from '@module/user/dto/user.dto'
 
 @Controller('leaderboard')

@@ -1,6 +1,6 @@
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Server, Socket } from 'socket.io'
+import { Socket } from 'socket.io'
 import { CreateNotificationDto } from '@common/dtos/notification.dto'
 
 @Injectable()

@@ -1,9 +1,7 @@
 import {
     BallDto,
-    GameSelectDto,
     PaddleDto,
     PlayerDto,
-    PowerUpInfoDto,
     gameStatusDto,
 } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
