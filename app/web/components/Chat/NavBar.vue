@@ -40,7 +40,10 @@
                                         v-if="chatView"
                                         @closeNavBar="setChatModalOpen(false)"
                                     />
-                                    <ChatContent v-else />
+                                    <ChatContent
+                                        v-else
+                                        @closeNavBar="setChatModalOpen(false)"
+                                    />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>

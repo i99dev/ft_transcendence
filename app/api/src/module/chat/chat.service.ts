@@ -125,12 +125,13 @@ export class ChatService {
                 },
             })
             let check = false
-            chatUser.users.map(user => {
-                if (user.login === user_login) {
-                    check = true
-                    return user
-                }
-            })
+            if (chatUser)
+                chatUser.users.map(user => {
+                    if (user.login === user_login) {
+                        check = true
+                        return user
+                    }
+                })
             return check
         } catch (error) {
             console.log(error)

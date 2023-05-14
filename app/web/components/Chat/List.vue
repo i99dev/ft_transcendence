@@ -159,7 +159,7 @@
                             <div
                                 class="text-xs text-slate-400 w-12 flex justify-center items-center"
                             >
-                                <span v-if="chatType">
+                                <span v-if="chatType && chat.chat_room.messages[0]">
                                     {{
                                         getDisplayDate(
                                             new Date(
