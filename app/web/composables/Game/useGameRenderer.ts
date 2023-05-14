@@ -188,12 +188,12 @@ export function useGameRenderer() {
                 addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 6);
 
                 gltf.scene.traverse((child) => {
-                    if (child instanceof THREE.Mesh) {
-                        if (child.material instanceof THREE.MeshStandardMaterial) {
-                            child.material.roughness = 0.1;
-                            child.material.metalness = 0.9;
-                        }
-                    }
+                    // if (child instanceof THREE.Mesh) {
+                    //     if (child.material instanceof THREE.MeshStandardMaterial) {
+                    //         child.material.roughness = 1;
+                    //         child.material.metalness = 1;
+                    //     }
+                    // }
                 });
 
                 scene.add(gltf.scene);
