@@ -56,7 +56,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`)
-        this.gameService.removeDisconnectedUser(client)
+        this.gameService.removeUser(client)
     }
 
     @SubscribeMessage('Give-Up')
@@ -65,17 +65,17 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Power-Up')
-    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: number) {
+    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: 1 | 2 ) {
         this.gameService.activatePowerUp(client, powerUp)
     }
 
     @SubscribeMessage('move')
-    movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
+    movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: 'up' | 'down') {
         this.gameService.movePaddle(client, direction)
     }
 
     @SubscribeMessage('Leave-Queue')
-    leaveQueue(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
+    leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)
     }
 }

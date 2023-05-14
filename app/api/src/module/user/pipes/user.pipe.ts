@@ -32,7 +32,8 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
                 key === 'status' &&
                 value[key] !== 'ONLINE' &&
                 value[key] !== 'OFFLINE' &&
-                value[key] !== 'LIVE'
+                value[key] !== 'INGAME' &&
+                value[key] !== 'INQUEUE'
             ) {
                 throw new BadRequestException(`Invalid type value`)
             }
