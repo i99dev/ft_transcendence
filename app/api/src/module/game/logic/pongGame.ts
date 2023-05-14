@@ -1,9 +1,4 @@
-import {
-    BallDto,
-    PaddleDto,
-    PlayerDto,
-    gameStatusDto,
-} from '../dto/game.dto'
+import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
 import { EventEmitter } from 'events'
 

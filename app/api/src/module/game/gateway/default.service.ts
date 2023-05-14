@@ -20,7 +20,7 @@ export class DefaultService {
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService) { }
+    constructor(private socketService: SocketService) {}
 
     /* 
         Adds a new user to connected_users array
@@ -41,7 +41,6 @@ export class DefaultService {
             status: 'online',
         })
         this.repo.updatePlayerStatus('ONLINE', userID)
-
     }
 
     /* 
@@ -70,7 +69,6 @@ export class DefaultService {
         const player = this.connected_users.find(user => user.socket == userSocket)
         player.game.setLoser(player.id)
     }
-
 
     /* 
         Activate the power up requested by frontend

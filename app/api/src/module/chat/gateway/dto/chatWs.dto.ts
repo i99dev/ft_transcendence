@@ -1,5 +1,16 @@
 import { chatType } from '@prisma/client'
-import { IsString, IsEnum, IsOptional, IsNumber, IsAscii, IsNotEmpty, Length, IsUUID, Min, Matches } from 'class-validator'
+import {
+    IsString,
+    IsEnum,
+    IsOptional,
+    IsNumber,
+    IsAscii,
+    IsNotEmpty,
+    Length,
+    IsUUID,
+    Min,
+    Matches,
+} from 'class-validator'
 
 export class CreateGroupChatDto {
     @IsAscii()

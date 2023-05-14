@@ -48,7 +48,10 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Join-Game')
-    async Join(@ConnectedSocket() client: any, @MessageBody(new SocketValidationPipe()) payload: GameSelectDto) {
+    async Join(
+        @ConnectedSocket() client: any,
+        @MessageBody(new SocketValidationPipe()) payload: GameSelectDto,
+    ) {
         if (payload.gameMode == 'single') this.gameService.createSingleGame(client, payload)
         else if (payload.gameMode == 'multi') await this.gameService.matchPlayer(client, payload)
         // else if (payload.gameMode == 'invite')
@@ -66,7 +69,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
     @SubscribeMessage('Power-Up')
-    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: 1 | 2 ) {
+    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: 1 | 2) {
         this.gameService.activatePowerUp(client, powerUp)
     }
 

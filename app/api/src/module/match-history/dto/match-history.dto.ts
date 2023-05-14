@@ -1,4 +1,4 @@
-import { UserGetDto } from '@module/user/dto/user.dto';
+import { UserGetDto } from '@module/user/dto/user.dto'
 
 export class PlayerDto {
     id: number

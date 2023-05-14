@@ -1,5 +1,17 @@
 import { UserStatus } from '@prisma/client'
-import { IsString, IsEnum, IsOptional, IsBoolean, IsNumber, IsNotEmpty, Min, Matches, IsAscii, Length, IsEmail } from 'class-validator'
+import {
+    IsString,
+    IsEnum,
+    IsOptional,
+    IsBoolean,
+    IsNumber,
+    IsNotEmpty,
+    Min,
+    Matches,
+    IsAscii,
+    Length,
+    IsEmail,
+} from 'class-validator'
 
 export class UserGetDto {
     @Min(0)

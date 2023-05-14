@@ -9,12 +9,7 @@ import {
     WebSocketGateway,
     ConnectedSocket,
 } from '@nestjs/websockets'
-import {
-    MessageType,
-    ChatUserStatus,
-    ChatUser,
-    NotificationType,
-} from '@prisma/client'
+import { MessageType, ChatUserStatus, ChatUser, NotificationType } from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
 import {
@@ -59,7 +54,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private notificationService: NotificationService,
         private blockService: BlockService,
         private configService: ConfigService,
-        private directChatService: DirectChatService
+        private directChatService: DirectChatService,
     ) {}
 
     private logger = new Logger('ChatWsGateway')
@@ -91,7 +86,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const chatRoom = await this.chatWsService.setupGroupChat(
             payload,
             this.getID(client) as string,
-            `${this.configService.get<string>('server.protocol',)}://${this.configService.get<string>('server.host')}`,
+            `${this.configService.get<string>(
+                'server.protocol',
+            )}://${this.configService.get<string>('server.host')}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)
@@ -146,7 +143,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             type: MessageType.SPECIAL,
         })
         client.emit('new-direct-list', {
-            content: await this.directChatService.getDirectChatForUser(this.getID(client) as string),
+            content: await this.directChatService.getDirectChatForUser(
+                this.getID(client) as string,
+            ),
             type: MessageType.SPECIAL,
         })
     }

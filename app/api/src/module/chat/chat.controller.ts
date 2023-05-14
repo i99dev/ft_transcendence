@@ -20,7 +20,8 @@ export class ChatController {
         if (!type) return await this.chatService.getChatRooms()
         else if (type === 'GROUP')
             return await this.groupChatService.getChatRoomsForGroups(req.user.login)
-        else if (type === 'DM') return await this.directChatService.getDirectChatRooms(req.user.login)
+        else if (type === 'DM')
+            return await this.directChatService.getDirectChatRooms(req.user.login)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -33,7 +34,8 @@ export class ChatController {
     @Get('/:room_id/users')
     async getRoomUsers(@Param('room_id') room_id: string, @Req() req) {
         const room = await this.chatService.getChatRoom(room_id)
-        if (room.type === ChatRoomType.DM) return await this.directChatService.getDirectChatUsers(room_id)
+        if (room.type === ChatRoomType.DM)
+            return await this.directChatService.getDirectChatUsers(room_id)
         else return await this.groupChatService.getGroupChatUsers(room_id)
     }
 

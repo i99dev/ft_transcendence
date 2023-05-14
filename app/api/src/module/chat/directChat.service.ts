@@ -1,7 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "@providers/prisma/prisma.service";
-import { ChatRepository } from "./repository/chat.repository";
-
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '@providers/prisma/prisma.service'
+import { ChatRepository } from './repository/chat.repository'
 
 @Injectable()
 export class DirectChatService {

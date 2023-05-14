@@ -11,7 +11,14 @@ import { DirectChatService } from './directChat.service'
 @Module({
     imports: [forwardRef(() => ChatWsModule)],
     controllers: [ChatController],
-    providers: [ChatService, PrismaClient, PrismaService, GroupChatService, ChatRepository, DirectChatService],
+    providers: [
+        ChatService,
+        PrismaClient,
+        PrismaService,
+        GroupChatService,
+        ChatRepository,
+        DirectChatService,
+    ],
     exports: [ChatService, GroupChatService],
 })
 export class ChatModule {}

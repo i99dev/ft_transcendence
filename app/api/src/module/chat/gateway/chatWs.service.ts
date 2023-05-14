@@ -3,13 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
 import * as bcrypt from 'bcrypt'
-import {
-    ChatRoom,
-    chatType,
-    ChatRoomType,
-    ChatUserRole,
-    ChatUserStatus,
-} from '@prisma/client'
+import { ChatRoom, chatType, ChatRoomType, ChatUserRole, ChatUserStatus } from '@prisma/client'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'

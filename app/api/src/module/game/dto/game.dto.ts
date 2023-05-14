@@ -1,4 +1,14 @@
-import { IsAscii, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Length, Min } from 'class-validator'
+import {
+    IsAscii,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+    IsUUID,
+    Length,
+    Min,
+} from 'class-validator'
 import { PowerUp } from '../interface/game.interface'
 
 export class gameStatusDto {
@@ -69,12 +79,12 @@ export class PaddleDto {
 
 enum gameType {
     classic = 'classic',
-    custom = 'custom'
+    custom = 'custom',
 }
 
 enum gameMode {
     single = 'single',
-    multi = 'multi'
+    multi = 'multi',
 }
 
 export class GameSelectDto {

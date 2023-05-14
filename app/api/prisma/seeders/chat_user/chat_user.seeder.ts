@@ -33,7 +33,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'bnaji', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'bnaji',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'bnaji',
@@ -48,7 +53,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'isaad', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'isaad',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'isaad',
@@ -63,7 +73,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'oal-tena',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'oal-tena',
@@ -78,7 +93,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'mal-guna', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'mal-guna',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'mal-guna',
@@ -95,7 +115,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'isaad', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'isaad',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'isaad',
@@ -110,7 +135,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'bnaji', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'bnaji',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'bnaji',
@@ -127,7 +157,12 @@ export class ChatUserSeeder {
             data: {
                 chat_user: {
                     upsert: {
-                        where: { chat_user: { user_login: 'oal-tena', chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' } },
+                        where: {
+                            chat_user: {
+                                user_login: 'oal-tena',
+                                chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619',
+                            },
+                        },
                         update: {},
                         create: {
                             user_login: 'oal-tena',

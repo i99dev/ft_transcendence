@@ -8,7 +8,11 @@ import { ChatService } from './chat.service'
 
 @Injectable()
 export class GroupChatService {
-    constructor(private prisma: PrismaService, private chatRepository: ChatRepository, private chatService: ChatService) {}
+    constructor(
+        private prisma: PrismaService,
+        private chatRepository: ChatRepository,
+        private chatService: ChatService,
+    ) {}
     private chatRooms: ChatRoom[]
 
     async getGroupChatRoom(room_id: string) {
