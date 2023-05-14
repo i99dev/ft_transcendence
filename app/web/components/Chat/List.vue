@@ -126,12 +126,12 @@
                                 class="w-full flex justify-start whitespace-nowrap text-xs text-slate-400"
                             >
                                 <span v-if="chatType === 'GROUP'" class="w-auto mr-2">
-                                    {{ chat.chat_room.messages[0].sender_login }} :
+                                    {{ chat.chat_room.messages[0]?.sender_login }}<span v-if="chat.chat_room.messages[0]">:</span>
                                 </span>
                                 <span
                                     class="inline-block max-w-full overflow-hidden whitespace-nowrap text-ellipsis"
                                 >
-                                    {{ chat.chat_room.messages[0].content }}
+                                    {{ chat.chat_room.messages[0]?.content }}
                                 </span>
                             </div>
                         </div>
@@ -163,13 +163,13 @@
                                     {{
                                         getDisplayDate(
                                             new Date(
-                                                chat.chat_room.messages[0].created_at,
+                                                chat.chat_room.messages[0]?.created_at,
                                             ).getFullYear(),
                                             new Date(
-                                                chat.chat_room.messages[0].created_at,
+                                                chat.chat_room.messages[0]?.created_at,
                                             ).getMonth() + 1,
                                             new Date(
-                                                chat.chat_room.messages[0].created_at,
+                                                chat.chat_room.messages[0]?.created_at,
                                             ).getDate(),
                                         )
                                     }}
