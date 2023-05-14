@@ -15,7 +15,7 @@
                             alt="logo"
                         />
                         <div
-                            v-if="isMe"
+                            v-if="isMe && !isProfile"
                             @click="handleChangeImage"
                             class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
                         >
@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="flex sm:flex-col justify-center sm:p-6">
-                        <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">
+                        <p v-if="isMe && !isProfile" class="sm:text-3xl text-lg text-black dark:text-white">
                             Welcome
                         </p>
                         <!-- update username -->
@@ -67,7 +67,7 @@
                             <div
                                 class="flex justify-center"
                                 @click="editUsername"
-                                v-if="editBoolaen && isMe"
+                                v-if="editBoolaen && isMe && !isProfile"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +148,7 @@
                     </div>
                 </div>
 
-                <div v-if="isMe" class="flex flex-row space-x-6">
+                <div v-if="isMe && !isProfile" class="flex flex-row space-x-6">
                     <div class="relative cursor-pointer" @click="openChatModel">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +238,7 @@
                         </svg>
                     </button>
                 </div>
-                <div v-else class="flex space-x-6">
+                <div v-else-if="!isMe" class="flex space-x-6">
                     <button
                         @click=""
                         :title="'Add to friend list'"
@@ -280,6 +280,10 @@ const props = defineProps({
         type: String,
         default: false,
     },
+	isProfile: {
+		type: Boolean,
+		default: false,
+	},
 })
 
 const { user_info, setUserName, setUserAvatar, setUserTwoFacAuth } = useUserInfo()
@@ -290,12 +294,13 @@ const isMe = ref(false)
 
 const userData = computed(() => {
     if (user_info.value.username === props.username) {
-        const { username, image, xp, ladder } = user_info.value
+        const { username, image, xp, ladder, status } = user_info.value
+		console.log(status)
         isMe.value = true
-        return { username, image, xp, ladder }
+        return { username, image, xp, ladder, status }
     } else {
-        const { username, image, xp, ladder } = user
-        return { username, image, xp, ladder }
+        const { username, image, xp, ladder, status } = user
+        return { username, image, xp, ladder, status }
     }
 })
 

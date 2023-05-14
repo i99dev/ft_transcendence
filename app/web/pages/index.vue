@@ -6,7 +6,7 @@
         <div class="flex flex-col w-full space-y-6 items-center">
             <SearchBar @userInput="handleUserSearch" class="w-1/2 inline-block z-10" />
             <div class="flex flex-row justify-center w-1/2 mobile:w-full">
-                <UserProfileCardOne class="w-full" :username="userName" />
+                <UserProfileCardOne class="w-full" :username="userName" :isProfile="IsProfile" />
             </div>
             <button
                 @click="() => navigateTo('/play')"
@@ -38,6 +38,8 @@
 definePageMeta({
     middleware: ['pages'],
 })
+
+const IsProfile = ref(false)
 
 const { user_info } = useUserInfo()
 const userName = user_info.value.username
