@@ -1,8 +1,7 @@
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
+import { ChatRoom, MessageType, ChatUserStatus } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
-import { chatType } from '@prisma/client'
 import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
 

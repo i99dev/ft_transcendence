@@ -12,7 +12,6 @@ import { FriendWsService } from '@module/friend/gateway/friendWs.service'
 import { FriendService } from '@module/friend/friend.service'
 import { FriendRepository } from '@module/friend/repository/friend.repository'
 import { ConfigService } from '@nestjs/config'
-import { ChatService } from '../chat.service'
 import { DirectChatService } from '../directChat.service'
 import { ChatRepository } from '../repository/chat.repository'
 

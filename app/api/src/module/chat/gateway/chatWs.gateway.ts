@@ -12,14 +12,12 @@ import {
 import {
     MessageType,
     ChatUserStatus,
-    ChatUserRole,
     ChatUser,
     NotificationType,
 } from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
 import {
-    AddUserDto,
     MainInfoDto,
     AddMessageDto,
     SetUserDto,
