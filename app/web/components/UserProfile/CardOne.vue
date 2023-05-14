@@ -168,7 +168,7 @@
                         <div
                             class="absolute -top-1 -right-1 bg-green-500 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
                         >
-                            <p class="text-xs font-semibold text-center text-white">2</p>
+                            <p class="text-xs font-semibold text-center text-white"></p>
                         </div>
                     </div>
                     <div @click="openFriendsModel" class="relative cursor-pointer">
@@ -188,9 +188,10 @@
                         </svg>
                         <!-- badge offline -->
                         <div
-                            class="absolute -top-1 -right-1 bg-gray-500 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
+                            class="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
+                            :class="{'bg-gray-500': notifications?.length == 0, 'bg-green-500': notifications?.length != 0}"
                         >
-                            <div class="text-xs font-semibold text-center text-white">10</div>
+                            <div class="text-xs font-semibold text-center text-white">{{notifications?.length}}</div>
                         </div>
                     </div>
                     <button @click="useLogout" class="cursor-pointer relative rounded-full">
@@ -357,7 +358,7 @@ const defaultImages = [
 
 // messages
 const { chat_info, setChatModalOpen, send_message } = useChat()
-const { friends_info, setFriendsModalOpen, addFriend } = await useFriends()
+const { friends_info, setFriendsModalOpen, addFriend, notifications } = await useFriends()
 function openChatModel() {
     if (chat_info.value.chatModalOpen) {
         setChatModalOpen(false)
