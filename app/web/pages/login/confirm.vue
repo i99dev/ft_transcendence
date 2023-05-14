@@ -28,7 +28,7 @@
                 >
                     code is expired
                 </h3>
-                <OTPInput @submitCode="submitCode" />
+                <LoginOTPInput @submitCode="submitCode" />
                 <h2 class="text-white text-md md:text-lg lg:text-xl text-center capitalize m-5 p-2">
                     Didn't receive the code?
                     <button
@@ -44,24 +44,21 @@
 </template>
 
 <script lang="ts" setup>
-import { clear, group } from 'console'
 import { useToast } from 'primevue/usetoast'
-import { clearInterval } from 'timers'
 const toast = useToast()
 
 definePageMeta({
     layout: false,
 })
 
-if (await useIsAuth())
-    navigateTo('/')
+if (await useIsAuth()) navigateTo('/')
 
 const timer = ref()
 
 onMounted(() => {
     timerCountdown()
 })
-let timerId : any
+let timerId: any
 const timerCountdown = () => {
     if (useRoute().query.period) {
         timer.value = useRoute().query.period
@@ -95,7 +92,7 @@ const resendCode = async () => {
     if (!login) return
 
     const { data, error } = await useResendVerificationCode(login.toString())
-    console.log(data.value)
+
     if (data.value) {
         toast.add({
             severity: 'success',
@@ -105,13 +102,12 @@ const resendCode = async () => {
         })
         window.clearInterval(timerId)
         timerCountdown()
-    }
-    else
-    toast.add({
-        severity: 'error',
-        summary: 'Cannot send',
-        detail: 'Cannot send new verification code yet. Please try again after 30 seconds',
-        life: 3000,
-    })
+    } else
+        toast.add({
+            severity: 'error',
+            summary: 'Cannot send',
+            detail: 'Cannot send new verification code yet. Please try again after 30 seconds',
+            life: 3000,
+        })
 }
 </script>

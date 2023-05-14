@@ -1,3 +1,4 @@
+import { Image } from './../../../auth/interface/intra.interface'
 import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
@@ -17,6 +18,7 @@ import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
 import { GroupChatService } from '../groupChat.service'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class ChatWsService {
@@ -26,6 +28,7 @@ export class ChatWsService {
         private groupChatService: GroupChatService,
         private jwtService: JwtService,
         private userService: UserService,
+        private configService: ConfigService,
     ) {}
     private chatRooms: ChatRoom[]
 
@@ -36,17 +39,20 @@ export class ChatWsService {
         return !decode ? null : decode['login']
     }
 
-    async setupGroupChat(payload: any, user_login: string): Promise<ChatRoom> {
-        if (
-            payload.type === chatType.PROTECTED &&
-            (payload.password === undefined || payload.password === null || payload.password === '')
-        )
+    async setupGroupChat(payload: any, user_login: string, protocol: string): Promise<ChatRoom> {
+        if (payload.type === chatType.PROTECTED && (!payload.password || payload.password === ''))
             throw new WsException('No password provided')
 
         const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
         let password = null
+        if (!payload.image || payload.image === '')
+            payload.image = `${this.configService.get<string>(
+                'server.protocol',
+            )}://${this.configService.get<string>(
+                'server.host',
+            )}/api/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.groupChatService.createGroupChatRoom(
             {
@@ -92,6 +98,8 @@ export class ChatWsService {
     }
 
     async isUserNormal(room_id: string, user_login: string) {
+        if (await this.chatService.getDirectChatUser(room_id, user_login)) return true
+
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
         return false

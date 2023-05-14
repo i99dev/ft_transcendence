@@ -10,6 +10,13 @@ declare global {
         | 'MATCH_INVITE'
         | 'CHAT_INVITE'
 
+    interface AccessTokenDto {
+        access_token: string
+        token_type: string
+        expires_at: string
+        created_at: number
+    }
+
     interface UserGetDto {
         id: number
         login: string
@@ -89,7 +96,7 @@ declare global {
         gameID: string
         start: Date
         end: Date
-        opponents: PlayerDto[]
+        opponents: PlayerStatusDto[]
     }
 
     interface GameSelectDto {
@@ -159,4 +166,9 @@ declare global {
         target: string
         user: UserGetDto
     }
+
+    interface FetchError<T> extends Error {
+        status: number
+        statusText: string
+    }    
 }

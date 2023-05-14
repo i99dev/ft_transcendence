@@ -36,10 +36,14 @@
                                             <ChatOptions />
                                         </div>
                                     </div>
-                                    <ChatList v-if="chatView"
+                                    <ChatList
+                                        v-if="chatView"
                                         @closeNavBar="setChatModalOpen(false)"
                                     />
-                                    <ChatContent v-else />
+                                    <ChatContent
+                                        v-else
+                                        @closeNavBar="setChatModalOpen(false)"
+                                    />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -51,12 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    Dialog,
-    DialogPanel,
-    TransitionChild,
-    TransitionRoot,
-} from '@headlessui/vue'
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
@@ -65,21 +64,24 @@ const { chatView, setChatView } = useChatView()
 const { currentChat, setCurrentChat } = useCurrentChat()
 const { chatType } = useChatType()
 
-watch(()=>chatType.value, () => {
-    setChatView(true)
-    setCurrentChat(null)
-})
-
-watch(()=>currentChat.value, () => {
-    
-    if (currentChat.value && chatType.value) {
-        setChatView(false)
-    }
-    else {
+watch(
+    () => chatType.value,
+    () => {
         setChatView(true)
-    }
-})
+        setCurrentChat(null)
+    },
+)
+
+watch(
+    () => currentChat.value,
+    () => {
+        if (currentChat.value && chatType.value) {
+            setChatView(false)
+        } else {
+            setChatView(true)
+        }
+    },
+)
 
 const open = computed(() => chat_info.value.chatModalOpen)
 </script>
-

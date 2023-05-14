@@ -8,7 +8,6 @@ export class NotificationService {
     private prisma = new PrismaService()
 
     async createNotification(payload: CreateNotificationDto) {
-        console.log(payload)
         try {
             const notification = await this.prisma.notification.create({
                 data: {
@@ -20,7 +19,7 @@ export class NotificationService {
             })
             return notification
         } catch (error) {
-            console.log('error---->', error)
+            console.log(error)
         }
     }
 

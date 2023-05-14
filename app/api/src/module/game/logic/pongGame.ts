@@ -1,7 +1,13 @@
-import { BallDto, GameSelectDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
-import { PowerUp } from '../interface/game.interface';
-import { EventEmitter } from 'events';
-
+import {
+    BallDto,
+    GameSelectDto,
+    PaddleDto,
+    PlayerDto,
+    PowerUpInfoDto,
+    gameStatusDto,
+} from '../dto/game.dto'
+import { PowerUp } from '../interface/game.interface'
+import { EventEmitter } from 'events'
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -250,7 +256,6 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the left paddle
         if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
-                // console.log(players[0].username)
                 this.analyzePlayer.get(players[0].username).BlockingShot += 1
                 this.reflectBall(ball, players[0].paddle)
                 this.handleHikenPowerUp(game, 0)
@@ -266,7 +271,6 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the right paddle
         else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
-                // console.log(players[1].username)
                 this.analyzePlayer.get(players[1].username).BlockingShot += 1
                 this.reflectBall(ball, players[1].paddle)
                 this.handleHikenPowerUp(game, 1)
@@ -284,7 +288,6 @@ export class PongGame {
     private grantBallWhispererAchievement(ball: BallDto, player: PlayerDto): void {
         if (ball.y > 1 && ball.y < 0) {
             this.analyzePlayer.get(player.username).EdgeHit += 1
-            console.log('edge hit', ball.y)
             this.analyzePlayer.get(player.username).EdgeHit = 0
         }
         if (
@@ -292,7 +295,6 @@ export class PongGame {
             this.analyzePlayer.get(player.username).Achievements.indexOf('Ball Whisperer') === -1
         ) {
             this.analyzePlayer.get(player.username).Achievements.push('Ball Whisperer')
-            console.log('Ball Whisperer')
         }
     }
 
@@ -304,7 +306,6 @@ export class PongGame {
                 -1
             ) {
                 this.analyzePlayer.get(player.username).Achievements.push('Paddle Samurai')
-                console.log('Paddle Samurai')
             }
         }
         this.analyzePlayer.get(player.username).BlockingShot = 0

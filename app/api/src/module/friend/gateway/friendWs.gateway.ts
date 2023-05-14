@@ -15,6 +15,7 @@ import { NotificationService } from '@module/notification/notification.service'
 import { FriendService } from '../friend.service'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { FriendWs } from './dto/friend.dto'
+import { BlockService } from '@module/block/block.service'
 
 @WebSocketGateway({
     namespace: '/friend',
@@ -34,7 +35,8 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         private friendWsService: FriendWsService,
         private notification: NotificationService,
         private friendService: FriendService,
-    ) { }
+        private blockService: BlockService,
+    ) {}
 
     handleConnection(client: Socket, ...args: any[]) {
         if (this.clients.has(this.getID(client) as unknown as string)) {
@@ -66,6 +68,13 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError(`This user is unreachable`), []
         if (this.getID(client) === payload.friend_login)
             return this.socketError('cannot add yourself'), []
         if (
@@ -150,6 +159,13 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError(`This user is unreachable`), []
         if (
             !(await this.friendWsService.checkIfFriend(
                 this.getID(client) as string,

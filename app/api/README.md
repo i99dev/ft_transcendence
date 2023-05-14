@@ -57,6 +57,7 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
 ## Default env file
 
 ```bash
@@ -64,7 +65,9 @@ cp .env_sample .env
 ```
 
 ## Run Docker compose
+
 run docker compose on main directory of repo if it's not running
+
 ```bash
 docker compose up
 # OR
@@ -81,7 +84,6 @@ docker-compose up
 docker exec -it ft_transcendence-api-1 npx prisma migrate dev
 # make sure you are using the right api contianer name (ft_transcendance)
 ```
-
 
 ## Pre-populate the database with initial data
 
@@ -100,43 +102,60 @@ docker exec -it ft_transcendence-api-1 npx prisma migrate reset
 ```
 
 ## Access Database with Pgadmin
-**NOTE:** names like ```PGADMIN_DEFAULT_EMAIL``` are environment variables that is used in ```.env``` under the root path of the repo.
-1. Connect to ```localhost:5050``` and. Enter ```PGADMIN_DEFAULT_EMAIL``` and ```PGADMIN_DEFAULT_PASSWORD```.
-2. Go to ```object``` => ```register``` => ```Server...```.
-3. Setup any name for the server under ```General```
-4. Under ```Connection``` set ```Hostname/address``` to ```db``` and set Username to ```PGADMIN_DEFAULT_EMAIL``` and ```PGADMIN_DEFAULT_PASSWORD```.
-5. Click ```Save```.
-6. Now on the left you find your server name under ```Servers```.
-7. Go to ```Servers``` => server_name => ```databases``` => ```POSTGRES_DB``` => ```Shcemas``` => ```public``` => ```Tables```.
-8. If database has been migrated you will find some tables under ```Tables``` like ```User```.
-9. Right click on the table and go to ```View/Edit Data``` => ```All Rows```.
-10. if database has pre-populated with initial data you will find some data. Otherwise, you will get an empty table.
+
+**NOTE:** names like `PGADMIN_DEFAULT_EMAIL` are environment variables that is used in `.env` under
+the root path of the repo.
+
+1. Connect to `localhost:5050` and. Enter `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD`.
+2. Go to `object` => `register` => `Server...`.
+3. Setup any name for the server under `General`
+4. Under `Connection` set `Hostname/address` to `db` and set Username to `PGADMIN_DEFAULT_EMAIL` and
+   `PGADMIN_DEFAULT_PASSWORD`.
+5. Click `Save`.
+6. Now on the left you find your server name under `Servers`.
+7. Go to `Servers` => server_name => `databases` => `POSTGRES_DB` => `Shcemas` => `public` =>
+   `Tables`.
+8. If database has been migrated you will find some tables under `Tables` like `User`.
+9. Right click on the table and go to `View/Edit Data` => `All Rows`.
+10. if database has pre-populated with initial data you will find some data. Otherwise, you will get
+    an empty table.
 
 ## EndPoints
-### GET
-1. ```(/api/users)``` => to get all users in the database.
-2. ```(/api/users/:name)``` => type a specific name to get the information of a specific user.
-3. ```(/api/users/:name/:info)``` => to get a specific info only from the mentioned user.
-### POST
-4. ```(/api/post)``` => add users by passing a JSON with the info of the new user.<br>
-Provide a JSON form as a Body with the following information: ```(id, login, first_name, last_name, image, email)```<br>
-```NOTE: ID AND LOGIN MUST BE UNIQUE```
-### PATCH
-5. ```(/api/patch/:name)``` => update an existing user by passing a JSON and passing the login of that user in the url.<br>
-Provide a JSON form as a Body with the information you want to change and set its new value.
-### DELETE
-6. ```(/api/delete/:name)``` =>by passing the login of the user, the user will get deleted permanentley from the database.
 
+### GET
+
+1. `(/api/users)` => to get all users in the database.
+2. `(/api/users/:name)` => type a specific name to get the information of a specific user.
+3. `(/api/users/:name/:info)` => to get a specific info only from the mentioned user.
+
+### POST
+
+4. `(/api/post)` => add users by passing a JSON with the info of the new user.<br> Provide a JSON
+   form as a Body with the following information:
+   `(id, login, first_name, last_name, image, email)`<br> `NOTE: ID AND LOGIN MUST BE UNIQUE`
+
+### PATCH
+
+5. `(/api/patch/:name)` => update an existing user by passing a JSON and passing the login of that
+   user in the url.<br> Provide a JSON form as a Body with the information you want to change and
+   set its new value.
+
+### DELETE
+
+6. `(/api/delete/:name)` =>by passing the login of the user, the user will get deleted permanentley
+   from the database.
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the
+amazing backers. If you'd like to join them, please
+[read more here](https://docs.nestjs.com/support).
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+-   Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+-   Website - [https://nestjs.com](https://nestjs.com/)
+-   Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 

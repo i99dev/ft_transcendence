@@ -33,23 +33,23 @@
 
 <script setup lang='ts'>
 const props = defineProps({
-  cooldown11: {
-    type: Boolean,
-    default: false
-  },
-  cooldown12: {
-    type: Boolean,
-    default: false
-  },
-  cooldown21: {
-    type: Boolean,
-    default: false
-  },
-  cooldown22: {
-    type: Boolean,
-    default: false
-  },
-});
+    cooldown11: {
+        type: Boolean,
+        default: false,
+    },
+    cooldown12: {
+        type: Boolean,
+        default: false,
+    },
+    cooldown21: {
+        type: Boolean,
+        default: false,
+    },
+    cooldown22: {
+        type: Boolean,
+        default: false,
+    },
+})
 
 defineEmits(['ExitBtn'])
 

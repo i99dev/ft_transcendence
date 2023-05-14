@@ -73,7 +73,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: 'up' | 'down') {
         this.gameService.movePaddle(client, direction)
     }
-    
+
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)

@@ -251,7 +251,6 @@ export class DefaultService {
         const postGameAchiev = await this.gameAnalyzer.grantAchievements(username)
         const midGameAchiev = game.analyzePlayer.get(username).Achievements
         const achievements = [...postGameAchiev, ...midGameAchiev]
-        console.log(achievements, achievements.length)
         if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(username, achievements)
     }
 
@@ -273,7 +272,6 @@ export class DefaultService {
                 game_status.players[i].username,
                 this.game_result.IsWinner(game_status.players[i]) ? true : false,
             )
-            console.log(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
             await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
             await this.unlockAchievement(game, game_status.players[i].username)

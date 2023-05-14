@@ -46,30 +46,24 @@
         </div>
     </div>
 </template>
-  
-<script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { getUserbyUserName } from '../../composables/useUsers'
-import { computed } from 'vue'
 
+<script setup lang="ts">
 const route = useRoute()
 
 const userName = computed(() => {
-    let username = ''
+    let username: string
     if (
         Array.isArray(route.params.username) &&
         route.params.username.every(item => typeof item === 'string')
     )
         username = route.params.username[0]
-    else username = route.params.username
+    else username = route.params.username as string
     return username
 })
 
 const handleUserSearch = (username: string) => {
-    console.log('handleUserSearch', username)
     navigateTo(`/users/${username}`)
 }
 
 const user = await getUserbyUserName(userName.value)
-console.log('usersss', user)
 </script>

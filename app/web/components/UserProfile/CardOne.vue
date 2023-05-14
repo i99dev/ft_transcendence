@@ -1,143 +1,3 @@
-<script setup lang="ts">
-import { getPlayerWinRate, getPlayerGameResult } from '../../composables/useAchievement'
-import { useUserInfo, useUpdateUserInfo } from '../../composables/useMe'
-import { useFriends } from '../../composables/Friends/useFriends'
-import { useChat } from '../../composables/useChat'
-import { getUserbyUserName } from '../../composables/useUsers'
-import { computed, ref } from 'vue'
-
-const props = defineProps({
-    username: {
-        type: String,
-        default: false,
-    },
-})
-
-const { user_info, setUserName, setUserAvatar } = useUserInfo()
-const user = await getUserbyUserName(props.username)
-
-console.log('usersss !!!!!!!', user)
-
-const isMe = ref(false)
-console.log('props', props.username)
-
-const userData = computed(() => {
-    if (user_info.value.username === props.username) {
-        const { username, image, xp, ladder } = user_info.value
-        isMe.value = true
-        return { username, image, xp, ladder }
-    } else {
-        const { username, image, xp, ladder } = user
-        return { username, image, xp, ladder }
-    }
-})
-
-
-/**
- * edit username
- */
-const editBoolaen = ref(true)
-const updatePhoto = ref(false)
-const editUsername = () => {
-	editBoolaen.value = !editBoolaen.value
-}
-
-const updateUsername = async () => {
-	editBoolaen.value = !editBoolaen.value
-    setUserName(userData.value.username)
-    await useUpdateUserInfo()
-}
-
-/**
- * edit avatar
- */
-const updateAvatar = async (image: string) => {
-	updatePhoto.value = !updatePhoto.value
-    setUserAvatar(image)
-    await useUpdateUserInfo()
-}
-const updateTwoFacAuth = async () => {
-    setUserTwoFacAuth(!user_info.value.two_fac_auth)
-    await useUpdateUserInfo()
-}
-
-const handleChaneImage = () => {
-	updatePhoto.value = !updatePhoto.value
-}
-
-const defaultImages = [
-    'https://i1.ae/img/icons/1.png',
-    'https://i1.ae/img/icons/2.png',
-    'https://i1.ae/img/icons/3.png',
-    'https://i1.ae/img/icons/4.png',
-    'https://i1.ae/img/icons/5.png',
-    'https://i1.ae/img/icons/6.png',
-    'https://i1.ae/img/icons/7.png',
-    'https://i1.ae/img/icons/15.png',
-    'https://i1.ae/img/icons/8.png',
-    'https://i1.ae/img/icons/9.png',
-    'https://i1.ae/img/icons/10.png',
-    'https://i1.ae/img/icons/11.png',
-    'https://i1.ae/img/icons/12.png',
-    'https://i1.ae/img/icons/13.png',
-    'https://i1.ae/img/icons/14.png',
-    'https://i1.ae/img/icons/16.png',
-    'https://i1.ae/img/icons/17.png',
-    'https://i1.ae/img/icons/18.png',
-    'https://i1.ae/img/icons/19.png',
-    'https://i1.ae/img/icons/20.png',
-]
-
-// messages
-const { chat_info, setChatModalOpen, send_message } = useChat()
-const { friends_info, setFriendsModalOpen, addFriend } = await useFriends()
-
-function openChatModel() {
-    if (chat_info.value.chatModalOpen) {
-        setChatModalOpen(false)
-    } else {
-        setChatModalOpen(true)
-    }
-}
-
-function openFriendsModel() {
-    if (friends_info.value.friendsModalOpen) {
-        setFriendsModalOpen(false)
-    } else {
-        setFriendsModalOpen(true)
-    }
-}
-
-// Handle player stat drop down
-const showstat = ref(false)
-function handleDropDown() {
-    showstat.value = !showstat.value
-}
-
-const WinRate = await getPlayerWinRate(userData.value.username)
-
-const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
-
-const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
-
-const getLadderRank = (ladder: number) => {
-    switch (ladder) {
-        case 1:
-            return 'Kaizoku Ou'
-        case 2:
-            return 'Yonkou'
-        case 3:
-            return 'Shichibukai'
-        case 4:
-            return 'Super Rookie'
-        case 5:
-            return 'Kaizoku'
-        case 6:
-            return 'Capin Boy'
-    }
-}
-</script>
-
 <template>
     <div>
         <div class="">
@@ -155,7 +15,9 @@ const getLadderRank = (ladder: number) => {
                             alt="logo"
                         />
                         <div
-                            v-if="isMe" @click="handleChaneImage" class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
+                            v-if="isMe"
+                            @click="handleChangeImage"
+                            class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
                         >
                             <img
                                 class="absolute inset-0 w-full h-full object-cover rounded-full"
@@ -163,25 +25,24 @@ const getLadderRank = (ladder: number) => {
                                 alt="hover image"
                             />
                         </div>
-						<div v-if="updatePhoto" class="relative">
-							<div
-								class="absolute right-7 bg-white rounded-lg shadow-lg"
-								style="width: 15rem;"
-							>
-								<div class="grid grid-cols-5 gap-4 p-4">
-									<div v-for="(image, index) in defaultImages" :key="index">
-										<img
-											class="w-20 h-10 object-cover rounded-lg"
-											:src="image"
-											@click="updateAvatar(image)"
-											alt="icon"
-										/>
-									</div>
-								</div>
-							</div>
-						</div>
+                        <div v-if="updatePhoto" class="relative">
+                            <div
+                                class="absolute right-7 bg-white rounded-lg shadow-lg"
+                                style="width: 15rem"
+                            >
+                                <div class="grid grid-cols-5 gap-4 p-4">
+                                    <div v-for="(image, index) in defaultImages" :key="index">
+                                        <img
+                                            class="w-20 h-10 object-cover rounded-lg"
+                                            :src="image"
+                                            @click="updateAvatar(image)"
+                                            alt="icon"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
 
                     <div class="flex sm:flex-col justify-center sm:p-6">
                         <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">
@@ -200,8 +61,7 @@ const getLadderRank = (ladder: number) => {
                                 :disabled="editBoolaen"
                                 class="border-2 border-gray-300 rounded-md p-1 max-w-xs w-32 h-8 mx-2"
                                 type="text"
-                                :value="userData?.username"
-                                @input="userData.username = $event.target.value"
+                                v-model="userData.username"
                             />
                             <!-- edit icon  -->
                             <div
@@ -333,50 +193,214 @@ const getLadderRank = (ladder: number) => {
                             <div class="text-xs font-semibold text-center text-white">10</div>
                         </div>
                     </div>
-                    <button
-                        @click="useLogout"
-                        class="cursor-pointer relative rounded-full"
-                    >
+                    <button @click="useLogout" class="cursor-pointer relative rounded-full">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             class="w-8 h-8 stroke-1 stroke-current"
-                            viewBox="0 0 24 24" fill="none">
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                            <path
+                                d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"
+                            ></path>
                             <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
                         </svg>
                     </button>
-                    <button
-                        @click="updateTwoFacAuth"
-                        class="cursor-pointer relative rounded-full"
-                    >
-                    <svg
-                        v-if="user_info.two_fac_auth"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-8 h-8 fill-white stroke-black stroke-1"
-                        viewBox="0 0 24 24"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" stroke-width="0" fill="currentColor"></path>
-                    </svg>
-                    <svg
-                        v-else
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-8 h-8 fill-white stroke-black stroke-1"
-                        viewBox="0 0 24 24"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <button @click="updateTwoFacAuth" class="cursor-pointer relative rounded-full">
+                        <svg
+                            v-if="user_info.two_fac_auth"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 fill-white stroke-black stroke-1"
+                            viewBox="0 0 24 24"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
                         >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                                d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"
+                                stroke-width="0"
+                                fill="currentColor"
+                            ></path>
+                        </svg>
+                        <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 fill-white stroke-black stroke-1"
+                            viewBox="0 0 24 24"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                                d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+                <div v-else class="flex space-x-6">
+                    <button
+                        @click=""
+                        :title="'Add to friend list'"
+                        class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
+                    >
+                        <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
+                        <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
+                    </button>
+                    <button
+                        @click="isBlocked(user) ? removeUserFromBlockList(user) : addUserToBlockList(user)"
+                        :title="isBlocked(user) ? 'unblock user' : 'block user'"
+                        class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
+                    >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 stroke-2 stroke-current"
+                        :class="{ 'fill-none' : !isBlocked(user)}"
+                        viewBox="0 0 24 24"
+                    >
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"></path>
+                        <path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"></path>
+                        <path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"></path>
+                        <path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"></path>
+                        <path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
                     </svg>
                     </button>
+
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<style></style>
+<script setup lang="ts">
+import { UserPlusIcon, UserMinusIcon } from '@heroicons/vue/24/outline'
+import { useFriends } from '../../composables/Friends/useFriends'
+
+const props = defineProps({
+    username: {
+        type: String,
+        default: false,
+    },
+})
+
+const { user_info, setUserName, setUserAvatar, setUserTwoFacAuth } = useUserInfo()
+const user = await getUserbyUserName(props.username)
+const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBlock()
+
+const isMe = ref(false)
+
+const userData = computed(() => {
+    if (user_info.value.username === props.username) {
+        const { username, image, xp, ladder } = user_info.value
+        isMe.value = true
+        return { username, image, xp, ladder }
+    } else {
+        const { username, image, xp, ladder } = user
+        return { username, image, xp, ladder }
+    }
+})
+
+/**
+ * edit username
+ */
+const editBoolaen = ref(true)
+const updatePhoto = ref(false)
+const editUsername = () => {
+    editBoolaen.value = !editBoolaen.value
+}
+
+const updateUsername = async () => {
+    editBoolaen.value = !editBoolaen.value
+    setUserName(userData.value.username)
+    await useUpdateUserInfo()
+}
+
+/**
+ * edit avatar
+ */
+const updateAvatar = async (image: string) => {
+    updatePhoto.value = !updatePhoto.value
+    setUserAvatar(image)
+    await useUpdateUserInfo()
+}
+const updateTwoFacAuth = async () => {
+    setUserTwoFacAuth(!user_info.value.two_fac_auth)
+    await useUpdateUserInfo()
+}
+
+const handleChangeImage = () => {
+    updatePhoto.value = !updatePhoto.value
+}
+
+const defaultImages = [
+    'https://i1.ae/img/icons/1.png',
+    'https://i1.ae/img/icons/2.png',
+    'https://i1.ae/img/icons/3.png',
+    'https://i1.ae/img/icons/4.png',
+    'https://i1.ae/img/icons/5.png',
+    'https://i1.ae/img/icons/6.png',
+    'https://i1.ae/img/icons/7.png',
+    'https://i1.ae/img/icons/15.png',
+    'https://i1.ae/img/icons/8.png',
+    'https://i1.ae/img/icons/9.png',
+    'https://i1.ae/img/icons/10.png',
+    'https://i1.ae/img/icons/11.png',
+    'https://i1.ae/img/icons/12.png',
+    'https://i1.ae/img/icons/13.png',
+    'https://i1.ae/img/icons/14.png',
+    'https://i1.ae/img/icons/16.png',
+    'https://i1.ae/img/icons/17.png',
+    'https://i1.ae/img/icons/18.png',
+    'https://i1.ae/img/icons/19.png',
+    'https://i1.ae/img/icons/20.png',
+]
+
+// messages
+const { chat_info, setChatModalOpen, send_message } = useChat()
+const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
+
+function openChatModel() {
+    if (chat_info.value.chatModalOpen) {
+        setChatModalOpen(false)
+    } else {
+        setChatModalOpen(true)
+    }
+}
+
+function openFriendsModel() {
+    if (friends_info.value.friendsModalOpen) {
+        setFriendsModalOpen(false)
+    } else {
+        setFriendsModalOpen(true)
+    }
+}
+
+// Handle player stat drop down
+const showstat = ref(false)
+function handleDropDown() {
+    showstat.value = !showstat.value
+}
+
+const WinRate = (await getPlayerWinRate(userData.value.username)) as number
+
+const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
+
+const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
+
+const getLadderRank = (ladder: number) => {
+    switch (ladder) {
+        case 1:
+            return 'Kaizoku Ou'
+        case 2:
+            return 'Yonkou'
+        case 3:
+            return 'Shichibukai'
+        case 4:
+            return 'Super Rookie'
+        case 5:
+            return 'Kaizoku'
+        case 6:
+            return 'Capin Boy'
+    }
+}
+</script>

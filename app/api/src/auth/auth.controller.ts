@@ -73,17 +73,12 @@ export class AuthController {
     }
 
     @Get('2fa/resend/:login')
-    async resendVerificationCode(
-        @Param('login') login: string,
-    ): Promise<TwoFacAuthDto | string> {
+    async resendVerificationCode(@Param('login') login: string): Promise<TwoFacAuthDto | string> {
         const user = await this.userService.getUser(login)
         if (!user) throw new NotFoundException('User not found')
 
-        console.log('user if found')
-
         const secret = await this.twoFacAuthService.getUser(login)
         if (!secret) throw new NotFoundException('No 2FA requested for this user')
-        console.log('2fa exist')
 
         if (this.twoFacAuthService.getIsAllowedToSend(user.login) === false)
             throw new BadRequestException(

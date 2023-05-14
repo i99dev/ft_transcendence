@@ -61,7 +61,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useSocket, useTabEvent } from '@/composables/Game/useSocket'
 const emit = defineEmits(['showTabModal'])
 const exit = ref(false)
@@ -80,7 +79,6 @@ audio.volume = 0.1
 
 onMounted(() => {
     // audio.play().catch(err => {
-    //     console.log(err)
     //     audio.pause()
     //     document.addEventListener('click', function () {
     //         audio.play()
@@ -93,7 +91,7 @@ onBeforeUnmount(() => {
 })
 
 onUnmounted(() => {
-	audio.pause()
+    audio.pause()
 })
 
 const startGame = (mode: GameSelectDto): void => {

@@ -1,4 +1,4 @@
-import { Logger, UseGuards, UsePipes } from '@nestjs/common'
+import { Logger, Req, UseGuards, UsePipes } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
@@ -35,6 +35,8 @@ import { ChatService } from '../chat.service'
 import { UserService } from '../../user/user.service'
 import { GroupChatService } from '../groupChat.service'
 import { NotificationService } from '../../notification/notification.service'
+import { BlockService } from '@module/block/block.service'
+import { ConfigService } from '@nestjs/config'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -56,6 +58,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private userService: UserService,
         private jwtService: JwtService,
         private notificationService: NotificationService,
+        private blockService: BlockService,
+        private configService: ConfigService,
     ) {}
 
     private logger = new Logger('ChatWsGateway')
@@ -87,6 +91,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const chatRoom = await this.chatWsService.setupGroupChat(
             payload,
             this.getID(client) as string,
+            `${this.configService.get<string>('server.protocol',)}://${this.configService.get<string>('server.host')}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)
@@ -113,6 +118,14 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (!(await this.userService.getUser(payload.user)))
             return this.socketError('Reciever not found')
+
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.user,
+            ))
+        )
+            return this.socketError(`This user is unreachable`), []
 
         const room_id = await this.chatWsService.createDirectChat(
             this.getID(client) as string,
@@ -301,9 +314,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User is neither admin nor owner'), []
         if (payload.user_login === (this.getID(client) as string))
             return this.socketError('User cannot change himself'), []
+        console.log(payload)
+        console.log(await this.chatService.getChatUser(payload.room_id, payload.user_login))
         if (
             'OWNER' ===
-            (await this.chatService.getChatUser(payload.room_id, payload.user_login)).role
+            (await this.chatService.getChatUser(payload.room_id, payload.user_login))?.role
         )
             return this.socketError('User cannot change owner'), []
 
@@ -438,6 +453,18 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 ))
             )
                 return this.socketError('This user can not interfer in this DM')
+            const user = await this.chatService.getDirectChatOtherUser(
+                payload.room_id,
+                this.getID(client) as string,
+            )
+            console.log(user)
+            if (
+                !(await this.blockService.checkIfAvailableFromBlock(
+                    this.getID(client) as string,
+                    user,
+                ))
+            )
+                return this.socketError(`This user is unreachable`), []
         }
 
         if (!payload.message || payload.message === '') return this.socketError('Empty Message')
@@ -447,7 +474,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.room_id,
             payload.message,
         )
-
         this.wss.to(payload.room_id).emit('add-message', message)
     }
 
@@ -510,8 +536,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             user = this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
                 this.logger.error('Invalid token')
-                if (client.connected)
-                    client.disconnect()
+                if (client.connected) client.disconnect()
                 return null
             }
         }

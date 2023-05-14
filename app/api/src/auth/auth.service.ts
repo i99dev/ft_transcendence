@@ -14,7 +14,7 @@ export class AuthService {
         private authrepository: AuthRepository,
     ) {}
 
-    async getOrCreateUserAccountOnDb(intraUser): Promise<{ httpStatus: HttpStatus; user: UserGetDto }> {
+    async getOrCreateUserAccountOnDb(intraUser): Promise<{ httpStatus: HttpStatus; user: User }> {
         const myuser: UserGetDto = await this.userService.getUser(intraUser.login)
         if (!myuser) {
             return {
@@ -40,17 +40,17 @@ export class AuthService {
 
     async getUserByToken(token: string): Promise<UserGetDto> {
         const payload = this.jwtService.verify(token)
-        return payload? await this.userService.getUser(payload.login) : undefined
+        return payload ? await this.userService.getUser(payload.login) : undefined
     }
 
-    getUserTokens(user: UserGetDto): {accessToken: string, refreshToken: string} {
+    getUserTokens(user: UserGetDto): { accessToken: string; refreshToken: string } {
         const payload = {
             id: user.id,
             login: user.login,
         }
         return {
             accessToken: this.jwtService.sign(payload),
-            refreshToken: this.jwtService.sign(payload, {expiresIn: '30d'}),
+            refreshToken: this.jwtService.sign(payload, { expiresIn: '30d' }),
         }
     }
 
@@ -62,5 +62,5 @@ export class AuthService {
             maxAge: 30 * 24 * 60 * 60 * 1000, // Set the cookie to expire in 30 days
             expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Fallback for older browsers
         }
-    }  
+    }
 }

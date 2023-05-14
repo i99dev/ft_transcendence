@@ -1,4 +1,3 @@
-
 /* Define Game Constants */
 
 export const FRAME_WIDTH = 31

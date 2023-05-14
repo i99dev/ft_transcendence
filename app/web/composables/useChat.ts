@@ -22,7 +22,6 @@ export const useChat = () => {
     return { chat_info, setChatModalOpen, send_message }
 }
 
-
 export async function useDirectChats(): Promise<any> {
     const {
         data,
@@ -65,7 +64,7 @@ export async function useGetGroupChatParticipants(room_id: string): Promise<any>
         pending,
     } = await useFetch(`chats/${room_id}/users`, {
         baseURL: useRuntimeConfig().API_URL,
-        query: { type: 'GROUP'},
+        query: { type: 'GROUP' },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
@@ -84,7 +83,7 @@ export async function useGroupChatSearch(name: string): Promise<any> {
     } = await useFetch('chats/groupChat/search', {
         baseURL: useRuntimeConfig().API_URL,
         query: {
-          name: name
+            name: name,
         },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -117,7 +116,12 @@ export const useChatType = () => {
 
     const setChatType = async (type: ChatRoomType | null) => {
         const { setChats } = useChats()
-        const { data } = type === 'DM' ? await useDirectChats() : type === 'GROUP'? await useGroupChats() : await useGroupChatSearch('')
+        const { data } =
+            type === 'DM'
+                ? await useDirectChats()
+                : type === 'GROUP'
+                ? await useGroupChats()
+                : await useGroupChatSearch('')
         if (data) setChats(data.value)
 
         chatType.value = type
@@ -130,14 +134,17 @@ export const useChatType = () => {
 
 export const useChats = () => {
     const chats = useState<any | null>('chats', () => null)
-    const searchedGroupChats = useState<GroupChat[] & DirectChat[] | null>('SearchedGroupChats', () => null)
+    const searchedGroupChats = useState<(GroupChat[] & DirectChat[]) | null>(
+        'SearchedGroupChats',
+        () => null,
+    )
 
-    const setChats = (chatList: GroupChat[] & DirectChat[] | null) => {
+    const setChats = (chatList: (GroupChat[] & DirectChat[]) | null) => {
         chats.value = chatList
     }
 
     const setSearchedGroupChats = async (name: string) => {
-        const {data} = await useGroupChatSearch(name)
+        const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
 
@@ -145,11 +152,14 @@ export const useChats = () => {
 }
 
 export const useSearchedGroupChats = () => {
-    const searchedGroupChats = useState<GroupChat & DirectChat | null>('SearchedGroupChats', () => null)
+    const searchedGroupChats = useState<(GroupChat & DirectChat) | null>(
+        'SearchedGroupChats',
+        () => null,
+    )
 
     const setSearchedGroupChats = async (name: string) => {
         const { setChats } = useChats()
-        const {data} = await useGroupChatSearch(name)
+        const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
 
@@ -157,9 +167,9 @@ export const useSearchedGroupChats = () => {
 }
 
 export const useCurrentChat = () => {
-    const currentChat = useState<GroupChat & DirectChat | null>('current_chat', () => null)
+    const currentChat = useState<(GroupChat & DirectChat) | null>('current_chat', () => null)
 
-    const setCurrentChat = (chat: GroupChat & DirectChat | null) => {
+    const setCurrentChat = (chat: (GroupChat & DirectChat) | null) => {
         currentChat.value = chat
     }
 
@@ -176,9 +186,10 @@ export const useGroupChatParticipants = () => {
     const updateParticipants = async () => {
         const { currentChat } = useCurrentChat()
         if (currentChat.value) {
-            const {data: chatUsers} = await useGetGroupChatParticipants(currentChat.value.chat_room_id)
-            if (chatUsers)
-            setParticipants(chatUsers.value.chat_user)
+            const { data: chatUsers } = await useGetGroupChatParticipants(
+                currentChat.value.chat_room_id,
+            )
+            if (chatUsers) setParticipants(chatUsers.value.chat_user)
         }
     }
 
@@ -193,9 +204,4 @@ export const useChatView = () => {
     }
 
     return { chatView, setChatView }
-}
-
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
 }

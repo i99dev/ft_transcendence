@@ -23,7 +23,7 @@ export class UserPatchValidationPipe implements PipeTransform<any> {
         Object.assign(chatRoom, this.createAssignValue())
         const userPatchKeys = Object.keys(chatRoom)
         const valueKeys = Object.keys(value)
-        console.log(valueKeys)
+
         for (const key of valueKeys) {
             if (!userPatchKeys.includes(key)) {
                 throw new BadRequestException(`Invalid field: ${key}`)
