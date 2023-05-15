@@ -3,6 +3,7 @@ import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { NotificationService } from './notification.service'
+import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 
 @Controller('/Notification')
 export class NotificationController {
@@ -19,7 +20,7 @@ export class NotificationController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('/:id')
-    async deleteNotification(@Param('id') id: string, @Req() req) {
+    async deleteNotification(@Param('id', PosNumberPipe) id: string, @Req() req) {
         const idNumber = parseInt(id)
         const notif = await this.notificationService.deleteNotification(idNumber, req.user.login)
         if (!notif)
