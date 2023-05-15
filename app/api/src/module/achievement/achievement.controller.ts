@@ -17,7 +17,7 @@ export class AchievementController {
     @UseGuards(JwtAuthGuard)
     @Delete('/:content')
     async deleteAchievNotification(
-        @Param('content', ParseStringPipe) content: string,
+        @Param('content') content: string,
         @Query('type', ParseStringPipe) type: string,
         @Req() req,
     ) {

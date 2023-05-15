@@ -8,11 +8,8 @@ export class ParseSocketStringPipe implements PipeTransform<string, string> {
         let flag: boolean = false
         if (
             !value ||
-            value == undefined ||
-            value == null ||
             value == '' ||
-            value.length > 100 ||
-            !isAscii(value)
+            value.length > 255
         )
             flag = true
         if (flag) throw new WsException('Invalid string')
