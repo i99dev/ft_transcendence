@@ -43,14 +43,12 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     private clients: Map<string, string> = new Map()
     private sockets: Map<string, Socket> = new Map()
-    private query_id: any
 
     constructor(
         private chatWsService: ChatWsService,
         private chatService: ChatService,
         private groupChatService: GroupChatService,
         private userService: UserService,
-        private jwtService: JwtService,
         private notificationService: NotificationService,
         private blockService: BlockService,
         private configService: ConfigService,
