@@ -5,22 +5,23 @@ import { PrismaService } from '../../../providers/prisma/prisma.service'
 export class ChatRepository {
     constructor(private prisma: PrismaService) {}
 
-    async sort(chatRooms: any[]) {
-        for (let i: number = 0; i + 1 < chatRooms.length; i++) {
-            let tmp
-            if (
-                chatRooms[i].chat_room.messages[0] &&
-                chatRooms[i].chat_room.messages[0].created_at &&
-                chatRooms[i + 1].chat_room.messages[0] &&
-                chatRooms[i + 1].chat_room.messages[0].created_at &&
-                chatRooms[i].chat_room.messages[0].created_at <
-                    chatRooms[i + 1].chat_room.messages[0].created_at
-            ) {
-                tmp = chatRooms[i]
-                chatRooms[i] = chatRooms[i + 1]
-                chatRooms[i + 1] = tmp
+    sort(chatRooms: any[]): any[] {
+        chatRooms.sort((a, b) => {
+            if (a.chat_room.messages[0] && a.chat_room.messages[0].created_at && b.chat_room.messages[0] && b.chat_room.messages[0].created_at)
+                if (a.chat_room.messages[0].created_at < b.chat_room.messages[0].created_at)
+                    return 1;
+                else
+                    return -1;
+            else {
+                if (a.chat_room.created_at < b.chat_room.created_at) {
+                    return -1;
+                }
+                else
+                    return 1;
             }
-        }
-        return chatRooms
-    }
+        });
+      
+        return chatRooms;
+      }
+      
 }
