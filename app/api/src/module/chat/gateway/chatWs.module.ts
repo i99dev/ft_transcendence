@@ -6,29 +6,19 @@ import { UserModule } from '../../user/user.module'
 import { ChatModule } from '../chat.module'
 import { ChatWsGateway } from './chatWs.gateway'
 import { ChatWsService } from './chatWs.service'
-import { NotificationService } from '@module/notification/notification.service'
-import { BlockService } from '@module/block/block.service'
-import { FriendWsService } from '@module/friend/gateway/friendWs.service'
-import { FriendService } from '@module/friend/friend.service'
-import { FriendRepository } from '@module/friend/repository/friend.repository'
 import { ConfigService } from '@nestjs/config'
-import { DirectChatService } from '../directChat.service'
-import { ChatRepository } from '../repository/chat.repository'
+import { FriendModule } from '@module/friend/friend.module'
+import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
+import { NotificationModule } from '@module/notification/notification.module'
+import { BlockModule } from '@module/block/block.module'
 
 @Module({
-    imports: [AuthModule, PrismaModule, forwardRef(() => ChatModule), UserModule],
+    imports: [AuthModule, PrismaModule, forwardRef(() => ChatModule), UserModule, FriendModule, FriendWsModule, NotificationModule, BlockModule],
     providers: [
         ChatWsGateway,
         ChatWsService,
         PrismaClient,
-        NotificationService,
-        BlockService,
-        FriendWsService,
-        FriendService,
-        FriendRepository,
         ConfigService,
-        DirectChatService,
-        ChatRepository,
     ],
 })
 export class ChatWsModule {}

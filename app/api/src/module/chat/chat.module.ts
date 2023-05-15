@@ -19,6 +19,6 @@ import { DirectChatService } from './directChat.service'
         ChatRepository,
         DirectChatService,
     ],
-    exports: [ChatService, GroupChatService],
+    exports: [ChatService, GroupChatService, DirectChatService, ChatRepository],
 })
 export class ChatModule {}

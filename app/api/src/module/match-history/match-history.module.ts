@@ -5,7 +5,8 @@ import { MatchHistoryController } from './match-history.controller'
 
 @Module({
     imports: [AuthModule],
-    providers: [MatchHistoryService],
     controllers: [MatchHistoryController],
+    providers: [MatchHistoryService],
+    exports: [MatchHistoryService],
 })
 export class MatchHistoryModule {}

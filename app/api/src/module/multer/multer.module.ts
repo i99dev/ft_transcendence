@@ -8,5 +8,6 @@ import { ConfigService } from '@nestjs/config'
     imports: [],
     controllers: [MulterController],
     providers: [MulterService, PrismaService, ConfigService],
+    exports: [MulterService],
 })
 export class MulterModule {}

@@ -6,5 +6,6 @@ import { LeaderboardService } from './leaderboard.service'
     imports: [],
     providers: [LeaderboardService],
     controllers: [LeaderboardController],
+    exports: [LeaderboardService],
 })
 export class LeaderboardModule {}
