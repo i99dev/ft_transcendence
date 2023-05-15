@@ -20,7 +20,7 @@ export class FriendSeeder {
                 where: { login: 'isaad' },
                 data: {
                     friends: {
-                        connect: [{ login: 'isaad' }],
+                        connect: [{ login: 'bnaji' }],
                     },
                 },
             }),
@@ -36,7 +36,7 @@ export class FriendSeeder {
                 where: { login: 'mal-guna' },
                 data: {
                     friends: {
-                        connect: [{ login: 'mal-guna' }, { login: 'oal-tena' }],
+                        connect: [{ login: 'oal-tena' }],
                     },
                 },
             }),
@@ -49,7 +49,6 @@ export class FriendSeeder {
                             { login: 'mal-guna' },
                             { login: 'bnaji' },
                             { login: 'aaljaber' },
-                            { login: 'oal-tena' },
                         ],
                     },
                 },

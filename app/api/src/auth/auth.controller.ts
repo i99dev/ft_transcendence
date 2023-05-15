@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io';
 import {
     BadRequestException,
     Controller,
@@ -40,17 +41,18 @@ export class AuthController {
         @Res({ passthrough: true }) res,
     ): Promise<TokenDto | TwoFacAuthDto | string> {
         const { httpStatus, user } = await this.authService.getOrCreateUserAccountOnDb(req.user)
-
+        
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth)
-            return await this.twoFacAuthService.handle2FA(user)
-
+        return await this.twoFacAuthService.handle2FA(user)
+        
         
         try {
             const { accessToken, refreshToken } = this.authService.getUserTokens(user)
             res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
-            
-            return res.status(httpStatus).json(new TokenDto(accessToken))
+            const token = res.status(httpStatus).json(new TokenDto(accessToken))
+            delete token.Socket._writableState.afterWriteTickInfo
+            return token
         } catch (error) {
             throw new NotFoundException('No Token Found')
         }
