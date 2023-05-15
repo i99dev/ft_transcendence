@@ -10,13 +10,15 @@ import { BlockModule } from '@module/block/block.module'
 import { NotificationModule } from '@module/notification/notification.module'
 
 @Module({
-    imports: [AuthModule, PrismaModule, forwardRef(() => FriendWsModule), BlockModule, FriendModule, NotificationModule],
-    providers: [
-        PrismaClient,
-        JwtService,
-        FriendWsGateway,
-        FriendWsService
+    imports: [
+        AuthModule,
+        PrismaModule,
+        forwardRef(() => FriendWsModule),
+        BlockModule,
+        FriendModule,
+        NotificationModule,
     ],
+    providers: [PrismaClient, JwtService, FriendWsGateway, FriendWsService],
     exports: [FriendWsService],
 })
 export class FriendWsModule {}
