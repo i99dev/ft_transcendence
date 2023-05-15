@@ -34,6 +34,7 @@ export class ChatWsService {
 
     extractUserFromJwt(jwt: string) {
         if (!jwt) return null
+        // console.log(jwt)
         jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
         return !decode ? null : decode['login']

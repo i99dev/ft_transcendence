@@ -220,9 +220,11 @@
 
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { Socket } from 'socket.io-client'
 
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { chatSocket } = useChatSocket()
+watch(chatSocket, async()=>{
+    socketOn()
+})
 const { chats, setChats } = useChats()
 const { chatType } = useChatType()
 const { setCurrentChat } = useCurrentChat()
@@ -234,10 +236,14 @@ const hoverButton = ref(null)
 const emit = defineEmits(['closeNavBar', 'selectChat'])
 
 onMounted(() => {
-    chatSocket.value.on('new-group-list', payload => {
+    socketOn()
+})
+
+const socketOn = () => {
+    chatSocket.value?.on('new-group-list', payload => {
         if (chatType.value) setChats(payload.content)
     })
-})
+}
 
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
     if (chatType.value === 'DM') {
@@ -251,7 +257,7 @@ const HandleItemButton = (chat: DirectChat & GroupChat) => {
 }
 
 const joinGroupChat = () => {
-    chatSocket.value.emit(
+    chatSocket.value?.emit(
         'join-group-chat',
         JSON.stringify({
             room_id: selectedChat.value.chat_room_id,

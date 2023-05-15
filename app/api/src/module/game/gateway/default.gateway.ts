@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { Logger, UseGuards } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
@@ -14,8 +14,9 @@ import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
 import { GameSelectDto, PlayerDto } from '../dto/game.dto'
 import { SocketService } from './socket.service'
+import { WsGuard } from '../../../common/guards/ws.guard'
 @WebSocketGateway({
-    namespace: '/games',
+    namespace: '/game',
     cors: { origin: '*' },
     path: '/api/socket.io',
 })
@@ -46,6 +47,12 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.addConnectedUser(this.decoded['login'], client)
     }
 
+    handleDisconnect(client: Socket) {
+        this.logger.log(`Client disconnected: ${client.id}`)
+        this.gameService.removeDisconnectedUser(client)
+    }
+
+    @UseGuards(WsGuard)
     @SubscribeMessage('Join-Game')
     async Join(@ConnectedSocket() client: any, @MessageBody() payload: GameSelectDto) {
         if (payload.gameMode == 'single') this.gameService.createSingleGame(client, payload)
@@ -54,26 +61,25 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         // this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
-    handleDisconnect(client: Socket) {
-        this.logger.log(`Client disconnected: ${client.id}`)
-        this.gameService.removeDisconnectedUser(client)
-    }
-
+    @UseGuards(WsGuard)
     @SubscribeMessage('Give-Up')
     giveUp(@ConnectedSocket() client: Socket, @MessageBody() player: PlayerDto) {
         this.gameService.giveUp(client)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('Power-Up')
     PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: number) {
         this.gameService.activatePowerUp(client, powerUp)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('move')
     movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
         this.gameService.movePaddle(client, direction)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket, @MessageBody() direction: string) {
         this.gameService.leaveQueue(client)

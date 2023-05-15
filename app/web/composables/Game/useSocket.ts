@@ -1,8 +1,8 @@
 import { Socket } from 'socket.io-client'
 
-const nuxtApp = useNuxtApp()
 export function useSocket() {
-    const socket = ref(nuxtApp.socket as Socket)
+    const { gameSocket } = useGameSocket()
+    const socket = ref(gameSocket.value as Socket | undefined)
 
     const gameWinner = ref('')
     const gameData = useState<gameStatusDto>('gameData', () => {
@@ -13,28 +13,28 @@ export function useSocket() {
     })
 
     const resetSocket = () => {
-        socket.value.off
+        socket.value?.off
         gameWinner.value = ''
     }
 
     const emitStartGame = (mode: GameSelectDto) => {
-        socket.value.emit('Join-Game', mode)
+        socket.value?.emit('Join-Game', mode)
     }
 
     const emitLeaveQueue = () => {
-        socket.value.emit('Leave-Queue')
+        socket.value?.emit('Leave-Queue')
     }
 
     const setupSocketHandlers = () => {
-        socket.value.on('Game-Setup', (data: SetupDto) => {
+        socket.value?.on('Game-Setup', (data: SetupDto) => {
             gameSetup.value = data
         })
 
-        socket.value.on('Game-Data', (data: gameStatusDto) => {
+        socket.value?.on('Game-Data', (data: gameStatusDto) => {
             gameData.value = data
         })
 
-        socket.value.on('Game-Over', payload => {
+        socket.value?.on('Game-Over', payload => {
             gameWinner.value = payload.winner.username
         })
     }
@@ -51,19 +51,19 @@ export function useSocket() {
 
 export function useTabEvent() {
     const showTab = ref(false)
-    const socket = ref(nuxtApp.socket as Socket)
+    const { gameSocket } = useGameSocket()
 
-    socket.value.on('Close-Tab', () => {
+    gameSocket.value?.on('Close-Tab', () => {
         showTab.value = true
     })
-
+    useGameSocket()
     return { showTab }
 }
 
 export function useSound(playSoundCallback: (sound: string) => void) {
-    const socket = ref(nuxtApp.socket as Socket)
+    const { gameSocket } = useGameSocket()
 
-    socket.value.on('play-sound', (payload: string) => {
+    gameSocket.value?.on('play-sound', (payload: string) => {
         playSoundCallback(payload)
     })
 
