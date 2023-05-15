@@ -41,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import { on } from 'events';
 
 definePageMeta({
     middleware: ['pages'],

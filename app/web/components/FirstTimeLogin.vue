@@ -37,7 +37,7 @@
                                 <div class="mt-10 px-20">
                                     <img
                                         class="h-20 w-20 object-cover rounded-full"
-                                        :src="userData.image"
+                                        :src="newAvatar"
                                         alt="Current profile photo"
                                     />
                                 </div>
@@ -45,6 +45,8 @@
                                     <span class="sr-only t-2">Choose profile photo</span>
                                     <input
                                         type="file"
+										accept="image/*"
+										@change="uploadeImage"
                                         class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-zinc-900 hover:file:bg-blue-300"
                                     />
                                 </label>
@@ -53,7 +55,7 @@
                                 @click="submitProfile()"
                                 class="h-10 mt-20 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"
                             >
-                                submit
+                                Update
                             </button>
                         </div>
                     </div>
@@ -65,6 +67,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
 const props = defineProps({
     show: {
@@ -72,19 +75,40 @@ const props = defineProps({
         default: false,
     },
 })
+
 const emit = defineEmits(['close'])
-const newUsername = ref('')
 const userData = computed(() => {
-    const { username, image } = user_info.value
+	const { username, image } = user_info.value
     return { username, image }
 })
+
+const newUsername = ref('')
+const newAvatar = ref(userData.value.image)
+
+const uploadeImage = async (event) => {
+	const file = event.target.files[0]
+	console.log('file', file)
+	if (!file) return
+	const readData = (f) => 
+	new Promise((resolve) => {
+		const reader = new FileReader()
+		reader.onloadend = (e) => resolve(reader.result)
+		reader.readAsDataURL(f)
+	})
+	const data = await readData(file)
+	newAvatar.value = data
+	console.log('data', data)
+	setUserAvatar(data as string)
+	await useUpdateUserInfo()
+}
 
 const submitProfile = async () => {
     if (newUsername.value != '') {
         setUserName(newUsername.value)
         await useUpdateUserInfo()
     }
-    console.log('newUsername', newUsername.value)
+
+	console.log('newUsername', newUsername.value)
     emit('close')
 	navigateTo('/')
 }
