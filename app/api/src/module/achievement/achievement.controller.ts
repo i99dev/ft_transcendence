@@ -1,5 +1,5 @@
 import { AchievementService } from './achievement.service'
-import { Controller, Param } from '@nestjs/common'
+import { Controller, NotFoundException, Param } from '@nestjs/common'
 import { UseGuards, Req, Get, Query, Delete } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { AchievementDto } from './dto/achievement.dto'
@@ -26,13 +26,27 @@ export class AchievementController {
     @UseGuards(JwtAuthGuard)
     @Get('user/:login')
     async getAchievements(@Param('login') login: string): Promise<AchievementDto[]> {
-        return await this.achievementService.getAchievements(login)
+        try {
+            const ach = await this.achievementService.getAchievements(login)
+            if (!ach)
+                throw new NotFoundException('User Or Achievements not found')
+            return ach;
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('new')
-    async getNewAchievements(@Req() req): Promise<string[]> {
-        return await this.achievementService.getNewAchievements(req.user.login)
+    async getNewAchievements(@Req() req): Promise<any> {
+        try {
+            const achievement = await this.achievementService.getNewAchievements(req.user.login)
+            if (!achievement)
+                throw new NotFoundException('Achievements not found')
+            return achievement
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     @UseGuards(JwtAuthGuard)
