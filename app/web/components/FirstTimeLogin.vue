@@ -37,7 +37,7 @@
                                 <div class="mt-10 px-20">
                                     <img
                                         class="h-20 w-20 object-cover rounded-full"
-                                        :src="newAvatar"
+                                        :src="image"
                                         alt="Current profile photo"
                                     />
                                 </div>
@@ -78,12 +78,13 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 const userData = computed(() => {
-	const { username, image } = user_info.value
-    return { username, image }
+	const { username, image, login } = user_info.value
+    return { username, image, login }
 })
 
 const newUsername = ref('')
-const newAvatar = ref(userData.value.image)
+const newAvatar = ref(null as any)
+const image = ref(userData.value.image)
 
 const uploadeImage = async (event) => {
 	const file = event.target.files[0]
@@ -93,13 +94,12 @@ const uploadeImage = async (event) => {
 	new Promise((resolve) => {
 		const reader = new FileReader()
 		reader.onloadend = (e) => resolve(reader.result)
+		newAvatar.value = reader.result
 		reader.readAsDataURL(f)
 	})
 	const data = await readData(file)
-	newAvatar.value = data
-	console.log('data', data)
-	setUserAvatar(data as string)
-	await useUpdateUserInfo()
+	image.value = data
+	// console.log('data', data)
 }
 
 const submitProfile = async () => {
@@ -107,7 +107,9 @@ const submitProfile = async () => {
         setUserName(newUsername.value)
         await useUpdateUserInfo()
     }
-
+	if (newAvatar.value != '') {
+		await useUplaod(userData.value.login, newAvatar.value)
+	}
 	console.log('newUsername', newUsername.value)
     emit('close')
 	navigateTo('/')
