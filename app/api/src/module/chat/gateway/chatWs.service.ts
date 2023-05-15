@@ -1,24 +1,15 @@
-import { Image } from './../../../auth/interface/intra.interface'
 import { UserService } from './../../user/user.service'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
 import * as bcrypt from 'bcrypt'
-import {
-    ChatRoom,
-    chatType,
-    GroupChat,
-    ChatRoomType,
-    ChatUserRole,
-    ChatUserStatus,
-    ChatUser,
-} from '@prisma/client'
-import { decode } from 'punycode'
+import { ChatRoom, chatType, ChatRoomType, ChatUserRole, ChatUserStatus } from '@prisma/client'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
 import { GroupChatService } from '../groupChat.service'
 import { ConfigService } from '@nestjs/config'
+import { DirectChatService } from '../directChat.service'
 
 @Injectable()
 export class ChatWsService {
@@ -29,6 +20,7 @@ export class ChatWsService {
         private jwtService: JwtService,
         private userService: UserService,
         private configService: ConfigService,
+        private directChatService: DirectChatService,
     ) {}
     private chatRooms: ChatRoom[]
 
@@ -54,7 +46,7 @@ export class ChatWsService {
                 'server.host',
             )}/api/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
-        const chatRoom = await this.groupChatService.createGroupChatRoom(
+        const chatRoom = await this.chatService.createGroupChatRoom(
             {
                 room_id: room_id,
                 name: payload.name,
@@ -69,7 +61,7 @@ export class ChatWsService {
     }
 
     async getPassword(room_id: string) {
-        const room = await this.groupChatService.getChatRoom(room_id)
+        const room = await this.chatService.getChatRoom(room_id)
         let group
         if (room.type === ChatRoomType.GROUP) {
             group = await this.groupChatService.getGroupChatRoom(room_id)
@@ -98,7 +90,7 @@ export class ChatWsService {
     }
 
     async isUserNormal(room_id: string, user_login: string) {
-        if (await this.chatService.getDirectChatUser(room_id, user_login)) return true
+        if (await this.directChatService.getDirectChatUser(room_id, user_login)) return true
 
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
@@ -309,7 +301,7 @@ export class ChatWsService {
     }
 
     async validateGroupChat(room_id: string) {
-        const room = await this.groupChatService.getChatRoom(room_id)
+        const room = await this.chatService.getChatRoom(room_id)
         if (room.type === ChatRoomType.GROUP) return true
         else return false
     }
@@ -331,7 +323,7 @@ export class ChatWsService {
     }
 
     async checkUserInRoom2(room_id: string, user_login: string) {
-        const chatUser = await this.chatService.getDirectChatUser(room_id, user_login)
+        const chatUser = await this.directChatService.getDirectChatUser(room_id, user_login)
         if (chatUser) return true
         else return false
     }

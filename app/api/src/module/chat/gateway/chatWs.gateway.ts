@@ -1,4 +1,4 @@
-import { Logger, Req, UseGuards, UsePipes } from '@nestjs/common'
+import { Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
@@ -9,17 +9,10 @@ import {
     WebSocketGateway,
     ConnectedSocket,
 } from '@nestjs/websockets'
-import {
-    MessageType,
-    ChatUserStatus,
-    ChatUserRole,
-    ChatUser,
-    NotificationType,
-} from '@prisma/client'
+import { MessageType, ChatUserStatus, ChatUser, NotificationType } from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
 import {
-    AddUserDto,
     MainInfoDto,
     AddMessageDto,
     SetUserDto,
@@ -37,6 +30,7 @@ import { GroupChatService } from '../groupChat.service'
 import { NotificationService } from '../../notification/notification.service'
 import { BlockService } from '@module/block/block.service'
 import { ConfigService } from '@nestjs/config'
+import { DirectChatService } from '../directChat.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -60,6 +54,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private notificationService: NotificationService,
         private blockService: BlockService,
         private configService: ConfigService,
+        private directChatService: DirectChatService,
     ) {}
 
     private logger = new Logger('ChatWsGateway')
@@ -91,7 +86,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const chatRoom = await this.chatWsService.setupGroupChat(
             payload,
             this.getID(client) as string,
-            `${this.configService.get<string>('server.protocol',)}://${this.configService.get<string>('server.host')}`,
+            `${this.configService.get<string>(
+                'server.protocol',
+            )}://${this.configService.get<string>('server.host')}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)
@@ -142,11 +139,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${this.getID(client) as string} created a direct chat`,
         )
         this.wss.emit('new-direct-list', {
-            content: await this.chatService.getDirectChatForUser(target_id),
+            content: await this.directChatService.getDirectChatForUser(target_id),
             type: MessageType.SPECIAL,
         })
         client.emit('new-direct-list', {
-            content: await this.chatService.getDirectChatForUser(this.getID(client) as string),
+            content: await this.directChatService.getDirectChatForUser(
+                this.getID(client) as string,
+            ),
             type: MessageType.SPECIAL,
         })
     }
@@ -453,7 +452,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 ))
             )
                 return this.socketError('This user can not interfer in this DM')
-            const user = await this.chatService.getDirectChatOtherUser(
+            const user = await this.directChatService.getDirectChatOtherUser(
                 payload.room_id,
                 this.getID(client) as string,
             )

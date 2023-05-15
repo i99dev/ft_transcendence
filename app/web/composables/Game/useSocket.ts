@@ -18,7 +18,7 @@ export function useSocket() {
     }
 
     const emitStartGame = (mode: GameSelectDto) => {
-        socket.value.emit('Join-Game', mode)
+        socket.value.emit('Join-Game', JSON.stringify(mode))
     }
 
     const emitLeaveQueue = () => {

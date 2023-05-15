@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
-import { UserDto } from './dto/leaderboard.dto'
 import { gameAnalyzer } from '../game/logic/gameAnalyzer'
+import { UserGetDto } from '@module/user/dto/user.dto'
 
 @Injectable()
 export class LeaderboardService {
     private prisma = new PrismaClient()
     private readonly limit = 3
     private readonly gameAnalyzer = new gameAnalyzer()
-    public async getLeaderboard(page: number): Promise<UserDto[]> {
+    public async getLeaderboard(page: number): Promise<UserGetDto[]> {
         const users = await this.prisma.user.findMany({
             take: this.limit,
             skip: (page - 1) * this.limit,

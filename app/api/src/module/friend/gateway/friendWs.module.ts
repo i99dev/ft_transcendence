@@ -5,24 +5,20 @@ import { FriendModule } from '../friend.module'
 import { FriendWsGateway } from './friendWs.gateway'
 import { FriendWsService } from './friendWs.service'
 import { PrismaClient } from '@prisma/client'
-import { NotificationService } from '@module/notification/notification.service'
 import { JwtService } from '@nestjs/jwt'
-import { FriendService } from '../friend.service'
-import { FriendRepository } from '../repository/friend.repository'
-import { BlockService } from '@module/block/block.service'
+import { BlockModule } from '@module/block/block.module'
+import { NotificationModule } from '@module/notification/notification.module'
 
 @Module({
-    imports: [AuthModule, PrismaModule, forwardRef(() => FriendModule)],
-    providers: [
-        FriendWsGateway,
-        FriendWsService,
-        PrismaClient,
-        NotificationService,
+    imports: [
+        AuthModule,
+        PrismaModule,
+        forwardRef(() => FriendWsModule),
+        BlockModule,
         FriendModule,
-        JwtService,
-        FriendService,
-        FriendRepository,
-        BlockService,
+        NotificationModule,
     ],
+    providers: [PrismaClient, JwtService, FriendWsGateway, FriendWsService],
+    exports: [FriendWsService],
 })
 export class FriendWsModule {}

@@ -1,4 +1,4 @@
-import { Get, Param, Query, Delete, Logger } from '@nestjs/common'
+import { Get, Param, Delete } from '@nestjs/common'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'

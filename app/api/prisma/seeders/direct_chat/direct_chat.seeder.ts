@@ -9,30 +9,30 @@ export class DirectChatSeeder {
     async seedDirectChats(): Promise<DirectChat[]> {
         this.directChats = [
             await this.prisma.directChat.upsert({
-                where: { chat_room_id: 'direct_room1' },
+                where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7614' },
                 update: {},
                 create: {
-                    chat_room_id: 'direct_room1',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7614',
                     users: {
                         connect: [{ login: 'bnaji' }, { login: 'aaljaber' }],
                     },
                 },
             }),
             await this.prisma.directChat.upsert({
-                where: { chat_room_id: 'direct_room2' },
+                where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7615' },
                 update: {},
                 create: {
-                    chat_room_id: 'direct_room2',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7615',
                     users: {
                         connect: [{ login: 'bnaji' }, { login: 'oal-tena' }],
                     },
                 },
             }),
             await this.prisma.directChat.upsert({
-                where: { chat_room_id: 'direct_room3' },
+                where: { chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7616' },
                 update: {},
                 create: {
-                    chat_room_id: 'direct_room3',
+                    chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7616',
                     users: {
                         connect: [{ login: 'isaad' }, { login: 'mal-guna' }],
                     },

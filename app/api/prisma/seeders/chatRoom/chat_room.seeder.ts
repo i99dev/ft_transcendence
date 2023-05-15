@@ -9,50 +9,50 @@ export class ChatRoomSeeder {
     async seedChatRooms(): Promise<ChatRoom[]> {
         this.chatRooms = [
             await this.prisma.chatRoom.upsert({
-                where: { room_id: 'room1' },
+                where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617' },
                 update: {},
                 create: {
-                    room_id: 'room1',
+                    room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                     type: ChatRoomType.GROUP,
                 },
             }),
             await this.prisma.chatRoom.upsert({
-                where: { room_id: 'room2' },
+                where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618' },
                 update: {},
                 create: {
-                    room_id: 'room2',
+                    room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618',
                     type: ChatRoomType.GROUP,
                 },
             }),
             await this.prisma.chatRoom.upsert({
-                where: { room_id: 'room3' },
+                where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619' },
                 update: {},
                 create: {
-                    room_id: 'room3',
+                    room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619',
                     type: ChatRoomType.GROUP,
                 },
             }),
             await this.prisma.chatRoom.upsert({
-                where: { room_id: 'direct_room1' },
+                where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7614' },
                 update: {},
                 create: {
-                    room_id: 'direct_room1',
+                    room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7614',
                     type: ChatRoomType.DM,
                 },
             }),
             await this.prisma.chatRoom.upsert({
-                where: { room_id: 'direct_room2' },
+                where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7615' },
                 update: {},
                 create: {
-                    room_id: 'direct_room2',
+                    room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7615',
                     type: ChatRoomType.DM,
                 },
             }),
             await this.prisma.chatRoom.upsert({
-                where: { room_id: 'direct_room3' },
+                where: { room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7616' },
                 update: {},
                 create: {
-                    room_id: 'direct_room3',
+                    room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7616',
                     type: ChatRoomType.DM,
                 },
             }),
