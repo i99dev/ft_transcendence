@@ -222,7 +222,7 @@
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 
 const { chatSocket } = useChatSocket()
-watch(chatSocket, async()=>{
+watch(chatSocket, async () => {
     socketOn()
 })
 const { chats, setChats } = useChats()

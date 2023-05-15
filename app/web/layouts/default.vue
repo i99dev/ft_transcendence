@@ -11,7 +11,7 @@
             <FriendsListNav class="z-10" />
             <slot />
         </div>
-    </div>  
+    </div>
 </template>
 
 <script lang="ts" setup>

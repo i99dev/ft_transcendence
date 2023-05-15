@@ -196,7 +196,7 @@ import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { UserPlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 
 const { chatSocket } = useChatSocket()
-watch(chatSocket, async()=>{
+watch(chatSocket, async () => {
     socketOn()
 })
 

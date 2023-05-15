@@ -79,7 +79,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const user_login: string = this.getID(client) as string
         this.clients.delete(user_login)
         this.sockets.delete(client.id)
-        
+
         this.logger.log(`Client "${client.id}" disconnected from chat`)
     }
 
@@ -95,7 +95,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const chatRoom = await this.chatWsService.setupGroupChat(
             payload,
             client.handshake.auth.login,
-            `${this.configService.get<string>('server.protocol',)}://${this.configService.get<string>('server.host')}`,
+            `${this.configService.get<string>(
+                'server.protocol',
+            )}://${this.configService.get<string>('server.host')}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)
@@ -211,10 +213,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.chatService.getUser(client.handshake.auth.login)))
             return this.socketError('User not found')
         if (
-            !(await this.chatService.validateChatRoom(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatService.validateChatRoom(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('Invalid reciever')
         if (
@@ -249,10 +248,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.chatService.getUser(client.handshake.auth.login)))
             return this.socketError('User not found')
         if (
-            !(await this.chatService.validateChatRoom(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatService.validateChatRoom(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('Invalid reciever')
         await this.chatWsService.updateGroupChatRoom(payload, client.handshake.auth.login)
@@ -276,17 +272,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
             return this.socketError('User not found'), []
         if (
-            !(await this.chatService.validateChatRoom(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatService.validateChatRoom(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('Invalid reciever'), []
         if (
-            !(await this.chatWsService.canChangeAdmin(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatWsService.canChangeAdmin(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('User is neither admin nor owner'), []
 
@@ -309,20 +299,14 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
             return this.socketError('User not found'), []
         if (
-            !(await this.chatService.validateChatRoom(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatService.validateChatRoom(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('Invalid reciever'), []
         if (
-            !(await this.chatWsService.canChangeAdmin(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatWsService.canChangeAdmin(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('User is neither admin nor owner'), []
-        if (payload.user_login === (client.handshake.auth.login))
+        if (payload.user_login === client.handshake.auth.login)
             return this.socketError('User cannot change himself'), []
         if (
             'OWNER' ===
@@ -494,10 +478,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (!(await this.chatService.getUser(client.handshake.auth.login)))
             return this.socketError('User not found')
         if (
-            !(await this.chatService.validateChatRoom(
-                payload.room_id,
-                client.handshake.auth.login,
-            ))
+            !(await this.chatService.validateChatRoom(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('Invalid reciever')
 

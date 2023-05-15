@@ -152,5 +152,5 @@ declare global {
     interface FetchError<T> extends Error {
         status: number
         statusText: string
-    }    
+    }
 }

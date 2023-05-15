@@ -93,7 +93,11 @@
                     >
                         {{ message.sender.username }}
                     </div>
-                    <div v-if="(chatType === 'DM') || (chatType === 'GROUP' && !isBlocked(message.sender))"
+                    <div
+                        v-if="
+                            chatType === 'DM' ||
+                            (chatType === 'GROUP' && !isBlocked(message.sender))
+                        "
                         class="break-words"
                         :class="{
                             'text-sm': message.type === 'SPECIAL',
@@ -101,12 +105,7 @@
                     >
                         {{ message.content }}
                     </div>
-                    <div
-                        v-else
-                        class="text-sm opacity-50 centered capitalize"
-                    >
-                        blocked content 
-                    </div>
+                    <div v-else class="text-sm opacity-50 centered capitalize">blocked content</div>
                     <button
                         v-if="
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
@@ -185,13 +184,16 @@ const { participants, setParticipants, updateParticipants } = useGroupChatPartic
 const me = ref()
 const participantsColors = ref(new Map<string, string>())
 const AmIAllowed = computed(() => {
-    return (chatType.value === 'GROUP' && me.value?.status === 'MUTE') || (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
+    return (
+        (chatType.value === 'GROUP' && me.value?.status === 'MUTE') ||
+        (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
+    )
 })
 const { chatType } = useChatType()
 
 const { currentChat, setCurrentChat } = useCurrentChat()
 
-watch(chatSocket, async()=>{
+watch(chatSocket, async () => {
     socketOn()
 })
 

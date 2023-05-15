@@ -362,7 +362,7 @@ import {
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 
 const { chatSocket } = useChatSocket()
-watch(chatSocket, async()=>{
+watch(chatSocket, async () => {
     socketOn()
 })
 const { user_info } = useUserInfo()
@@ -406,12 +406,11 @@ const socketOn = () => {
             )
         }
         closePopup()
-    
+
         const { data, error } = await useUplaod(payload.room_id, formData.value)
         if (!data.value)
             chats.value.forEach((chat: GroupChat) => {
-                if (chat.chat_room_id === payload.room_id)
-                    chat.image = data.value.file_url
+                if (chat.chat_room_id === payload.room_id) chat.image = data.value.file_url
             })
     })
 }
