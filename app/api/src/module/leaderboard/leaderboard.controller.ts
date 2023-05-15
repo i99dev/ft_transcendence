@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, NotFoundException, Query } from '@nestjs/common'
 import { LeaderboardService } from './leaderboard.service'
 import { UserGetDto } from '@module/user/dto/user.dto'
 
@@ -8,7 +8,9 @@ export class LeaderboardController {
 
     @Get('')
     async getLeaderboard(@Query('page') page: number): Promise<UserGetDto[]> {
-        return await this.leaderboardService.getLeaderboard(page)
+        const ldr = await this.leaderboardService.getLeaderboard(page)
+        if (!ldr) throw new NotFoundException('Leaderboard not found')
+        return ldr
     }
     @Get('totalPages')
     async getTotalPages(): Promise<number> {

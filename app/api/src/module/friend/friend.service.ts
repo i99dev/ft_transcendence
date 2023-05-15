@@ -14,8 +14,12 @@ export class FriendService {
     prisma = new PrismaClient()
 
     async validateUsers(user: string, friend: string) {
-        if (user) await this.userService.checkUser(await this.userService.getUser(user))
-        if (friend) await this.userService.checkUser(await this.userService.getUser(friend))
+        try {
+            if (user) await this.userService.checkUser(await this.userService.getUser(user))
+            if (friend) await this.userService.checkUser(await this.userService.getUser(friend))
+        } catch (error) {
+            throw new NotFoundException('User not found')
+        }
     }
 
     async CheckFriendsUpdate(user: string, friend: string): Promise<UserGetDto> {
