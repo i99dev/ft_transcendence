@@ -16,7 +16,7 @@ import { MulterService } from './multer.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
 import { JwtAuthGuard } from '@common/guards/jwt.guard'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config'
 
 @Controller('/multer')
 export class MulterController {

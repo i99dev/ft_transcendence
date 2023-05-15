@@ -1,15 +1,13 @@
-import { Controller, UseGuards, Get, Req, Query } from '@nestjs/common'
-import { JwtAuthGuard } from '../../common/guards/jwt.guard'
+import { Controller, Get, Query } from '@nestjs/common'
 import { LeaderboardService } from './leaderboard.service'
-import { promises } from 'dns'
-import { UserDto } from './dto/leaderboard.dto'
+import { UserGetDto } from '@module/user/dto/user.dto'
 
 @Controller('leaderboard')
 export class LeaderboardController {
     constructor(private readonly leaderboardService: LeaderboardService) {}
 
     @Get('')
-    async getLeaderboard(@Query('page') page: number): Promise<UserDto[]> {
+    async getLeaderboard(@Query('page') page: number): Promise<UserGetDto[]> {
         return await this.leaderboardService.getLeaderboard(page)
     }
     @Get('totalPages')

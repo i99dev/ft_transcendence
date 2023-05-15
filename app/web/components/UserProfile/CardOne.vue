@@ -168,7 +168,7 @@
                         <div
                             class="absolute -top-1 -right-1 bg-green-500 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
                         >
-                            <p class="text-xs font-semibold text-center text-white">2</p>
+                            <p class="text-xs font-semibold text-center text-white"></p>
                         </div>
                     </div>
                     <div @click="openFriendsModel" class="relative cursor-pointer">
@@ -188,9 +188,15 @@
                         </svg>
                         <!-- badge offline -->
                         <div
-                            class="absolute -top-1 -right-1 bg-gray-500 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
+                            class="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
+                            :class="{
+                                'bg-gray-500': notifications?.length == 0,
+                                'bg-green-500': notifications?.length != 0,
+                            }"
                         >
-                            <div class="text-xs font-semibold text-center text-white">10</div>
+                            <div class="text-xs font-semibold text-center text-white">
+                                {{ notifications?.length }}
+                            </div>
                         </div>
                     </div>
                     <button @click="useLogout" class="cursor-pointer relative rounded-full">
@@ -240,7 +246,7 @@
                 </div>
                 <div v-else class="flex space-x-6">
                     <button
-                        @click=""
+                        @click="addFriend(username)"
                         :title="'Add to friend list'"
                         class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                     >
@@ -279,6 +285,7 @@
 
 <script setup lang="ts">
 import { UserPlusIcon, UserMinusIcon } from '@heroicons/vue/24/outline'
+import { useFriends } from '../../composables/Friends/useFriends'
 
 const props = defineProps({
     username: {
@@ -361,8 +368,7 @@ const defaultImages = [
 
 // messages
 const { chat_info, setChatModalOpen, send_message } = useChat()
-const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
-
+const { friends_info, setFriendsModalOpen, addFriend, notifications } = await useFriends()
 function openChatModel() {
     if (chat_info.value.chatModalOpen) {
         setChatModalOpen(false)

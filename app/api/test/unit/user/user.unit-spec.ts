@@ -36,7 +36,7 @@ describe('CheckFriendsUpdate', () => {
             id: 99,
             login: 'isaad',
             username: 'IS',
-            status: 'LIVE',
+            status: 'OFFLINE',
             first_name: 'Imad',
             last_name: 'Saad',
             email: 'isaad@student.42abudhabi.ae',

@@ -1,4 +1,4 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common'
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common'
 import { validate } from 'class-validator'
 import { plainToInstance } from 'class-transformer'
 import { WsException } from '@nestjs/websockets'
@@ -18,7 +18,7 @@ export class SocketValidationPipe implements PipeTransform<any> {
         const object = plainToInstance(metatype, payload)
         const errors = await validate(object)
         if (errors.length > 0) {
-            throw new WsException('Validation failed')
+            throw new WsException(errors[0].constraints)
         }
         return payload
     }

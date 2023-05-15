@@ -1,7 +1,7 @@
 export {}
 
 declare global {
-    type UserStatus = 'OFFLINE' | 'ONLINE' | 'LIVE'
+    type UserStatus = 'OFFLINE' | 'ONLINE' | 'INGAME' | 'INQUEUE'
     type ChatRoomType = 'GROUP' | 'DM'
     type NotificationType =
         | 'ACHIEVEMENT'
@@ -55,12 +55,20 @@ declare global {
         color: string
     }
 
+    export interface PowerUp {
+        type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu'
+        active: boolean
+        ready: boolean
+        duration: number
+        cooldown: number
+    }
+
     interface PlayerDto {
         username: string
         score: number
         paddle: PaddleDto
-        gameId?: string
-        powerUp?: boolean
+        gameID?: string
+        powerUps: PowerUp[]
     }
 
     interface PaddleDto {
@@ -147,6 +155,16 @@ declare global {
         content: string
         type: NotificationType
         target: string
+    }
+
+    interface NotificationDto {
+        id: number
+        created_at: Date
+        user_login: string
+        content: string
+        type: NotificationType
+        target: string
+        user: UserGetDto
     }
 
     interface FetchError<T> extends Error {

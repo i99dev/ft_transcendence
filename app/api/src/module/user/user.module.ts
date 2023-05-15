@@ -11,6 +11,6 @@ import { PrismaModule } from '../../providers/prisma/prisma.module'
     imports: [forwardRef(() => AuthModule), FriendModule, PrismaModule],
     controllers: [UserController],
     providers: [UserService, UserRepository, PrismaClient],
-    exports: [UserService],
+    exports: [UserService, UserRepository],
 })
 export class UserModule {}

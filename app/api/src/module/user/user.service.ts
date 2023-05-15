@@ -1,4 +1,4 @@
-import { UserGetDto, UserPatchDto } from './dto/user.dto'
+import { UserGetDto } from './dto/user.dto'
 import { User } from '@prisma/client'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
@@ -38,10 +38,19 @@ export class UserService {
         return user
     }
 
-    async updateUser(data: User): Promise<User> {
+    async updateUser(data): Promise<User> {
         return await this.prisma.user.update({
             where: { login: data.login },
-            data,
+            data: {
+                first_name: data?.first_name,
+                last_name: data?.last_name,
+                email: data?.email,
+                username: data?.username,
+                image: data?.image,
+                status: data?.status,
+                wr: data?.wr,
+                two_fac_auth: data?.two_fac_auth,
+            },
         })
     }
 

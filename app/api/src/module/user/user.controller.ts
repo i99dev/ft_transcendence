@@ -1,5 +1,3 @@
-import { UserPatchValidationPipe } from './pipes/user.pipe'
-import { User } from '@prisma/client'
 import { UserGetDto, UserPatchDto } from './dto/user.dto'
 import { UserService } from './user.service'
 import {
@@ -12,12 +10,7 @@ import {
     Query,
     UseGuards,
     Req,
-    UsePipes,
-    Logger,
-    UseInterceptors,
-    CacheKey,
-    CacheTTL,
-    CacheInterceptor,
+    ValidationPipe,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import {
@@ -26,7 +19,6 @@ import {
     ApiResponse,
     ApiTags,
     ApiParam,
-    ApiQuery,
     ApiBody,
 } from '@nestjs/swagger'
 
@@ -118,11 +110,10 @@ export class UserController {
     })
     async UpdateUser(
         @Param('name') name: string,
-        @Body(new UserPatchValidationPipe()) data1: UserPatchDto,
+        @Body(new ValidationPipe()) data: UserPatchDto,
     ): Promise<UserGetDto> {
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
-        const updatedUser: User = Object.assign({}, existingUser, data1)
-        return await this.UserService.updateUser(updatedUser)
+        return await this.UserService.updateUser(data)
     }
 
     @Delete('/:name')

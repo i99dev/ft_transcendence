@@ -42,7 +42,9 @@
             </button>
 
             <button
-                @click="isChatInfoOpened = !isChatInfoOpened"
+                @click="
+                    chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened)
+                "
                 class="w-full flex hover:bg-slate-200 rounded-lg pl-2 focus:outline-indigo-400"
             >
                 <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">
@@ -190,7 +192,7 @@ const AmIAllowed = computed(() => {
     )
 })
 const { chatType } = useChatType()
-
+const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
 
 watch(chatSocket, async () => {
@@ -275,6 +277,11 @@ const deleteMessage = (message_id: number) => {
         'delete-message',
         JSON.stringify({ room_id: currentChat.value?.chat_room_id, message_id: message_id }),
     )
+}
+
+const goToUserProfile = () => {
+    navigateTo(`users/${currentChat.value?.users[0]?.login}`)
+    emit('closeNavBar')
 }
 </script>
 

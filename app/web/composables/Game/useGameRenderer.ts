@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-import { GLTFLoader, OrbitControls } from 'three-stdlib'
+import { GLTFLoader, OrbitControls, TTFLoader, FontLoader, TextGeometry } from 'three-stdlib'
+import { watch } from 'vue'
 import * as GAME from '~/constants/'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -212,19 +213,19 @@ export function useGameRenderer() {
     const loadLogo = () => {
         const loader = new GLTFLoader()
         loader.load(
-            '/scene.gltf',
+            '/scenes/scene.gltf',
             function (gltf) {
                 gltf.scene.rotateX(Math.PI / 2)
                 gltf.scene.scale.set(1.5, 1.5, 1.5)
                 addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 6)
 
                 gltf.scene.traverse(child => {
-                    if (child instanceof THREE.Mesh) {
-                        if (child.material instanceof THREE.MeshStandardMaterial) {
-                            child.material.roughness = 0.1
-                            child.material.metalness = 0.9
-                        }
-                    }
+                    // if (child instanceof THREE.Mesh) {
+                    //     if (child.material instanceof THREE.MeshStandardMaterial) {
+                    //         child.material.roughness = 1;
+                    //         child.material.metalness = 1;
+                    //     }
+                    // }
                 })
 
                 scene.add(gltf.scene)

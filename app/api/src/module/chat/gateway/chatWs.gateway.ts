@@ -1,4 +1,4 @@
-import { Logger, Req, UseGuards, UsePipes } from '@nestjs/common'
+import { Logger, UseGuards } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
@@ -9,17 +9,10 @@ import {
     WebSocketGateway,
     ConnectedSocket,
 } from '@nestjs/websockets'
-import {
-    MessageType,
-    ChatUserStatus,
-    ChatUserRole,
-    ChatUser,
-    NotificationType,
-} from '@prisma/client'
+import { MessageType, ChatUserStatus, ChatUser, NotificationType } from '@prisma/client'
 import { Server, Socket } from 'socket.io'
 import { ChatWsService } from './chatWs.service'
 import {
-    AddUserDto,
     MainInfoDto,
     AddMessageDto,
     SetUserDto,
@@ -38,6 +31,7 @@ import { NotificationService } from '../../notification/notification.service'
 import { BlockService } from '@module/block/block.service'
 import { ConfigService } from '@nestjs/config'
 import { WsGuard } from '../../../common/guards/ws.guard'
+import { DirectChatService } from '../directChat.service'
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -61,6 +55,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private notificationService: NotificationService,
         private blockService: BlockService,
         private configService: ConfigService,
+        private directChatService: DirectChatService,
     ) {}
 
     private logger = new Logger('ChatWsGateway')
@@ -149,11 +144,11 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${client.handshake.auth.login} created a direct chat`,
         )
         this.wss.emit('new-direct-list', {
-            content: await this.chatService.getDirectChatForUser(target_id),
+            content: await this.directChatService.getDirectChatForUser(target_id),
             type: MessageType.SPECIAL,
         })
         client.emit('new-direct-list', {
-            content: await this.chatService.getDirectChatForUser(client.handshake.auth.login),
+            content: await this.directChatService.getDirectChatForUser(client.handshake.auth.login),
             type: MessageType.SPECIAL,
         })
     }
@@ -446,7 +441,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 ))
             )
                 return this.socketError('This user can not interfer in this DM')
-            const user = await this.chatService.getDirectChatOtherUser(
+            const user = await this.directChatService.getDirectChatOtherUser(
                 payload.room_id,
                 client.handshake.auth.login,
             )
