@@ -1,13 +1,10 @@
 <template>
     <div>
-        <div v-if="isFirsTimeUser">
-            <FirstTimeLogin class="w-full flex-col justify-center items-center flex h-full" />
-        </div>
-        <div
-			v-else
-            id="Home"
-            class="flex min-h-screen justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
+		<div
+		id="Home"
+		class="flex min-h-screen justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
         >
+		<FirstTimeLogin v-if="isFirsTimeUser" @close="closeSetup()"/>
             <div class="flex flex-col w-full space-y-6 items-center">
                 <SearchBar @userInput="handleUserSearch" class="w-1/2 inline-block z-10" />
                 <div class="flex flex-row justify-center w-1/2 mobile:w-full">
@@ -44,14 +41,17 @@
 </template>
 
 <script setup lang="ts">
+import { on } from 'events';
+
 definePageMeta({
     middleware: ['pages'],
 })
 
-const isFirsTimeUser = computed(() => {
-    if (useRoute().query.status == '201') return true
-    return false
-})
+let isFirsTimeUser = (useRoute().query.status == '201') ? true : false
+
+const closeSetup = () => {
+	isFirsTimeUser = false
+}
 
 const status = useRoute().query.status
 
@@ -61,6 +61,12 @@ const IsProfile = ref(false)
 
 const { user_info } = useUserInfo()
 const userName = user_info.value.username
+
+onMounted(() => {
+
+	console.log('userName->>>>>>>>>>>>>>', userName)
+})
+
 
 const handleUserSearch = (username: string) => {
     navigateTo(`/users/${username}`)

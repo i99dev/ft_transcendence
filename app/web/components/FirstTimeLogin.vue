@@ -1,44 +1,61 @@
 <template>
-    <div
-        class="flex min-h-screen justify-center mobile:flex-col overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
-    >
-        <!-- component -->
-        <div style="background-color: #fff" class="sm:mx-32 lg:mx-32 xl:mx-72">
-            <div class="flex justify-between container mx-auto">
-                <div class="w-full">
-                    <div class="mt-4 px-4">
-                        <h1 class="font-thinner flex text-4xl pt-10 px-5">Setup Your Profile</h1>
+    <div>
+        <div class="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center z-50">
+            <div
+                class="inline-block text-left bg-white rounded-lg overflow-hidden align-bottom transition-all transform shadow-2xl sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"
+            >
+                <div
+                    class="items-center w-full mr-auto ml-auto relative max-w-7xl md:px-12 lg:px-24"
+                >
+                    <div class="mt-4 mr-auto mb-4 ml-auto bg-white max-w-lg">
+                        <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
+                            <!-- component -->
 
-                        <form class="mx-5 my-5">
-                            <label
-                                class="relative block p-3 border-2 border-black rounded"
-                                htmlFor="name"
+                            <h1 class="font-thinner flex text-4xl pt-10 px-5 py-20">
+                                Setup Your Profile
+                            </h1>
+
+                            <form class="mx-5 my-5">
+                                <label
+                                    class="relative block p-3 border-2 border-black rounded"
+                                    htmlFor="name"
+                                >
+                                    <span
+                                        class="text-md font-semibold text-zinc-900"
+                                        htmlFor="name"
+                                    >
+                                        User Name
+                                    </span>
+                                    <input
+                                        class="w-full bg-transparent p-0 text-sm text-gray-500 focus:outline-none"
+                                        id="name"
+                                        type="text"
+                                        :placeholder="userData.username"
+                                        v-model="newUsername"
+                                    />
+                                </label>
+                                <div class="mt-10 px-20">
+                                    <img
+                                        class="h-20 w-20 object-cover rounded-full"
+                                        :src="userData.image"
+                                        alt="Current profile photo"
+                                    />
+                                </div>
+                                <label class="block pt-2">
+                                    <span class="sr-only t-2">Choose profile photo</span>
+                                    <input
+                                        type="file"
+                                        class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-zinc-900 hover:file:bg-blue-300"
+                                    />
+                                </label>
+                            </form>
+                            <button
+                                @click="submitProfile()"
+                                class="h-10 mt-20 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"
                             >
-                                <span class="text-md font-semibold text-zinc-900" htmlFor="name">
-                                    User Name
-                                </span>
-                                <input
-                                    class="w-full bg-transparent p-0 text-sm text-gray-500 focus:outline-none"
-                                    id="name"
-                                    type="text"
-                                    :placeholder="userData.username"
-                                />
-                            </label>
-                            <div class="shrink-0 mt-10">
-                                <img
-                                    class="h-20 w-20 object-cover rounded-full"
-                                    :src="userData.image"
-                                    alt="Current profile photo"
-                                />
-                            </div>
-                            <label class="block pt-2">
-                                <span class="sr-only t-2">Choose profile photo</span>
-                                <input
-                                    type="file"
-                                    class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-zinc-900 hover:file:bg-blue-300"
-                                />
-                            </label>
-                        </form>
+                                submit
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,12 +64,28 @@
 </template>
 
 <script setup lang="ts">
-const { user_info, setUserName, setUserAvatar, setUserTwoFacAuth } = useUserInfo()
-
+import { ref, computed } from 'vue'
+const { user_info, setUserName, setUserAvatar } = useUserInfo()
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false,
+    },
+})
+const emit = defineEmits(['close'])
+const newUsername = ref('')
 const userData = computed(() => {
     const { username, image } = user_info.value
     return { username, image }
 })
 
-
+const submitProfile = async () => {
+    if (newUsername.value != '') {
+        setUserName(newUsername.value)
+        await useUpdateUserInfo()
+    }
+    console.log('newUsername', newUsername.value)
+    emit('close')
+	navigateTo('/')
+}
 </script>
