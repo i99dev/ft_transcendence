@@ -21,55 +21,41 @@ const prisma = new PrismaClient()
 
 async function main() {
     // Create Users
-    const users = await new UserSeeder().seedUsers()
-
-    // Assign Friends
-    await new FriendSeeder().assignFriendsToUsers()
-
-    // Create powerUp
-    const powerUps = await new PowerUpSeeder().seedPowerUps()
-
-    // Assign Powerup
-    await new PowerUpSeeder().assignPowerUpsToUsers()
-
-    // Create Achievements
-    const achievements = await new AchievementSeeder().seedAchievements()
-
-    // Assign Achievements
-    const updateUsers = await new AchievementSeeder().assignAchievementsToUsers()
-
-    // Create ChatRooms
-    const chatRooms = await new ChatRoomSeeder().seedChatRooms()
-
-    // Create DirectChatRooms
-    const directChats = await new DirectChatSeeder().seedDirectChats()
-
-    //
-    const groupChats = await new GroupChatSeeder().seedGroupChats()
-
-    // Create ChatRoomUsers
-    await new ChatUserSeeder().assignUsersToChats()
-
-    // Assign Messages to ChatRooms and Users
-    await new MessageSeeder().assignMessagesToChats()
-
-    console.log({ users, powerUps, achievements, updateUsers, groupChats, directChats, chatRooms })
-    // Create MatchHistory
-    const matchHistory = await new MatchHistorySeeder().seedMatchHistory()
-
-    const getAchievements = await new NotificationSeeder().seedNotifications()
-
-    const getBlocks = await new BlockSeeder().seedBlock()
-
-    console.log({
-        users,
-        powerUps,
-        achievements,
-        updateUsers,
-        matchHistory,
-        getAchievements,
-        getBlocks,
-    })
+    // const users = await new UserSeeder().seedUsers()
+    // // Assign Friends
+    // await new FriendSeeder().assignFriendsToUsers()
+    // // Create powerUp
+    // const powerUps = await new PowerUpSeeder().seedPowerUps()
+    // // Assign Powerup
+    // await new PowerUpSeeder().assignPowerUpsToUsers()
+    // // Create Achievements
+    // const achievements = await new AchievementSeeder().seedAchievements()
+    // // Assign Achievements
+    // const updateUsers = await new AchievementSeeder().assignAchievementsToUsers()
+    // // Create ChatRooms
+    // const chatRooms = await new ChatRoomSeeder().seedChatRooms()
+    // // Create DirectChatRooms
+    // const directChats = await new DirectChatSeeder().seedDirectChats()
+    // //
+    // const groupChats = await new GroupChatSeeder().seedGroupChats()
+    // // Create ChatRoomUsers
+    // await new ChatUserSeeder().assignUsersToChats()
+    // // Assign Messages to ChatRooms and Users
+    // await new MessageSeeder().assignMessagesToChats()
+    // console.log({ users, powerUps, achievements, updateUsers, groupChats, directChats, chatRooms })
+    // // Create MatchHistory
+    // const matchHistory = await new MatchHistorySeeder().seedMatchHistory()
+    // const getAchievements = await new NotificationSeeder().seedNotifications()
+    // const getBlocks = await new BlockSeeder().seedBlock()
+    // console.log({
+    //     users,
+    //     powerUps,
+    //     achievements,
+    //     updateUsers,
+    //     matchHistory,
+    //     getAchievements,
+    //     getBlocks,
+    // })
 }
 
 // execute the main function

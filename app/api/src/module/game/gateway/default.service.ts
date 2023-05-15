@@ -3,7 +3,7 @@ import { ConnectedUser } from '../interface/game.interface'
 import { Socket } from 'socket.io'
 import { PongGame } from '../logic/pongGame'
 import { SocketService } from './socket.service'
-import { GameSelectDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
+import { GameSelectDto, PlayerDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { GameRepository } from '../repository/game.repository'
@@ -20,7 +20,7 @@ export class DefaultService {
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService) { }
+    constructor(private socketService: SocketService) {}
 
     /* 
         Adds a new user to connected_users array
@@ -41,7 +41,6 @@ export class DefaultService {
             status: 'online',
         })
         this.repo.updatePlayerStatus('ONLINE', userID)
-
     }
 
     /* 
@@ -70,7 +69,6 @@ export class DefaultService {
         const player = this.connected_users.find(user => user.socket == userSocket)
         player.game.setLoser(player.id)
     }
-
 
     /* 
         Activate the power up requested by frontend
@@ -285,7 +283,7 @@ export class DefaultService {
             player1.game = null
             player1.status = 'online'
             this.repo.updatePlayerStatus('ONLINE', player1.id)
-            player1.socket.leave(game.getGameID())
+            // player1.socket.leave(game.getGameID())
         }
         const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player2) {
