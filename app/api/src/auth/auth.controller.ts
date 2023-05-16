@@ -38,21 +38,18 @@ export class AuthController {
     @Post('login')
     async GetAuth(
         @Req() req,
-        @Res({ passthrough: true }) res,
+        @Res() res,
     ): Promise<TokenDto | TwoFacAuthDto | string> {
         const { httpStatus, user } = await this.authService.getOrCreateUserAccountOnDb(req.user)
         
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth)
-        return await this.twoFacAuthService.handle2FA(user)
-        
+        return res.status(HttpStatus.OK).JSON(await this.twoFacAuthService.handle2FA(user))        
         
         try {
             const { accessToken, refreshToken } = this.authService.getUserTokens(user)
             res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
-            const token = res.status(httpStatus).json(new TokenDto(accessToken))
-            delete token.Socket._writableState.afterWriteTickInfo
-            return token
+            return res.status(httpStatus).json(new TokenDto(accessToken))
         } catch (error) {
             throw new NotFoundException('No Token Found')
         }
