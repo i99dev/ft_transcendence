@@ -124,7 +124,7 @@
                                         v-else-if="stage === 2"
                                     >
                                         <div
-                                            v-for="user in users"
+                                            v-for="user in users" :key="user.id"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
@@ -360,6 +360,7 @@ import {
     RadioGroupOption,
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
+import { ref, watch, onMounted } from 'vue'
 
 const { chatSocket } = useChatSocket()
 watch(chatSocket, async () => {
@@ -372,6 +373,7 @@ const stage = ref(1)
 const chatImage = ref(null as any)
 const fileInput = ref()
 const formData = ref(new FormData())
+const reader = ref(new FileReader())
 const firstStage = 1
 const lastStage = 3
 const chatTypes = [
@@ -494,14 +496,12 @@ const handleFileUpload = async () => {
     const file = fileInput.value.files[0]
     formData.value.append('file', file)
 
-    const reader = new FileReader()
-
     // Read the file as a data URL
-    reader.readAsDataURL(file)
+    reader.value.readAsDataURL(file)
 
     // Set the image data property to the data URL
-    reader.onload = () => {
-        chatImage.value = reader.result
+    reader.value.onload = () => {
+        chatImage.value = reader.value.result
     }
 }
 </script>

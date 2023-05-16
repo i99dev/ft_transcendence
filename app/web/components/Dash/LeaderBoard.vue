@@ -42,6 +42,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+
 const lbPlayers = ref([] as any)
 
 const players = computed(() => lbPlayers.value)

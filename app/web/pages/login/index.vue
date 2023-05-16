@@ -19,6 +19,7 @@ definePageMeta({
     layout: false,
 })
 
+
 if (await useIsAuth()) navigateTo('/')
 const loginWithIntra = () => {
     window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${

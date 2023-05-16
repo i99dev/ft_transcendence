@@ -87,7 +87,7 @@
                                         class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
                                     >
                                         <div
-                                            v-for="user in users"
+                                            v-for="user in users" :key="user.username"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
@@ -194,6 +194,7 @@
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { UserPlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { ref, onMounted, watch } from 'vue'
 
 const { chatSocket } = useChatSocket()
 watch(chatSocket, async () => {

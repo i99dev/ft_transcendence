@@ -91,6 +91,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, onMounted } from 'vue'
+
 let newAchievement = await getNewAchievement()
 
 let newRank = await getNewRank()
@@ -147,7 +149,6 @@ const achievements = computed(() => {
 
 onMounted(async () => {
     newAchievement = await getNewAchievement()
-
     newRank = await getNewRank()
     if (newAchievement && newAchievement.length > 0) {
         showAciev.value = true

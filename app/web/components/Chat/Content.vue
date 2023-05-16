@@ -65,7 +65,7 @@
             >
                 <div
                     class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
-                    v-for="message in messages"
+                    v-for="message in messages" :key="message.id"
                     :class="{
                         'bg-indigo-200':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
@@ -174,6 +174,7 @@
 
 <script lang="ts" setup>
 import { TrashIcon } from '@heroicons/vue/24/outline'
+import { Socket } from 'socket.io-client'
 
 const { user_info } = useUserInfo()
 const { isBlocked } = useBlock()
@@ -194,10 +195,6 @@ const AmIAllowed = computed(() => {
 const { chatType } = useChatType()
 const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
-
-watch(chatSocket, async () => {
-    socketOn()
-})
 
 onMounted(async () => {
     if (chatType.value === 'GROUP') {

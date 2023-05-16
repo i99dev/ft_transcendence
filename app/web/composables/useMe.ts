@@ -22,6 +22,10 @@ export const useUserInfo = () => {
         user_info.value = user
     }
 
+	const setUserStatus = (status: string) => {
+		user_info.value.status = status
+	}
+
     const removeUserInfo = () => {
         user_info.value = null
     }
@@ -53,18 +57,20 @@ export const useUserInfo = () => {
         setUserTwoFacAuth,
         setFriends,
         removeFriends,
+		setUserStatus,
     }
 }
 
 export async function useUpdateUserInfo(): Promise<any> {
     const store = useUserInfo()
-    const { login, image, username, two_fac_auth }: any = store.user_info.value
+    const { login, image, username, two_fac_auth, status }: any = store.user_info.value
     const { data, error: errorRef } = await useFetch(`users/${login}`, {
         method: 'PATCH',
         body: {
             username,
             image,
             two_fac_auth,
+			status,
         },
         baseURL: useRuntimeConfig().API_URL,
         headers: {
