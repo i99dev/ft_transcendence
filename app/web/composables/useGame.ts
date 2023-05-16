@@ -1,4 +1,5 @@
-export const useGameApi = () => {}
+import { useSocket } from '@/composables/Game/useSocket'
+export const useGameApi = () => { }
 
 export const useGame = () => {
     const game_info = useState<any | null>('game_info', () => {
@@ -29,4 +30,51 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
         },
     })
     return data.value
+}
+
+export function useGameInvite() {
+    const invite = ref<InviteDto | null>(null);
+
+    //object that contains the type of the invite modal and the game type and the inviter
+    const inviteModal = useState<InviteModal>('inviteModal', () => {
+        return {
+            open: false,
+            type: '',
+            gameType: '',
+            target: '',
+        };
+    });
+
+    const { socket } = useSocket();
+
+    socket.value?.on('Invite-Received', (payload: InviteDto) => {
+        invite.value = payload;
+        inviteModal.value.type = 'invited';
+        inviteModal.value.gameType = payload.gameType;
+        inviteModal.value.open = true;
+    });
+
+    const sendInvite = (invite: InviteDto) => {
+        socket.value?.emit('Send-Invite', invite);
+    };
+
+    const acceptInvite = () => {
+        if (!invite.value) return;
+        socket.value?.emit('Respond-Invite', { ...invite.value, accepted: true });
+        inviteModal.value.open = false;
+    };
+
+    const declineInvite = () => {
+        if (!invite.value) return;
+        socket.value?.emit('Respond-Invite', { ...invite.value, accepted: false });
+        inviteModal.value.open = false;
+    };
+    const reset = () => {
+        invite.value = null;
+        inviteModal.value.open = false;
+        inviteModal.value.type = ''
+        inviteModal.value.gameType = ''
+    };
+
+    return { invite, inviteModal, sendInvite, acceptInvite, declineInvite, reset };
 }

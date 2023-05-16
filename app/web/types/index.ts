@@ -1,4 +1,4 @@
-export {}
+export { }
 
 declare global {
     type UserStatus = 'OFFLINE' | 'ONLINE' | 'INGAME' | 'INQUEUE'
@@ -170,5 +170,20 @@ declare global {
     interface FetchError<T> extends Error {
         status: number
         statusText: string
+    }
+
+    interface InviteDto {
+        inviterId: string;
+        invitedId: string;
+        gameType: 'classic' | 'custom';
+        powerups: string[];
+        accepted?: boolean;
+    }
+
+    interface InviteModal {
+        type: string;
+        open: boolean;
+        gameType: string;
+        target: string;
     }
 }
