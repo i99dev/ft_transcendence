@@ -189,9 +189,14 @@
                         <!-- badge offline -->
                         <div
                             class="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
-                            :class="{'bg-gray-500': notifications?.length == 0, 'bg-green-500': notifications?.length != 0}"
+                            :class="{
+                                'bg-gray-500': notifications?.length == 0,
+                                'bg-green-500': notifications?.length != 0,
+                            }"
                         >
-                            <div class="text-xs font-semibold text-center text-white">{{notifications?.length}}</div>
+                            <div class="text-xs font-semibold text-center text-white">
+                                {{ notifications?.length }}
+                            </div>
                         </div>
                     </div>
                     <button @click="useLogout" class="cursor-pointer relative rounded-full">
@@ -249,24 +254,29 @@
                         <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
                     </button>
                     <button
-                        @click="isBlocked(user) ? removeUserFromBlockList(user) : addUserToBlockList(user)"
+                        @click="
+                            isBlocked(user)
+                                ? removeUserFromBlockList(user)
+                                : addUserToBlockList(user)
+                        "
                         :title="isBlocked(user) ? 'unblock user' : 'block user'"
                         class="p-2 border-y border-slate-100 bg-slate-100 rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                     >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-8 h-8 stroke-2 stroke-current"
-                        :class="{ 'fill-none' : !isBlocked(user)}"
-                        viewBox="0 0 24 24"
-                    >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"></path>
-                        <path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"></path>
-                        <path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"></path>
-                        <path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
-                    </svg>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 stroke-2 stroke-current"
+                            :class="{ 'fill-none': !isBlocked(user) }"
+                            viewBox="0 0 24 24"
+                        >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"></path>
+                            <path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"></path>
+                            <path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"></path>
+                            <path
+                                d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"
+                            ></path>
+                        </svg>
                     </button>
-
                 </div>
             </div>
         </div>

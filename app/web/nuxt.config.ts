@@ -7,6 +7,8 @@ export default defineNuxtConfig({
             REDIRECT_URI: process.env.REDIRECT_URI,
             API_URL: process.env.API_URL,
             GAME_NAME: process.env.GAME_NAME,
+            IP: process.env.IP,
+            PROTOCOL: process.env.PROTOCOL,
         },
     },
     css: [
@@ -25,5 +27,4 @@ export default defineNuxtConfig({
         },
     },
     modules: ['@nuxtjs/tailwindcss'],
-    plugins: ['~/plugins/socket-io.ts','~/plugins/chat-socket.ts', '~/plugins/friends-socket.ts'],
 })

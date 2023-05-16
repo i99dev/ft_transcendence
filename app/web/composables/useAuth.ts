@@ -3,12 +3,14 @@ export const useIsAuth = async () => {
     return data.value ? true : false
 }
 
-export const refreshAccessToken = async () => {
+export const refreshAccessToken = async (reconnect: boolean = true) => {
+    const { reconnectSockets } = useSockets()
     const { data, error } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
     })
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo) setCookies(tokenInfo)
+    if (tokenInfo) await setCookies(tokenInfo)
+    if (reconnect) reconnectSockets()
     return error.value?.status
 }
 

@@ -45,7 +45,7 @@ export class MulterController {
         const filePath = `${userDir}/${file.originalname}`
         const currentUri = `${this.configService.get<string>(
             'server.protocol',
-        )}://${this.configService.get<string>('server.host')}/api/multer/download/${target}/files/${
+        )}://${this.configService.get<string>('server.ip')}/api/multer/download/${target}/files/${
             file.originalname
         }`
         if (!(await this.multerService.updateTargetAvatar(target, currentUri)))

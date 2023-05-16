@@ -30,7 +30,7 @@ declare global {
         image: string
         xp: number
         ladder: number
-		wr: number
+        wr: number
         two_fac_auth: boolean
         friend_to?: UserGetDto[]
         friends?: UserGetDto[]
@@ -55,14 +55,14 @@ declare global {
         color: string
     }
 
-    export interface PowerUp{
-        type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu';
-        active: boolean;
-        ready: boolean;
-        duration: number;
-        cooldown: number;
+    export interface PowerUp {
+        type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu'
+        active: boolean
+        ready: boolean
+        duration: number
+        cooldown: number
     }
-    
+
     interface PlayerDto {
         username: string
         score: number
@@ -156,7 +156,7 @@ declare global {
         type: NotificationType
         target: string
     }
-    
+
     interface NotificationDto {
         id: number
         created_at: Date
@@ -170,5 +170,5 @@ declare global {
     interface FetchError<T> extends Error {
         status: number
         statusText: string
-    }    
+    }
 }
