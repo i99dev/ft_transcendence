@@ -100,6 +100,16 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         console.log("send invite", payload)
     }
 
+    @SubscribeMessage('Respond-Invite')
+    respondInvite(
+        @ConnectedSocket() client: any,
+        @MessageBody(new SocketValidationPipe()) payload: any,
+    ) {
+        // this.gameService.respondInvite(client, payload)
+        console.log("Respond-Invite", payload)
+    }
+    
+
     // @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket) {
