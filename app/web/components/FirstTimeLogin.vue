@@ -47,6 +47,7 @@
                                         type="file"
 										accept="image/*"
 										@change="uploadeImage"
+										ref="imageInput"
                                         class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-zinc-900 hover:file:bg-blue-300"
                                     />
                                 </label>
@@ -69,14 +70,9 @@
 import { ref, computed } from 'vue'
 
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
-const props = defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-})
 
 const emit = defineEmits(['close'])
+
 const userData = computed(() => {
 	const { username, image, login } = user_info.value
     return { username, image, login }
@@ -85,20 +81,34 @@ const userData = computed(() => {
 const newUsername = ref('')
 const newAvatar = ref(null as any)
 const image = ref(userData.value.image)
+const imageInput = ref('')
+const formData = ref(new FormData())
 
 const uploadeImage = async (event) => {
 	const file = event.target.files[0]
 	console.log('file', file)
 	if (!file) return
-	const readData = (f) => 
-	new Promise((resolve) => {
-		const reader = new FileReader()
-		reader.onloadend = (e) => resolve(reader.result)
-		newAvatar.value = reader.result
-		reader.readAsDataURL(f)
-	})
-	const data = await readData(file)
-	image.value = data
+	
+	formData.value.append('file', file)
+
+	const reader = new FileReader()
+
+	reader.readAsDataURL(file)
+
+	reader.onload = () => {
+		image.value = reader.result
+		newAvatar.value = image.value
+	}
+
+	// const readData = (f) => 
+	// new Promise((resolve) => {
+	// 	const reader = new FileReader()
+	// 	reader.onloadend = (e) => resolve(reader.result)
+	// 	newAvatar.value = reader.result
+	// 	reader.readAsDataURL(f)
+	// 	image.value = newAvatar
+	// })
+	// const data = await readData(file)
 	// console.log('data', data)
 }
 
@@ -108,7 +118,7 @@ const submitProfile = async () => {
         await useUpdateUserInfo()
     }
 	if (newAvatar.value != '') {
-		await useUplaod(userData.value.login, newAvatar.value)
+		await useUplaod(userData.value.login, formData.value)
 	}
 	console.log('newUsername', newUsername.value)
     emit('close')
