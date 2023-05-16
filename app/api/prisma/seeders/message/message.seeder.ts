@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { Message } from '@prisma/client'
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { Message, PrismaClient } from '@prisma/client'
 import { create } from 'domain'
 
 @Injectable()
 export class MessageSeeder {
-    private prisma = new PrismaService()
+    private prisma = new PrismaClient()
     private messages: Message[]
 
     async seedMessages(): Promise<Message[]> {

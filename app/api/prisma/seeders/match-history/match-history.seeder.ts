@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Match, User } from '@prisma/client'
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { Match, PrismaClient, User } from '@prisma/client'
 
 interface Player {
     username: string
@@ -11,7 +10,7 @@ interface Player {
 
 @Injectable()
 export class MatchHistorySeeder {
-    private prisma = new PrismaService()
+    private prisma = new PrismaClient()
 
     private async createPlayer(player: Player): Promise<number> {
         const pl = await this.prisma.player.create({

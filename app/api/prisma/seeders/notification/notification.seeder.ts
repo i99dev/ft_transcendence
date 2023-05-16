@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaClient } from '@prisma/client'
 
 @Injectable()
 export class NotificationSeeder {
-    private prisma = new PrismaService()
+    private prisma = new PrismaClient()
 
     async seedNotifications() {
         await this.prisma.notification.upsert({

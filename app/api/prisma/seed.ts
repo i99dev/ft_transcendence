@@ -1,5 +1,7 @@
 // prisma/seed.ts
 
+import { PrismaClient } from '@prisma/client'
+import { create } from 'domain'
 import { UserSeeder } from './seeders/user/user.seeder'
 import { FriendSeeder } from './seeders/friend/friend.seeder'
 import { PowerUpSeeder } from './seeders/power_up/power_up.seeder'
@@ -12,9 +14,10 @@ import { ChatRoomSeeder } from './seeders/chatRoom/chat_room.seeder'
 import { MatchHistorySeeder } from './seeders/match-history/match-history.seeder'
 import { NotificationSeeder } from './seeders/notification/notification.seeder'
 import { BlockSeeder } from './seeders/block/block.seed'
-import { PrismaService } from '@providers/prisma/prisma.service'
 // import { SeederService   } from './seeders/user/user.seeder.service';
 
+// initialize Prisma Client
+const prisma = new PrismaClient()
 
 async function main() {
     // Create Users
@@ -77,4 +80,5 @@ main()
     })
     .finally(async () => {
         // close Prisma Client at the end
+        await prisma.$disconnect()
     })

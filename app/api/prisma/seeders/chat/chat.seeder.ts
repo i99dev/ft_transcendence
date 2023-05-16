@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { GroupChat, chatType } from '@prisma/client'
-import { PrismaService } from '@providers/prisma/prisma.service'
+import { GroupChat, PrismaClient, chatType } from '@prisma/client'
 
 @Injectable()
 export class GroupChatSeeder {
-    private prisma = new PrismaService()
+    private prisma = new PrismaClient()
     private chats: GroupChat[]
 
     async seedGroupChats(): Promise<GroupChat[]> {
