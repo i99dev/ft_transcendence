@@ -54,6 +54,7 @@
 <script lang="ts" setup>
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
+import { computed, watch } from 'vue'
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
 

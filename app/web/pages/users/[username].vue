@@ -28,7 +28,7 @@
         >
             <div class="flex flex-col w-full space-y-6 items-center">
                 <div class="flex flex-row justify-center w-1/2 mobile:w-full">
-                    <UserProfileCardOne class="w-full" :username="userName" />
+                    <UserProfileCardOne class="w-full" :username="userName" :isProfile="IsProfile" />
                 </div>
                 <div class="grid grid-flow-col-dense sm:flex gap-4 w-full justify-center"></div>
                 <div class="flex flex-wrap sm:flex-no-wrap items-center justify-between w-full">
@@ -48,7 +48,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
 const route = useRoute()
+
+const IsProfile = ref(true)
 
 const userName = computed(() => {
     let username: string

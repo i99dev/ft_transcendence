@@ -185,6 +185,7 @@
 
 <script lang="ts" setup>
 import { TrashIcon } from '@heroicons/vue/24/outline'
+import { Socket } from 'socket.io-client'
 
 const { user_info } = useUserInfo()
 const { isBlocked } = useBlock()
@@ -207,10 +208,6 @@ const AmIAllowed = computed(() => {
 const { chatType } = useChatType()
 const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
-
-watch(chatSocket, async () => {
-    socketOn()
-})
 
 onMounted(async () => {
     if (chatType.value === 'GROUP') {

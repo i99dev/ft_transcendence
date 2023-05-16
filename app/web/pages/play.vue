@@ -61,7 +61,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useSocket, useTabEvent } from '@/composables/Game/useSocket'
+import { useSocket, useTabEvent } from '../composables/Game/useSocket'
+import { ref, onMounted, onBeforeUnmount, onUnmounted} from 'vue'
+
 const emit = defineEmits(['showTabModal'])
 const exit = ref(false)
 const showSelector = ref(true)
@@ -73,9 +75,9 @@ const gameSelector = ref()
 
 const { emitLeaveQueue } = useSocket()
 const { showTab } = useTabEvent()
-const audio = new Audio('/sounds/ost1.mp3')
-audio.loop = true
-audio.volume = 0.1
+const audio = ref(new Audio('/sounds/ost1.mp3'))
+audio.value.loop = true
+audio.value.volume = 0.1
 
 onMounted(() => {
     // audio.play().catch(err => {
@@ -91,7 +93,7 @@ onBeforeUnmount(() => {
 })
 
 onUnmounted(() => {
-    audio.pause()
+    audio.value.pause()
 })
 
 const startGame = (mode: GameSelectDto): void => {
@@ -137,10 +139,10 @@ const exitGame = (): void => {
 }
 
 const toggleAudio = (): void => {
-    if (audio.paused) {
-        audio.play()
+    if (audio.value.paused) {
+        audio.value.play()
     } else {
-        audio.pause()
+        audio.value.pause()
     }
 }
 const switchExistStatus = (status: boolean): void => {

@@ -15,7 +15,7 @@
                             alt="logo"
                         />
                         <div
-                            v-if="isMe"
+                            v-if="isMe && !isProfile"
                             @click="handleChangeImage"
                             class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
                         >
@@ -45,7 +45,10 @@
                     </div>
 
                     <div class="flex sm:flex-col justify-center sm:p-6">
-                        <p v-if="isMe" class="sm:text-3xl text-lg text-black dark:text-white">
+                        <p
+                            v-if="isMe && !isProfile"
+                            class="sm:text-3xl text-lg text-black dark:text-white"
+                        >
                             Welcome
                         </p>
                         <!-- update username -->
@@ -55,6 +58,13 @@
                                 v-if="editBoolaen"
                             >
                                 {{ userData?.username }}
+                            </div>
+                            <div v-if="!isMe || isProfile">
+                                <img
+                                    :src="getStatusIcon(userData.status)"
+                                    class="h-4 w-4"
+                                    :title="userData.status"
+                                />
                             </div>
                             <input
                                 v-if="!editBoolaen"
@@ -67,7 +77,7 @@
                             <div
                                 class="flex justify-center"
                                 @click="editUsername"
-                                v-if="editBoolaen && isMe"
+                                v-if="editBoolaen && isMe && !isProfile"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +158,7 @@
                     </div>
                 </div>
 
-                <div v-if="isMe" class="flex flex-row space-x-6">
+                <div v-if="isMe && !isProfile" class="flex flex-row space-x-6">
                     <div class="relative cursor-pointer" @click="openChatModel">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +166,7 @@
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-8 h-8"
+                            class="w-8 h-8 mt-2"
                         >
                             <path
                                 stroke-linecap="round"
@@ -178,7 +188,7 @@
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-8 h-8"
+                            class="w-8 h-8 mt-2"
                         >
                             <path
                                 stroke-linecap="round"
@@ -243,8 +253,25 @@
                             ></path>
                         </svg>
                     </button>
+                    <button @click="navigateTo('/help')" class="cursor-pointer relative rounded-full">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="50"
+                            fill="currentColor"
+                            class="bi bi-question-circle"
+                            viewBox="0 0 16 16"
+                        >
+                            <path
+                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                            />
+                            <path
+                                d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"
+                            />
+                        </svg>
+                    </button>
                 </div>
-                <div v-else class="flex space-x-6">
+                <div v-else-if="!isMe" class="flex space-x-6">
                     <button
                         @click="addFriend(username)"
                         :title="'Add to friend list'"
@@ -286,10 +313,15 @@
 <script setup lang="ts">
 import { UserPlusIcon, UserMinusIcon } from '@heroicons/vue/24/outline'
 import { useFriends } from '../../composables/Friends/useFriends'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
     username: {
         type: String,
+        default: false,
+    },
+    isProfile: {
+        type: Boolean,
         default: false,
     },
 })
@@ -302,12 +334,13 @@ const isMe = ref(false)
 
 const userData = computed(() => {
     if (user_info.value.username === props.username) {
-        const { username, image, xp, ladder } = user_info.value
+        const { username, image, xp, ladder, status } = user_info.value
+        // console.log(status)
         isMe.value = true
-        return { username, image, xp, ladder }
+        return { username, image, xp, ladder, status }
     } else {
-        const { username, image, xp, ladder } = user
-        return { username, image, xp, ladder }
+        const { username, image, xp, ladder, status } = user
+        return { username, image, xp, ladder, status }
     }
 })
 
@@ -411,6 +444,19 @@ const getLadderRank = (ladder: number) => {
             return 'Kaizoku'
         case 6:
             return 'Capin Boy'
+    }
+}
+
+const getStatusIcon = (status: string) => {
+    switch (status) {
+        case 'ONLINE':
+            return 'https://www.vippng.com/png/full/127-1270264_green-dot-icon-png-circle.png'
+        case 'OFFLINE':
+            return 'https://icon-library.com/images/grey-icon/grey-icon-10.jpg'
+        case 'INQUEUE':
+            return 'https://www.clker.com/cliparts/e/i/5/h/r/P/orange-circle-icon-hi.png'
+        case 'INGAME':
+            return 'https://www.seekpng.com/png/detail/206-2066026_purple-dot-png-violet-icon.png'
     }
 }
 </script>
