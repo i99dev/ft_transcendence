@@ -47,7 +47,6 @@
                                         type="file"
 										accept="image/*"
 										@change="uploadeImage"
-										ref="imageInput"
                                         class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-zinc-900 hover:file:bg-blue-300"
                                     />
                                 </label>
@@ -69,7 +68,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-const { user_info, setUserName, setUserAvatar } = useUserInfo()
+const { user_info, setUserName } = useUserInfo()
 
 const emit = defineEmits(['close'])
 
@@ -79,10 +78,15 @@ const userData = computed(() => {
 })
 
 const newUsername = ref('')
+
 const newAvatar = ref(null as any)
+
 const image = ref(userData.value.image)
-const imageInput = ref('')
+
 const formData = ref(new FormData())
+
+const reader = ref(new FileReader())
+
 
 const uploadeImage = async (event) => {
 	const file = event.target.files[0]
@@ -91,25 +95,13 @@ const uploadeImage = async (event) => {
 	
 	formData.value.append('file', file)
 
-	const reader = new FileReader()
 
-	reader.readAsDataURL(file)
+	reader.value.readAsDataURL(file)
 
-	reader.onload = () => {
-		image.value = reader.result
+	reader.value.onload = () => {
+		image.value = reader.value.result
 		newAvatar.value = image.value
 	}
-
-	// const readData = (f) => 
-	// new Promise((resolve) => {
-	// 	const reader = new FileReader()
-	// 	reader.onloadend = (e) => resolve(reader.result)
-	// 	newAvatar.value = reader.result
-	// 	reader.readAsDataURL(f)
-	// 	image.value = newAvatar
-	// })
-	// const data = await readData(file)
-	// console.log('data', data)
 }
 
 const submitProfile = async () => {

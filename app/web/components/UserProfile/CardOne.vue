@@ -333,7 +333,7 @@
 <script setup lang="ts">
 import { UserPlusIcon, UserMinusIcon } from '@heroicons/vue/24/outline'
 import { useFriends } from '../../composables/Friends/useFriends'
-
+import { ref, computed } from 'vue'
 const props = defineProps({
     username: {
         type: String,

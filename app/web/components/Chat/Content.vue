@@ -42,7 +42,9 @@
             </button>
 
             <button
-                @click="chatType === 'DM' ? goToUserProfile() : isChatInfoOpened = !isChatInfoOpened"
+                @click="
+                    chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened)
+                "
                 class="w-full flex hover:bg-slate-200 rounded-lg pl-2 focus:outline-indigo-400"
             >
                 <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">
@@ -63,7 +65,7 @@
             >
                 <div
                     class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
-                    v-for="message in messages"
+                    v-for="message in messages" :key="message.id"
                     :class="{
                         'bg-indigo-200':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
@@ -93,7 +95,11 @@
                     >
                         {{ message.sender.username }}
                     </div>
-                    <div v-if="(chatType === 'DM') || (chatType === 'GROUP' && !isBlocked(message.sender))"
+                    <div
+                        v-if="
+                            chatType === 'DM' ||
+                            (chatType === 'GROUP' && !isBlocked(message.sender))
+                        "
                         class="break-words"
                         :class="{
                             'text-sm': message.type === 'SPECIAL',
@@ -101,12 +107,7 @@
                     >
                         {{ message.content }}
                     </div>
-                    <div
-                        v-else
-                        class="text-sm opacity-50 centered capitalize"
-                    >
-                        blocked content 
-                    </div>
+                    <div v-else class="text-sm opacity-50 centered capitalize">blocked content</div>
                     <button
                         v-if="
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
@@ -174,6 +175,7 @@
 <script lang="ts" setup>
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { Socket } from 'socket.io-client'
+import { Ref, onMounted, ref, computed } from 'vue'
 
 const { user_info } = useUserInfo()
 const { isBlocked } = useBlock()
@@ -186,11 +188,15 @@ const { participants, setParticipants, updateParticipants } = useGroupChatPartic
 const me = ref()
 const participantsColors = ref(new Map<string, string>())
 const AmIAllowed = computed(() => {
-    return (chatType.value === 'GROUP' && me.value?.status === 'MUTE') || (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
+    return (
+        (chatType.value === 'GROUP' && me.value?.status === 'MUTE') ||
+        (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
+    )
 })
 const { chatType } = useChatType()
 const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
+
 
 onMounted(async () => {
     if (chatType.value === 'GROUP') {

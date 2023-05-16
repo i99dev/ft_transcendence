@@ -29,6 +29,8 @@
 </template>
 
 <script setup lang='ts'>
+import { ref } from 'vue';
+
 import { useFriends } from '~~/composables/Friends/useFriends';
 import {
     Dialog,

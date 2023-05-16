@@ -80,7 +80,7 @@
 
                 <!-- chat element -->
                 <button
-                    v-for="chat in chats"
+                    v-for="chat in chats" :key="chat.id"
                     @click="setCurrentChat(chat)"
                     class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
                     @mouseover="hoverButton = chat"
@@ -221,6 +221,7 @@
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 import { Socket } from 'socket.io-client'
+import { ref, Ref, onMounted } from 'vue'
 
 const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
 const { chats, setChats } = useChats()
