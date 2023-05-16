@@ -13,8 +13,7 @@ export class NotificationController {
     @Get('/me')
     async getMyNotifications(@Req() req) {
         const notif = await this.notificationService.getMyNotifications(req.user.login)
-        if (!notif)
-            return new NotFoundException('No notifications found')
+        if (!notif) return new NotFoundException('No notifications found')
         return notif
     }
 
@@ -23,8 +22,7 @@ export class NotificationController {
     async deleteNotification(@Param('id', PosNumberPipe) id: string, @Req() req) {
         const idNumber = parseInt(id)
         const notif = await this.notificationService.deleteNotification(idNumber, req.user.login)
-        if (!notif)
-            return new NotFoundException('No notifications found')
+        if (!notif) return new NotFoundException('No notifications found')
         return notif
     }
 }
