@@ -13,7 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, defineExpose, onUnmounted, provide } from 'vue'
 import { useSocket, useSound } from '~/composables/Game/useSocket'
 import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 
@@ -86,7 +85,7 @@ function destroy(): void {
 }
 
 function giveUp(): void {
-    socket.value.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
+    socket.value?.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
     destroy()
 }
 
@@ -138,10 +137,10 @@ const startPowerCooldown = (player: number, key: number): void => {
 
 const activatePowerUp = (key: string): void => {
     if (key == '1') {
-        socket.value.emit('Power-Up', 1)
+        socket.value?.emit('Power-Up', 1)
         startPowerCooldown(gameSetup.value.player, 0)
     } else if (key == '2') {
-        socket.value.emit('Power-Up', 2)
+        socket.value?.emit('Power-Up', 2)
         startPowerCooldown(gameSetup.value.player, 1)
     }
 }
@@ -167,9 +166,9 @@ const handleKeyUp = (event: KeyboardEvent): void => {
 
 const updatePaddleDirection = (): void => {
     if (keys.ArrowUp) {
-        socket.value.emit('move', 'up')
+        socket.value?.emit('move', 'up')
     } else if (keys.ArrowDown) {
-        socket.value.emit('move', 'down')
+        socket.value?.emit('move', 'down')
     }
 }
 </script>

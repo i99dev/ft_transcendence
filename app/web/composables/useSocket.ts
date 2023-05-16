@@ -4,7 +4,7 @@ export const useChatSocket = () => {
     const chatSocket = useState<Socket | undefined>('chatSocket', undefined)
 
     const connectChatSocket = (): void => {
-        chatSocket.value = io('ws://localhost/chat', {
+        chatSocket.value = io(`ws://${useRuntimeConfig().public.HOST}/chat`, {
             withCredentials: true,
             extraHeaders: {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -29,7 +29,7 @@ export const useGameSocket = () => {
     const gameSocket = useState<Socket | undefined>('gameSocket', undefined)
 
     const connectGameSocket = (): void => {
-        gameSocket.value = io('ws://localhost/game', {
+        gameSocket.value = io(`ws://${useRuntimeConfig().public.HOST}/game`, {
             withCredentials: true,
             extraHeaders: {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -54,7 +54,7 @@ export const useFriendSocket = () => {
     const friendSocket = useState<Socket | undefined>('friendSocket', undefined)
 
     const connectFriendSocket = (): void => {
-        friendSocket.value = io('ws://localhost/friend', {
+        friendSocket.value = io(`ws://${useRuntimeConfig().public.HOST}/friend`, {
             withCredentials: true,
             extraHeaders: {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -86,19 +86,19 @@ export const useSockets = () => {
     const connectSockets = () => {
         connectChatSocket()
         connectGameSocket()
-        // connectFriendSocket()
+        connectFriendSocket()
     }
 
     const disconnectSockets = () => {
         disconnectChatSocket()
         disconnectGameSocket()
-        // disconnectFriendSocket()
+        disconnectFriendSocket()
     }
 
     const reconnectSockets = () => {
         reconnectChatSocket()
         reconnectGameSocket()
-        // reconnectFriendSocket()
+        reconnectFriendSocket()
     }
 
     const logSocketExceptions = () => {
@@ -108,9 +108,9 @@ export const useSockets = () => {
         gameSocket.value?.on('exception', err => {
             console.log(`${err}: ${err.message}`)
         })
-        // friendSocket.value?.on('exception', (err) => {
-        //   console.log(`${err}: ${err.message}`)
-        // })
+        friendSocket.value?.on('exception', err => {
+            console.log(`${err}: ${err.message}`)
+        })
     }
 
     return { connectSockets, disconnectSockets, reconnectSockets, logSocketExceptions }

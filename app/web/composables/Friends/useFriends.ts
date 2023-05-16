@@ -1,13 +1,10 @@
-import { Socket } from 'socket.io-client'
-
-const nuxtApp = useNuxtApp()
 export const useFriends = async () => {
     const order = ['ONLINE', 'INQUEUE', 'INGAME', 'OFFLINE']
     const notifications = useState<NotificationDto[] | null>('notifications', () => {
         return []
     })
 
-    const socket = ref(nuxtApp.friendsSocket as Socket)
+    const { friendSocket } = useFriendSocket()
     const { data } = await useFetch<UserGetDto[]>('/users/me/friends', {
         method: 'GET',
         baseURL: useRuntimeConfig().API_URL,
@@ -30,7 +27,7 @@ export const useFriends = async () => {
         }
     })
     const setupSocketHandlers = () => {
-        socket.value.on('notification', payload => {
+        friendSocket.value?.on('notification', payload => {
             if (!Array.isArray(payload)) {
                 payload = [payload]
             }
@@ -45,7 +42,7 @@ export const useFriends = async () => {
             })
         })
 
-        socket.value.on('friends-list', payload => {
+        friendSocket.value?.on('friends-list', payload => {
             friends_info.value.friends = payload.map((friend: UserGetDto) => {
                 return {
                     id: friend.id,
@@ -69,11 +66,11 @@ export const useFriends = async () => {
     }
 
     const addFriend = (friend: string) => {
-        socket.value.emit('add-friend', JSON.stringify({ friend_login: friend }))
+        friendSocket.value?.emit('add-friend', JSON.stringify({ friend_login: friend }))
     }
 
     const removeFriend = (friend: string) => {
-        socket.value.emit('delete-friend', JSON.stringify({ friend_login: friend }))
+        friendSocket.value?.emit('delete-friend', JSON.stringify({ friend_login: friend }))
     }
 
     sortFriends()

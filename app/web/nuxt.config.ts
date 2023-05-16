@@ -7,6 +7,8 @@ export default defineNuxtConfig({
             REDIRECT_URI: process.env.REDIRECT_URI,
             API_URL: process.env.API_URL,
             GAME_NAME: process.env.GAME_NAME,
+            HOST: process.env.HOST,
+            PROTOCOL: process.env.PROTOCOL,
         },
     },
     css: [

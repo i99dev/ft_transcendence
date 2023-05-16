@@ -14,6 +14,8 @@ services:
             - REDIRECT_URI=${REDIRECT_URI}
             - API_URL=${API_URL}
             - GAME_NAME=${GAME_NAME}
+            - HOST=${HOST}
+            - PROTOCOL=${PROTOCOL}
 
         volumes:
             - ./app/web:/usr/src/app
