@@ -1,9 +1,10 @@
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, MessageType, ChatUserStatus } from '@prisma/client'
+import { ChatRoom, MessageType, ChatUserStatus, Prisma } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
 import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
+import { number } from 'joi'
 
 @Injectable()
 export class ChatService {
@@ -277,7 +278,7 @@ export class ChatService {
         }
     }
 
-    async getChatRoomMessages(room_id: string, page: number) {
+    async getChatRoomMessages(room_id: string, page: number, sort : any = 'asc') {
         try {
             const chat = await this.prisma.message.findMany({
                 where: {
@@ -287,6 +288,9 @@ export class ChatService {
                 },
                 include: {
                     sender: true,
+                },
+                orderBy: {
+                    created_at: sort,
                 },
                 skip: (page - 1) * 20,
                 take: 20,

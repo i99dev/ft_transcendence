@@ -1,5 +1,5 @@
 import { GroupChatService } from './groupChat.service'
-import { Get, Param, ParseUUIDPipe, Query } from '@nestjs/common'
+import { BadRequestException, Get, NotFoundException, Param, ParseUUIDPipe, Query } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
@@ -41,16 +41,22 @@ export class ChatController {
         else return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/:room_id/messages')
     async getRoomMessages(
         @Param('room_id', ParseStringPipe) room_id: string,
         @Req() req,
         @Query('page', PosNumberPipe) page: number,
+        @Query('sort') sort: string,
     ) {
-        if (page <= 0 || page > 1000000) return []
+
+        if (page <= 0 || page > 1000000) throw new BadRequestException('Invalid page number')
+        if (sort && sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
         if (!page) page = 1
-        return await this.chatService.getChatRoomMessages(room_id, page)
+        const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort)
+        if (msgs == null)
+            throw new NotFoundException('No Messages Found')
+        return msgs
     }
 
     @UseGuards(JwtAuthGuard)
@@ -79,7 +85,7 @@ export class ChatController {
         @Query('page', PosNumberPipe) page: number,
     ) {
         if (!page) page = 1
-        if (page <= 0 || page > 100000) return []
+        if (page <= 0 || page > 100000) throw new BadRequestException('Invalid page number')
         if (!search) return await this.groupChatService.getAllGroupChats(page)
         return await this.groupChatService.searchGroupChat(search, req.user.login)
     }

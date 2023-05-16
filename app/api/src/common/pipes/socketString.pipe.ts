@@ -1,5 +1,5 @@
 import { isAscii } from 'class-validator'
-import { Injectable, PipeTransform } from '@nestjs/common'
+import { BadGatewayException, Injectable, PipeTransform } from '@nestjs/common'
 import { WsException } from '@nestjs/websockets'
 
 @Injectable()

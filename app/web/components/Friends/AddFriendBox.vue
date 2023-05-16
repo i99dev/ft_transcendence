@@ -54,8 +54,9 @@
 </template>
 
 <script setup lang="ts">
-import { useFriends } from '~~/composables/Friends/useFriends'
+import { useFriends } from '../../composables/Friends/useFriends'
 import { Dialog, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { ref } from 'vue'
 
 const { addFriend } = await useFriends()
 const friendNameToAdd = ref('')

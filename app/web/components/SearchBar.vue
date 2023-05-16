@@ -44,6 +44,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { SearchUserNames } from '../composables/useUsers'
+
 const searchInput = ref('')
 
 const users = ref([] as any[])
