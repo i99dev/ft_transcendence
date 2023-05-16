@@ -194,10 +194,12 @@
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { UserPlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
-import { Socket } from 'socket.io-client'
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { chatSocket } = useChatSocket()
+watch(chatSocket, async () => {
+    socketOn()
+})
 
 const { participants, setParticipants } = useGroupChatParticipants()
 const participant = ref({} as ChatUser)
@@ -228,10 +230,14 @@ const { currentChat } = useCurrentChat()
 const users = ref([] as UserGetDto[])
 
 onMounted(() => {
-    chatSocket.value.on('group-chat-users', (payload: ChatUser[]) => {
+    socketOn()
+})
+
+const socketOn = () => {
+    chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
         setParticipants(payload)
     })
-})
+}
 
 const setAdminOptions = () => {
     // check whether participant is admin to downgrade hime or not to upgrade him
@@ -302,7 +308,7 @@ const closeAddUsersPopup = () => {
 
 const setUser = (action: string) => {
     if (action === 'upgrade' || action === 'downgrade' || action === 'owner') {
-        chatSocket.value.emit(
+        chatSocket.value?.emit(
             'admin-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
@@ -311,7 +317,7 @@ const setUser = (action: string) => {
             }),
         )
     } else
-        chatSocket.value.emit(
+        chatSocket.value?.emit(
             'user-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
@@ -323,7 +329,7 @@ const setUser = (action: string) => {
 }
 
 const exitChat = () => {
-    chatSocket.value.emit(
+    chatSocket.value?.emit(
         'exit-group-chat',
         JSON.stringify({ room_id: currentChat.value?.chat_room_id }),
     )
@@ -331,7 +337,7 @@ const exitChat = () => {
 
 const addUsers = () => {
     for (let i = 0; i < users.value.length; i++) {
-        chatSocket.value.emit(
+        chatSocket.value?.emit(
             'user-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,

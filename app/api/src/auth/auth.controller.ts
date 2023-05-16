@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+import { Socket } from 'socket.io'
 import {
     BadRequestException,
     Controller,
@@ -36,16 +36,13 @@ export class AuthController {
         tags: ['auth'],
     })
     @Post('login')
-    async GetAuth(
-        @Req() req,
-        @Res() res,
-    ): Promise<TokenDto | TwoFacAuthDto | string> {
+    async GetAuth(@Req() req, @Res() res): Promise<TokenDto | TwoFacAuthDto | string> {
         const { httpStatus, user } = await this.authService.getOrCreateUserAccountOnDb(req.user)
-        
+
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth)
-        return res.status(HttpStatus.OK).JSON(await this.twoFacAuthService.handle2FA(user))        
-        
+            return res.status(HttpStatus.OK).JSON(await this.twoFacAuthService.handle2FA(user))
+
         try {
             const { accessToken, refreshToken } = this.authService.getUserTokens(user)
             res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
@@ -117,8 +114,7 @@ export class AuthController {
                 const { accessToken, refreshToken } = this.authService.getUserTokens(user)
                 res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
                 return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
-            }
-            catch (error) {
+            } catch (error) {
                 throw new NotFoundException('No Token Found')
             }
         } else throw new NotFoundException('Invalid code')

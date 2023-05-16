@@ -4,7 +4,6 @@ import { LeaderboardService } from './leaderboard.service'
 import { PrismaClient } from '@prisma/client'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 
-
 @Module({
     imports: [],
     controllers: [LeaderboardController],

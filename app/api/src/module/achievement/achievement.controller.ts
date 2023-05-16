@@ -26,12 +26,13 @@ export class AchievementController {
 
     @UseGuards(JwtAuthGuard)
     @Get('user/:login')
-    async getAchievements(@Param('login', ParseStringPipe) login: string): Promise<AchievementDto[]> {
+    async getAchievements(
+        @Param('login', ParseStringPipe) login: string,
+    ): Promise<AchievementDto[]> {
         try {
             const ach = await this.achievementService.getAchievements(login)
-            if (!ach)
-                throw new NotFoundException('User Or Achievements not found')
-            return ach;
+            if (!ach) throw new NotFoundException('User Or Achievements not found')
+            return ach
         } catch (error) {
             console.log(error)
         }
@@ -42,8 +43,7 @@ export class AchievementController {
     async getNewAchievements(@Req() req): Promise<any> {
         try {
             const achievement = await this.achievementService.getNewAchievements(req.user.login)
-            if (!achievement)
-                throw new NotFoundException('Achievements not found')
+            if (!achievement) throw new NotFoundException('Achievements not found')
             return achievement
         } catch (error) {
             console.log(error)

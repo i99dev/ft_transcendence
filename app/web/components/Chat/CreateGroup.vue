@@ -124,7 +124,7 @@
                                         v-else-if="stage === 2"
                                     >
                                         <div
-                                            v-for="user in users"
+                                            v-for="user in users" :key="user.id"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
@@ -360,10 +360,12 @@ import {
     RadioGroupOption,
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { Socket } from 'socket.io-client'
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { chatSocket } = useChatSocket()
+watch(chatSocket, async () => {
+    socketOn()
+})
 const { user_info } = useUserInfo()
 const { chats } = useChats()
 const users = ref([] as UserGetDto[])
@@ -390,9 +392,13 @@ const groupChat = ref({
 })
 
 onMounted(() => {
-    chatSocket.value.on('create-group-chat', async payload => {
+    socketOn()
+})
+
+const socketOn = () => {
+    chatSocket.value?.on('create-group-chat', async payload => {
         for (let i = 0; i < users.value.length; i++) {
-            chatSocket.value.emit(
+            chatSocket.value?.emit(
                 'user-group-chat',
                 JSON.stringify({
                     room_id: payload.room_id,
@@ -404,20 +410,12 @@ onMounted(() => {
         closePopup()
 
         const { data, error } = await useUplaod(payload.room_id, formData.value)
-        if (error) console.log(error)
-        else {
-            console.log(chats.value)
+        if (!data.value)
             chats.value.forEach((chat: GroupChat) => {
-                console.log(chat.chat_room_id)
-                console.log(payload.room_id)
-                if (chat.chat_room_id === payload.room_id) {
-                    console.log(data.value)
-                    chat.image = data.value.file_url
-                }
+                if (chat.chat_room_id === payload.room_id) chat.image = data.value.file_url
             })
-        }
     })
-})
+}
 
 watch(
     () => props.isOpened,
@@ -476,7 +474,7 @@ const closePopup = () => {
 }
 
 const createGroupChat = () => {
-    chatSocket.value.emit(
+    chatSocket.value?.emit(
         'create-group-chat',
         JSON.stringify({
             name: groupChat.value.name,

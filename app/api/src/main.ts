@@ -4,8 +4,8 @@ import { AppModule } from './app.module'
 import { LoggingInterceptor } from './common/interceptors/perfomance.interceptors'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
-import { HelmetMiddleware } from '@nest-middlewares/helmet';
-import helmet from 'helmet';
+import { HelmetMiddleware } from '@nest-middlewares/helmet'
+import helmet from 'helmet'
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, { cors: true })
