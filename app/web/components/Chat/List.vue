@@ -136,6 +136,7 @@
                                 </span>
                             </div>
                         </div>
+                        <!-- Invite Game Button -->
                         <button
                             v-if="(chatType === 'DM' || chatType === null) && hoverButton === chat"
                             class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
@@ -235,7 +236,7 @@ const isJoinGroupChatOpened = ref(false)
 const joinGroupPassword = ref('')
 const selectedChat = ref()
 const hoverButton = ref(null)
-const emit = defineEmits(['closeNavBar', 'selectChat'])
+const emit = defineEmits(['closeNavBar', 'selectChat', 'showInvite'])
 
 onMounted(() => {
     socketOn()
@@ -249,7 +250,8 @@ const socketOn = () => {
 
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
     if (chatType.value === 'DM') {
-        emit('closeNavBar')
+        console.log("chat.users", chat.users)
+        emit('showInvite', chat.users[0].login)
         // navigateTo('/play')
     } else {
         selectedChat.value = chat
