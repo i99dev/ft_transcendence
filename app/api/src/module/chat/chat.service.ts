@@ -1,6 +1,6 @@
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, MessageType, ChatUserStatus } from '@prisma/client'
+import { ChatRoom, MessageType, ChatUserStatus, Prisma } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
 import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
@@ -278,35 +278,7 @@ export class ChatService {
         }
     }
 
-    async countMessagesInRoom(room_id: string) {
-        let msgNbr: number = 0
-        try {
-            msgNbr = await this.prisma.message.count({
-                where: {
-                    chat_room: {
-                        room_id: room_id,
-                    },
-                },
-            })
-        } catch (error) {
-            console.log(error)
-        }
-        return msgNbr
-    }
-
-    async getChatRoomMessages(room_id: string, page: number) {
-        let msgNbr: number = 0
-        msgNbr = await this.countMessagesInRoom(room_id)
-        if (msgNbr === 0)
-            return null
-        if (msgNbr / 20 < 1)
-            page = 1
-        else {
-            if (page > msgNbr / 20)
-                page = 1
-            else
-                page = (msgNbr / 20) - page + 1
-        }
+    async getChatRoomMessages(room_id: string, page: number, sort : any = 'asc') {
         try {
             const chat = await this.prisma.message.findMany({
                 where: {
@@ -316,6 +288,9 @@ export class ChatService {
                 },
                 include: {
                     sender: true,
+                },
+                orderBy: {
+                    created_at: sort,
                 },
                 skip: (page - 1) * 20,
                 take: 20,
