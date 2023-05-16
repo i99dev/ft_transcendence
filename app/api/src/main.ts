@@ -11,7 +11,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule, { cors: true })
     app.setGlobalPrefix('api')
     app.use(cookieParser())
-    app.use(helmet())
+    app.use(helmet())  
     app.useGlobalInterceptors(new LoggingInterceptor())
     const configService = app.get(ConfigService)
     const config = new DocumentBuilder()
