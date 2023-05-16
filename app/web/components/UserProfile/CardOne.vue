@@ -253,7 +253,7 @@
                             ></path>
                         </svg>
                     </button>
-                    <button class="cursor-pointer relative rounded-full">
+                    <button @click="navigateTo('/help')" class="cursor-pointer relative rounded-full">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -270,26 +270,6 @@
                             />
                         </svg>
                     </button>
-					<!-- <div
-						class="mt-10 py-2 w-48 bg-white rounded-lg shadow-lg"
-					>
-						<span
-							class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
-							>XP level: {{ userData.xp }}</span
-						>
-						<span
-							class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
-							>Winning Rate: {{ (WinRate * 100).toFixed(2) }}%
-						</span>
-						<span
-							class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
-							>Total Wins: {{ totalWins }}
-						</span>
-						<span
-							class="block px-4 py-2 text-sm text-gray-700 transition duration-150 ease-in-out"
-							>Total Loses: {{ totaLoses }}</span
-						>
-					</div> -->
                 </div>
                 <div v-else-if="!isMe" class="flex space-x-6">
                     <button
@@ -334,6 +314,7 @@
 import { UserPlusIcon, UserMinusIcon } from '@heroicons/vue/24/outline'
 import { useFriends } from '../../composables/Friends/useFriends'
 import { ref, computed } from 'vue'
+
 const props = defineProps({
     username: {
         type: String,

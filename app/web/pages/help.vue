@@ -38,6 +38,7 @@
 					<h2 class="text-xl font-bold mb-2">Controls</h2>
 					<p>Use the following controls to play the game:</p>
 					<ul class="list-none pl-6">
+						<img src="../assets/keys.png" class="w-30 h-40 mx-auto" alt="Keyboard" />
 						<li><strong>Arrow Buttons:</strong> Move the player paddle left and right.</li>
 						<li><strong>1 and 2 Buttons:</strong> Activate power-ups.</li>
 					</ul>
