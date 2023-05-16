@@ -1,11 +1,12 @@
-import { Controller, Get, Param, Query } from '@nestjs/common'
+import { gameAnalyzer } from './../game/logic/gameAnalyzer';
+import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common'
 import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
-import { UseGuards, Req } from '@nestjs/common'
+import { UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 @Controller('match-history/:login')
 export class MatchHistoryController {
-    constructor(private readonly matchHistoryService: MatchHistoryService) {}
+    constructor(private readonly matchHistoryService: MatchHistoryService, private gameAnalyzer: gameAnalyzer) {}
 
     @UseGuards(JwtAuthGuard)
     @Get('') // /match-history?page=1
@@ -13,7 +14,10 @@ export class MatchHistoryController {
         @Param('login') login: string,
         @Query('page') page: number,
     ): Promise<MatchHistoryDto[]> {
-        return await this.matchHistoryService.getPlayerMatchHistory(page, login)
+        const matchHistory = await this.matchHistoryService.getPlayerMatchHistory(page, login)
+        if (!matchHistory)
+            throw new NotFoundException(`Match history for player ${login} not found`)
+        return matchHistory
     }
 
     @UseGuards(JwtAuthGuard)
@@ -24,10 +28,18 @@ export class MatchHistoryController {
         @Query('winning') winning: string,
         @Query('losing') losing: string,
     ): Promise<MatchHistoryDto[]> {
-        if (winning === 'true')
-            return await this.matchHistoryService.getMatchHistoryByResult(page, login, true)
-        else if (losing === 'true')
-            return await this.matchHistoryService.getMatchHistoryByResult(page, login, false)
+        if (winning === 'true') {
+            const history = await this.matchHistoryService.getMatchHistoryByResult(page, login, true)
+            if (!history)
+                throw new NotFoundException(`Match history for player ${login} not found`)
+            return history
+        }
+        else if (losing === 'true') {
+            const history = await this.matchHistoryService.getMatchHistoryByResult(page, login, false)
+            if (!history)
+                throw new NotFoundException(`Match history for player ${login} not found`)
+            return history
+        }
     }
 
     @UseGuards(JwtAuthGuard)
@@ -37,7 +49,10 @@ export class MatchHistoryController {
         @Query('page') page: number,
         @Query('sort') sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
-        return await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
+        const history = await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
+        if (!history)
+            throw new NotFoundException(`Match history for player ${login} not found`)
+        return history
     }
 
     @UseGuards(JwtAuthGuard)
@@ -54,9 +69,9 @@ export class MatchHistoryController {
         @Param('login') login: string,
     ): Promise<number> {
         if (lose === 'true' && win === 'false')
-            return await this.matchHistoryService.gameAnalyzer.getTotalDefeats(login)
+            return await this.gameAnalyzer.getTotalDefeats(login)
         else if (win === 'true' && lose === 'false')
-            return await this.matchHistoryService.gameAnalyzer.getTotalVictories(login)
-        else return await this.matchHistoryService.gameAnalyzer.getTotalMatches(login)
+            return await this.gameAnalyzer.getTotalVictories(login)
+        else return await this.gameAnalyzer.getTotalMatches(login)
     }
 }

@@ -1,67 +1,79 @@
+import { gameAnalyzer } from './../game/logic/gameAnalyzer';
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { JwtService } from '@nestjs/jwt'
-import { gameAnalyzer } from '../game/logic/gameAnalyzer'
 
 @Injectable()
 export class MatchHistoryService {
-    private prisma = new PrismaClient()
-    constructor(private jwtService: JwtService) {}
-    public gameAnalyzer = new gameAnalyzer()
+    constructor(private jwtService: JwtService, private prisma: PrismaClient, private gameAnalyzer: gameAnalyzer) {}
     readonly limit = 3
 
     async getLoginFromToken(authHeader: string): Promise<string> {
         const token = authHeader.split(' ')[1]
         return await this.jwtService.decode(token)['login']
     }
+
     async getTotalPages(player: string): Promise<number> {
-        const count = await this.prisma.match.count({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
+        try {
+            const count = await this.prisma.match.count({
+                where: {
+                    opponents: {
+                        some: {
+                            user: {
+                                login: player,
+                            },
                         },
                     },
                 },
-            },
-        })
-        return Math.ceil(count / this.limit)
+            })
+            return Math.ceil(count / this.limit)
+        } catch (error) {
+            console.log(error)
+        }
     }
+
     async getPlayerMatchHistory(page: number, player: string): Promise<MatchHistoryDto[]> {
-        const skip = (page - 1) * this.limit
-        const match = await this.prisma.match.findMany({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
+        try {
+            const skip = (page - 1) * this.limit
+            const match = await this.prisma.match.findMany({
+                where: {
+                    opponents: {
+                        some: {
+                            user: {
+                                login: player,
+                            },
                         },
                     },
                 },
-            },
-            orderBy: {
-                start: 'desc',
-            },
-            include: {
-                opponents: {
-                    include: {
-                        user: true,
+                orderBy: {
+                    start: 'desc',
+                },
+                include: {
+                    opponents: {
+                        include: {
+                            user: true,
+                        },
                     },
                 },
-            },
-            skip: skip,
-            take: this.limit,
-        })
-        return match
+                skip: skip,
+                take: this.limit,
+            })
+            if (!match)
+                return null
+            return match
+        } catch (error) {
+            console.log(error)
+        }
     }
+
     async getMatchHistoryByResult(
         page: number,
         player: string,
         winning: boolean,
     ): Promise<MatchHistoryDto[]> {
         const match = await this.getPlayerMatchHistory(page, player)
+        if (!match) return null
         const winningMatch = []
         match.forEach(m => {
             if (m.opponents[0].user.login === player && m.opponents[0].IsWinner === winning) {
@@ -75,12 +87,15 @@ export class MatchHistoryService {
         })
         return winningMatch
     }
+
     async getMatchHistoryBySort(
         page: number,
         player: string,
         sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
         const match = await this.getPlayerMatchHistory(page, player)
+        if (!match)
+            return null
         match.sort((a, b) => {
             const userOpponentsA = a.opponents.filter(opponent => opponent.user.login === player)
             const userOpponentsB = b.opponents.filter(opponent => opponent.user.login === player)

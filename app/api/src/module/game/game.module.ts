@@ -7,5 +7,6 @@ import { DefaultModule } from './gateway/default.module'
     imports: [DefaultModule],
     controllers: [GameController],
     providers: [GameService],
+    exports: [GameService],
 })
 export class GameModule {}

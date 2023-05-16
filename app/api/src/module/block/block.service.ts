@@ -1,5 +1,4 @@
 import { FriendWsService } from '@module/friend/gateway/friendWs.service'
-import { FriendService } from './../friend/friend.service'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@providers/prisma/prisma.service'
 

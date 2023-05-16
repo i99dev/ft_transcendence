@@ -3,9 +3,9 @@ import { UserService } from './../user/user.service'
 import { PrismaClient } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { FriendRepository } from './repository/friend.repository'
-import { UserGetDto } from './dto/friend.dto'
 import { NotFoundException } from '@nestjs/common'
 import { UserRepository } from '../user/repository/user.repository'
+import { UserGetDto } from '@module/user/dto/user.dto'
 
 @Injectable({})
 export class FriendService {
@@ -14,8 +14,12 @@ export class FriendService {
     prisma = new PrismaClient()
 
     async validateUsers(user: string, friend: string) {
-        if (user) await this.userService.checkUser(await this.userService.getUser(user))
-        if (friend) await this.userService.checkUser(await this.userService.getUser(friend))
+        try {
+            if (user) await this.userService.checkUser(await this.userService.getUser(user))
+            if (friend) await this.userService.checkUser(await this.userService.getUser(friend))
+        } catch (error) {
+            throw new NotFoundException('User not found')
+        }
     }
 
     async CheckFriendsUpdate(user: string, friend: string): Promise<UserGetDto> {

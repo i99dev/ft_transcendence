@@ -16,7 +16,8 @@ import { MulterService } from './multer.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
 import { JwtAuthGuard } from '@common/guards/jwt.guard'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 
 @Controller('/multer')
 export class MulterController {
@@ -33,7 +34,7 @@ export class MulterController {
                 .build({ errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE }),
         )
         file: Express.Multer.File,
-        @Param('target') target: string,
+        @Param('target', ParseStringPipe) target: string,
         @Req() request: any,
     ) {
         if (!(await this.multerService.checkTargetId(target, request.user.login))) {
@@ -56,8 +57,8 @@ export class MulterController {
     // @UseGuards(JwtAuthGuard)
     @Get('/download/:target/files/:filename')
     async getFile(
-        @Param('target') target: string,
-        @Param('filename') filename: string,
+        @Param('target', ParseStringPipe) target: string,
+        @Param('filename', ParseStringPipe) filename: string,
         @Res() res: any,
     ) {
         const userDir = `./uploads/${target}`

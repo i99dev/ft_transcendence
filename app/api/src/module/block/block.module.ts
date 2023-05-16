@@ -1,25 +1,16 @@
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { BlockController } from './block.controller'
 import { BlockService } from './block.service'
 import { PrismaService } from '@providers/prisma/prisma.service'
-import { FriendWsService } from '@module/friend/gateway/friendWs.service'
-import { FriendService } from '@module/friend/friend.service'
 import { PrismaClient } from '@prisma/client'
 import { JwtService } from '@nestjs/jwt'
-import { FriendRepository } from '@module/friend/repository/friend.repository'
+import { FriendModule } from '@module/friend/friend.module'
+import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 
 @Module({
-    imports: [],
+    imports: [FriendModule, forwardRef(() => FriendWsModule)],
     controllers: [BlockController],
-    providers: [
-        BlockService,
-        PrismaService,
-        FriendWsService,
-        FriendService,
-        PrismaClient,
-        JwtService,
-        FriendRepository,
-    ],
-    exports: [],
+    providers: [BlockService, PrismaService, PrismaClient, JwtService],
+    exports: [BlockService],
 })
 export class BlockModule {}

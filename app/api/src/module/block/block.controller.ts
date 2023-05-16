@@ -1,6 +1,7 @@
 import { Controller, Delete, Get, Param, Post, Req, UseGuards, HttpStatus } from '@nestjs/common'
 import { BlockService } from './block.service'
 import { JwtAuthGuard } from '@common/guards/jwt.guard'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 
 @Controller('/block')
 export class BlockController {
@@ -14,7 +15,7 @@ export class BlockController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/:login')
-    async checkBlock(@Req() req, @Param('login') login: string) {
+    async checkBlock(@Req() req, @Param('login', ParseStringPipe) login: string) {
         const blocked = await this.blockService.autoBlock(req.user.login, login)
         if (blocked) return { statusCode: HttpStatus.CREATED, data: blocked }
         return { statusCode: HttpStatus.OK, message: 'Blocking Failed' }
@@ -22,7 +23,7 @@ export class BlockController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('/:login')
-    async deleteBlock(@Req() req, @Param('login') login: string) {
+    async deleteBlock(@Req() req, @Param('login', ParseStringPipe) login: string) {
         const unblocked = await this.blockService.autoUnblock(req.user.login, login)
         if (unblocked) return { statusCode: HttpStatus.CREATED, data: unblocked }
         return { statusCode: HttpStatus.OK, message: 'Unblocking Failed' }

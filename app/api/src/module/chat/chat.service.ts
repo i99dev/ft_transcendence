@@ -1,10 +1,9 @@
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom, MessageType, ChatUserStatus, ChatUserRole } from '@prisma/client'
+import { ChatRoom, MessageType, ChatUserStatus } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
-import { chatType } from '@prisma/client'
 import { ChatRepository } from './repository/chat.repository'
-import { CreateNotificationDto } from '@common/dtos/notification.dto'
+import { ChatRoomDto } from './dto/chat.dto'
 
 @Injectable()
 export class ChatService {
@@ -45,41 +44,6 @@ export class ChatService {
         }
     }
 
-    async getDMRoom(room_id: string) {
-        try {
-            const chat = await this.prisma.groupChat.findUnique({
-                where: {
-                    chat_room_id: room_id,
-                },
-            })
-            return chat
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async removeUserFromRoom(room_id: string, user_login: string) {
-        try {
-            const id = (await this.getChatUser(room_id, user_login)).id
-
-            const chat = await this.prisma.groupChat.update({
-                where: {
-                    chat_room_id: room_id,
-                },
-                data: {
-                    chat_user: {
-                        delete: {
-                            id: id,
-                        },
-                    },
-                },
-            })
-            return chat
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async updateChatUser(user_login: string, room_id: string, user: UpdateChatUserInterface) {
         try {
             const chatUser = await this.prisma.chatUser.update({
@@ -109,53 +73,6 @@ export class ChatService {
                 },
             })
             return chatUser
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async getDirectChatUser(room_id: string, user_login: string) {
-        try {
-            const chatUser = await this.prisma.directChat.findUnique({
-                where: {
-                    chat_room_id: room_id,
-                },
-                include: {
-                    users: true,
-                },
-            })
-            let check = false
-            if (chatUser)
-                chatUser.users.map(user => {
-                    if (user.login === user_login) {
-                        check = true
-                        return user
-                    }
-                })
-            return check
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async getDirectChatOtherUser(room_id: string, user_login: string) {
-        try {
-            const chatUser = await this.prisma.directChat.findUnique({
-                where: {
-                    chat_room_id: room_id,
-                },
-                include: {
-                    users: true,
-                },
-            })
-            let check: string = ''
-            chatUser.users.map(user => {
-                if (user.login !== user_login) {
-                    check = user.login
-                    return user
-                }
-            })
-            return check
         } catch (error) {
             console.log(error)
         }
@@ -217,25 +134,6 @@ export class ChatService {
         }
     }
 
-    async updateUserRole(user_login: string, room_id: string, role: ChatUserRole) {
-        try {
-            const chat = await this.prisma.chatUser.update({
-                where: {
-                    chat_user: {
-                        chat_room_id: room_id,
-                        user_login: user_login,
-                    },
-                },
-                data: {
-                    role: role,
-                },
-            })
-            return chat
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async findAllChats(login: string): Promise<any[]> {
         try {
             this.chatRooms = await this.prisma.chatRoom.findMany({
@@ -268,44 +166,6 @@ export class ChatService {
         } catch (error) {
             throw new Error(error)
         }
-    }
-
-    async findDirectChat(login1: string, login2: string): Promise<any> {
-        return await this.prisma.groupChat.findFirst({
-            where: {
-                chat_user: {
-                    every: {
-                        user: {
-                            login: {
-                                in: [login1, login2],
-                            },
-                        },
-                    },
-                },
-                type: chatType.PUBLIC,
-            },
-        })
-    }
-
-    async findAllChatUsers(roomId: string): Promise<any[]> {
-        return await this.prisma.chatUser.findMany({
-            where: {
-                chat_room_id: roomId,
-            },
-        })
-    }
-
-    async isDirect(room_id: string) {
-        //  return await this.prisma.chat.findFirst({
-        //       where: {
-        //             room_id: {
-        //                 equals: room_id
-        //             },
-        //             type: {
-        //                 equals: chatType.DIRECT
-        //             },
-        //       }
-        //  })
     }
 
     async validateChatRoom(room_id: string, user_login: string) {
@@ -366,55 +226,6 @@ export class ChatService {
         }
     }
 
-    async getDirectChatUsers(room_id: string) {
-        try {
-            const chat = await this.prisma.directChat.findUnique({
-                where: {
-                    chat_room_id: room_id,
-                },
-                select: {
-                    users: true,
-                },
-            })
-            return chat
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async getChatUserMessages(user_login: string) {
-        try {
-            const chat = await this.prisma.message.findMany({
-                where: {
-                    sender_login: user_login,
-                },
-            })
-            return chat
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async getDirectChatRooms(user: string) {
-        try {
-            const directChats = await this.prisma.directChat.findMany({
-                where: {
-                    users: {
-                        some: {
-                            login: user,
-                        },
-                    },
-                },
-                include: {
-                    users: true,
-                },
-            })
-            return directChats
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async checkCommonDirectChat(user_login: string, user_login2: string) {
         try {
             const chatRooms = await this.prisma.chatRoom.findMany({
@@ -435,38 +246,74 @@ export class ChatService {
         }
     }
 
-    async getDirectChatForUser(user_login: string) {
+    async createGroupChatRoom(value: ChatRoomDto, user_login: string) {
         try {
-            const chatRooms = await this.prisma.directChat.findMany({
-                where: {
-                    users: {
-                        some: {
-                            login: user_login,
-                        },
-                    },
-                },
-                include: {
-                    chat_room: {
-                        select: {
-                            messages: {
-                                orderBy: {
-                                    created_at: 'desc',
+            const chatRoom: ChatRoom = await this.prisma.chatRoom.create({
+                data: {
+                    room_id: value.room_id,
+                    type: 'GROUP',
+                    group_chat: {
+                        create: {
+                            name: value?.name,
+                            image: value?.image,
+                            type: value?.type,
+                            password: value?.password,
+                            chat_user: {
+                                createMany: {
+                                    data: {
+                                        user_login: user_login,
+                                        role: 'OWNER',
+                                        status: 'NORMAL',
+                                    },
                                 },
-                                take: 1,
-                            },
-                        },
-                    },
-                    users: {
-                        where: {
-                            NOT: {
-                                login: user_login,
                             },
                         },
                     },
                 },
             })
-            const sortedChat = await this.chatRepository.sort(chatRooms)
-            return sortedChat
+            return chatRoom
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getChatRoomMessages(room_id: string, page: number) {
+        try {
+            const chat = await this.prisma.message.findMany({
+                where: {
+                    chat_room: {
+                        room_id: room_id,
+                    },
+                },
+                include: {
+                    sender: true,
+                },
+                skip: (page - 1) * 20,
+                take: 20,
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getChatRoom(room_id: string) {
+        try {
+            const chat = await this.prisma.chatRoom.findUnique({
+                where: {
+                    room_id: room_id,
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getChatRooms() {
+        try {
+            const chatRooms = await this.prisma.chatRoom.findMany()
+            return chatRooms
         } catch (error) {
             console.log(error)
         }

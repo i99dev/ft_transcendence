@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto, PlayerDto } from '../../match-history/dto/match-history.dto'
 import { ConnectedUser } from '../interface/game.interface'
 import { NotificationService } from '@module/notification/notification.service'
-import { CreateNotificationDto } from '@common/dtos/notification.dto'
 import { NotificationType } from '@prisma/client'
 
 const ladderLevel = {
