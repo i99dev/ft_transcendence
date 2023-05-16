@@ -296,9 +296,9 @@ export class ChatService {
             page = 1
         else {
             if (page > msgNbr / 20)
-                page = Math.floor(msgNbr / 20)
+                page = Math.ceil(msgNbr / 20) + 1
             else {
-                page = Math.floor(msgNbr / 20) - page
+                page = Math.ceil(msgNbr / 20) - page + 1
             }
         }
         try {
