@@ -1,5 +1,5 @@
 import { GroupChatService } from './groupChat.service'
-import { Get, Param, ParseUUIDPipe, Query } from '@nestjs/common'
+import { Get, NotFoundException, Param, ParseUUIDPipe, Query } from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
@@ -50,7 +50,10 @@ export class ChatController {
     ) {
         if (page <= 0 || page > 1000000) return []
         if (!page) page = 1
-        return await this.chatService.getChatRoomMessages(room_id, page)
+        const msgs = await this.chatService.getChatRoomMessages(room_id, page)
+        if (msgs == null)
+            throw new NotFoundException('No Messages Found')
+        return msgs
     }
 
     @UseGuards(JwtAuthGuard)

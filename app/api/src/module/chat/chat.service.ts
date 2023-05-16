@@ -278,6 +278,29 @@ export class ChatService {
     }
 
     async getChatRoomMessages(room_id: string, page: number) {
+        let msgNbr: number = 0
+        try {
+            msgNbr = await this.prisma.message.count({
+                where: {
+                    chat_room: {
+                        room_id: room_id,
+                    },
+                },
+            })
+        } catch (error) {
+            console.log(error)
+        }
+        if (msgNbr === 0)
+            return null
+        if (msgNbr / 20 < 1)
+            page = 1
+        else {
+            if (page > msgNbr / 20)
+                page = Math.floor(msgNbr / 20)
+            else {
+                page = Math.floor(msgNbr / 20) - page
+            }
+        }
         try {
             const chat = await this.prisma.message.findMany({
                 where: {
@@ -285,9 +308,6 @@ export class ChatService {
                         room_id: room_id,
                     },
                 },
-                // orderBy: {
-                //     created_at: 'asc',
-                // },
                 include: {
                     sender: true,
                 },
