@@ -41,25 +41,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 definePageMeta({
     middleware: ['pages'],
 })
 
-let isFirsTimeUser = (useRoute().query.status == '201') ? true : false
+let isFirsTimeUser = ref((useRoute().query.status == '201') ? true : false)
 
 const closeSetup = () => {
 	isFirsTimeUser = false
 }
 
-const status = useRoute().query.status
-
 const IsProfile = ref(false)
 
 const { user_info } = useUserInfo()
-const userName = user_info.value.username
 
+const userName = user_info.value.username
 
 const handleUserSearch = (username: string) => {
     navigateTo(`/users/${username}`)
