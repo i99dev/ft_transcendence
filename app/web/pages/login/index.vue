@@ -17,7 +17,6 @@
 // remove the layout in login page
 definePageMeta({
     layout: false,
-    // middleware: ['pages'],
 })
 
 if (await useIsAuth()) navigateTo('/')

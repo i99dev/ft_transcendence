@@ -1,4 +1,4 @@
-import { gameAnalyzer } from './../game/logic/gameAnalyzer';
+import { gameAnalyzer } from './../game/logic/gameAnalyzer'
 import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common'
 import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
@@ -6,7 +6,10 @@ import { UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 @Controller('match-history/:login')
 export class MatchHistoryController {
-    constructor(private readonly matchHistoryService: MatchHistoryService, private gameAnalyzer: gameAnalyzer) {}
+    constructor(
+        private readonly matchHistoryService: MatchHistoryService,
+        private gameAnalyzer: gameAnalyzer,
+    ) {}
 
     @UseGuards(JwtAuthGuard)
     @Get('') // /match-history?page=1
@@ -29,15 +32,20 @@ export class MatchHistoryController {
         @Query('losing') losing: string,
     ): Promise<MatchHistoryDto[]> {
         if (winning === 'true') {
-            const history = await this.matchHistoryService.getMatchHistoryByResult(page, login, true)
-            if (!history)
-                throw new NotFoundException(`Match history for player ${login} not found`)
+            const history = await this.matchHistoryService.getMatchHistoryByResult(
+                page,
+                login,
+                true,
+            )
+            if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
             return history
-        }
-        else if (losing === 'true') {
-            const history = await this.matchHistoryService.getMatchHistoryByResult(page, login, false)
-            if (!history)
-                throw new NotFoundException(`Match history for player ${login} not found`)
+        } else if (losing === 'true') {
+            const history = await this.matchHistoryService.getMatchHistoryByResult(
+                page,
+                login,
+                false,
+            )
+            if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
             return history
         }
     }
@@ -50,8 +58,7 @@ export class MatchHistoryController {
         @Query('sort') sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
         const history = await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
-        if (!history)
-            throw new NotFoundException(`Match history for player ${login} not found`)
+        if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
         return history
     }
 

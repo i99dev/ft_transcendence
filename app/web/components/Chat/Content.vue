@@ -42,7 +42,9 @@
             </button>
 
             <button
-                @click="chatType === 'DM' ? goToUserProfile() : isChatInfoOpened = !isChatInfoOpened"
+                @click="
+                    chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened)
+                "
                 class="w-full flex hover:bg-slate-200 rounded-lg pl-2 focus:outline-indigo-400"
             >
                 <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">
@@ -93,7 +95,11 @@
                     >
                         {{ message.sender.username }}
                     </div>
-                    <div v-if="(chatType === 'DM') || (chatType === 'GROUP' && !isBlocked(message.sender))"
+                    <div
+                        v-if="
+                            chatType === 'DM' ||
+                            (chatType === 'GROUP' && !isBlocked(message.sender))
+                        "
                         class="break-words"
                         :class="{
                             'text-sm': message.type === 'SPECIAL',
@@ -101,12 +107,7 @@
                     >
                         {{ message.content }}
                     </div>
-                    <div
-                        v-else
-                        class="text-sm opacity-50 centered capitalize"
-                    >
-                        blocked content 
-                    </div>
+                    <div v-else class="text-sm opacity-50 centered capitalize">blocked content</div>
                     <button
                         v-if="
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
@@ -173,12 +174,11 @@
 
 <script lang="ts" setup>
 import { TrashIcon } from '@heroicons/vue/24/outline'
-import { Socket } from 'socket.io-client'
 
 const { user_info } = useUserInfo()
 const { isBlocked } = useBlock()
 
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { chatSocket } = useChatSocket()
 const messages = ref()
 const newMessage = ref('')
 const isChatInfoOpened = ref(false)
@@ -186,11 +186,18 @@ const { participants, setParticipants, updateParticipants } = useGroupChatPartic
 const me = ref()
 const participantsColors = ref(new Map<string, string>())
 const AmIAllowed = computed(() => {
-    return (chatType.value === 'GROUP' && me.value?.status === 'MUTE') || (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
+    return (
+        (chatType.value === 'GROUP' && me.value?.status === 'MUTE') ||
+        (chatType.value === 'DM' && isBlocked(currentChat.value?.users[0]))
+    )
 })
 const { chatType } = useChatType()
 const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
+
+watch(chatSocket, async () => {
+    socketOn()
+})
 
 onMounted(async () => {
     if (chatType.value === 'GROUP') {
@@ -210,24 +217,7 @@ onMounted(async () => {
 
     document.getElementById('message-input')?.focus()
 
-    chatSocket.value.on('add-message', (payload: chatMessage) => {
-        messages.value.push(payload)
-
-        //scroll to bottom
-        scrollToLastMessage()
-    })
-
-    chatSocket.value.on('delete-message', (payload: number) => {
-        messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
-    })
-
-    chatSocket.value.on('group-chat-users', (payload: ChatUser[]) => {
-        setParticipants(payload)
-        if (participants.value)
-            me.value = participants.value.find(
-                (participant: any) => participant.user_login === user_info.value.login,
-            )
-    })
+    socketOn()
 
     if (currentChat.value) {
         const { data } = await useChatMessages(currentChat.value?.chat_room_id)
@@ -236,6 +226,27 @@ onMounted(async () => {
         }
     }
 })
+
+const socketOn = () => {
+    chatSocket.value?.on('add-message', (payload: chatMessage) => {
+        messages.value.push(payload)
+
+        //scroll to bottom
+        scrollToLastMessage()
+    })
+
+    chatSocket.value?.on('delete-message', (payload: number) => {
+        messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
+    })
+
+    chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
+        setParticipants(payload)
+        if (participants.value)
+            me.value = participants.value.find(
+                (participant: any) => participant.user_login === user_info.value.login,
+            )
+    })
+}
 
 const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
@@ -254,7 +265,7 @@ const getDarkColor = () => {
 }
 
 const sendMessage = () => {
-    chatSocket.value.emit(
+    chatSocket.value?.emit(
         'add-message',
         JSON.stringify({ room_id: currentChat.value?.chat_room_id, message: newMessage.value }),
     )
@@ -262,7 +273,7 @@ const sendMessage = () => {
 }
 
 const deleteMessage = (message_id: number) => {
-    chatSocket.value.emit(
+    chatSocket.value?.emit(
         'delete-message',
         JSON.stringify({ room_id: currentChat.value?.chat_room_id, message_id: message_id }),
     )
