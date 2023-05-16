@@ -1,5 +1,5 @@
 import { isAscii } from 'class-validator'
-import { Injectable, PipeTransform } from '@nestjs/common'
+import { BadGatewayException, Injectable, PipeTransform } from '@nestjs/common'
 import { WsException } from '@nestjs/websockets'
 
 @Injectable()
@@ -12,7 +12,7 @@ export class ParseSocketStringPipe implements PipeTransform<string, string> {
             value.length > 255
         )
             flag = true
-        if (flag) throw new WsException('Invalid string')
+        if (flag) throw new BadGatewayException('Invalid string')
         return value
     }
 }

@@ -1,5 +1,4 @@
-import { isAscii } from 'class-validator'
-import { Injectable, PipeTransform } from '@nestjs/common'
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common'
 
 @Injectable()
 export class ParseStringPipe implements PipeTransform<string, string> {
@@ -11,7 +10,7 @@ export class ParseStringPipe implements PipeTransform<string, string> {
             value.length > 255
         )
             flag = true
-        if (flag) throw new Error('Invalid string')
+        if (flag) throw new BadRequestException('Invalid string')
         return value
     }
 }

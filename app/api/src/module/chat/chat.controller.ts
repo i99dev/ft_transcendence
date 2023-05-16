@@ -41,7 +41,7 @@ export class ChatController {
         else return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/:room_id/messages')
     async getRoomMessages(
         @Param('room_id', ParseStringPipe) room_id: string,

@@ -63,6 +63,8 @@ services:
             - PORT=${PORT}
             - EMAIL_USER=${EMAIL_USER}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+            - HOST=${HOST}
+            - PROTOCOL=${PROTOCOL}
 
         networks:
             - proxy_backend_net

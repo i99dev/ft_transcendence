@@ -285,6 +285,9 @@ export class ChatService {
                         room_id: room_id,
                     },
                 },
+                // orderBy: {
+                //     created_at: 'asc',
+                // },
                 include: {
                     sender: true,
                 },
