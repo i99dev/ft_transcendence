@@ -4,6 +4,7 @@ import { ChatRoom, MessageType, ChatUserStatus } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
 import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
+import { number } from 'joi'
 
 @Injectable()
 export class ChatService {
@@ -277,7 +278,7 @@ export class ChatService {
         }
     }
 
-    async getChatRoomMessages(room_id: string, page: number) {
+    async countMessagesInRoom(room_id: string) {
         let msgNbr: number = 0
         try {
             msgNbr = await this.prisma.message.count({
@@ -290,16 +291,21 @@ export class ChatService {
         } catch (error) {
             console.log(error)
         }
+        return msgNbr
+    }
+
+    async getChatRoomMessages(room_id: string, page: number) {
+        let msgNbr: number = 0
+        msgNbr = await this.countMessagesInRoom(room_id)
         if (msgNbr === 0)
             return null
         if (msgNbr / 20 < 1)
             page = 1
         else {
             if (page > msgNbr / 20)
-                page = Math.ceil(msgNbr / 20) + 1
-            else {
-                page = Math.ceil(msgNbr / 20) - page + 1
-            }
+                page = 1
+            else
+                page = (msgNbr / 20) - page + 1
         }
         try {
             const chat = await this.prisma.message.findMany({
