@@ -3,6 +3,7 @@ import { MatchHistoryDto, PlayerDto } from '../../match-history/dto/match-histor
 import { ConnectedUser } from '../interface/game.interface'
 import { NotificationService } from '@module/notification/notification.service'
 import { NotificationType } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 const ladderLevel = {
     CapinBoy: { Rank: 6, lowXP: 0, highXP: 100, winRate: 0 },
@@ -14,7 +15,7 @@ const ladderLevel = {
 }
 export class gameAnalyzer {
     private prisma = new PrismaClient()
-    private notificationService = new NotificationService()
+    private notificationService = new NotificationService(new PrismaService())
 
     // Data retrievals
     async getTotalVictories(player: string): Promise<number> {

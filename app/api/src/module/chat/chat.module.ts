@@ -13,7 +13,6 @@ import { ChatWsModule } from './gateway/chatWs.module'
     controllers: [ChatController],
     providers: [
         ChatService,
-        PrismaClient,
         PrismaService,
         GroupChatService,
         ChatRepository,

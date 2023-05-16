@@ -10,7 +10,7 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 @Module({
     imports: [FriendModule, forwardRef(() => FriendWsModule)],
     controllers: [BlockController],
-    providers: [BlockService, PrismaService, PrismaClient, JwtService],
+    providers: [BlockService, PrismaService, JwtService],
     exports: [BlockService],
 })
 export class BlockModule {}

@@ -1,13 +1,12 @@
-import { PrismaClient } from '@prisma/client'
+import { gameAnalyzer } from '@module/game/logic/gameAnalyzer';
 import { Injectable } from '@nestjs/common'
-import { gameAnalyzer } from '../game/logic/gameAnalyzer'
 import { AchievementDto } from './dto/achievement.dto'
 import { NotificationType } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service';
 
 @Injectable({})
 export class AchievementService {
-    public gameAnalyzer = new gameAnalyzer()
-    private prisma = new PrismaClient()
+    constructor(private gameAnalyzer: gameAnalyzer, private prisma: PrismaService) {}
 
     async getAchievements(login: string): Promise<AchievementDto[]> {
         const user = await this.prisma.user.findUnique({

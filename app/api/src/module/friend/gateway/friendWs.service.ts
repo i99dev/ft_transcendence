@@ -1,13 +1,13 @@
 import { JwtService } from '@nestjs/jwt'
 import { Injectable } from '@nestjs/common'
 import { FriendService } from '../friend.service'
-import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class FriendWsService {
     constructor(
         private friendService: FriendService,
-        private prisma: PrismaClient,
+        private prisma: PrismaService,
         private jwtService: JwtService,
     ) {}
 

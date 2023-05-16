@@ -9,9 +9,7 @@ import { UserGetDto } from '@module/user/dto/user.dto'
 
 @Injectable({})
 export class FriendService {
-    constructor(private repository: FriendRepository) {}
-    userService = new UserService(new PrismaService(), new UserRepository())
-    prisma = new PrismaClient()
+    constructor(private repository: FriendRepository, private prisma: PrismaService, private userService: UserService) {}
 
     async validateUsers(user: string, friend: string) {
         try {
