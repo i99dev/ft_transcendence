@@ -34,7 +34,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         private gameService: DefaultService,
         private socketService: SocketService,
         private jwtService: JwtService,
-    ) {}
+    ) { }
 
     afterInit(server: Server) {
         this.socketService.setServer(server)
@@ -67,13 +67,13 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         // this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
-    @UseGuards(WsGuard)
+    // @UseGuards(WsGuard)
     @SubscribeMessage('Give-Up')
     giveUp(@ConnectedSocket() client: Socket, @MessageBody() player: PlayerDto) {
         this.gameService.giveUp(client)
     }
 
-    @UseGuards(WsGuard)
+    // @UseGuards(WsGuard)
     @SubscribeMessage('Power-Up')
     PowerupStart(
         @ConnectedSocket() client: Socket,
@@ -82,7 +82,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.activatePowerUp(client, powerUp)
     }
 
-    @UseGuards(WsGuard)
+    // @UseGuards(WsGuard)
     @SubscribeMessage('move')
     movePlayer(
         @ConnectedSocket() client: Socket,
@@ -91,7 +91,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.movePaddle(client, direction)
     }
 
-    @UseGuards(WsGuard)
+    // @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)

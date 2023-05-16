@@ -35,6 +35,8 @@
                 </div>
                 <!-- Acheivement popup -->
                 <AchievPoPUp />
+                <GameInviteBox v-if="inviteModal.open" />
+
             </div>
         </div>
     </div>
@@ -42,6 +44,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
+const { inviteModal } = useGameInvite()
 
 definePageMeta({
     middleware: ['pages'],
