@@ -11,7 +11,6 @@ export async function useMe(): Promise<any> {
         },
         // server: false,
     })
-	console.log("MEEEE->>>", data)
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }
 }

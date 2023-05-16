@@ -307,7 +307,6 @@ const handleFilteration = async (filter: string) => {
     if (data && game_history) game_history.values = data
     currentFilter.value = filter
     isFilter.value.set(filter, true)
-    console.log(filter)
 }
 
 const getLadderRank = (ladder: number | undefined) => {

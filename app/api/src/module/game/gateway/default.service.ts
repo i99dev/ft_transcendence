@@ -283,7 +283,7 @@ export class DefaultService {
             player1.game = null
             player1.status = 'online'
             this.repo.updatePlayerStatus('ONLINE', player1.id)
-            // player1.socket.leave(game.getGameID())
+            player1.socket.leave(game.getGameID())
         }
         const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
         if (player2) {

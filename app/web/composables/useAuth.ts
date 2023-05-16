@@ -17,8 +17,7 @@ export const refreshAccessToken = async (reconnect: boolean = true) => {
 export async function useLogin(code: string): Promise<any> {
 	let status = 200
 	const { data, error: errorRef } = await useFetch('auth/login', {
-		onResponse({request, response, options}) {
-			console.log('auth/login', response.status)
+		onResponse({response}) {
 			status = response.status
         },
 		method: 'POST',
@@ -27,7 +26,6 @@ export async function useLogin(code: string): Promise<any> {
         },
         baseURL: useRuntimeConfig().API_URL,
     })
-	// console.log('auth/login', execute, pending, refresh, data)
     const error = errorRef.value as FetchError<any> | null
     return { data, error, status }
 }

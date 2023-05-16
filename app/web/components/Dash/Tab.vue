@@ -78,8 +78,6 @@ const props = defineProps({
 const user = await getUserbyUserName(props.username)
 const { user_info } = useUserInfo()
 
-console.log("useInfoo", user_info.value)
-
 const isMe = computed(() => {
     return user_info.value.id === user.id
 })

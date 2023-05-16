@@ -90,7 +90,6 @@ const reader = ref(new FileReader())
 
 const uploadeImage = async (event) => {
 	const file = event.target.files[0]
-	console.log('file', file)
 	if (!file) return
 	
 	formData.value.append('file', file)
@@ -112,8 +111,7 @@ const submitProfile = async () => {
 	if (newAvatar.value != '') {
 		await useUplaod(userData.value.login, formData.value)
 	}
-	console.log('newUsername', newUsername.value)
     emit('close')
-	navigateTo('/')
+	window.location.reload()
 }
 </script>

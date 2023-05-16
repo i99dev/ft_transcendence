@@ -55,17 +55,10 @@ const closeSetup = () => {
 
 const status = useRoute().query.status
 
-console.log('status', status)
-
 const IsProfile = ref(false)
 
 const { user_info } = useUserInfo()
 const userName = user_info.value.username
-
-onMounted(() => {
-
-	console.log('userName->>>>>>>>>>>>>>', userName)
-})
 
 
 const handleUserSearch = (username: string) => {

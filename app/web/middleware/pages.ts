@@ -3,7 +3,4 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (!isLogin) return navigateTo('/login')
 	if (to.path === '/' && to.query.status === '201' && from.path !== '/callback')
 		return navigateTo('/')
-	console.log('to', to.path, to.query)
-	console.log('from', from.path, from.query)
-
 })
