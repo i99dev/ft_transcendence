@@ -33,7 +33,9 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
 }
 
 export function useGameInvite() {
-    const invite = ref<InviteDto | null>(null);
+    const invite = useState<InviteDto | null>('invite', () => {
+        return null;
+    });
 
     //object that contains the type of the invite modal and the game type and the inviter
     const inviteModal = useState<InviteModal>('inviteModal', () => {
@@ -48,14 +50,15 @@ export function useGameInvite() {
     const { socket } = useSocket();
 
     socket.value?.on('Invite-Received', (payload: InviteDto) => {
+        console.log('Invite-Received', payload);
         invite.value = payload;
         inviteModal.value.type = 'invited';
         inviteModal.value.gameType = payload.gameType;
         inviteModal.value.open = true;
     });
 
-    const sendInvite = (invite: InviteDto) => {
-        socket.value?.emit('Send-Invite', invite);
+    const send = (invite: InviteDto) => {
+        socket.value?.emit('Send-Invite', JSON.stringify(invite));
     };
 
     const acceptInvite = () => {
@@ -76,5 +79,5 @@ export function useGameInvite() {
         inviteModal.value.gameType = ''
     };
 
-    return { invite, inviteModal, sendInvite, acceptInvite, declineInvite, reset };
+    return { invite, inviteModal, send, acceptInvite, declineInvite, reset };
 }

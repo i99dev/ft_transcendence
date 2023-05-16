@@ -175,7 +175,7 @@ declare global {
     interface InviteDto {
         inviterId: string;
         invitedId: string;
-        gameType: 'classic' | 'custom';
+        gameType: string;
         powerups: string[];
         accepted?: boolean;
     }

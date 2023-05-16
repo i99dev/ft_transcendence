@@ -7,6 +7,7 @@ import { GameSelectDto, PlayerDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { GameRepository } from '../repository/game.repository'
+import e from 'express'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
@@ -20,7 +21,7 @@ export class DefaultService {
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService) {}
+    constructor(private socketService: SocketService) { }
 
     /* 
         Adds a new user to connected_users array
@@ -100,6 +101,20 @@ export class DefaultService {
             this.createMultiGame(player, opponent, gameInfo.gameType)
             player.status = 'ingame'
             opponent.status = 'ingame'
+        }
+    }
+    
+    public sendInvite(userSocket: Socket, invite: any) {
+        const user = this.connected_users.find(user => user.socket == userSocket)
+        const opponent = this.connected_users.find(user => user.id == invite.invitedId)
+        invite.inviterId = user.id
+        if (opponent) {
+            opponent.socket.emit('Invite-Received', invite)
+            console.log('Invite sent', invite)
+        }
+        else {
+            userSocket.emit('Respond-Invite', 'User not found')
+            console.log('User not found', invite)
         }
     }
 
