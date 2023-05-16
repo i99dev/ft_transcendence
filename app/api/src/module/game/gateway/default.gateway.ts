@@ -16,6 +16,8 @@ import { GameSelectDto, PlayerDto } from '../dto/game.dto'
 import { SocketService } from './socket.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
+import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 @WebSocketGateway({
     namespace: '/game',
     cors: { origin: '*' },
@@ -73,13 +75,13 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Power-Up')
-    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: 1 | 2) {
+    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody(new PosNumberPipe()) powerUp: 1 | 2) {
         this.gameService.activatePowerUp(client, powerUp)
     }
 
     @UseGuards(WsGuard)
     @SubscribeMessage('move')
-    movePlayer(@ConnectedSocket() client: Socket, @MessageBody() direction: 'up' | 'down') {
+    movePlayer(@ConnectedSocket() client: Socket, @MessageBody(new ParseStringPipe()) direction: 'up' | 'down') {
         this.gameService.movePaddle(client, direction)
     }
 

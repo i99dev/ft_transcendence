@@ -44,14 +44,12 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     private clients: Map<string, string> = new Map()
     private sockets: Map<string, Socket> = new Map()
-    private query_id: any
 
     constructor(
         private chatWsService: ChatWsService,
         private chatService: ChatService,
         private groupChatService: GroupChatService,
         private userService: UserService,
-        private jwtService: JwtService,
         private notificationService: NotificationService,
         private blockService: BlockService,
         private configService: ConfigService,
@@ -92,7 +90,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             client.handshake.auth.login,
             `${this.configService.get<string>(
                 'server.protocol',
-            )}://${this.configService.get<string>('server.host')}`,
+            )}://${this.configService.get<string>(
+                'server.host',
+            )}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')
         client.join(chatRoom.room_id)

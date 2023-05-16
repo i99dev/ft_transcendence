@@ -38,9 +38,9 @@ export class UserService {
         return user
     }
 
-    async updateUser(data): Promise<User> {
+    async updateUser(data, login: string): Promise<User> {
         return await this.prisma.user.update({
-            where: { login: data.login },
+            where: { login: login },
             data: {
                 first_name: data?.first_name,
                 last_name: data?.last_name,
