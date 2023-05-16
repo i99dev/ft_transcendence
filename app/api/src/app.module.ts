@@ -17,8 +17,15 @@ import { MailerModule } from '@nestjs-modules/mailer'
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { BlockModule } from '@module/block/block.module'
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { APP_GUARD } from '@nestjs/core';
+
 @Module({
     imports: [
+        ThrottlerModule.forRoot({
+            ttl: 60,
+            limit: 10,
+        }),
         MailerModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -61,6 +68,9 @@ import { BlockModule } from '@module/block/block.module'
         BlockModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, {
+        provide: APP_GUARD,
+        useClass: ThrottlerGuard,
+      },],
 })
 export class AppModule {}

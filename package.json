@@ -29,5 +29,7 @@
             "internal": "Internal"
         }
     },
-    "dependencies": {}
+    "dependencies": {
+        "@nestjs/throttler": "^4.0.0"
+    }
 }
