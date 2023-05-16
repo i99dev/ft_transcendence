@@ -1,5 +1,12 @@
 import { GroupChatService } from './groupChat.service'
-import { BadRequestException, Get, NotFoundException, Param, ParseUUIDPipe, Query } from '@nestjs/common'
+import {
+    BadRequestException,
+    Get,
+    NotFoundException,
+    Param,
+    ParseUUIDPipe,
+    Query,
+} from '@nestjs/common'
 import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
@@ -49,13 +56,12 @@ export class ChatController {
         @Query('page', PosNumberPipe) page: number,
         @Query('sort') sort: string,
     ) {
-
         if (page <= 0 || page > 1000000) throw new BadRequestException('Invalid page number')
-        if (sort && sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
+        if (sort && sort !== 'asc' && sort !== 'desc')
+            throw new BadRequestException('Invalid sort type')
         if (!page) page = 1
         const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort)
-        if (msgs == null)
-            throw new NotFoundException('No Messages Found')
+        if (msgs == null) throw new NotFoundException('No Messages Found')
         return msgs
     }
 

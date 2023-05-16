@@ -2,7 +2,7 @@ import { gameAnalyzer } from './../game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { JwtService } from '@nestjs/jwt'
-import { PrismaService } from '@providers/prisma/prisma.service';
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class MatchHistoryService {

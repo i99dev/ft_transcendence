@@ -10,13 +10,7 @@ import { ChatWsModule } from './gateway/chatWs.module'
 @Module({
     imports: [forwardRef(() => ChatWsModule)],
     controllers: [ChatController],
-    providers: [
-        ChatService,
-        PrismaService,
-        GroupChatService,
-        ChatRepository,
-        DirectChatService,
-    ],
+    providers: [ChatService, PrismaService, GroupChatService, ChatRepository, DirectChatService],
     exports: [ChatService, GroupChatService, DirectChatService, ChatRepository],
 })
 export class ChatModule {}

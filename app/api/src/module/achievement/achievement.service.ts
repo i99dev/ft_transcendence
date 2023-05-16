@@ -1,8 +1,8 @@
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer';
+import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { AchievementDto } from './dto/achievement.dto'
 import { NotificationType } from '@prisma/client'
-import { PrismaService } from '@providers/prisma/prisma.service';
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable({})
 export class AchievementService {
