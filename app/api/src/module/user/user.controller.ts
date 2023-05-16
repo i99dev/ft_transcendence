@@ -21,6 +21,7 @@ import {
     ApiParam,
     ApiBody,
 } from '@nestjs/swagger'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -37,8 +38,8 @@ export class UserController {
         tags: ['users'],
     })
     async GetUsers(
-        @Query('sort') sort: string,
-        @Query('order') order: string,
+        @Query('sort', ParseStringPipe) sort: string,
+        @Query('order', ParseStringPipe) order: string,
     ): Promise<UserGetDto[]> {
         const type = { [sort]: order }
         return await this.UserService.SortMany(type)
@@ -64,13 +65,13 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async SearchUser(@Query('search') search: string, @Req() req) {
+    async SearchUser(@Query('search', ParseStringPipe) search: string, @Req() req) {
         return await this.UserService.SearchUser(search)
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/search/:name')
-    async SearchUserByName(@Param('name') name: string) {
+    async SearchUserByName(@Param('name', ParseStringPipe) name: string) {
         return await this.UserService.SearchUserNames(name)
     }
 
@@ -87,12 +88,12 @@ export class UserController {
         type: String,
         required: true,
     })
-    async GetUser(@Param('name') name: string): Promise<UserGetDto> {
+    async GetUser(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
         return await this.UserService.checkUser(await this.UserService.getUser(name))
     }
 
     @Get('username/:name/')
-    async GetUserByUserName(@Param('name') name: string): Promise<UserGetDto> {
+    async GetUserByUserName(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
         return await this.UserService.checkUser(await this.UserService.getUserbyUserName(name))
     }
 
@@ -109,15 +110,15 @@ export class UserController {
         required: true,
     })
     async UpdateUser(
-        @Param('name') name: string,
+        @Param('name', ParseStringPipe) name: string,
         @Body(new ValidationPipe()) data: UserPatchDto,
     ): Promise<UserGetDto> {
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
-        return await this.UserService.updateUser(data)
+        return await this.UserService.updateUser(data, existingUser.login)
     }
 
     @Delete('/:name')
-    async DeleteUser(@Param('name') name: string): Promise<UserGetDto> {
+    async DeleteUser(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
         return await this.UserService.DeleteUser(name)
     }
 }
