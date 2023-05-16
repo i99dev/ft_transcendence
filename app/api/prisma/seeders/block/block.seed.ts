@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class BlockSeeder {
-    private prisma = new PrismaClient()
+    private prisma = new PrismaService()
 
     async seedBlock() {
         await this.prisma.user.update({

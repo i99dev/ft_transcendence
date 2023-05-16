@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ChatUserRole, ChatUser, PrismaClient } from '@prisma/client'
+import { ChatUserRole, ChatUser } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class ChatUserSeeder {
-    private prisma = new PrismaClient()
+    private prisma = new PrismaService()
     private chatUsers: ChatUser[]
 
     async seedChatUsers(): Promise<ChatUser[]> {

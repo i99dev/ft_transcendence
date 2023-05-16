@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { Achievement, PrismaClient, User } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class AchievementSeeder {
-    private prisma = new PrismaClient()
+    private prisma = new PrismaService()
     private achievements: Achievement[]
 
     async seedAchievements(): Promise<Achievement[]> {

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { DirectChat, PrismaClient } from '@prisma/client'
+import { DirectChat } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class DirectChatSeeder {
-    private prisma = new PrismaClient()
+    private prisma = new PrismaService()
     private directChats: DirectChat[]
 
     async seedDirectChats(): Promise<DirectChat[]> {

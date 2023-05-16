@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { PowerUp, PrismaClient, User } from '@prisma/client'
+import { PowerUp, User } from '@prisma/client'
 import { UserSeeder } from '../user/user.seeder'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class PowerUpSeeder {
-    private prisma = new PrismaClient()
+    private prisma = new PrismaService()
     private powerUps: PowerUp[]
 
     async seedPowerUps(): Promise<PowerUp[]> {

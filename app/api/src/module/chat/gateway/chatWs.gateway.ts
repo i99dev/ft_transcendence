@@ -530,6 +530,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     getID(client: Socket) {
         let user: string
+        console.log('here1')
         if (client.handshake.query.user_login) user = client.handshake.query.user_login.toString()
         if (!user) {
             user = this.chatWsService.extractUserFromJwt(client.handshake.headers.authorization)

@@ -3,7 +3,6 @@ import { UserGetDto } from './../../../src/module/user/dto/user.dto'
 import { UserService } from './../../../src/module/user/user.service'
 import { FriendService } from '../../../src/module/friend/friend.service'
 import { UserRepository } from './../../../src/module/user/repository/user.repository'
-import { PrismaClient } from '@prisma/client'
 import { PrismaService } from '@providers/prisma/prisma.service'
 
 describe('CheckFriendsUpdate', () => {

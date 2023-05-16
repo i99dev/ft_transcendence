@@ -209,6 +209,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         if (!user) {
             user = this.friendWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
+                console.log('here3')
                 this.logger.error('Invalid token')
                 return client.disconnect()
             }

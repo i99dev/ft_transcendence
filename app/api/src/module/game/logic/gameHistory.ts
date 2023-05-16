@@ -1,11 +1,12 @@
 // import { MatchHistory } from '@prisma/client'
-import { gameStatusDto, PlayerDto } from '../dto/game.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
+import { gameStatusDto, PlayerDto } from '../dto/game.dto'
 
 export class gameHistory {
+    private prisma = new PrismaService()
     private game: gameStatusDto
 
-    constructor(game: gameStatusDto, private prisma: PrismaService) {
+    constructor(game: gameStatusDto) {
         this.game = game
         this.createGame()
     }
@@ -87,13 +88,11 @@ export class gameHistory {
     }
 
     public async createGame(): Promise<void> {
-        if (this.game){
-            await this.prisma.match.create({
-                data: {
-                    gameID: this.game.players[0].gameID,
-                    start: new Date(),
-                },
-            })
-        }
+        await this.prisma.match.create({
+            data: {
+                gameID: this.game.players[0].gameID,
+                start: new Date(),
+            },
+        })
     }
 }

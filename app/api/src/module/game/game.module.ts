@@ -6,11 +6,12 @@ import { gameAnalyzer } from './logic/gameAnalyzer'
 import { gameHistory } from './logic/gameHistory'
 import { PongGame } from './logic/pongGame'
 import { GameRepository } from './repository/game.repository'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
     imports: [forwardRef(() => DefaultModule)],
     controllers: [GameController],
-    providers: [GameService, gameAnalyzer, gameHistory, PongGame, GameRepository],
-    exports: [GameService, gameAnalyzer, gameHistory, PongGame, GameRepository],
+    providers: [GameService],
+    exports: [GameService],
 })
 export class GameModule {}
