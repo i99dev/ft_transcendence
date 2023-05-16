@@ -63,7 +63,10 @@
                 id="chat-messages"
                 class="bg-white overflow-y-scroll box-content flex flex-col h-full"
             >
-                <div class="centered">
+                <div
+                    class="centered"
+                    v-if="enableLoadMoreButton"
+                >
                     <button
                         class="bg-slate-200 p-2 rounded-2xl my-2"
                         @click="loadMoreMessages(messagesPage)"
@@ -189,6 +192,7 @@ const { isBlocked } = useBlock()
 const { chatSocket } = useChatSocket()
 const messages = ref()
 const messagesPage = ref(1)
+const enableLoadMoreButton = ref(true)
 const newMessage = ref('')
 const isChatInfoOpened = ref(false)
 const { participants, setParticipants, updateParticipants } = useGroupChatParticipants()
@@ -280,8 +284,7 @@ const loadMoreMessages = async (page : number = 1) => {
     if (currentChat.value) {
         const { data } = await useChatMessages(currentChat.value?.chat_room_id, page)
         if (data.value) {
-            console.log(page)
-            console.log(data.value)
+            if (data.value.length < 20) enableLoadMoreButton.value = false
             if (!messages.value) messages.value = data.value
             else messages.value = messages.value.concat(data.value)
         }
