@@ -114,7 +114,7 @@ export class UserController {
         @Body(new ValidationPipe()) data: UserPatchDto,
     ): Promise<UserGetDto> {
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
-        return await this.UserService.updateUser(data)
+        return await this.UserService.updateUser(data, existingUser.login)
     }
 
     @Delete('/:name')
