@@ -41,7 +41,8 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     handleConnection(client: Socket, ...args: any[]) {
         if (this.clients.has(this.getID(client) as unknown as string)) {
             this.logger.log(`Client "${client.id}" is already connected to friends`)
-            return client.disconnect()
+            client.disconnect()
+            return
         }
         this.logger.log(`Client "${client.id}" connected to friends`)
         this.clients.set(this.getID(client) as unknown as string, client.id)
@@ -209,9 +210,9 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         if (!user) {
             user = this.friendWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
-                console.log('here3')
                 this.logger.error('Invalid token')
-                return client.disconnect()
+                client.disconnect()
+                return
             }
         }
         return user

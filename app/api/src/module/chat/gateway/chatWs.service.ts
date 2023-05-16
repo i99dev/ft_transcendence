@@ -108,7 +108,6 @@ export class ChatWsService {
     }
 
     async handleAdminSetup(payload: SetUserDto, user_login: string) {
-        console.log('here2')
         if (payload.action === 'upgrade') await this.makeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'downgrade')
             await this.removeAdmin(payload.room_id, payload.user_login)
