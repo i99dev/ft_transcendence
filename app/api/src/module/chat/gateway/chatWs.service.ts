@@ -44,7 +44,7 @@ export class ChatWsService {
             payload.image = `${this.configService.get<string>(
                 'server.protocol',
             )}://${this.configService.get<string>(
-                'server.host',
+                'server.ip',
             )}/api/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
         const chatRoom = await this.chatService.createGroupChatRoom(

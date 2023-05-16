@@ -91,7 +91,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             `${this.configService.get<string>(
                 'server.protocol',
             )}://${this.configService.get<string>(
-                'server.host',
+                'server.ip',
             )}`,
         )
         if (!chatRoom) return this.socketError('Failure in group chat creation!!')

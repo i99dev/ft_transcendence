@@ -4,7 +4,7 @@ export const useChatSocket = () => {
     const chatSocket = useState<Socket | undefined>('chatSocket', undefined)
 
     const connectChatSocket = (): void => {
-        chatSocket.value = io(`ws://${useRuntimeConfig().public.HOST}/chat`, {
+        chatSocket.value = io(`ws://localhost/chat`, {
             withCredentials: true,
             extraHeaders: {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -29,7 +29,7 @@ export const useGameSocket = () => {
     const gameSocket = useState<Socket | undefined>('gameSocket', undefined)
 
     const connectGameSocket = (): void => {
-        gameSocket.value = io(`ws://${useRuntimeConfig().public.HOST}/game`, {
+        gameSocket.value = io(`ws://localhost/game`, {
             withCredentials: true,
             extraHeaders: {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -54,7 +54,7 @@ export const useFriendSocket = () => {
     const friendSocket = useState<Socket | undefined>('friendSocket', undefined)
 
     const connectFriendSocket = (): void => {
-        friendSocket.value = io(`ws://${useRuntimeConfig().public.HOST}/friend`, {
+        friendSocket.value = io(`ws://localhost/friend`, {
             withCredentials: true,
             extraHeaders: {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
