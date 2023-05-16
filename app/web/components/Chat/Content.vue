@@ -64,8 +64,19 @@
                 class="bg-white overflow-y-scroll box-content flex flex-col h-full"
             >
                 <div
+                    class="centered"
+                    v-if="enableLoadMoreButton"
+                >
+                    <button
+                        class="bg-slate-200 p-2 rounded-2xl my-2"
+                        @click="loadMoreMessages(messagesPage)"
+                    >
+                        Load more
+                    </button>
+                </div>
+                <div
                     class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
-                    v-for="message in messages" :key="message.id"
+                    v-for="message in messages?.slice().reverse()"
                     :class="{
                         'bg-indigo-200':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
@@ -181,6 +192,8 @@ const { isBlocked } = useBlock()
 
 const { chatSocket } = useChatSocket()
 const messages = ref()
+const messagesPage = ref(1)
+const enableLoadMoreButton = ref(true)
 const newMessage = ref('')
 const isChatInfoOpened = ref(false)
 const { participants, setParticipants, updateParticipants } = useGroupChatParticipants()
@@ -216,17 +229,12 @@ onMounted(async () => {
 
     socketOn()
 
-    if (currentChat.value) {
-        const { data } = await useChatMessages(currentChat.value?.chat_room_id)
-        if (data) {
-            messages.value = data.value
-        }
-    }
+    loadMoreMessages()
 })
 
 const socketOn = () => {
     chatSocket.value?.on('add-message', (payload: chatMessage) => {
-        messages.value.push(payload)
+        messages.value.unshift(payload)
 
         //scroll to bottom
         scrollToLastMessage()
@@ -267,6 +275,18 @@ const sendMessage = () => {
         JSON.stringify({ room_id: currentChat.value?.chat_room_id, message: newMessage.value }),
     )
     newMessage.value = ''
+}
+
+const loadMoreMessages = async (page : number = 1) => {
+    if (currentChat.value) {
+        const { data } = await useChatMessages(currentChat.value?.chat_room_id, page)
+        if (data.value) {
+            if (data.value.length < 20) enableLoadMoreButton.value = false
+            if (!messages.value) messages.value = data.value
+            else messages.value = messages.value.concat(data.value)
+        }
+    }
+    messagesPage.value++
 }
 
 const deleteMessage = (message_id: number) => {

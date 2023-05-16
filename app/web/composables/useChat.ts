@@ -94,7 +94,7 @@ export async function useGroupChatSearch(name: string): Promise<any> {
     return { data, error, refresh, pending }
 }
 
-export async function useChatMessages(room_id: string): Promise<any> {
+export async function useChatMessages(room_id: string, page: number = 1): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -104,6 +104,10 @@ export async function useChatMessages(room_id: string): Promise<any> {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        query: {
+            page: page,
+            sort: 'desc',
         },
         server: false,
     })
@@ -122,7 +126,7 @@ export const useChatType = () => {
                 : type === 'GROUP'
                 ? await useGroupChats()
                 : await useGroupChatSearch('')
-        if (data) setChats(data.value)
+        if (data.value) setChats(data.value)
 
         chatType.value = type
     }
