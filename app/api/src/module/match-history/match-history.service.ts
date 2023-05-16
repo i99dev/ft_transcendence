@@ -1,6 +1,5 @@
 import { gameAnalyzer } from './../game/logic/gameAnalyzer';
 import { Injectable } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from '@providers/prisma/prisma.service';

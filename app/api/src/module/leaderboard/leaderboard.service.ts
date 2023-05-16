@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
 import { gameAnalyzer } from '../game/logic/gameAnalyzer'
 import { UserGetDto } from '@module/user/dto/user.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'

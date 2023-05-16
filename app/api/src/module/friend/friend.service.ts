@@ -1,10 +1,8 @@
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { UserService } from './../user/user.service'
-import { PrismaClient } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { FriendRepository } from './repository/friend.repository'
 import { NotFoundException } from '@nestjs/common'
-import { UserRepository } from '../user/repository/user.repository'
 import { UserGetDto } from '@module/user/dto/user.dto'
 
 @Injectable({})
