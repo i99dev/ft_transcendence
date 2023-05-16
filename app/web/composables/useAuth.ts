@@ -3,25 +3,31 @@ export const useIsAuth = async () => {
     return data.value ? true : false
 }
 
-export const refreshAccessToken = async () => {
+export const refreshAccessToken = async (reconnect: boolean = true) => {
+    const { reconnectSockets } = useSockets()
     const { data, error } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
     })
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo) setCookies(tokenInfo)
+    if (tokenInfo) await setCookies(tokenInfo)
+    if (reconnect) reconnectSockets()
     return error.value?.status
 }
 
 export async function useLogin(code: string): Promise<any> {
-    const { data, error: errorRef } = await useFetch('auth/login', {
-        method: 'POST',
+	let status = 200
+	const { data, error: errorRef } = await useFetch('auth/login', {
+		onResponse({response}) {
+			status = response.status
+        },
+		method: 'POST',
         body: {
             code: code,
         },
         baseURL: useRuntimeConfig().API_URL,
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error }
+    return { data, error, status }
 }
 
 export async function useResendVerificationCode(user: string): Promise<any> {
@@ -62,11 +68,18 @@ export const useLogout = async () => {
 export const useAuth = async (route: any) => {
     if (route.path === '/callback' && !route.query.code) return navigateTo('/login')
 
-    const { data, error } = await useLogin(route.query.code.toString())
+    const { data, error, status } = await useLogin(route.query.code.toString())
 
     const tokenInfo = data.value as AccessTokenDto | null
     if (tokenInfo) setCookies(tokenInfo)
 
+	if (status === 201)
+		return navigateTo({
+			path: '/',
+			query: {
+				status: status,
+			},
+		})
     return data.value.access_token
         ? navigateTo('/')
         : data.value.two_fac_auth

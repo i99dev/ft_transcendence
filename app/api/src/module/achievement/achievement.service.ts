@@ -17,8 +17,7 @@ export class AchievementService {
                 achievements: true,
             },
         })
-        if (!user || !user.achievements)
-            return null
+        if (!user || !user.achievements) return null
         return user.achievements
     }
 
@@ -55,11 +54,8 @@ export class AchievementService {
                 type: NotificationType.ACHIEVEMENT,
             },
         })
-        if (!notification)
-            return null
-        if (notification.length)
-            if (notification.length === 0)
-                return null
+        if (!notification) return null
+        if (notification.length) if (notification.length === 0) return null
         const achievements = []
         for (const notif of notification) {
             achievements.push(notif.content)

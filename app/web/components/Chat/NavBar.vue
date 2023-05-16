@@ -40,10 +40,7 @@
                                         v-if="chatView"
                                         @closeNavBar="setChatModalOpen(false)"
                                     />
-                                    <ChatContent
-                                        v-else
-                                        @closeNavBar="setChatModalOpen(false)"
-                                    />
+                                    <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -57,6 +54,7 @@
 <script lang="ts" setup>
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
+import { computed, watch } from 'vue'
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
 

@@ -15,7 +15,7 @@ export class GroupChatSeeder {
                     chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7617',
                     name: 'Mayers',
                     type: chatType.PUBLIC,
-                    image: `${process.env.PROTOCOL}://${process.env.HOST}/api/multer/download/default_image/files/default.png`,
+                    image: `${process.env.PROTOCOL}://${process.env.IP}/api/multer/download/default_image/files/default.png`,
                 },
             }),
             await this.prisma.groupChat.upsert({
@@ -25,7 +25,7 @@ export class GroupChatSeeder {
                     chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7618',
                     name: 'Novembers',
                     type: chatType.PRIVATE,
-                    image: `${process.env.PROTOCOL}://${process.env.HOST}/api/multer/download/default_image/files/default.png`,
+                    image: `${process.env.PROTOCOL}://${process.env.IP}/api/multer/download/default_image/files/default.png`,
                 },
             }),
             await this.prisma.groupChat.upsert({
@@ -35,7 +35,7 @@ export class GroupChatSeeder {
                     chat_room_id: '5a48398f-30ae-489f-b22a-4fc20e0b7619',
                     name: 'Master Class',
                     type: chatType.PUBLIC,
-                    image: `${process.env.PROTOCOL}://${process.env.HOST}/api/multer/download/default_image/files/default.png`,
+                    image: `${process.env.PROTOCOL}://${process.env.IP}/api/multer/download/default_image/files/default.png`,
                 },
             }),
         ]

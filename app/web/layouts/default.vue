@@ -15,9 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Socket } from 'socket.io-client'
-
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { connectSockets, disconnectSockets, logSocketExceptions } = useSockets()
 const { data: me, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
 
@@ -32,14 +30,15 @@ if (me.value) {
 }
 
 if (me.value) await setUserInfo(me.value)
-else if (error?.status === 401) navigateTo('/login')
+else if (error?.status === 401) {
+    disconnectSockets()
+    navigateTo('/login')
+}
+connectSockets()
 
 const { setBlockList } = useBlock()
-const {data: myblockList} = await useBlockList()
+const { data: myblockList } = await useBlockList()
 if (myblockList.value) setBlockList(myblockList.value)
 
-// log socket errors/exceptions
-chatSocket.value.on('exception', payload => {
-    console.log(`${payload}: ${payload.message}`)
-})
+logSocketExceptions()
 </script>

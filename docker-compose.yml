@@ -14,6 +14,8 @@ services:
             - REDIRECT_URI=${REDIRECT_URI}
             - API_URL=${API_URL}
             - GAME_NAME=${GAME_NAME}
+            - IP=${IP}
+            - PROTOCOL=${PROTOCOL}
 
         volumes:
             - ./app/web:/usr/src/app
@@ -63,7 +65,7 @@ services:
             - PORT=${PORT}
             - EMAIL_USER=${EMAIL_USER}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-            - HOST=${HOST}
+            - IP=${IP}
             - PROTOCOL=${PROTOCOL}
 
         networks:

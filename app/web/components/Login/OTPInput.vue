@@ -2,7 +2,7 @@
     <div class="centered w-full h-full">
         <v-otp-input
             ref="otpInput"
-            v-model:value="bindModal"
+            v-model="bindModal"
             input-classes="otp-input"
             separator="-"
             :num-inputs="6"
@@ -15,6 +15,7 @@
     </div>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue'
 import VOtpInput from 'vue3-otp-input'
 
 const otpInput = ref<InstanceType<typeof VOtpInput> | null>(null)

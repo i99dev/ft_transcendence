@@ -80,7 +80,7 @@
 
                 <!-- chat element -->
                 <button
-                    v-for="chat in chats"
+                    v-for="chat in chats" :key="chat.id"
                     @click="setCurrentChat(chat)"
                     class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
                     @mouseover="hoverButton = chat"
@@ -126,7 +126,8 @@
                                 class="w-full flex justify-start whitespace-nowrap text-xs text-slate-400"
                             >
                                 <span v-if="chatType === 'GROUP'" class="w-auto mr-2">
-                                    {{ chat.chat_room.messages[0]?.sender_login }}<span v-if="chat.chat_room.messages[0]">:</span>
+                                    {{ chat.chat_room.messages[0]?.sender_login
+                                    }}<span v-if="chat.chat_room.messages[0]">:</span>
                                 </span>
                                 <span
                                     class="inline-block max-w-full overflow-hidden whitespace-nowrap text-ellipsis"
@@ -220,9 +221,12 @@
 
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { Socket } from 'socket.io-client'
+import { ref, watch, onMounted } from 'vue'
 
-const chatSocket = useNuxtApp().chatSocket as Ref<Socket>
+const { chatSocket } = useChatSocket()
+watch(chatSocket, async () => {
+    socketOn()
+})
 const { chats, setChats } = useChats()
 const { chatType } = useChatType()
 const { setCurrentChat } = useCurrentChat()
@@ -234,10 +238,14 @@ const hoverButton = ref(null)
 const emit = defineEmits(['closeNavBar', 'selectChat'])
 
 onMounted(() => {
-    chatSocket.value.on('new-group-list', payload => {
+    socketOn()
+})
+
+const socketOn = () => {
+    chatSocket.value?.on('new-group-list', payload => {
         if (chatType.value) setChats(payload.content)
     })
-})
+}
 
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
     if (chatType.value === 'DM') {
@@ -251,7 +259,7 @@ const HandleItemButton = (chat: DirectChat & GroupChat) => {
 }
 
 const joinGroupChat = () => {
-    chatSocket.value.emit(
+    chatSocket.value?.emit(
         'join-group-chat',
         JSON.stringify({
             room_id: selectedChat.value.chat_room_id,

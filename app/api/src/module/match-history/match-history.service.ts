@@ -1,4 +1,4 @@
-import { gameAnalyzer } from './../game/logic/gameAnalyzer';
+import { gameAnalyzer } from './../game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { JwtService } from '@nestjs/jwt'
@@ -6,7 +6,11 @@ import { PrismaService } from '@providers/prisma/prisma.service';
 
 @Injectable()
 export class MatchHistoryService {
-    constructor(private jwtService: JwtService, private prisma: PrismaService, private gameAnalyzer: gameAnalyzer) {}
+    constructor(
+        private jwtService: JwtService,
+        private prisma: PrismaService,
+        private gameAnalyzer: gameAnalyzer,
+    ) {}
     readonly limit = 3
 
     async getLoginFromToken(authHeader: string): Promise<string> {
@@ -59,8 +63,7 @@ export class MatchHistoryService {
                 skip: skip,
                 take: this.limit,
             })
-            if (!match)
-                return null
+            if (!match) return null
             return match
         } catch (error) {
             console.log(error)
@@ -94,8 +97,7 @@ export class MatchHistoryService {
         sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
         const match = await this.getPlayerMatchHistory(page, player)
-        if (!match)
-            return null
+        if (!match) return null
         match.sort((a, b) => {
             const userOpponentsA = a.opponents.filter(opponent => opponent.user.login === player)
             const userOpponentsB = b.opponents.filter(opponent => opponent.user.login === player)

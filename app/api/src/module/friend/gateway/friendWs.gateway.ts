@@ -10,12 +10,13 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { FriendWsService } from './friendWs.service'
-import { Logger } from '@nestjs/common'
+import { Logger, UseGuards } from '@nestjs/common'
 import { NotificationService } from '@module/notification/notification.service'
 import { FriendService } from '../friend.service'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { FriendWs } from './dto/friend.dto'
 import { BlockService } from '@module/block/block.service'
+import { WsGuard } from '../../../common/guards/ws.guard'
 
 @WebSocketGateway({
     namespace: '/friend',
@@ -65,6 +66,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         this.sockets.delete(client.id)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('add-friend')
     async sendMessage(
         @ConnectedSocket() client: Socket,
@@ -156,6 +158,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         }
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('delete-friend')
     async deleteFriend(
         @ConnectedSocket() client: Socket,

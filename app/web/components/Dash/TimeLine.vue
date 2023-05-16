@@ -220,6 +220,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, onMounted } from 'vue'
+
 const props = defineProps({
     username: {
         type: String,
@@ -305,7 +307,6 @@ const handleFilteration = async (filter: string) => {
     if (data && game_history) game_history.values = data
     currentFilter.value = filter
     isFilter.value.set(filter, true)
-    console.log(filter)
 }
 
 const getLadderRank = (ladder: number | undefined) => {
