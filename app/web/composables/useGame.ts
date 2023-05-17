@@ -49,6 +49,7 @@ export function useGameInvite() {
             type: '',
             gameType: '',
             target: '',
+            gameInProgress: false,
         };
     });
 
@@ -62,6 +63,19 @@ export function useGameInvite() {
         inviteModal.value.open = true;
     });
 
+    socket.value?.on('Respond-Invite', (payload: InviteDto) => {
+        console.log('Invite Accepted');
+        if (payload.accepted) {
+            inviteModal.value.open = false;
+            navigateTo('play')
+            inviteModal.value.gameInProgress = true;
+        } else {
+            inviteModal.value.open = false;
+            console.log("Invite Declined")
+        }
+
+    });
+
     const send = (invite: InviteDto) => {
         socket.value?.emit('Send-Invite', JSON.stringify(invite));
     };
@@ -69,7 +83,10 @@ export function useGameInvite() {
     const accept = () => {
         if (!invite.value) return;
         socket.value?.emit('Respond-Invite', JSON.stringify({ ...invite.value, accepted: true }));
+        navigateTo('play')
+
         inviteModal.value.open = false;
+        inviteModal.value.gameInProgress = true;
     };
 
     const decline = () => {
@@ -81,6 +98,8 @@ export function useGameInvite() {
         inviteModal.value.open = false;
         inviteModal.value.type = ''
         inviteModal.value.gameType = ''
+        inviteModal.value.target = ''
+        inviteModal.value.gameInProgress = false
     };
 
     return { invite, inviteModal, send, accept, decline, reset };

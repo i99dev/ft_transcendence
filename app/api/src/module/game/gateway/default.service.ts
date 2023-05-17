@@ -103,20 +103,47 @@ export class DefaultService {
             opponent.status = 'ingame'
         }
     }
-    
+
     public sendInvite(userSocket: Socket, invite: any) {
         const user = this.connected_users.find(user => user.socket == userSocket)
         const opponent = this.connected_users.find(user => user.id == invite.invitedId)
         invite.inviterId = user.id
         if (opponent) {
+            // If the invite was successfuly sent to the opponent
             opponent.socket.emit('Invite-Received', invite)
             console.log('Invite sent', invite)
         }
         else {
+            // Incase user it not online or not found
             userSocket.emit('Respond-Invite', 'User not found')
             console.log('User not found', invite)
         }
     }
+
+    /* Respond to the inviter with either Accept or Decline */
+    public respondInvite(userSocket: Socket, response: any) {
+        const user = this.connected_users.find((user => user.socket == userSocket))
+        const opponent = this.connected_users.find(user => user.id == response.inviterId)
+        console.log("player1", user.id)
+        console.log("player2", opponent.id)
+        if (opponent) {
+            if (response.accepted == true) {
+                console.log("Invite ACCEPTED !! by ", user.id)
+                opponent.socket.emit('Respond-Invite', response)
+                setTimeout(() => {
+                    this.createMultiGame(opponent, user, response.gameType)
+                    user.status = 'ingame'
+                    opponent.status = 'ingame'
+                }, 2000)
+
+            }
+            else {
+                opponent.socket.emit('Respond-Invite', response)
+                console.log("Invite DECLINED !! by ", user.id)
+            }
+        }
+    }
+
 
     /* 
         finds an opponent for the player in the either classic or custom queue
@@ -205,7 +232,7 @@ export class DefaultService {
     /* 
         Creates a new pongGame object and emit the game setup to both players
     */
-    private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string) {
+    private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string, gameMode?: string) {
         let game
         if (gameType == 'custom') {
             game = new PongGame(
@@ -223,9 +250,9 @@ export class DefaultService {
         player2.game = game
         player1.socket.join(game.getGameID())
         player2.socket.join(game.getGameID())
-        this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
         this.repo.updatePlayerStatus('INGAME', player1.id)
         this.repo.updatePlayerStatus('INGAME', player2.id)
+        this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
         this.startGame(game)
     }
 

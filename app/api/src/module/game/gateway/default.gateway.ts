@@ -105,7 +105,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         @ConnectedSocket() client: any,
         @MessageBody(new SocketValidationPipe()) payload: any,
     ) {
-        // this.gameService.respondInvite(client, payload)
+        this.gameService.respondInvite(client, payload)
         console.log("Respond-Invite", payload)
     }
     

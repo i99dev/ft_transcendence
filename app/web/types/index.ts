@@ -102,6 +102,7 @@ declare global {
     interface GameSelectDto {
         gameType: string
         gameMode: string
+        powerUps: string[]
         invitedID?: string
     }
 
@@ -185,5 +186,6 @@ declare global {
         open: boolean;
         gameType: string;
         target: string;
+        gameInProgress: boolean;
     }
 }

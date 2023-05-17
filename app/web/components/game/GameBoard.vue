@@ -91,7 +91,8 @@ function giveUp(): void {
 
 function setup(mode: GameSelectDto): void {
     resetSocket()
-    emitStartGame(mode)
+    if(mode.gameMode != 'invite')
+        emitStartGame(mode)
     setupSocketHandlers()
     windowEvents()
 }

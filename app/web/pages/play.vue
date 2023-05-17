@@ -5,7 +5,7 @@
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
-                <GameSelector @gameSelected="startGame" ref="gameSelector" @leaveQueue="leaveQueue" />
+                <GameSelector v-if="showSelector" @gameSelected="startGame" ref="gameSelector" @leaveQueue="leaveQueue" />
             </div>
         </div>
 
@@ -37,7 +37,7 @@
 import { useSocket, useTabEvent } from '../composables/Game/useSocket'
 import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
 
-const { inviteModal } = useGameInvite()
+const { invite, inviteModal } = useGameInvite()
 const emit = defineEmits(['showTabModal'])
 const exit = ref(false)
 const showSelector = ref(true)
@@ -46,7 +46,6 @@ const gameResult = ref(false)
 const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
-
 const { emitLeaveQueue } = useSocket()
 const { showTab } = useTabEvent()
 const audio = ref(new Audio('/sounds/ost1.mp3'))
@@ -71,6 +70,7 @@ onUnmounted(() => {
 })
 
 const startGame = (mode: GameSelectDto): void => {
+    console.log(mode)
     showBoard.value = true
 
     setTimeout(() => {
@@ -122,7 +122,21 @@ const toggleAudio = (): void => {
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
+
+if (inviteModal.value.gameInProgress) {
+    showSelector.value = false
+    showBoard.value = true
+    startGame({
+        gameType: 'classic',
+        gameMode: 'invite',
+        powerUps: invite.value.powerups
+    })
+    inviteModal.value.gameInProgress = false
+
+}
+
 </script>
+
 
 <style>
 body {
