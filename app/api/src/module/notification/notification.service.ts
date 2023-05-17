@@ -5,7 +5,7 @@ import { CreateNotificationDto } from '@common/dtos/notification.dto'
 
 @Injectable()
 export class NotificationService {
-    private prisma = new PrismaService()
+    constructor(private prisma: PrismaService) {}
 
     async createNotification(payload: CreateNotificationDto) {
         try {

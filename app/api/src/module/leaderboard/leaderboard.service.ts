@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
 import { gameAnalyzer } from '../game/logic/gameAnalyzer'
 import { UserGetDto } from '@module/user/dto/user.dto'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class LeaderboardService {
-    constructor(private prisma: PrismaClient, private gameAnalyzer: gameAnalyzer) {}
+    constructor(private prisma: PrismaService, private gameAnalyzer: gameAnalyzer) {}
 
     private readonly limit = 3
 

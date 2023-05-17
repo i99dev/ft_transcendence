@@ -1,3 +1,4 @@
+import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { AchievementService } from './achievement.service'
 import { Controller, NotFoundException, Param } from '@nestjs/common'
 import { UseGuards, Req, Get, Query, Delete } from '@nestjs/common'
@@ -6,12 +7,15 @@ import { AchievementDto } from './dto/achievement.dto'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
 @Controller('achievement')
 export class AchievementController {
-    constructor(private readonly achievementService: AchievementService) {}
+    constructor(
+        private readonly achievementService: AchievementService,
+        private gameAnalyzer: gameAnalyzer,
+    ) {}
 
     @UseGuards(JwtAuthGuard)
     @Get('winningrate/:login') // /achievement/winningrate/login
     async getWinnigRate(@Param('login', ParseStringPipe) login: string): Promise<number> {
-        return await this.achievementService.gameAnalyzer.calcWinRate(login)
+        return await this.gameAnalyzer.calcWinRate(login)
     }
 
     @UseGuards(JwtAuthGuard)

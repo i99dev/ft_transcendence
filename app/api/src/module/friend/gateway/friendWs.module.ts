@@ -4,10 +4,10 @@ import { PrismaModule } from '@providers/prisma/prisma.module'
 import { FriendModule } from '../friend.module'
 import { FriendWsGateway } from './friendWs.gateway'
 import { FriendWsService } from './friendWs.service'
-import { PrismaClient } from '@prisma/client'
 import { JwtService } from '@nestjs/jwt'
 import { BlockModule } from '@module/block/block.module'
 import { NotificationModule } from '@module/notification/notification.module'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
     imports: [
@@ -18,7 +18,7 @@ import { NotificationModule } from '@module/notification/notification.module'
         FriendModule,
         NotificationModule,
     ],
-    providers: [PrismaClient, JwtService, FriendWsGateway, FriendWsService],
+    providers: [PrismaService, JwtService, FriendWsGateway, FriendWsService],
     exports: [FriendWsService],
 })
 export class FriendWsModule {}

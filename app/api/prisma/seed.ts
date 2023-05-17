@@ -1,6 +1,6 @@
 // prisma/seed.ts
 
-import { Prisma, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { create } from 'domain'
 import { UserSeeder } from './seeders/user/user.seeder'
 import { FriendSeeder } from './seeders/friend/friend.seeder'
