@@ -16,6 +16,7 @@ export const useBlock = () => {
     }
 
     const isBlocked = (user: UserGetDto | undefined) => {
+        console.log(user)
         if (!user) return false
         return blockList.value.some(u => u.login === user.login)
     }

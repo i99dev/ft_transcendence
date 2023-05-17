@@ -11,6 +11,7 @@ import {
     UseGuards,
     Req,
     ValidationPipe,
+    BadRequestException,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import {
@@ -65,13 +66,19 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async SearchUser(@Query('search', ParseStringPipe) search: string, @Req() req) {
+    async SearchUser(@Query('search') search: string, @Req() req) {
+        if (!search || search === '') return await this.UserService.SortMany({ id: 'asc' })
+        else if (search.length > 255) throw new BadRequestException('Search is too long')
+
         return await this.UserService.SearchUser(search)
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/search/:name')
     async SearchUserByName(@Param('name', ParseStringPipe) name: string) {
+        if (!name || name === '') return await this.UserService.SortMany({ id: 'asc' })
+        else if (name.length > 255) throw new BadRequestException('Search is too long')
+
         return await this.UserService.SearchUserNames(name)
     }
 

@@ -278,7 +278,7 @@ export class ChatService {
         }
     }
 
-    async getChatRoomMessages(room_id: string, page: number, sort : any = 'asc') {
+    async getChatRoomMessages(room_id: string, page: number, sort: any = 'asc') {
         try {
             const chat = await this.prisma.message.findMany({
                 where: {
