@@ -25,6 +25,10 @@ export function useSocket() {
         socket.value?.emit('Leave-Queue')
     }
 
+    const emitReady = () => {
+        socket.value?.emit('Ready')
+    }
+
     const setupSocketHandlers = () => {
         socket.value?.on('Game-Setup', (data: SetupDto) => {
             gameSetup.value = data
@@ -46,6 +50,7 @@ export function useSocket() {
         gameWinner,
         emitLeaveQueue,
         resetSocket,
+        emitReady
     }
 }
 

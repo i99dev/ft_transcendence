@@ -155,6 +155,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
+            ready: false
         }
     }
 
@@ -166,6 +167,20 @@ export class PongGame {
         ).map(powerUp => JSON.parse(JSON.stringify(powerUp)))
 
         return powerUps
+    }
+
+    public setPlayerReady(playerID: string): void {
+        const player = this.game_status.players.find(player => player.username === playerID)
+        if (player) player.ready = true
+    }
+
+    public isPlayersReady(playerID?: string): boolean {
+        if (playerID) {
+            const player = this.game_status.players.find(player => player.username === playerID)
+            if (player) return player.ready
+        }
+        const players = this.game_status.players
+        return players[0].ready && players[1].ready
     }
 
     public setLoser(playerID: string): void {

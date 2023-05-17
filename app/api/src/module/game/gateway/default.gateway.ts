@@ -90,6 +90,11 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     ) {
         this.gameService.movePaddle(client, direction)
     }
+    
+    @SubscribeMessage('Ready')
+    ready(@ConnectedSocket() client: any,) {
+        this.gameService.playerReady(client)
+    }
 
     @SubscribeMessage('Send-Invite')
     sendInvite(
@@ -108,7 +113,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.respondInvite(client, payload)
         console.log("Respond-Invite", payload)
     }
-    
+
 
     // @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')

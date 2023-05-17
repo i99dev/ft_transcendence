@@ -49,6 +49,7 @@ export class PlayerDto {
     gameID?: string
 
     powerUps: PowerUp[]
+    ready: boolean
 }
 
 export class PaddleDto {

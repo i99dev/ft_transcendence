@@ -144,6 +144,10 @@ export class DefaultService {
         }
     }
 
+    public playerReady(userSocket: Socket) {
+        const player = this.connected_users.find(user => user.socket == userSocket)
+        player.game.setPlayerReady(player.id)
+    }
 
     /* 
         finds an opponent for the player in the either classic or custom queue
@@ -263,6 +267,9 @@ export class DefaultService {
         })
 
         const intervalId = setInterval(async () => {
+            if(!game.isPlayersReady())
+                return
+
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
 
             game.updateGame()

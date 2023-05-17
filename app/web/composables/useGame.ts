@@ -73,7 +73,6 @@ export function useGameInvite() {
             inviteModal.value.open = false;
             console.log("Invite Declined")
         }
-
     });
 
     const send = (invite: InviteDto) => {
@@ -94,6 +93,7 @@ export function useGameInvite() {
         socket.value?.emit('Respond-Invite', JSON.stringify({ ...invite.value, accepted: false }));
         inviteModal.value.open = false;
     };
+    
     const reset = () => {
         inviteModal.value.open = false;
         inviteModal.value.type = ''
