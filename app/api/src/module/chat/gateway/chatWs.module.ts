@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
 import { AuthModule } from '../../../auth/auth.module'
 import { PrismaModule } from '../../../providers/prisma/prisma.module'
 import { UserModule } from '../../user/user.module'
@@ -11,6 +10,7 @@ import { FriendModule } from '@module/friend/friend.module'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { NotificationModule } from '@module/notification/notification.module'
 import { BlockModule } from '@module/block/block.module'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
     imports: [
@@ -23,6 +23,6 @@ import { BlockModule } from '@module/block/block.module'
         NotificationModule,
         BlockModule,
     ],
-    providers: [ChatWsGateway, ChatWsService, PrismaClient, ConfigService],
+    providers: [ChatWsGateway, ChatWsService, PrismaService, ConfigService],
 })
 export class ChatWsModule {}

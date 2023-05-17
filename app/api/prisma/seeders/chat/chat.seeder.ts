@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { GroupChat, chatType, PrismaClient } from '@prisma/client'
+import { GroupChat, PrismaClient, chatType } from '@prisma/client'
 
 @Injectable()
 export class GroupChatSeeder {

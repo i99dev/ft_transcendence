@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client'
 import { NotFoundException } from '@nestjs/common'
 import { UserGetDto } from '../../user/dto/user.dto'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 export class FriendRepository {
-    prisma = new PrismaClient()
+    constructor(private prisma: PrismaService) {}
 
     async deleteFriend(name: string, login: string): Promise<UserGetDto> {
         return await this.prisma.user.update({

@@ -1,13 +1,15 @@
-import { PrismaClient } from '@prisma/client'
 import { FriendService } from './friend.service'
 import { FriendController } from './friend.controller'
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { FriendRepository } from './repository/friend.repository'
+import { PrismaService } from '@providers/prisma/prisma.service'
+import { UserService } from '@module/user/user.service'
+import { UserModule } from '@module/user/user.module'
 
 @Module({
-    imports: [],
+    imports: [forwardRef(() => UserModule)],
     controllers: [FriendController],
-    providers: [FriendService, FriendRepository, PrismaClient],
+    providers: [FriendService, FriendRepository, PrismaService],
     exports: [FriendService, FriendRepository],
 })
 export class FriendModule {}

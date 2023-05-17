@@ -1,10 +1,15 @@
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { GameController } from './game.controller'
 import { GameService } from './game.service'
 import { DefaultModule } from './gateway/default.module'
+import { gameAnalyzer } from './logic/gameAnalyzer'
+import { gameHistory } from './logic/gameHistory'
+import { PongGame } from './logic/pongGame'
+import { GameRepository } from './repository/game.repository'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
-    imports: [DefaultModule],
+    imports: [forwardRef(() => DefaultModule)],
     controllers: [GameController],
     providers: [GameService],
     exports: [GameService],
