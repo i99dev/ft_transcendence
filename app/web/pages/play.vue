@@ -20,7 +20,7 @@
                         @ExitBtn="switchExistStatus(true)" ref="gameBoard" />
                 </div>
             </div>
-            <GameResult v-if="gameResult" @vnode-mounted="exit = false" :gameResultMessage="gameResultMessage"
+            <GameResult v-if="gameResult" @vue-mounted="exit = false" :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain" />
         </div>
         <div v-if="showTab" class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center">
