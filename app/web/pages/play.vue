@@ -37,6 +37,7 @@
 import { useSocket, useTabEvent } from '../composables/Game/useSocket'
 import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
 
+const route = useRoute()
 const { invite, inviteModal } = useGameInvite()
 const emit = defineEmits(['showTabModal'])
 const exit = ref(false)
@@ -123,17 +124,22 @@ const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
 
-if (inviteModal.value.gameInProgress) {
-    showSelector.value = false
-    showBoard.value = true
-    startGame({
-        gameType: 'classic',
-        gameMode: 'invite',
-        powerUps: invite.value.powerups
-    })
-    inviteModal.value.gameInProgress = false
+watchEffect(() => {
+    if (route.path === '/play') {
+        if (inviteModal.value.gameInProgress) {
+            showSelector.value = false
+            showBoard.value = true
+            startGame({
+                gameType: invite.value.gameType,
+                gameMode: 'invite',
+                powerups: invite.value.powerups
+            })
+            inviteModal.value.gameInProgress = false
 
-}
+        }
+    }
+})
+console.log("Play.vue is loaded")
 
 </script>
 

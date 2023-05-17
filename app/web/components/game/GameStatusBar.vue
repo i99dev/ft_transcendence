@@ -95,6 +95,9 @@ const players = computed(() => {
         },
     ]
 })
+const timer = computed(() => {
+    return gameData.value?.time
+})
 
 onMounted(() => {})
 

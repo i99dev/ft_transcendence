@@ -107,6 +107,7 @@ export class DefaultService {
     public sendInvite(userSocket: Socket, invite: any) {
         const user = this.connected_users.find(user => user.socket == userSocket)
         const opponent = this.connected_users.find(user => user.id == invite.invitedId)
+        user.powerUps = invite.powerups
         invite.inviterId = user.id
         if (opponent) {
             // If the invite was successfuly sent to the opponent
@@ -130,6 +131,7 @@ export class DefaultService {
             if (response.accepted == true) {
                 console.log("Invite ACCEPTED !! by ", user.id)
                 opponent.socket.emit('Respond-Invite', response)
+                user.powerUps = response.powerups
                 setTimeout(() => {
                     this.createMultiGame(opponent, user, response.gameType)
                     user.status = 'ingame'
@@ -267,10 +269,9 @@ export class DefaultService {
         })
 
         const intervalId = setInterval(async () => {
-            if(!game.isPlayersReady())
-                return
-
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
+            else if (!game.isPlayersReady())
+                return
 
             game.updateGame()
             this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())

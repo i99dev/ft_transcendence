@@ -39,6 +39,7 @@ declare global {
     interface gameStatusDto {
         players: PlayerDto[]
         ball: BallDto
+        time: number
     }
 
     interface SetupDto {
@@ -102,7 +103,7 @@ declare global {
     interface GameSelectDto {
         gameType: string
         gameMode: string
-        powerUps: string[]
+        powerups: string[]
         invitedID?: string
     }
 
