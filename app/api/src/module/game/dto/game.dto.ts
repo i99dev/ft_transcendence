@@ -14,6 +14,7 @@ import { PowerUp } from '../interface/game.interface'
 export class gameStatusDto {
     players: PlayerDto[]
     ball: BallDto
+    time: number
 }
 
 export class SetupDto {

@@ -105,6 +105,7 @@ export class PongGame {
                 radius: 0.015,
                 color: 'white',
             },
+            time: 120,
         }
     }
 
@@ -220,6 +221,7 @@ export class PongGame {
     // update the game by updating the ball position and checking for collisions
     public updateGame(): void {
         this.updateBall()
+        this.updateTimer()
     }
 
     // update the ball position and check for collisions
@@ -416,6 +418,14 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             }
+        }
+    }
+
+    public updateTimer(): void {
+        if (this.game_status.time > 0) {
+            this.game_status.time -= 1 / 60
+        } else {
+            this.game_status.time = 0
         }
     }
 
