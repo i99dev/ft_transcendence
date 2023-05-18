@@ -46,7 +46,7 @@ services:
             [
                 'sh',
                 '-c',
-                'yarn && npx prisma db push --force-reset && npx prisma db seed && yarn run build && yarn start',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && yarn run build && npx pm2 start yarn --name "ft_transcendence" --interpreter bash -- start',
             ]
 
         environment:
