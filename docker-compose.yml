@@ -50,8 +50,7 @@ services:
             [
                 'sh',
                 '-c',
-                'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio
-                | yarn dev',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio | npx pm2 start yarn --interpreter bash --name "ft_transcendence" -- dev && sleep 2 && npx pm2 logs ft_transcendence',
             ]
         environment:
             - NODE_ENV=${NODE_ENV}
