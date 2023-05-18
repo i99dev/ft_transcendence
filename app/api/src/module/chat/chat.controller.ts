@@ -11,10 +11,11 @@ import { ChatService } from './chat.service'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
-import { ChatRoomType } from '@prisma/client'
+import { ChatRoomType, ChatUserStatus } from '@prisma/client'
 import { DirectChatService } from './directChat.service'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
+import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 @Controller('/chats')
 export class ChatController {
     constructor(
@@ -25,12 +26,10 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('')
-    async getChatRooms(@Query('type', ParseStringPipe) type: string, @Req() req) {
+    async getChatRooms(@Query('type', QueryParseStringPipe) type: string, @Req() req) {
         if (!type) return await this.chatService.getChatRooms()
-        else if (type === 'GROUP')
-            return await this.groupChatService.getChatRoomsForGroups(req.user.login)
-        else if (type === 'DM')
-            return await this.directChatService.getDirectChatRooms(req.user.login)
+        else if (type === 'GROUP') return await this.groupChatService.getGroupChats(req.user.login)
+        else if (type === 'DM') return await this.directChatService.getDirectChats(req.user.login)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -41,11 +40,18 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/:room_id/users')
-    async getRoomUsers(@Param('room_id', ParseUUIDPipe) room_id: string, @Req() req) {
+    async getRoomUsers(
+        @Param('room_id', ParseUUIDPipe) room_id: string,
+        @Query('user_type', QueryParseStringPipe) user_type: string,
+        @Req() req,
+    ) {
         const room = await this.chatService.getChatRoom(room_id)
         if (room.type === ChatRoomType.DM)
             return await this.directChatService.getDirectChatUsers(room_id)
-        else return await this.groupChatService.getGroupChatUsers(room_id)
+        else
+            return user_type && user_type === 'BAN'
+                ? await this.groupChatService.getGroupChatBannedUsers(room_id, ChatUserStatus.BAN)
+                : await this.groupChatService.getGroupChatUsers(room_id)
     }
 
     // @UseGuards(JwtAuthGuard)
@@ -54,10 +60,9 @@ export class ChatController {
         @Param('room_id', ParseStringPipe) room_id: string,
         @Req() req,
         @Query('page', PosNumberPipe) page: number,
-        @Query('sort') sort: string,
+        @Query('sort', QueryParseStringPipe) sort: string,
     ) {
-        if (page <= 0 || page > 1000000) throw new BadRequestException('Invalid page number')
-        if (sort && sort !== 'asc' && sort !== 'desc')
+        if (sort !== 'asc' && sort !== 'desc')
             throw new BadRequestException('Invalid sort type')
         if (!page) page = 1
         const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort)
@@ -84,14 +89,15 @@ export class ChatController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('/directChat/user/:user_login')
+    async getDirectChatWitDh(@Req() req, @Param('user_login', ParseStringPipe) user_login: string) {
+        return await this.directChatService.getDirectChatbetweenUsers(req.user.login, user_login)
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('/groupChat/search')
-    async searchGroupChat(
-        @Req() req,
-        @Query('name', ParseStringPipe) search: string,
-        @Query('page', PosNumberPipe) page: number,
-    ) {
+    async searchGroupChat(@Req() req, @Query('name', QueryParseStringPipe) search: string, @Query('page', PosNumberPipe) page: number) {
         if (!page) page = 1
-        if (page <= 0 || page > 100000) throw new BadRequestException('Invalid page number')
         if (!search) return await this.groupChatService.getAllGroupChats(page)
         return await this.groupChatService.searchGroupChat(search, req.user.login)
     }

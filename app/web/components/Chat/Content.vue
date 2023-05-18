@@ -63,10 +63,7 @@
                 id="chat-messages"
                 class="bg-white overflow-y-scroll box-content flex flex-col h-full"
             >
-                <div
-                    class="centered"
-                    v-if="enableLoadMoreButton"
-                >
+                <div class="centered" v-if="enableLoadMoreButton">
                     <button
                         class="bg-slate-200 p-2 rounded-2xl my-2"
                         @click="loadMoreMessages(messagesPage)"
@@ -257,7 +254,7 @@ const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {
-        chatMessages.scrollTop = chatMessages.scrollHeight
+        chatMessages.scrollTop = chatMessages?.scrollHeight
     }, 100)
 }
 
@@ -277,7 +274,7 @@ const sendMessage = () => {
     newMessage.value = ''
 }
 
-const loadMoreMessages = async (page : number = 1) => {
+const loadMoreMessages = async (page: number = 1) => {
     if (currentChat.value) {
         const { data } = await useChatMessages(currentChat.value?.chat_room_id, page)
         if (data.value) {
@@ -297,7 +294,7 @@ const deleteMessage = (message_id: number) => {
 }
 
 const goToUserProfile = () => {
-    navigateTo(`users/${currentChat.value?.users[0]?.login}`)
+    navigateTo(`/users/${currentChat.value?.users[0]?.login}`)
     emit('closeNavBar')
 }
 </script>

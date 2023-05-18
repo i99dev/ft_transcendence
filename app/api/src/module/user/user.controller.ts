@@ -11,6 +11,7 @@ import {
     UseGuards,
     Req,
     ValidationPipe,
+    BadRequestException,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import {
@@ -22,6 +23,7 @@ import {
     ApiBody,
 } from '@nestjs/swagger'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
+import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -38,8 +40,8 @@ export class UserController {
         tags: ['users'],
     })
     async GetUsers(
-        @Query('sort', ParseStringPipe) sort: string,
-        @Query('order', ParseStringPipe) order: string,
+        @Query('sort', QueryParseStringPipe) sort: string,
+        @Query('order', QueryParseStringPipe) order: string,
     ): Promise<UserGetDto[]> {
         const type = { [sort]: order }
         return await this.UserService.SortMany(type)
@@ -65,13 +67,19 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async SearchUser(@Query('search', ParseStringPipe) search: string, @Req() req) {
+    async SearchUser(@Query('search', QueryParseStringPipe) search: string, @Req() req) {
+        if (!search || search === '') return await this.UserService.SortMany({ id: 'asc' })
+        else if (search.length > 255) throw new BadRequestException('Search is too long')
+
         return await this.UserService.SearchUser(search)
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/search/:name')
     async SearchUserByName(@Param('name', ParseStringPipe) name: string) {
+        if (!name || name === '') return await this.UserService.SortMany({ id: 'asc' })
+        else if (name.length > 255) throw new BadRequestException('Search is too long')
+
         return await this.UserService.SearchUserNames(name)
     }
 

@@ -22,9 +22,9 @@ export const useUserInfo = () => {
         user_info.value = user
     }
 
-	const setUserStatus = (status: string) => {
-		user_info.value.status = status
-	}
+    const setUserStatus = (status: string) => {
+        user_info.value.status = status
+    }
 
     const removeUserInfo = () => {
         user_info.value = null
@@ -57,7 +57,7 @@ export const useUserInfo = () => {
         setUserTwoFacAuth,
         setFriends,
         removeFriends,
-		setUserStatus,
+        setUserStatus,
     }
 }
 
@@ -70,7 +70,7 @@ export async function useUpdateUserInfo(): Promise<any> {
             username,
             image,
             two_fac_auth,
-			status,
+            status,
         },
         baseURL: useRuntimeConfig().API_URL,
         headers: {

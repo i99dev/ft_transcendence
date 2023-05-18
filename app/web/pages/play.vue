@@ -62,7 +62,7 @@
 
 <script lang="ts" setup>
 import { useSocket, useTabEvent } from '../composables/Game/useSocket'
-import { ref, onMounted, onBeforeUnmount, onUnmounted} from 'vue'
+import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
 
 const emit = defineEmits(['showTabModal'])
 const exit = ref(false)

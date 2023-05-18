@@ -124,7 +124,8 @@
                                         v-else-if="stage === 2"
                                     >
                                         <div
-                                            v-for="user in users" :key="user.id"
+                                            v-for="user in users"
+                                            :key="user.id"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
@@ -410,7 +411,7 @@ const socketOn = () => {
         closePopup()
 
         const { data, error } = await useUplaod(payload.room_id, formData.value)
-        if (!data.value)
+        if (data.value)
             chats.value.forEach((chat: GroupChat) => {
                 if (chat.chat_room_id === payload.room_id) chat.image = data.value.file_url
             })
@@ -445,7 +446,6 @@ const nextStage = () => {
     const formElement = document.getElementsByClassName(
         'chat-form',
     ) as HTMLCollectionOf<HTMLFormElement>
-    console.log(formElement[stage.value - 1])
     if (
         stage.value !== 3 &&
         (!formElement[stage.value - 1] || formElement[stage.value - 1].reportValidity())
@@ -462,7 +462,7 @@ const closePopup = () => {
     setTimeout(() => {
         groupChat.value = {
             name: '',
-            image: 'https://picsum.photos/200',
+            image: '',
             chatType: chatTypes[0],
             password: '',
         }
