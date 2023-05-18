@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client'
-import { MatchHistoryDto, PlayerDto } from '../../match-history/dto/match-history.dto'
+import { MatchHistoryDto } from '../../match-history/dto/match-history.dto'
 import { ConnectedUser } from '../interface/game.interface'
 import { NotificationService } from '@module/notification/notification.service'
 import { NotificationType } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 const ladderLevel = {
     CapinBoy: { Rank: 6, lowXP: 0, highXP: 100, winRate: 0 },
@@ -13,8 +13,8 @@ const ladderLevel = {
     KaizokuOu: { Rank: 1, lowXP: 3500, highXP: 6000, winRate: 0.4 },
 }
 export class gameAnalyzer {
-    private prisma = new PrismaClient()
-    private notificationService = new NotificationService()
+    private prisma = new PrismaService()
+    private notificationService = new NotificationService(new PrismaService())
 
     // Data retrievals
     async getTotalVictories(player: string): Promise<number> {
@@ -31,6 +31,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async getTotalDefeats(player: string): Promise<number> {
         return await this.prisma.match.count({
             where: {
@@ -45,6 +46,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async getTotalMatches(player: string): Promise<number> {
         return await this.prisma.match.count({
             where: {
@@ -58,6 +60,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async getMatches(player: string): Promise<MatchHistoryDto[]> {
         return await this.prisma.match.findMany({
             where: {
@@ -81,6 +84,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async getVictories(player: string): Promise<MatchHistoryDto[]> {
         return await this.prisma.match.findMany({
             where: {
@@ -95,6 +99,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async getDefeats(player: string): Promise<MatchHistoryDto[]> {
         return await this.prisma.match.findMany({
             where: {
@@ -109,6 +114,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async getLadderLevel(player: string): Promise<number> {
         const user = await this.prisma.user.findUnique({
             where: {
@@ -117,6 +123,7 @@ export class gameAnalyzer {
         })
         return user.ladder
     }
+
     async getXP(player: string): Promise<number> {
         const user = await this.prisma.user.findUnique({
             where: {
@@ -132,6 +139,7 @@ export class gameAnalyzer {
         const totalMatches = await this.getTotalMatches(player)
         return totalWins / totalMatches
     }
+
     async calcXP(player: string, IsWinner: boolean): Promise<number> {
         const ladder = await this.getLadderLevel(player)
         let xp = 0
@@ -157,6 +165,7 @@ export class gameAnalyzer {
         }
         return xp
     }
+
     RankDown(ladder: number, winningrate: number): number {
         if (ladder == ladderLevel.KaizokuOu.Rank && winningrate < 0.4) return ladderLevel.Yonko.Rank
         else if (ladder == ladderLevel.Yonko.Rank && winningrate < 0.45)
@@ -169,6 +178,7 @@ export class gameAnalyzer {
             return ladderLevel.CapinBoy.Rank
         return ladder
     }
+
     RankUp(ladder: number, xp: number, winningrate: number, totalWins: number): number {
         if (ladder == ladderLevel.Yonko.Rank && xp >= 3500 && winningrate >= 0.45)
             return ladderLevel.KaizokuOu.Rank
@@ -182,6 +192,7 @@ export class gameAnalyzer {
             return ladderLevel.Kaizoku.Rank
         return ladder
     }
+
     async calcLadder(player: string): Promise<number> {
         const ladder = await this.getLadderLevel(player)
         const xp = await this.getXP(player)
@@ -221,6 +232,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async updatePlayerLadder(player: string): Promise<void> {
         await this.prisma.user.update({
             where: {
@@ -231,6 +243,7 @@ export class gameAnalyzer {
             },
         })
     }
+
     async updatePlayerAcheivments(player: string, achievement: string): Promise<void> {
         const ach = await this.prisma.achievement.findUnique({
             where: {

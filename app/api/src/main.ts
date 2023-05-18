@@ -1,10 +1,11 @@
+import { WsGuard } from './common/guards/ws.guard';
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { LoggingInterceptor } from './common/interceptors/perfomance.interceptors'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
-import { HelmetMiddleware } from '@nest-middlewares/helmet'
+import * as csurf from 'csurf';
 import helmet from 'helmet'
 
 async function bootstrap() {

@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client'
 // import { MatchHistory } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 import { gameStatusDto, PlayerDto } from '../dto/game.dto'
 
 export class gameHistory {
-    private prisma = new PrismaClient()
+    private prisma = new PrismaService()
     private game: gameStatusDto
 
     constructor(game: gameStatusDto) {

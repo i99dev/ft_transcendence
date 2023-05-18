@@ -1,14 +1,14 @@
 import { gameAnalyzer } from './../game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { JwtService } from '@nestjs/jwt'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class MatchHistoryService {
     constructor(
         private jwtService: JwtService,
-        private prisma: PrismaClient,
+        private prisma: PrismaService,
         private gameAnalyzer: gameAnalyzer,
     ) {}
     readonly limit = 3
