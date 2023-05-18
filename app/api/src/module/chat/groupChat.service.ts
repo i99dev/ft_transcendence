@@ -106,7 +106,7 @@ export class GroupChatService {
         }
     }
 
-    async getGroupChats(user_login: string) {
+    async getGroupChats(user_login: string, page: number) {
         try {
             const groupChats = await this.prisma.groupChat.findMany({
                 where: {
@@ -116,6 +116,8 @@ export class GroupChatService {
                         },
                     },
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return groupChats
         } catch (error) {

@@ -27,9 +27,11 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Get('')
     async getChatRooms(@Query('type', QueryParseStringPipe) type: string, @Query('page') page: number, @Req() req) {
+        if (!page)
+            page = 1
         if (!type) return await this.chatService.getChatRooms(page)
-        else if (type === 'GROUP') return await this.groupChatService.getGroupChats(req.user.login)
-        else if (type === 'DM') return await this.directChatService.getDirectChats(req.user.login)
+        else if (type === 'GROUP') return await this.groupChatService.getGroupChats(req.user.login, page)
+        else if (type === 'DM') return await this.directChatService.getDirectChats(req.user.login, page)
     }
 
     @UseGuards(JwtAuthGuard)
