@@ -254,7 +254,7 @@ const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {
-        chatMessages.scrollTop = chatMessages.scrollHeight
+        chatMessages.scrollTop = chatMessages?.scrollHeight
     }, 100)
 }
 

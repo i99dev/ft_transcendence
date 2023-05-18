@@ -145,8 +145,9 @@ export const useChatType = () => {
                 ? await useDirectChats()
                 : type === 'GROUP'
                 ? await useGroupChats()
-                : await useGroupChatSearch('')
+                : { data: { value: undefined } }
         if (data.value) setChats(data.value)
+        else setChats([])
 
         chatType.value = type
     }
@@ -168,6 +169,10 @@ export const useChats = () => {
     }
 
     const setSearchedGroupChats = async (name: string) => {
+        if (!name) {
+            setChats([])
+            return
+        }
         const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
@@ -183,6 +188,10 @@ export const useSearchedGroupChats = () => {
 
     const setSearchedGroupChats = async (name: string) => {
         const { setChats } = useChats()
+        if (!name) {
+            setChats([])
+            return
+        }
         const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
