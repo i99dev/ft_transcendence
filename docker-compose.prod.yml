@@ -20,9 +20,7 @@ services:
         volumes:
             - ./app/web:/usr/src/app
 
-        init: true
-
-        command: ['sh', '-c', 'yarn install && yarn run dev']
+        command: ['sh', '-c', 'yarn install && yarn run build && yarn run start']
 
         networks:
             - proxy_frontend_net
@@ -44,14 +42,13 @@ services:
         volumes:
             - ./app/api:/usr/src/app
 
-        init: true
-
         command:
             [
                 'sh',
                 '-c',
-                'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio | yarn dev',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && yarn run build && yarn start',
             ]
+
         environment:
             - NODE_ENV=${NODE_ENV}
             - CLIENT_ID=${CLIENT_ID}
@@ -114,8 +111,6 @@ services:
 
         volumes:
             - ./config/default.conf:/etc/nginx/conf.d/default.conf
-
-        init: true
 
         networks:
             - proxy_frontend_net
