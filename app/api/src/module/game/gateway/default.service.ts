@@ -263,6 +263,8 @@ export class DefaultService {
         player2.socket.join(game.getGameID())
         this.repo.updatePlayerStatus('INGAME', player1.id)
         this.repo.updatePlayerStatus('INGAME', player2.id)
+        player1.status = 'ingame'
+        player2.status = 'ingame'
         this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
         this.startGame(game)
     }
@@ -275,11 +277,11 @@ export class DefaultService {
 
         const intervalId = setInterval(async () => {
             if (game.getGameStatus().players[1].username == 'Computer') game.updateComputer()
-            else if (!game.isPlayersReady())
-                return
 
-            game.updateGame()
-            this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
+            if (game.isPlayersReady()) {
+                game.updateGame()
+                this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
+            }
             if (game.getPlayer1Score() >= 11 || game.getPlayer2Score() >= 11) {
                 clearInterval(intervalId)
                 await this.endGame(

@@ -70,6 +70,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     // @UseGuards(WsGuard)
     @SubscribeMessage('Give-Up')
     giveUp(@ConnectedSocket() client: Socket, @MessageBody() player: PlayerDto) {
+        console.log('give up')
         this.gameService.giveUp(client)
     }
 
@@ -90,7 +91,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     ) {
         this.gameService.movePaddle(client, direction)
     }
-    
+
     @SubscribeMessage('Ready')
     ready(@ConnectedSocket() client: any,) {
         this.gameService.playerReady(client)
