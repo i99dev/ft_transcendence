@@ -3,7 +3,7 @@
     <div
       class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-slate-900 bg-opacity-90 py-6 px-10 rounded-lg shadow-lg border border-violet-700 space-y-4">
       <div v-if="inviteModal.type == 'invited'" key="invited">
-        <h2 class="text-2xl text-center text-white font-bold mb-4">{{ invite?.inviterId }} Wants to play !</h2>
+        <h2 class="text-2xl text-center text-white font-bold mb-4">{{ invite?.inviterId }}  Called you to a Yonko Duel! Do you accept?</h2>
         <div v-if="inviteModal.gameType === 'custom'">
           <h3 class="text-xl text-bold text-center text-white mt-4 mb-2">
             Pick Two PowerUps
@@ -32,7 +32,7 @@
 
       <div v-else key="inviting">
 
-        <div v-if="!inviteModal.rejected">
+        <div v-if="!inviteModal.rejected && !isLoading">
         <div>
           <h2 class="text-2xl text-center text-white font-bold mb-4">Invite {{ inviteModal.target }} to a Duel !</h2>
           <h3 class="text-xl text-bold text-center text-white mt-4 mb-2">
@@ -64,7 +64,7 @@
           </div>
         </div>
       </div>
-      <div v-else>
+      <div v-else-if="inviteModal.rejected">
         <h2 class="text-2xl text-center text-white font-bold mb-4">Invite Failed</h2>
         <p v-if="inviteModal.playerStatus!='online'" class="text-center text-white">
           {{ inviteModal.target }} is {{ inviteModal.playerStatus }}
@@ -73,7 +73,7 @@
           {{ inviteModal.target }} declined your invite
         </p>
       </div>
-        <div class="mt-10 flex space-x-4 justify-center">
+        <div v-if="!isLoading" class="mt-10 flex space-x-4 justify-center">
           <button
             class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
             @click="inviteModal.open = false">
@@ -86,6 +86,20 @@
           </button>
         </div>
       </div>
+      <div v-if="isLoading && !inviteModal.rejected" class="box">
+        <div class="loading-container flex flex-col items-center justify-center">
+          <div class="half-circle-spinner">
+            <div class="circle circle-1"></div>
+            <div class="circle circle-2"></div>
+          </div>
+          <p class="loading-text mt-2 text-lg font-bold text-white">
+            Let's see if your friend is 
+          </p>
+          <p class="loading-text mt-2 text-lg font-bold text-white">
+            up for the challenge! Sending invite...
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +109,7 @@ import { ref } from 'vue'
 
 const mode = ref('' as string)
 const selectedPowerups = ref<string[]>([])
+const isLoading = ref(false)
 const { invite, inviteModal, send, accept, decline, reset } = useGameInvite()
 
 const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu']
@@ -126,6 +141,7 @@ const declineInvite = () => {
 
 const sendInvite = () => {
   console.log('sendInvite')
+  isLoading.value = true
   send({
     inviterId: '',
     invitedId: inviteModal.value.target,
@@ -134,3 +150,46 @@ const sendInvite = () => {
   })
 }
 </script>
+
+<style scoped>
+.half-circle-spinner,
+.half-circle-spinner * {
+    box-sizing: border-box;
+}
+
+.half-circle-spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    position: relative;
+}
+
+.half-circle-spinner .circle {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    border: calc(60px / 10) solid transparent;
+}
+
+.half-circle-spinner .circle.circle-1 {
+    border-top-color: #ff1d5e;
+    animation: half-circle-spinner-animation 1s infinite;
+}
+
+.half-circle-spinner .circle.circle-2 {
+    border-bottom-color: #00b6e9;
+    animation: half-circle-spinner-animation 1s infinite alternate;
+}
+
+@keyframes half-circle-spinner-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
