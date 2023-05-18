@@ -188,5 +188,12 @@ declare global {
         gameType: string;
         target: string;
         gameInProgress: boolean;
+        rejected: boolean;
+        playerStatus: string;
+    }
+
+    interface InviteResponseDto {
+        accepted: boolean;
+        playerStatus: string;
     }
 }

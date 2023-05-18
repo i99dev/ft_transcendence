@@ -62,10 +62,11 @@ const { chat_info, setChatModalOpen, send_message } = useChat()
 const { chatView, setChatView } = useChatView()
 const { currentChat, setCurrentChat } = useCurrentChat()
 const { chatType } = useChatType()
-const { inviteModal, invite } = useGameInvite()
+const { inviteModal, reset } = useGameInvite()
 
 const showInviteBox = (user: string) => {
     console.log('showInviteBox', user)
+    reset()
     inviteModal.value.type = 'invite'
     inviteModal.value.target = user
     inviteModal.value.open = true

@@ -31,8 +31,10 @@
       </div>
 
       <div v-else key="inviting">
-        <h2 class="text-2xl text-center text-white font-bold mb-4">Invite {{ inviteModal.target }} to a Duel !</h2>
+
+        <div v-if="!inviteModal.rejected">
         <div>
+          <h2 class="text-2xl text-center text-white font-bold mb-4">Invite {{ inviteModal.target }} to a Duel !</h2>
           <h3 class="text-xl text-bold text-center text-white mt-4 mb-2">
             Choose Game Mode
           </h3>
@@ -61,13 +63,23 @@
             </div>
           </div>
         </div>
+      </div>
+      <div v-else>
+        <h2 class="text-2xl text-center text-white font-bold mb-4">Invite Failed</h2>
+        <p v-if="inviteModal.playerStatus!='online'" class="text-center text-white">
+          {{ inviteModal.target }} is {{ inviteModal.playerStatus }}
+        </p>
+        <p v-else class="text-center text-white">
+          {{ inviteModal.target }} declined your invite
+        </p>
+      </div>
         <div class="mt-10 flex space-x-4 justify-center">
           <button
             class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
             @click="inviteModal.open = false">
             Close
           </button>
-          <button :disabled="mode === 'custom' && selectedPowerups.length != 2"
+          <button :disabled="(mode === 'custom' && selectedPowerups.length != 2) || inviteModal.rejected"
             class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
             @click="sendInvite">
             Send Invite

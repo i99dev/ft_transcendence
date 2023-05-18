@@ -63,15 +63,15 @@ export function useGameInvite() {
         inviteModal.value.open = true;
     });
 
-    socket.value?.on('Respond-Invite', async (payload: InviteDto) => {
+    socket.value?.on('Respond-Invite', async (response: InviteResponseDto) => {
         console.log('Invite Accepted');
-        if (payload.accepted) {
+        if (response.accepted) {
             inviteModal.value.open = false;
             inviteModal.value.gameInProgress = true;
             await navigateTo('play')
         } else {
-            inviteModal.value.open = false;
-            console.log("Invite Declined")
+            inviteModal.value.rejected = true;
+            inviteModal.value.playerStatus = response.playerStatus;
         }
     });
 
@@ -100,6 +100,7 @@ export function useGameInvite() {
         inviteModal.value.gameType = ''
         inviteModal.value.target = ''
         inviteModal.value.gameInProgress = false
+        inviteModal.value.rejected = false
     };
 
     return { invite, inviteModal, send, accept, decline, reset };

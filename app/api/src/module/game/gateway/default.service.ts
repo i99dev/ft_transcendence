@@ -109,14 +109,14 @@ export class DefaultService {
         const opponent = this.connected_users.find(user => user.id == invite.invitedId)
         user.powerUps = invite.powerups
         invite.inviterId = user.id
-        if (opponent) {
+        if (opponent && opponent.status == 'online') {
             // If the invite was successfuly sent to the opponent
             opponent.socket.emit('Invite-Received', invite)
             console.log('Invite sent', invite)
         }
         else {
             // Incase user it not online or not found
-            userSocket.emit('Respond-Invite', 'User not found')
+            userSocket.emit('Respond-Invite', {accepted : false, playerStatus : user.status})
             console.log('User not found', invite)
         }
     }
@@ -130,7 +130,7 @@ export class DefaultService {
         if (opponent) {
             if (response.accepted == true) {
                 console.log("Invite ACCEPTED !! by ", user.id)
-                opponent.socket.emit('Respond-Invite', response)
+                opponent.socket.emit('Respond-Invite', {accepted : true, playerStatus : user.status})
                 user.powerUps = response.powerups
                 setTimeout(() => {
                     this.createMultiGame(opponent, user, response.gameType)
@@ -140,7 +140,7 @@ export class DefaultService {
 
             }
             else {
-                opponent.socket.emit('Respond-Invite', response)
+                opponent.socket.emit('Respond-Invite',{accepted : false, playerStatus : user.status})
                 console.log("Invite DECLINED !! by ", user.id)
             }
         }
