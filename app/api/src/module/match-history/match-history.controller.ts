@@ -4,6 +4,9 @@ import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
+import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
+import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 @Controller('match-history/:login')
 export class MatchHistoryController {
     constructor(
@@ -14,8 +17,8 @@ export class MatchHistoryController {
     @UseGuards(JwtAuthGuard)
     @Get('') // /match-history?page=1
     async getPlayerMatchHistory(
-        @Param('login') login: string,
-        @Query('page') page: number,
+        @Param('login', ParseStringPipe) login: string,
+        @Query('page', PosNumberPipe) page: number,
     ): Promise<MatchHistoryDto[]> {
         const matchHistory = await this.matchHistoryService.getPlayerMatchHistory(page, login)
         if (!matchHistory)
@@ -26,10 +29,10 @@ export class MatchHistoryController {
     @UseGuards(JwtAuthGuard)
     @Get('result') // /match-history/result?winning=true&losing=false
     async getMatchHistoryByResult(
-        @Param('login') login: string,
-        @Query('page') page: number,
-        @Query('winning') winning: string,
-        @Query('losing') losing: string,
+        @Param('login', ParseStringPipe) login: string,
+        @Query('page', PosNumberPipe) page: number,
+        @Query('winning', QueryParseStringPipe) winning: string,
+        @Query('losing', QueryParseStringPipe) losing: string,
     ): Promise<MatchHistoryDto[]> {
         if (winning === 'true') {
             const history = await this.matchHistoryService.getMatchHistoryByResult(
@@ -53,9 +56,9 @@ export class MatchHistoryController {
     @UseGuards(JwtAuthGuard)
     @Get('score') // /match-history/score?sort=asc&sort=desc
     async getMatchHistoryBySort(
-        @Param('login') login: string,
-        @Query('page') page: number,
-        @Query('sort') sort: 'asc' | 'desc',
+        @Param('login', ParseStringPipe) login: string,
+        @Query('page', PosNumberPipe) page: number,
+        @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
         const history = await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
         if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
@@ -64,16 +67,16 @@ export class MatchHistoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get('totalPages')
-    async getTotalPages(@Param('login') login: string): Promise<number> {
+    async getTotalPages(@Param('login', ParseStringPipe) login: string): Promise<number> {
         return await this.matchHistoryService.getTotalPages(login)
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('totalgames') // /match-history/totalgames/login?Win=true&Lose=false
     async getTotal(
-        @Query('Win') win: string,
-        @Query('Lose') lose: string,
-        @Param('login') login: string,
+        @Query('Win', QueryParseStringPipe) win: string,
+        @Query('Lose', QueryParseStringPipe) lose: string,
+        @Param('login', ParseStringPipe) login: string,
     ): Promise<number> {
         if (lose === 'true' && win === 'false')
             return await this.gameAnalyzer.getTotalDefeats(login)
