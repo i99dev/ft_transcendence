@@ -124,7 +124,8 @@
                                         v-else-if="stage === 2"
                                     >
                                         <div
-                                            v-for="user in users" :key="user.id"
+                                            v-for="user in users"
+                                            :key="user.id"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button

@@ -253,7 +253,10 @@
                             ></path>
                         </svg>
                     </button>
-                    <button @click="navigateTo('/help')" class="cursor-pointer relative rounded-full">
+                    <button
+                        @click="navigateTo('/help')"
+                        class="cursor-pointer relative rounded-full"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"

@@ -15,12 +15,12 @@ export const refreshAccessToken = async (reconnect: boolean = true) => {
 }
 
 export async function useLogin(code: string): Promise<any> {
-	let status = 200
-	const { data, error: errorRef } = await useFetch('auth/login', {
-		onResponse({response}) {
-			status = response.status
+    let status = 200
+    const { data, error: errorRef } = await useFetch('auth/login', {
+        onResponse({ response }) {
+            status = response.status
         },
-		method: 'POST',
+        method: 'POST',
         body: {
             code: code,
         },
@@ -73,13 +73,13 @@ export const useAuth = async (route: any) => {
     const tokenInfo = data.value as AccessTokenDto | null
     if (tokenInfo) setCookies(tokenInfo)
 
-	if (status === 201)
-		return navigateTo({
-			path: '/',
-			query: {
-				status: status,
-			},
-		})
+    if (status === 201)
+        return navigateTo({
+            path: '/',
+            query: {
+                status: status,
+            },
+        })
     return data.value.access_token
         ? navigateTo('/')
         : data.value.two_fac_auth
@@ -98,6 +98,6 @@ export const useAuth = async (route: any) => {
 
 export const setCookies = (tokenInfo: AccessTokenDto) => {
     useCookie('access_token').value = tokenInfo.access_token
-    useCookie('created_at').value = tokenInfo.created_at.toString()
+    useCookie('created_at').value = tokenInfo.created_at
     useCookie('expires_at').value = tokenInfo.expires_at
 }

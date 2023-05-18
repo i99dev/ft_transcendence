@@ -72,6 +72,7 @@ const timerCountdown = () => {
 }
 
 const submitCode = async (code: string) => {
+    console.log(code)
     const login = useRoute().query.login
     if (login) {
         const { data, error } = await useSubmitConfirmationCode(login.toString(), code)

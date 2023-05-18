@@ -41,7 +41,7 @@ export class AuthController {
 
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth)
-            return res.status(HttpStatus.OK).JSON(await this.twoFacAuthService.handle2FA(user))
+            return res.status(HttpStatus.OK).json(await this.twoFacAuthService.handle2FA(user))
 
         try {
             const { accessToken, refreshToken } = this.authService.getUserTokens(user)

@@ -35,7 +35,12 @@
         </div>
         <div id="users-list" class="overflow-y-scroll h-auto" style="max-height: 70vh">
             <div>
-                <div v-for="user in users" :key="user" class="flex flex-col" x-descriptions="Tab component">
+                <div
+                    v-for="user in users"
+                    :key="user"
+                    class="flex flex-col"
+                    x-descriptions="Tab component"
+                >
                     <button
                         v-if="
                             user.login !== user_info.login ||

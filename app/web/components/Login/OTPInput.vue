@@ -2,7 +2,7 @@
     <div class="centered w-full h-full">
         <v-otp-input
             ref="otpInput"
-            v-model="bindModal"
+            v-model:value="bindModal"
             input-classes="otp-input"
             separator="-"
             :num-inputs="6"

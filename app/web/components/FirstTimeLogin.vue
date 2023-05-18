@@ -45,8 +45,8 @@
                                     <span class="sr-only t-2">Choose profile photo</span>
                                     <input
                                         type="file"
-										accept="image/*"
-										@change="uploadeImage"
+                                        accept="image/*"
+                                        @change="uploadeImage"
                                         class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-zinc-900 hover:file:bg-blue-300"
                                     />
                                 </label>
@@ -73,7 +73,7 @@ const { user_info, setUserName } = useUserInfo()
 const emit = defineEmits(['close'])
 
 const userData = computed(() => {
-	const { username, image, login } = user_info.value
+    const { username, image, login } = user_info.value
     return { username, image, login }
 })
 
@@ -87,20 +87,18 @@ const formData = ref(new FormData())
 
 const reader = ref(new FileReader())
 
+const uploadeImage = async event => {
+    const file = event.target.files[0]
+    if (!file) return
 
-const uploadeImage = async (event) => {
-	const file = event.target.files[0]
-	if (!file) return
-	
-	formData.value.append('file', file)
+    formData.value.append('file', file)
 
+    reader.value.readAsDataURL(file)
 
-	reader.value.readAsDataURL(file)
-
-	reader.value.onload = () => {
-		image.value = reader.value.result
-		newAvatar.value = image.value
-	}
+    reader.value.onload = () => {
+        image.value = reader.value.result
+        newAvatar.value = image.value
+    }
 }
 
 const submitProfile = async () => {
@@ -108,10 +106,10 @@ const submitProfile = async () => {
         setUserName(newUsername.value)
         await useUpdateUserInfo()
     }
-	if (newAvatar.value != '') {
-		await useUplaod(userData.value.login, formData.value)
-	}
+    if (newAvatar.value != '') {
+        await useUplaod(userData.value.login, formData.value)
+    }
     emit('close')
-	window.location.reload()
+    window.location.reload()
 }
 </script>
