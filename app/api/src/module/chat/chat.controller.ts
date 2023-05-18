@@ -92,8 +92,10 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/directChat/user/:user_login')
-    async getDirectChatWitDh(@Req() req, @Param('user_login', ParseStringPipe) user_login: string) {
-        return await this.directChatService.getDirectChatbetweenUsers(req.user.login, user_login)
+    async getDirectChatWitDh(@Req() req, @Param('user_login', ParseStringPipe) user_login: string, @Query('page') page: number) {
+        if (!page)
+            page = 1
+        return await this.directChatService.getDirectChatbetweenUsers(req.user.login, user_login, page)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -101,6 +103,6 @@ export class ChatController {
     async searchGroupChat(@Req() req, @Query('name', QueryParseStringPipe) search: string, @Query('page', PosNumberPipe) page: number) {
         if (!page) page = 1
         if (!search) return await this.groupChatService.getAllGroupChats(page)
-        return await this.groupChatService.searchGroupChat(search, req.user.login)
+        return await this.groupChatService.searchGroupChat(search, req.user.login, page)
     }
 }

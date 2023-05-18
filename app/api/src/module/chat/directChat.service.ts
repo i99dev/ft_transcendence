@@ -128,7 +128,7 @@ export class DirectChatService {
         }
     }
 
-    async getDirectChatbetweenUsers(user_login1: string, user_login2) {
+    async getDirectChatbetweenUsers(user_login1: string, user_login2, page: number) {
         try {
             const chatRooms = await this.prisma.directChat.findMany({
                 where: {
@@ -159,6 +159,8 @@ export class DirectChatService {
                         },
                     },
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             const sortedChat = await this.chatRepository.sort(chatRooms)
             return sortedChat
