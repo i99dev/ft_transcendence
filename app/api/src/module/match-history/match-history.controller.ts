@@ -18,7 +18,7 @@ export class MatchHistoryController {
     @Get('') // /match-history?page=1
     async getPlayerMatchHistory(
         @Param('login', ParseStringPipe) login: string,
-        @Query('page', PosNumberPipe) page: number,
+        @Query('page') page: number,
     ): Promise<MatchHistoryDto[]> {
         const matchHistory = await this.matchHistoryService.getPlayerMatchHistory(page, login)
         if (!matchHistory)
@@ -30,7 +30,7 @@ export class MatchHistoryController {
     @Get('result') // /match-history/result?winning=true&losing=false
     async getMatchHistoryByResult(
         @Param('login', ParseStringPipe) login: string,
-        @Query('page', PosNumberPipe) page: number,
+        @Query('page') page: number,
         @Query('winning', QueryParseStringPipe) winning: string,
         @Query('losing', QueryParseStringPipe) losing: string,
     ): Promise<MatchHistoryDto[]> {
@@ -57,7 +57,7 @@ export class MatchHistoryController {
     @Get('score') // /match-history/score?sort=asc&sort=desc
     async getMatchHistoryBySort(
         @Param('login', ParseStringPipe) login: string,
-        @Query('page', PosNumberPipe) page: number,
+        @Query('page') page: number,
         @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
         const history = await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
@@ -74,9 +74,9 @@ export class MatchHistoryController {
     @UseGuards(JwtAuthGuard)
     @Get('totalgames') // /match-history/totalgames/login?Win=true&Lose=false
     async getTotal(
+        @Param('login', ParseStringPipe) login: string,
         @Query('Win', QueryParseStringPipe) win: string,
         @Query('Lose', QueryParseStringPipe) lose: string,
-        @Param('login', ParseStringPipe) login: string,
     ): Promise<number> {
         if (lose === 'true' && win === 'false')
             return await this.gameAnalyzer.getTotalDefeats(login)
