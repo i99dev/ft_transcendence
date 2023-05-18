@@ -50,6 +50,8 @@ export function useGameInvite() {
             gameType: '',
             target: '',
             gameInProgress: false,
+            rejected: false,
+            playerStatus: 'online'
         };
     });
 
@@ -64,7 +66,7 @@ export function useGameInvite() {
     });
 
     socket.value?.on('Respond-Invite', async (response: InviteResponseDto) => {
-        console.log('Invite Accepted');
+        console.log('Invite REsponse recived ', response);
         if (response.accepted) {
             inviteModal.value.open = false;
             inviteModal.value.gameInProgress = true;
