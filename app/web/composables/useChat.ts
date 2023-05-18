@@ -12,7 +12,7 @@ export const useChat = () => {
     }
 
     const send_message = async (message: string) => {
-        chat_info.value.messages.push({
+        chat_info.value?.messages.push({
             message,
             user: 'me',
         })
@@ -191,9 +191,9 @@ export const useGroupChatParticipants = () => {
         const { currentChat } = useCurrentChat()
         if (currentChat.value) {
             const { data: chatUsers } = await useGetGroupChatParticipants(
-                currentChat.value.chat_room_id,
+                currentChat.value?.chat_room_id,
             )
-            if (chatUsers) setParticipants(chatUsers.value.chat_user)
+            if (chatUsers) setParticipants(chatUsers.value?.chat_user)
         }
     }
 

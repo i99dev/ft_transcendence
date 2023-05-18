@@ -145,8 +145,8 @@ const selectMode = (mode: string) => {
 }
 
 const checkPowerupLimit = () => {
-    if (selectedPowerups.value.length > 2) {
-        selectedPowerups.value.shift()
+    if (selectedPowerups.value?.length > 2) {
+        selectedPowerups.value?.shift()
     }
 }
 

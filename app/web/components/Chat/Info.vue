@@ -206,8 +206,8 @@ const { participants, setParticipants } = useGroupChatParticipants()
 const participant = ref({} as ChatUser)
 const adminOptions = ref([
     {
-        action: participant.value.role === 'ADMIN' ? 'downgrade' : 'upgrade',
-        text: participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
+        action: participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade',
+        text: participant.value?.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
     },
     {
         action: 'mute',
@@ -242,16 +242,16 @@ const socketOn = () => {
 
 const setAdminOptions = () => {
     // check whether participant is admin to downgrade hime or not to upgrade him
-    adminOptions.value[0].action = participant.value.role === 'ADMIN' ? 'downgrade' : 'upgrade'
+    adminOptions.value[0].action = participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade'
     adminOptions.value[0].text =
-        participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin'
+        participant.value?.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin'
 
     // check if participant is OWNER to change ownership
     const myRole = participants.value?.find(
-        chatUser => chatUser.user_login === user_info.value.login,
+        chatUser => chatUser.user_login === user_info.value?.login,
     )?.role
-    if (myRole === 'OWNER' && participant.value.role === 'ADMIN')
-        adminOptions.value.unshift({
+    if (myRole === 'OWNER' && participant.value?.role === 'ADMIN')
+        adminOptions.value?.unshift({
             action: 'owner',
             text: 'Pass ownership',
         })
@@ -260,8 +260,8 @@ const setAdminOptions = () => {
 const resetAdminOptions = () => {
     adminOptions.value = [
         {
-            action: participant.value.role === 'ADMIN' ? 'downgrade' : 'upgrade',
-            text: participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
+            action: participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade',
+            text: participant.value?.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
         },
         {
             action: 'mute',
@@ -280,10 +280,10 @@ const resetAdminOptions = () => {
 
 const openAdminOptionsPopup = (chatUser: ChatUser) => {
     const myChatUser = participants.value?.find(
-        chatUser => chatUser.user_login === user_info.value.login,
+        chatUser => chatUser.user_login === user_info.value?.login,
     )
     if (
-        chatUser.user_login === user_info.value.login ||
+        chatUser.user_login === user_info.value?.login ||
         chatUser.role === 'OWNER' ||
         myChatUser?.role === 'MEMBER'
     )
@@ -313,7 +313,7 @@ const setUser = (action: string) => {
             'admin-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
-                user_login: participant.value.user_login,
+                user_login: participant.value?.user_login,
                 action: action,
             }),
         )
@@ -322,7 +322,7 @@ const setUser = (action: string) => {
             'user-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
-                user_login: participant.value.user_login,
+                user_login: participant.value?.user_login,
                 action: action,
             }),
         )
@@ -337,7 +337,7 @@ const exitChat = () => {
 }
 
 const addUsers = () => {
-    for (let i = 0; i < users.value.length; i++) {
+    for (let i = 0; i < users.value?.length; i++) {
         chatSocket.value?.emit(
             'user-group-chat',
             JSON.stringify({
@@ -352,22 +352,22 @@ const addUsers = () => {
 
 const selectUser = (user: UserGetDto) => {
     if (
-        !users.value.find(u => u.login === user.login) &&
-        user.login !== user_info.value.login &&
+        !users.value?.find(u => u.login === user.login) &&
+        user.login !== user_info.value?.login &&
         !participants.value?.find(p => p.user_login === user.login)
     )
-        users.value.push(user)
+        users.value?.push(user)
 }
 
 const removeUser = (user: UserGetDto) => {
-    users.value = users.value.filter(u => u.id !== user.id)
+    users.value = users.value?.filter(u => u.id !== user.id)
 }
 
 const CanAddUsers = () => {
     if (participants.value)
-        for (let i = 0; i < participants.value.length; i++)
+        for (let i = 0; i < participants.value?.length; i++)
             if (
-                participants.value[i].user_login === user_info.value.login &&
+                participants.value[i].user_login === user_info.value?.login &&
                 participants.value[i].role !== 'MEMBER'
             )
                 return true

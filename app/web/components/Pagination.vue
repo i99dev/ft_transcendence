@@ -112,8 +112,8 @@ const currentPage = ref(1)
 
 const handlePagination = async (page: number) => {
     if (page < 1 || page > pageNumber.value) return
-    for (const key of isPage.value.keys()) isPage.value.set(key, false)
-    isPage.value.set(page, true)
+    for (const key of isPage.value?.keys()) isPage.value?.set(key, false)
+    isPage.value?.set(page, true)
     currentPage.value = page
     emit('page', currentPage.value)
 }
@@ -121,8 +121,8 @@ const handlePagination = async (page: number) => {
 onMounted(async () => {
     const totalPages = await getTotalPages()
     if (totalPages) pageNumber.value = totalPages
-    for (let i = 1; i <= pageNumber.value; i++) isPage.value.set(i, false)
-    isPage.value.set(1, true)
+    for (let i = 1; i <= pageNumber.value; i++) isPage.value?.set(i, false)
+    isPage.value?.set(1, true)
 })
 
 const getTotalPages = async () => {

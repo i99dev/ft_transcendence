@@ -112,6 +112,18 @@ export const useSockets = () => {
             console.log(`${err}: ${err.message}`)
         })
     }
+    
+    const handleSocketDisconnection = () => {
+        chatSocket.value?.on('disconnect', reason => {
+            refreshAccessToken()
+        })
+        gameSocket.value?.on('disconnect', reason => {
+            refreshAccessToken()
+        })
+        friendSocket.value?.on('disconnect', reason => {
+            refreshAccessToken()
+        })
+    }
 
-    return { connectSockets, disconnectSockets, reconnectSockets, logSocketExceptions }
+    return { connectSockets, handleSocketDisconnection, disconnectSockets, reconnectSockets, logSocketExceptions }
 }

@@ -50,14 +50,14 @@ definePageMeta({
 let isFirsTimeUser = ref(useRoute().query.status == '201' ? true : false)
 
 const closeSetup = () => {
-    isFirsTimeUser = false
+    isFirsTimeUser.value = false
 }
 
 const IsProfile = ref(false)
 
 const { user_info } = useUserInfo()
 
-const userName = user_info.value.username
+const userName = user_info.value?.username
 
 const handleUserSearch = (username: string) => {
     navigateTo(`/users/${username}`)

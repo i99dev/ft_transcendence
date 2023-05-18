@@ -210,13 +210,13 @@ onMounted(async () => {
     if (chatType.value === 'GROUP') {
         updateParticipants()
         me.value = participants.value?.find(
-            (participant: any) => participant.user_login === user_info.value.login,
+            (participant: any) => participant.user_login === user_info.value?.login,
         )
 
         // set random color for each participant
         if (participants.value)
-            for (let i = 0; i < participants.value.length; i++)
-                participantsColors.value.set(participants.value[i].user_login, `${getDarkColor()}`)
+            for (let i = 0; i < participants.value?.length; i++)
+                participantsColors.value?.set(participants.value[i].user_login, `${getDarkColor()}`)
     }
 
     //scroll to bottom
@@ -231,21 +231,21 @@ onMounted(async () => {
 
 const socketOn = () => {
     chatSocket.value?.on('add-message', (payload: chatMessage) => {
-        messages.value.unshift(payload)
+        messages.value?.unshift(payload)
 
         //scroll to bottom
         scrollToLastMessage()
     })
 
     chatSocket.value?.on('delete-message', (payload: number) => {
-        messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
+        messages.value = messages.value?.filter((message: chatMessage) => message.id !== payload)
     })
 
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
         setParticipants(payload)
         if (participants.value)
-            me.value = participants.value.find(
-                (participant: any) => participant.user_login === user_info.value.login,
+            me.value = participants.value?.find(
+                (participant: any) => participant.user_login === user_info.value?.login,
             )
     })
 }
@@ -278,9 +278,9 @@ const loadMoreMessages = async (page: number = 1) => {
     if (currentChat.value) {
         const { data } = await useChatMessages(currentChat.value?.chat_room_id, page)
         if (data.value) {
-            if (data.value.length < 20) enableLoadMoreButton.value = false
+            if (data.value?.length < 20) enableLoadMoreButton.value = false
             if (!messages.value) messages.value = data.value
-            else messages.value = messages.value.concat(data.value)
+            else messages.value = messages.value?.concat(data.value)
         }
     }
     messagesPage.value++
