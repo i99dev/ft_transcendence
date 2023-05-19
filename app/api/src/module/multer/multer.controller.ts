@@ -54,7 +54,6 @@ export class MulterController {
         return { file_url: currentUri }
     }
 
-    // @UseGuards(JwtAuthGuard)
     @Get('/download/:target/files/:filename')
     async getFile(
         @Param('target', ParseStringPipe) target: string,

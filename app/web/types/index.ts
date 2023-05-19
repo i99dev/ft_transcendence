@@ -14,7 +14,7 @@ declare global {
         access_token: string
         token_type: string
         expires_at: string
-        created_at: number
+        created_at: string
     }
 
     interface UserGetDto {

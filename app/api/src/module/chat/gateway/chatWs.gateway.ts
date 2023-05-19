@@ -133,7 +133,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
         const target_id = (await this.userService.getUser(payload.user)).login
         const clientSocket = this.getSocket(target_id)
-        clientSocket.join(room_id)
+        clientSocket?.join(room_id)
         client.join(room_id)
 
         await this.setupSpecialMessage(
@@ -143,10 +143,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
         this.wss.emit('new-direct-list', {
             content: await this.directChatService.getDirectChatForUser(target_id),
-            type: MessageType.SPECIAL,
-        })
-        client.emit('new-direct-list', {
-            content: await this.directChatService.getDirectChatForUser(client.handshake.auth.login),
             type: MessageType.SPECIAL,
         })
     }
@@ -384,7 +380,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 client.handshake.auth.login,
             )
 
-            this.wss.to(payload.room_id).emit('group-chat-users', chatUsers.chat_user)
+            this.wss.to(payload.room_id).emit('group-chat-banned-users', chatUsers.chat_user)
 
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.leave(payload.room_id)

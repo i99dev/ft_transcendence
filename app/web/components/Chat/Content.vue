@@ -63,10 +63,7 @@
                 id="chat-messages"
                 class="bg-white overflow-y-scroll box-content flex flex-col h-full"
             >
-                <div
-                    class="centered"
-                    v-if="enableLoadMoreButton"
-                >
+                <div class="centered" v-if="enableLoadMoreButton">
                     <button
                         class="bg-slate-200 p-2 rounded-2xl my-2"
                         @click="loadMoreMessages(messagesPage)"
@@ -213,13 +210,13 @@ onMounted(async () => {
     if (chatType.value === 'GROUP') {
         updateParticipants()
         me.value = participants.value?.find(
-            (participant: any) => participant.user_login === user_info.value.login,
+            (participant: any) => participant.user_login === user_info.value?.login,
         )
 
         // set random color for each participant
         if (participants.value)
-            for (let i = 0; i < participants.value.length; i++)
-                participantsColors.value.set(participants.value[i].user_login, `${getDarkColor()}`)
+            for (let i = 0; i < participants.value?.length; i++)
+                participantsColors.value?.set(participants.value[i].user_login, `${getDarkColor()}`)
     }
 
     //scroll to bottom
@@ -234,21 +231,21 @@ onMounted(async () => {
 
 const socketOn = () => {
     chatSocket.value?.on('add-message', (payload: chatMessage) => {
-        messages.value.unshift(payload)
+        messages.value?.unshift(payload)
 
         //scroll to bottom
         scrollToLastMessage()
     })
 
     chatSocket.value?.on('delete-message', (payload: number) => {
-        messages.value = messages.value.filter((message: chatMessage) => message.id !== payload)
+        messages.value = messages.value?.filter((message: chatMessage) => message.id !== payload)
     })
 
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
         setParticipants(payload)
         if (participants.value)
-            me.value = participants.value.find(
-                (participant: any) => participant.user_login === user_info.value.login,
+            me.value = participants.value?.find(
+                (participant: any) => participant.user_login === user_info.value?.login,
             )
     })
 }
@@ -257,7 +254,7 @@ const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {
-        chatMessages.scrollTop = chatMessages.scrollHeight
+        chatMessages.scrollTop = chatMessages?.scrollHeight
     }, 100)
 }
 
@@ -277,13 +274,13 @@ const sendMessage = () => {
     newMessage.value = ''
 }
 
-const loadMoreMessages = async (page : number = 1) => {
+const loadMoreMessages = async (page: number = 1) => {
     if (currentChat.value) {
         const { data } = await useChatMessages(currentChat.value?.chat_room_id, page)
         if (data.value) {
-            if (data.value.length < 20) enableLoadMoreButton.value = false
+            if (data.value?.length < 20) enableLoadMoreButton.value = false
             if (!messages.value) messages.value = data.value
-            else messages.value = messages.value.concat(data.value)
+            else messages.value = messages.value?.concat(data.value)
         }
     }
     messagesPage.value++
@@ -297,7 +294,7 @@ const deleteMessage = (message_id: number) => {
 }
 
 const goToUserProfile = () => {
-    navigateTo(`users/${currentChat.value?.users[0]?.login}`)
+    navigateTo(`/users/${currentChat.value?.users[0]?.login}`)
     emit('closeNavBar')
 }
 </script>

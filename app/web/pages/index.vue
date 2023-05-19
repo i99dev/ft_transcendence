@@ -1,10 +1,10 @@
 <template>
     <div>
-		<div
-		id="Home"
-		class="flex min-h-screen justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
+        <div
+            id="Home"
+            class="flex min-h-screen justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 py-6 sm:py-12 mobile:p-2"
         >
-		<FirstTimeLogin v-if="isFirsTimeUser" @close="closeSetup()"/>
+            <FirstTimeLogin v-if="isFirsTimeUser" @close="closeSetup()" />
             <div class="flex flex-col w-full space-y-6 items-center">
                 <SearchBar @userInput="handleUserSearch" class="w-1/2 inline-block z-10" />
                 <div class="flex flex-row justify-center w-1/2 mobile:w-full">
@@ -47,17 +47,17 @@ definePageMeta({
     middleware: ['pages'],
 })
 
-let isFirsTimeUser = ref((useRoute().query.status == '201') ? true : false)
+let isFirsTimeUser = ref(useRoute().query.status == '201' ? true : false)
 
 const closeSetup = () => {
-	isFirsTimeUser = false
+    isFirsTimeUser.value = false
 }
 
 const IsProfile = ref(false)
 
 const { user_info } = useUserInfo()
 
-const userName = user_info.value.username
+const userName = user_info.value?.username
 
 const handleUserSearch = (username: string) => {
     navigateTo(`/users/${username}`)

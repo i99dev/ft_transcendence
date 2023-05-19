@@ -5,6 +5,7 @@ import { UseGuards, Req, Get, Query, Delete } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { AchievementDto } from './dto/achievement.dto'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
+import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 @Controller('achievement')
 export class AchievementController {
     constructor(
@@ -21,8 +22,8 @@ export class AchievementController {
     @UseGuards(JwtAuthGuard)
     @Delete('/:content')
     async deleteAchievNotification(
-        @Param('content') content: string,
-        @Query('type', ParseStringPipe) type: string,
+        @Param('content', ParseStringPipe) content: string,
+        @Query('type', QueryParseStringPipe) type: string,
         @Req() req,
     ) {
         return await this.achievementService.deleteAchievNotification(req.user.login, content, type)

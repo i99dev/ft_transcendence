@@ -2,7 +2,7 @@ import { ChatRepository } from './repository/chat.repository'
 import { ChatUserDto } from './dto/chat.dto'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { ChatRoom } from '@prisma/client'
+import { ChatRoom, ChatUserStatus } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 import { ChatService } from './chat.service'
 
@@ -81,8 +81,32 @@ export class GroupChatService {
             console.log(error)
         }
     }
+    async getGroupChatBannedUsers(room_id: string, type: ChatUserStatus) {
+        try {
+            const chat = await this.prisma.groupChat.findUnique({
+                where: {
+                    chat_room_id: room_id,
+                },
+                select: {
+                    chat_user: {
+                        where: {
+                            status: {
+                                in: [type],
+                            },
+                        },
+                        include: {
+                            user: true,
+                        },
+                    },
+                },
+            })
+            return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-    async getChatRoomsForGroups(user_login: string) {
+    async getGroupChats(user_login: string) {
         try {
             const groupChats = await this.prisma.groupChat.findMany({
                 where: {

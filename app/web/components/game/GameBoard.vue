@@ -59,7 +59,7 @@ const handleArrows = (e: PopStateEvent): void => {
 }
 
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value.game.players[gameSetup.value.player].username) {
+    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].username) {
         emit('GameOver', 'you won')
         const winSound = new Audio('/sounds/win.mp3')
         winSound.play()
@@ -85,7 +85,7 @@ function destroy(): void {
 }
 
 function giveUp(): void {
-    socket.value?.emit('Give-Up', gameSetup.value.game.players[gameSetup.value.player])
+    socket.value?.emit('Give-Up', gameSetup.value?.game.players[gameSetup.value?.player])
     destroy()
 }
 
@@ -114,8 +114,8 @@ watch(gameData, (newVal, oldVal) => {
     if (newVal) {
         updatePaddleDirection()
         rescaleGameData(newVal)
-        updatePlayer(gameData.value.players)
-        updateBall(gameData.value.ball)
+        updatePlayer(gameData.value?.players)
+        updateBall(gameData.value?.ball)
     }
 })
 
@@ -138,10 +138,10 @@ const startPowerCooldown = (player: number, key: number): void => {
 const activatePowerUp = (key: string): void => {
     if (key == '1') {
         socket.value?.emit('Power-Up', 1)
-        startPowerCooldown(gameSetup.value.player, 0)
+        startPowerCooldown(gameSetup.value?.player, 0)
     } else if (key == '2') {
         socket.value?.emit('Power-Up', 2)
-        startPowerCooldown(gameSetup.value.player, 1)
+        startPowerCooldown(gameSetup.value?.player, 1)
     }
 }
 

@@ -1,4 +1,5 @@
 import { Socket, io } from 'socket.io-client'
+import { useToast } from 'primevue/usetoast'
 
 export const useChatSocket = () => {
     const chatSocket = useState<Socket | undefined>('chatSocket', undefined)
@@ -102,16 +103,50 @@ export const useSockets = () => {
     }
 
     const logSocketExceptions = () => {
+        const toast = useToast()
         chatSocket.value?.on('exception', err => {
-            console.log(`${err}: ${err.message}`)
+            toast.add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: err.message,
+                life: 3000,
+            })
         })
         gameSocket.value?.on('exception', err => {
-            console.log(`${err}: ${err.message}`)
+            toast.add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: err.message,
+                life: 3000,
+            })
         })
         friendSocket.value?.on('exception', err => {
-            console.log(`${err}: ${err.message}`)
+            toast.add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: err.message,
+                life: 3000,
+            })
         })
     }
 
-    return { connectSockets, disconnectSockets, reconnectSockets, logSocketExceptions }
+    const handleSocketDisconnection = () => {
+        chatSocket.value?.on('disconnect', reason => {
+            refreshAccessToken()
+        })
+        gameSocket.value?.on('disconnect', reason => {
+            refreshAccessToken()
+        })
+        friendSocket.value?.on('disconnect', reason => {
+            refreshAccessToken()
+        })
+    }
+
+    return {
+        connectSockets,
+        handleSocketDisconnection,
+        disconnectSockets,
+        reconnectSockets,
+        logSocketExceptions,
+    }
 }

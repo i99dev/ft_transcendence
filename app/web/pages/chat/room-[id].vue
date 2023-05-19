@@ -48,11 +48,11 @@
 
 <script setup lang="ts">
 const router = useRouter()
-const { id } = router.currentRoute.value.params
+const { id } = router.currentRoute.value?.params
 const messages = useState('message', () => []) as any
 const newMessage = ref('')
 const sendMessage = () => {
-    messages.value.push({
+    messages.value?.push({
         name: 'me',
         time: new Date().toLocaleTimeString(),
         message: newMessage.value,

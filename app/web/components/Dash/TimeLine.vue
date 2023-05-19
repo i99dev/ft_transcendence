@@ -250,11 +250,11 @@ const isFilter = ref(new Map<string, boolean>())
 const totalPagesURL = `/match-history/${login.value}/totalPages`
 
 onMounted(async () => {
-    isFilter.value.set('all', true)
-    isFilter.value.set('win', false)
-    isFilter.value.set('lose', false)
-    isFilter.value.set('asc', false)
-    isFilter.value.set('desc', false)
+    isFilter.value?.set('all', true)
+    isFilter.value?.set('win', false)
+    isFilter.value?.set('lose', false)
+    isFilter.value?.set('asc', false)
+    isFilter.value?.set('desc', false)
     currentPage.value = 1
     currentFilter.value = 'all'
     const data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
@@ -284,7 +284,7 @@ const handlePagination = async (page: number) => {
 }
 
 const handleFilteration = async (filter: string) => {
-    for (const key of isFilter.value.keys()) isFilter.value.set(key, false)
+    for (const key of isFilter.value?.keys()) isFilter.value?.set(key, false)
     let data
     if (filter == 'all')
         data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
@@ -306,7 +306,7 @@ const handleFilteration = async (filter: string) => {
         )
     if (data && game_history) game_history.values = data
     currentFilter.value = filter
-    isFilter.value.set(filter, true)
+    isFilter.value?.set(filter, true)
 }
 
 const getLadderRank = (ladder: number | undefined) => {

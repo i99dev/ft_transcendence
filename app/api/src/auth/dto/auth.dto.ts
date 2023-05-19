@@ -6,8 +6,8 @@ const jwtService = new JwtService()
 export class TokenDto {
     access_token: string
     token_type: string
-    expires_at: number
-    created_at: number
+    expires_at: string
+    created_at: string
 
     constructor(accessToken: string) {
         this.access_token = accessToken
