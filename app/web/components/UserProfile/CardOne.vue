@@ -335,7 +335,6 @@ const isMe = ref(false)
 const userData = computed(() => {
     if (user_info.value.username === props.username) {
         const { username, image, xp, ladder, status } = user_info.value
-        // console.log(status)
         isMe.value = true
         return { username, image, xp, ladder, status }
     } else {

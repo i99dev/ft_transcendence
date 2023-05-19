@@ -71,7 +71,6 @@ onUnmounted(() => {
 })
 
 const startGame = (mode: GameSelectDto): void => {
-    console.log(mode)
     showBoard.value = true
 
     setTimeout(() => {
@@ -139,10 +138,8 @@ watchEffect(() => {
         }
     }
 })
-console.log("Play.vue is loaded")
 
 </script>
-
 
 <style>
 body {

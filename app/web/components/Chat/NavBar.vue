@@ -65,7 +65,6 @@ const { chatType } = useChatType()
 const { inviteModal, reset } = useGameInvite()
 
 const showInviteBox = (user: string) => {
-    console.log('showInviteBox', user)
     reset()
     inviteModal.value.type = 'invite'
     inviteModal.value.target = user

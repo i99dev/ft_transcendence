@@ -58,7 +58,6 @@ export function useGameInvite() {
     const { socket } = useSocket();
 
     socket.value?.on('Invite-Received', (payload: InviteDto) => {
-        console.log('Invite-Received', payload);
         invite.value = payload;
         inviteModal.value.type = 'invited';
         inviteModal.value.gameType = payload.gameType;
@@ -66,7 +65,6 @@ export function useGameInvite() {
     });
 
     socket.value?.on('Respond-Invite', async (response: InviteResponseDto) => {
-        console.log('Invite REsponse recived ', response);
         if (response.accepted) {
             inviteModal.value.open = false;
             inviteModal.value.gameInProgress = true;

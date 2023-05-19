@@ -250,7 +250,6 @@ const socketOn = () => {
 
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
     if (chatType.value === 'DM') {
-        console.log("chat.users", chat.users)
         emit('showInvite', chat.users[0].login)
         // navigateTo('/play')
     } else {

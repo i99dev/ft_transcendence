@@ -1,5 +1,6 @@
 import {
     IsAscii,
+    IsBoolean,
     IsEnum,
     IsNotEmpty,
     IsNumber,
@@ -122,5 +123,7 @@ export class InviteDto {
     @IsEnum(gameType)
     gameType: gameType
     
-    powerups?: string[];
+    powerups: string[];
+
+    accepted?: boolean;
 }

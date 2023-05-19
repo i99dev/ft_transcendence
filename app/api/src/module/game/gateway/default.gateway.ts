@@ -41,11 +41,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.socketService.setServer(server)
     }
 
-    @OnEvent('token-refreshed')
-    handleTokenRefreshedEvent(payload: any) {
-        this.logger.log('token-refreshed', payload)
-    }
-
     handleConnection(client: Socket, ...args: any[]) {
         this.logger.log(`Client connected: ${client.id}`)
         let token = client.request.headers.authorization
@@ -74,7 +69,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @UseGuards(WsGuard)
     @SubscribeMessage('Give-Up')
     giveUp(@ConnectedSocket() client: Socket, @MessageBody() player: PlayerDto) {
-        console.log('give up')
         this.gameService.giveUp(client)
     }
 
@@ -109,7 +103,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
         this.gameService.sendInvite(client, payload)
-        console.log("send invite", payload)
     }
 
     @UseGuards(WsGuard)
@@ -119,7 +112,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
         this.gameService.respondInvite(client, payload)
-        console.log("Respond-Invite", payload)
     }
 
 

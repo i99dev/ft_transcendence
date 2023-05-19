@@ -10,14 +10,14 @@
             Pick Two PowerUps
           </h3>
           <div class="flex justify-center ">
-          <div class="grid grid-cols-2 gap-2 text-white">
-            <div v-for="(powerup, index) in powerups" :key="index" class="flex items-center">
-              <input type="checkbox" :id="powerup" :value="powerup" v-model="selectedPowerups"
-                @change="checkPowerupLimit" class="form-checkbox text-blue-500" />
-              <label :for="powerup" class="ml-2">{{ powerup }}</label>
+            <div class="grid grid-cols-2 gap-2 text-white">
+              <div v-for="(powerup, index) in powerups" :key="index" class="flex items-center">
+                <input type="checkbox" :id="powerup" :value="powerup" v-model="selectedPowerups"
+                  @change="checkPowerupLimit" class="form-checkbox text-blue-500" />
+                <label :for="powerup" class="ml-2">{{ powerup }}</label>
+              </div>
             </div>
           </div>
-        </div>
         </div>
         <div class="flex space-x-4 justify-center mt-4">
           <button :disabled="inviteModal.gameType === 'custom' && selectedPowerups.length != 2"
@@ -43,22 +43,20 @@
             </h3>
             <ul class="space-y-2">
               <li>
-                  <button :class="mode === 'classic' ? 'bg-green-500' : 'bg-blue-500'"
-                      class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                      @click="selectMode('classic')"
-                  >
-                      Classic Pong
-                  </button>
+                <button :class="mode === 'classic' ? 'bg-green-500' : 'bg-blue-500'"
+                  class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                  @click="selectMode('classic')">
+                  Classic Pong
+                </button>
               </li>
               <li>
-                  <button :class="mode === 'custom' ? 'bg-green-500' : 'bg-blue-500'"
-                      class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                      @click="selectMode('custom')"
-                  >
-                      Custom Pong
-                  </button>
+                <button :class="mode === 'custom' ? 'bg-green-500' : 'bg-blue-500'"
+                  class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                  @click="selectMode('custom')">
+                  Custom Pong
+                </button>
               </li>
-          </ul>
+            </ul>
           </div>
           <div v-if="mode === 'custom'">
             <h3 class="text-xl text-bold text-center text-white mt-4 mb-2">
@@ -84,7 +82,7 @@
         </div>
         <div v-if="!isLoading || inviteModal.rejected" class="mt-10 flex space-x-4 justify-center">
           <button
-          class="py-2 px-4 rounded-md text-white bg-red-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-red-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+            class="py-2 px-4 rounded-md text-white bg-red-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-red-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
             @click="inviteModal.open = false">
             Close
           </button>
@@ -123,8 +121,6 @@ const { invite, inviteModal, send, accept, decline, reset } = useGameInvite()
 
 const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu']
 
-console.log('GameInvite created')
-
 const selectMode = (newMode: string) => {
   mode.value = newMode
 }
@@ -149,7 +145,6 @@ const declineInvite = () => {
 }
 
 const sendInvite = () => {
-  console.log('sendInvite')
   isLoading.value = true
   send({
     inviterId: '',

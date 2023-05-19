@@ -109,20 +109,16 @@ export class DefaultService {
         const opponent = this.connected_users.find(user => user.id == invite.invitedId)
         user.powerUps = invite.powerups
         invite.inviterId = user.id
-        console.log("player1", user.id)
         if (opponent && opponent.status == 'online') {
             // If the invite was successfuly sent to the opponent
             opponent.socket.emit('Invite-Received', invite)
-            console.log('Invite sent', invite)
         }
         else if (opponent) {
             // Incase user it not online or not found
             userSocket.emit('Respond-Invite', { accepted: false, playerStatus: opponent.status })
-            console.log('User not found', invite)
         }
         else {
             userSocket.emit('Respond-Invite', { accepted: false, playerStatus: 'offline' })
-            console.log('User not found', invite)
         }
     }
 
@@ -130,11 +126,8 @@ export class DefaultService {
     public respondInvite(userSocket: Socket, response: InviteDto) {
         const user = this.connected_users.find((user => user.socket == userSocket))
         const opponent = this.connected_users.find(user => user.id == response.inviterId)
-        console.log("player1", user.id)
-        console.log("player2", opponent.id)
         if (opponent) {
             if (response.accepted == true) {
-                console.log("Invite ACCEPTED !! by ", user.id)
                 opponent.socket.emit('Respond-Invite', { accepted: true, playerStatus: user.status })
                 user.powerUps = response.powerups
                 setTimeout(() => {
@@ -146,7 +139,6 @@ export class DefaultService {
             }
             else {
                 opponent.socket.emit('Respond-Invite', { accepted: false, playerStatus: user.status })
-                console.log("Invite DECLINED !! by ", user.id)
             }
         }
     }
