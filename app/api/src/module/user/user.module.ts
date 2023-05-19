@@ -8,9 +8,9 @@ import { PrismaModule } from '../../providers/prisma/prisma.module'
 import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
-    imports: [forwardRef(() => AuthModule), FriendModule, PrismaModule],
+    imports: [forwardRef(() => AuthModule), forwardRef(() => FriendModule), PrismaModule],
     controllers: [UserController],
-    providers: [UserService, UserRepository, PrismaService],
+    providers: [UserService, UserRepository],
     exports: [UserService, UserRepository],
 })
 export class UserModule {}

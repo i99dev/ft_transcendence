@@ -4,11 +4,12 @@ import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryController } from './match-history.controller'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaModule } from '@providers/prisma/prisma.module'
 
 @Module({
-    imports: [AuthModule],
+    imports: [AuthModule, PrismaModule],
     controllers: [MatchHistoryController],
-    providers: [MatchHistoryService, PrismaService, gameAnalyzer],
+    providers: [MatchHistoryService, gameAnalyzer],
     exports: [MatchHistoryService],
 })
 export class MatchHistoryModule {}
