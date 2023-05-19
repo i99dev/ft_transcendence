@@ -276,8 +276,6 @@ export class DefaultService {
         })
 
         const intervalId = setInterval(async () => {
-            if (game.getGameStatus().players[1].username == 'Computer') 
-
             if (game.isPlayersReady() || game.getGameStatus().players[1].username == 'Computer') {
                 game.updateGame()
                 this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
