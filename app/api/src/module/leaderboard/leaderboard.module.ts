@@ -3,11 +3,12 @@ import { LeaderboardController } from './leaderboard.controller'
 import { LeaderboardService } from './leaderboard.service'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { PrismaService } from '@providers/prisma/prisma.service'
+import { PrismaModule } from '@providers/prisma/prisma.module'
 
 @Module({
-    imports: [],
+    imports: [PrismaModule],
     controllers: [LeaderboardController],
-    providers: [LeaderboardService, PrismaService, gameAnalyzer],
+    providers: [LeaderboardService, gameAnalyzer],
     exports: [LeaderboardService],
 })
 export class LeaderboardModule {}
