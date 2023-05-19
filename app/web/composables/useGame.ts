@@ -33,6 +33,9 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
 }
 
 export function useGameInvite() {
+
+    const { user_info } = useUserInfo()
+
     const invite = useState<InviteDto>('invite', () => {
         return {
             inviterId: '',
@@ -76,6 +79,7 @@ export function useGameInvite() {
     });
 
     const send = (invite: InviteDto) => {
+        invite.inviterId = user_info.value?.login;
         socket.value?.emit('Send-Invite', JSON.stringify(invite));
     };
 

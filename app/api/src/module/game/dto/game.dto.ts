@@ -125,5 +125,7 @@ export class InviteDto {
     
     powerups: string[];
 
+    @IsOptional()
+    @IsBoolean()
     accepted?: boolean;
 }
