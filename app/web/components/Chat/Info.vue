@@ -128,6 +128,30 @@
                     </Dialog>
                 </TransitionRoot>
 
+                <div class="text-md font-semibold centered">
+                    <button
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        :class="{
+                            'scale-125': participantsType === 'NORMAL',
+                            'text-indigo-500': participantsType === 'NORMAL',
+                            'text-slate-500': participantsType !== 'NORMAL',
+                        }"
+                        @click="updateParticipants()"
+                    >
+                        Participants
+                    </button>
+                    <button
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        @click="updateParticipants('BAN')"
+                        :class="{
+                            'scale-125': participantsType === 'BAN',
+                            'text-indigo-500': participantsType === 'BAN',
+                            'text-slate-500': participantsType !== 'BAN',
+                        }"
+                    >
+                        Banned
+                    </button>
+                </div>
                 <div
                     v-for="participant in participants"
                     :key="participant.user.username"
@@ -202,7 +226,8 @@ watch(chatSocket, async () => {
     socketOn()
 })
 
-const { participants, setParticipants } = useGroupChatParticipants()
+const { participants, participantsType, setParticipantsType, setParticipants, updateParticipants } =
+    useGroupChatParticipants()
 const participant = ref({} as ChatUser)
 const adminOptions = ref([
     {
@@ -237,10 +262,24 @@ onMounted(() => {
 const socketOn = () => {
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
         setParticipants(payload)
+        setParticipantsType('NORMAL')
+    })
+    chatSocket.value?.on('group-chat-banned-users', (payload: ChatUser[]) => {
+        setParticipantsType('BAN')
+        setParticipants(payload)
     })
 }
 
 const setAdminOptions = () => {
+    if (participant.value.status === 'BAN') {
+        adminOptions.value = []
+        adminOptions.value[0] = {
+            action: 'reset',
+            text: 'Unban',
+        }
+        return
+    }
+
     // check whether participant is admin to downgrade hime or not to upgrade him
     adminOptions.value[0].action = participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade'
     adminOptions.value[0].text =

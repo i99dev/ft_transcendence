@@ -446,7 +446,6 @@ const nextStage = () => {
     const formElement = document.getElementsByClassName(
         'chat-form',
     ) as HTMLCollectionOf<HTMLFormElement>
-    console.log(formElement[stage.value - 1])
     if (
         stage.value !== 3 &&
         (!formElement[stage.value - 1] || formElement[stage.value - 1].reportValidity())
@@ -463,7 +462,7 @@ const closePopup = () => {
     setTimeout(() => {
         groupChat.value = {
             name: '',
-            image: 'https://picsum.photos/200',
+            image: '',
             chatType: chatTypes[0],
             password: '',
         }

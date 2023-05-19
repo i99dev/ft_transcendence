@@ -75,20 +75,18 @@ const searchedUsers = ref('')
 const props = defineProps(['isMe', 'search', 'unwantedUsers'])
 
 watch(searchedUsers, async val => {
-    if (val === '') {
-        setUsersList(allUsers.value)
-    }
+    if (!val)
+        setUsersList([])
 })
-const { data: allUsers } = await useUsers()
 const users = ref()
 
 onMounted(() => {
-    if (allUsers) setUsersList(allUsers.value)
-
     if (props.search) document.getElementById('search-input')?.focus()
 })
 
 const getFilteredUsers = async () => {
+    if (!searchedUsers.value)
+        return
     const { data } = await useUsersSearch(searchedUsers.value)
     setUsersList(data.value)
 }
@@ -97,7 +95,7 @@ const isUserDimmed = (login: string) => {
     return props.unwantedUsers.find((u: UserGetDto) => u.login === login)
 }
 
-const setUsersList = (usersList: UserGetDto) => {
+const setUsersList = (usersList: UserGetDto[]) => {
     users.value = usersList
 }
 </script>

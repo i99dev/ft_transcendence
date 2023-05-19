@@ -102,7 +102,7 @@
                         />
                         <!-- online badge -->
                         <span
-                            v-if="chatType === 'DM'"
+                            v-if="chatType === 'DM' && chat.users[0].status === 'ONLINE'"
                             class="absolute bottom-1 left-8 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
                         />
                     </div>

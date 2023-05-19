@@ -103,13 +103,13 @@ export const useSockets = () => {
 
     const logSocketExceptions = () => {
         chatSocket.value?.on('exception', err => {
-            console.log(`${err}: ${err.message}`)
+            console.log(`${err.status}: ${err.message}`)
         })
         gameSocket.value?.on('exception', err => {
-            console.log(`${err}: ${err.message}`)
+            console.log(`${err.status}: ${err.message}`)
         })
         friendSocket.value?.on('exception', err => {
-            console.log(`${err}: ${err.message}`)
+            console.log(`${err.status}: ${err.message}`)
         })
     }
     

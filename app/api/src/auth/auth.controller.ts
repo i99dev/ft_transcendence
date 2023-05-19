@@ -19,6 +19,7 @@ import { TwoFacAuthService } from './twoFacAuth.service'
 import { UserService } from '../module/user/user.service'
 import { JwtAuthGuard } from '../common/guards/jwt.guard'
 import { twoFacAuthConstants } from '../common/constants/setting'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 
 @Controller('auth')
 export class AuthController {
@@ -78,7 +79,7 @@ export class AuthController {
     }
 
     @Get('2fa/resend/:login')
-    async resendVerificationCode(@Param('login') login: string): Promise<TwoFacAuthDto | string> {
+    async resendVerificationCode(@Param('login', ParseStringPipe) login: string): Promise<TwoFacAuthDto | string> {
         const user = await this.userService.getUser(login)
         if (!user) throw new NotFoundException('User not found')
 
@@ -95,7 +96,7 @@ export class AuthController {
 
     @Post('2fa/confirm/:login')
     async confirm2FA(
-        @Param('login') login: string,
+        @Param('login', ParseStringPipe) login: string,
         @Req() req,
         @Res() res,
     ): Promise<TokenDto | string> {
