@@ -63,18 +63,16 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     ) {
         if (payload.gameMode == 'single') this.gameService.createSingleGame(client, payload)
         else if (payload.gameMode == 'multi') await this.gameService.matchPlayer(client, payload)
-        // else if (payload.gameMode == 'invite')
-        // this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
-    // @UseGuards(WsGuard)
+    @UseGuards(WsGuard)
     @SubscribeMessage('Give-Up')
     giveUp(@ConnectedSocket() client: Socket, @MessageBody() player: PlayerDto) {
         console.log('give up')
         this.gameService.giveUp(client)
     }
 
-    // @UseGuards(WsGuard)
+    @UseGuards(WsGuard)
     @SubscribeMessage('Power-Up')
     PowerupStart(
         @ConnectedSocket() client: Socket,
@@ -83,7 +81,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.activatePowerUp(client, powerUp)
     }
 
-    // @UseGuards(WsGuard)
+    @UseGuards(WsGuard)
     @SubscribeMessage('move')
     movePlayer(
         @ConnectedSocket() client: Socket,
@@ -116,7 +114,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     }
 
 
-    // @UseGuards(WsGuard)
+    @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)
