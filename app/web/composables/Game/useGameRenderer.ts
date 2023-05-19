@@ -97,13 +97,13 @@ export function useGameRenderer() {
 
         /* ------------------------------- */
 
-        const paddleWidth = gameSetup.value.game.players[0].paddle.width
-        const paddleHeight = gameSetup.value.game.players[0].paddle.height
-        const paddle2Width = gameSetup.value.game.players[1].paddle.width
-        const paddle2Height = gameSetup.value.game.players[1].paddle.height
+        const paddleWidth = gameSetup.value?.game.players[0].paddle.width
+        const paddleHeight = gameSetup.value?.game.players[0].paddle.height
+        const paddle2Width = gameSetup.value?.game.players[1].paddle.width
+        const paddle2Height = gameSetup.value?.game.players[1].paddle.height
         const paddleDepth = 0.4
-        const paddle1Y = gameSetup.value.game.players[0].paddle.y
-        const paddle2Y = gameSetup.value.game.players[1].paddle.y
+        const paddle1Y = gameSetup.value?.game.players[0].paddle.y
+        const paddle2Y = gameSetup.value?.game.players[1].paddle.y
 
         const paddlePosition = new THREE.Vector3(-GAME.PG_WIDTH / 2, paddle1Y, 0)
         const paddle2Position = new THREE.Vector3(GAME.PG_WIDTH / 2, paddle2Y, 0)
@@ -243,8 +243,8 @@ export function useGameRenderer() {
         enableOrbitControls()
         await createGameObjects()
         addEventListener('resize', onWindowResize)
-        originalPaddleHeight = gameSetup.value.game.players[0].paddle.height
-        originalPaddle2Height = gameSetup.value.game.players[1].paddle.height
+        originalPaddleHeight = gameSetup.value?.game.players[0].paddle.height
+        originalPaddle2Height = gameSetup.value?.game.players[1].paddle.height
 
         loadLogo()
 

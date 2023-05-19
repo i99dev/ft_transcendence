@@ -67,14 +67,14 @@ onBeforeUnmount(() => {
 })
 
 onUnmounted(() => {
-    audio.value.pause()
+    audio.value?.pause()
 })
 
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
 
     setTimeout(() => {
-        gameBoard.value.setup(mode)
+        gameBoard.value?.setup(mode)
     }, 1000)
     gameResult.value = false
 }
@@ -93,7 +93,7 @@ const gameOver = (message: string): void => {
 
 const leaveQueue = (): void => {
     emitLeaveQueue()
-    gameBoard.value.destroy()
+    gameBoard.value?.destroy()
     setTimeout(() => {
         showBoard.value = false
     }, 1000)
@@ -105,7 +105,7 @@ const setGameReady = (): void => {
 }
 
 const exitGame = (): void => {
-    gameBoard.value.giveUp()
+    gameBoard.value?.giveUp()
     showBoard.value = false
     exit.value = false
     showSelector.value = true
@@ -113,10 +113,10 @@ const exitGame = (): void => {
 }
 
 const toggleAudio = (): void => {
-    if (audio.value.paused) {
-        audio.value.play()
+    if (audio.value?.paused) {
+        audio.value?.play()
     } else {
-        audio.value.pause()
+        audio.value?.pause()
     }
 }
 const switchExistStatus = (status: boolean): void => {

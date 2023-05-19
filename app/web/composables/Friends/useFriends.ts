@@ -56,7 +56,7 @@ export const useFriends = async () => {
     }
 
     const sortFriends = () => {
-        friends_info.value.friends.sort((friend1: any, friend2: any) => {
+        friends_info.value?.friends.sort((friend1: any, friend2: any) => {
             return order.indexOf(friend1.status) - order.indexOf(friend2.status)
         })
     }

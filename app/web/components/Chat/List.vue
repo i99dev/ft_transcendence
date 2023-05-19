@@ -80,7 +80,8 @@
 
                 <!-- chat element -->
                 <button
-                    v-for="chat in chats" :key="chat.id"
+                    v-for="chat in chats"
+                    :key="chat.id"
                     @click="setCurrentChat(chat)"
                     class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
                     @mouseover="hoverButton = chat"
@@ -101,7 +102,7 @@
                         />
                         <!-- online badge -->
                         <span
-                            v-if="chatType === 'DM'"
+                            v-if="chatType === 'DM' && chat.users[0].status === 'ONLINE'"
                             class="absolute bottom-1 left-8 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
                         />
                     </div>
@@ -263,7 +264,7 @@ const joinGroupChat = () => {
     chatSocket.value?.emit(
         'join-group-chat',
         JSON.stringify({
-            room_id: selectedChat.value.chat_room_id,
+            room_id: selectedChat.value?.chat_room_id,
             password: joinGroupPassword.value,
         }),
     )

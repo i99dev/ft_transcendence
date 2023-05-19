@@ -79,7 +79,7 @@ const user = await getUserbyUserName(props.username)
 const { user_info } = useUserInfo()
 
 const isMe = computed(() => {
-    return user_info.value.id === user.id
+    return user_info.value?.id === user.id
 })
 
 //tabs
@@ -118,7 +118,7 @@ const setActiveTab = (tab: any) => {
 }
 
 const isActive = (tab: any) => {
-    return activeTab.value.name === tab.name
+    return activeTab.value?.name === tab.name
 }
 
 const getComponent = (tab: any) => {

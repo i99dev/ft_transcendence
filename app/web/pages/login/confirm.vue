@@ -76,7 +76,7 @@ const submitCode = async (code: string) => {
     if (login) {
         const { data, error } = await useSubmitConfirmationCode(login.toString(), code)
         if (data.value) {
-            useCookie('access_token').value = data.value.access_token
+            useCookie('access_token').value = data.value?.access_token
             navigateTo('/')
         } else {
             toast.add({

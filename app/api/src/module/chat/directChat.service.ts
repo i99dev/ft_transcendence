@@ -69,7 +69,7 @@ export class DirectChatService {
         }
     }
 
-    async getDirectChatRooms(user: string) {
+    async getDirectChats(user: string) {
         try {
             const directChats = await this.prisma.directChat.findMany({
                 where: {
@@ -114,6 +114,45 @@ export class DirectChatService {
                         where: {
                             NOT: {
                                 login: user_login,
+                            },
+                        },
+                    },
+                },
+            })
+            const sortedChat = await this.chatRepository.sort(chatRooms)
+            return sortedChat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getDirectChatbetweenUsers(user_login1: string, user_login2) {
+        try {
+            const chatRooms = await this.prisma.directChat.findMany({
+                where: {
+                    users: {
+                        every: {
+                            login: {
+                                in: [user_login1, user_login2],
+                            },
+                        },
+                    },
+                },
+                include: {
+                    chat_room: {
+                        select: {
+                            messages: {
+                                orderBy: {
+                                    created_at: 'desc',
+                                },
+                                take: 1,
+                            },
+                        },
+                    },
+                    users: {
+                        where: {
+                            NOT: {
+                                login: user_login1,
                             },
                         },
                     },

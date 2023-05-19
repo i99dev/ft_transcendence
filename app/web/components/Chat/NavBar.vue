@@ -90,5 +90,5 @@ watch(
     },
 )
 
-const open = computed(() => chat_info.value.chatModalOpen)
+const open = computed(() => chat_info.value?.chatModalOpen)
 </script>

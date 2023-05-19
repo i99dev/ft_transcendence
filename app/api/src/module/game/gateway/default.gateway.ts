@@ -18,7 +18,7 @@ import { WsGuard } from '../../../common/guards/ws.guard'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
-import { OnEvent } from '@nestjs/event-emitter'
+import { ParseSocketStringPipe } from '@common/pipes/socketString.pipe'
 @WebSocketGateway({
     namespace: '/game',
     cors: { origin: '*' },
@@ -85,7 +85,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @SubscribeMessage('move')
     movePlayer(
         @ConnectedSocket() client: Socket,
-        @MessageBody(new ParseStringPipe()) direction: 'up' | 'down',
+        @MessageBody(new ParseSocketStringPipe()) direction: 'up' | 'down',
     ) {
         this.gameService.movePaddle(client, direction)
     }
