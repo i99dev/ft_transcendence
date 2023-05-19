@@ -82,7 +82,7 @@ export class UserService {
         if (!existingUser) {
             throw new NotFoundException(`User ${name} not found`)
         }
-        return this.repository.deleteUser(name)
+        return this.deleteUser(name)
     }
 
     async SearchUser(search: string) {
@@ -99,6 +99,14 @@ export class UserService {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    async deleteUser(name: string): Promise<UserGetDto> {
+        const user = await this.prisma.user.findUnique({ where: { login: name } })
+        if (!user) {
+            throw new NotFoundException(`User with name ${name} was not found`)
+        }
+        return await this.prisma.user.delete({ where: { login: name } })
     }
 
     async getUserbyUserName(name: string): Promise<UserGetDto> {

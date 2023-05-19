@@ -20,7 +20,7 @@ services:
         volumes:
             - ./app/web:/usr/src/app
 
-        command: ['sh', '-c', 'yarn install && yarn run build && yarn run start']
+        command: ['sh', '-c', 'yarn install && yarn run build && npx pm2 start yarn --name "ft_transcendence" --interpreter bash --no-daemon -- start']
 
         networks:
             - proxy_frontend_net
@@ -46,7 +46,7 @@ services:
             [
                 'sh',
                 '-c',
-                'yarn && npx prisma db push --force-reset && npx prisma db seed && yarn run build && npx pm2 start yarn --name "ft_transcendence" --interpreter bash -- start',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && yarn run build && npx pm2 start yarn --name "ft_transcendence" --interpreter bash --no-daemon -- start',
             ]
 
         environment:

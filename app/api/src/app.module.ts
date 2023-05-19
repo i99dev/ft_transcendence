@@ -26,7 +26,7 @@ import { FriendModule } from '@module/friend/friend.module'
         PrismaModule,
         ThrottlerModule.forRoot({
             ttl: 60,
-            limit: 20,
+            limit: 100,
         }),
         MailerModule.forRootAsync({
             imports: [ConfigModule],
