@@ -48,6 +48,8 @@
                 </div>
             </div>
         </div>
+        <GameInviteBox v-if="inviteModal.open" class="z-20" />
+
     </div>
 </template>
 
@@ -55,7 +57,7 @@
 import { computed, ref } from 'vue'
 
 const route = useRoute()
-
+const { inviteModal } = useGameInvite()
 const IsProfile = ref(true)
 
 const userName = computed(() => {
