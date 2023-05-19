@@ -16,7 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } = useSockets()
+const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+    useSockets()
 const { data: me, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
 
@@ -43,5 +44,4 @@ if (myblockList.value) setBlockList(myblockList.value)
 
 handleSocketDisconnection()
 logSocketExceptions()
-
 </script>

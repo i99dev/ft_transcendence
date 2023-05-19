@@ -9,12 +9,13 @@ export async function useNotifications() {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
             },
         })
-        if (error) useToast().add({
-            severity: 'error',
-            summary: 'Opps!',
-            detail: `can't delete conthe notification (${error.value})`,
-            life: 3000,
-        })
+        if (error)
+            useToast().add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: `can't delete conthe notification (${error.value})`,
+                life: 3000,
+            })
         return data
     }
 
@@ -26,12 +27,13 @@ export async function useNotifications() {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
             },
         })
-        if (error) useToast().add({
-            severity: 'error',
-            summary: 'Opps!',
-            detail: `can't delete the notification (${error.value})`,
-            life: 3000,
-        })
+        if (error)
+            useToast().add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: `can't delete the notification (${error.value})`,
+                life: 3000,
+            })
     }
     return { getNotifications, deleteNotification }
 }

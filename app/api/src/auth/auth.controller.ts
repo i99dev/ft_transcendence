@@ -79,7 +79,9 @@ export class AuthController {
     }
 
     @Get('2fa/resend/:login')
-    async resendVerificationCode(@Param('login', ParseStringPipe) login: string): Promise<TwoFacAuthDto | string> {
+    async resendVerificationCode(
+        @Param('login', ParseStringPipe) login: string,
+    ): Promise<TwoFacAuthDto | string> {
         const user = await this.userService.getUser(login)
         if (!user) throw new NotFoundException('User not found')
 

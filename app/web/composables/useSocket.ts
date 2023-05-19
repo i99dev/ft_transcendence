@@ -129,7 +129,7 @@ export const useSockets = () => {
             })
         })
     }
-    
+
     const handleSocketDisconnection = () => {
         chatSocket.value?.on('disconnect', reason => {
             refreshAccessToken()
@@ -142,5 +142,11 @@ export const useSockets = () => {
         })
     }
 
-    return { connectSockets, handleSocketDisconnection, disconnectSockets, reconnectSockets, logSocketExceptions }
+    return {
+        connectSockets,
+        handleSocketDisconnection,
+        disconnectSockets,
+        reconnectSockets,
+        logSocketExceptions,
+    }
 }
