@@ -32,6 +32,7 @@ import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 export class UserController {
     constructor(private readonly UserService: UserService) {}
 
+    // @UseGuards(JwtAuthGuard)
     @Get()
     @ApiOperation({
         operationId: 'getUsers',
