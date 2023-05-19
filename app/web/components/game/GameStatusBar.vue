@@ -13,7 +13,7 @@
                     class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
             </div>
         </div>
-        <div class="text-white font-semibold text-2xl mx-4">{{ timer }}</div>
+        <div class="text-white font-semibold text-2xl mx-4">{{ formatTime(timer) }}</div>
         <div class="flex space-x-4">
             <div v-for="(powerUp, i) in players[1].powerUps" :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative">
@@ -80,6 +80,13 @@ const timer = computed(() => {
 
 onMounted(() => { })
 
+
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
 watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
     if (newPlayer1.score !== 11 && newPlayer1.score !== oldPlayer1.score) {
         scoreAudio.play()
@@ -88,4 +95,5 @@ watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
         scoreAudio.play()
     }
 })
+
 </script>

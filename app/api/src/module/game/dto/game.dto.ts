@@ -110,3 +110,17 @@ export class PowerUpInfoDto {
     type: string
     player: number
 }
+
+export class InviteDto {
+    @IsString()
+    inviterId: string;
+
+    @IsString()
+    invitedId: string;
+
+    @IsNotEmpty()
+    @IsEnum(gameType)
+    gameType: gameType
+    
+    powerups?: string[];
+}

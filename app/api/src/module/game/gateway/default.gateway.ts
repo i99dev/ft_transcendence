@@ -12,12 +12,13 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
-import { GameSelectDto, PlayerDto } from '../dto/game.dto'
+import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
 import { SocketService } from './socket.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
+import { OnEvent } from '@nestjs/event-emitter'
 @WebSocketGateway({
     namespace: '/game',
     cors: { origin: '*' },
@@ -38,6 +39,11 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     afterInit(server: Server) {
         this.socketService.setServer(server)
+    }
+
+    @OnEvent('token-refreshed')
+    handleTokenRefreshedEvent(payload: any) {
+        this.logger.log('token-refreshed', payload)
     }
 
     handleConnection(client: Socket, ...args: any[]) {
@@ -90,24 +96,27 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.movePaddle(client, direction)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('Ready')
     ready(@ConnectedSocket() client: any,) {
         this.gameService.playerReady(client)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('Send-Invite')
     sendInvite(
         @ConnectedSocket() client: any,
-        @MessageBody(new SocketValidationPipe()) payload: any,
+        @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
         this.gameService.sendInvite(client, payload)
         console.log("send invite", payload)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('Respond-Invite')
     respondInvite(
         @ConnectedSocket() client: any,
-        @MessageBody(new SocketValidationPipe()) payload: any,
+        @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
         this.gameService.respondInvite(client, payload)
         console.log("Respond-Invite", payload)
