@@ -23,6 +23,6 @@ import { PrismaService } from '@providers/prisma/prisma.service'
         NotificationModule,
         BlockModule,
     ],
-    providers: [ChatWsGateway, ChatWsService, PrismaService, ConfigService],
+    providers: [ChatWsGateway, ChatWsService, ConfigService],
 })
 export class ChatWsModule {}

@@ -34,12 +34,4 @@ export class UserRepository {
         }
         return user
     }
-
-    async deleteUser(name: string): Promise<UserGetDto> {
-        const user = await this.prisma.user.findUnique({ where: { login: name } })
-        if (!user) {
-            throw new NotFoundException(`User with name ${name} was not found`)
-        }
-        return await this.prisma.user.delete({ where: { login: name } })
-    }
 }

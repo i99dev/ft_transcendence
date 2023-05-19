@@ -13,12 +13,11 @@ import { PrismaService } from '@providers/prisma/prisma.service'
     imports: [
         AuthModule,
         PrismaModule,
-        forwardRef(() => FriendWsModule),
         BlockModule,
         FriendModule,
         NotificationModule,
     ],
-    providers: [PrismaService, JwtService, FriendWsGateway, FriendWsService],
+    providers: [FriendWsGateway, FriendWsService],
     exports: [FriendWsService],
 })
 export class FriendWsModule {}
