@@ -3,7 +3,7 @@ import { ConnectedUser } from '../interface/game.interface'
 import { Socket } from 'socket.io'
 import { PongGame } from '../logic/pongGame'
 import { SocketService } from './socket.service'
-import { GameSelectDto, PlayerDto } from '../dto/game.dto'
+import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { GameRepository } from '../repository/game.repository'
@@ -104,7 +104,7 @@ export class DefaultService {
         }
     }
 
-    public sendInvite(userSocket: Socket, invite: any) {
+    public sendInvite(userSocket: Socket, invite: InviteDto) {
         const user = this.connected_users.find(user => user.socket == userSocket)
         const opponent = this.connected_users.find(user => user.id == invite.invitedId)
         user.powerUps = invite.powerups
@@ -127,7 +127,7 @@ export class DefaultService {
     }
 
     /* Respond to the inviter with either Accept or Decline */
-    public respondInvite(userSocket: Socket, response: any) {
+    public respondInvite(userSocket: Socket, response: InviteDto) {
         const user = this.connected_users.find((user => user.socket == userSocket))
         const opponent = this.connected_users.find(user => user.id == response.inviterId)
         console.log("player1", user.id)

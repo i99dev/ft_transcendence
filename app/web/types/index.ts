@@ -178,7 +178,8 @@ declare global {
         inviterId: string;
         invitedId: string;
         gameType: string;
-        powerups?: string[];
+        powerups: string[];
+        accepted?: boolean;
     }
 
     interface InviteModal {
