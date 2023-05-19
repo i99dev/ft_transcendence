@@ -24,7 +24,7 @@
                 </div>
                 <!-- Acheivement popup -->
                 <AchievPoPUp />
-                <GameInviteBox v-if="inviteModal.open" />
+                <GameInviteBox v-if="inviteModal.open" class="z-20" />
 
             </div>
         </div>

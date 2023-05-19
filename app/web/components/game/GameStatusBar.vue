@@ -75,7 +75,7 @@ const players = computed(() => {
     ]
 })
 const timer = computed(() => {
-    return Math.floor(gameData.value?.time)
+    return Math.floor(gameData.value?.time) | 0
 })
 
 onMounted(() => { })

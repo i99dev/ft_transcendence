@@ -222,6 +222,7 @@ export class PongGame {
     public updateGame(): void {
         this.updateBall()
         this.updateTimer()
+        if (this.getPlayer2ID() === 'Computer') this.updateComputer()
     }
 
     // update the ball position and check for collisions

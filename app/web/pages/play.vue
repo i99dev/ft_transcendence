@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <GameInviteBox v-if="inviteModal.open" />
+    <GameInviteBox v-if="inviteModal.open" class="z-20" />
 </template>
 
 <script lang="ts" setup>
