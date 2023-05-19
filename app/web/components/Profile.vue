@@ -97,7 +97,7 @@ const user = ref({
 })
 
 onMounted(() => {
-    user.value.tmpNick = user.value.username
+    user.value?.tmpNick = user.value?.username
 })
 
 const emit = defineEmits(['close'])
@@ -107,30 +107,30 @@ const uploadImage = () => {
     input.type = 'file'
     input.onchange = e => {
         let x = e.target.files[0]
-        user.value.tmpImg = URL.createObjectURL(x)
+        user.value?.tmpImg = URL.createObjectURL(x)
     }
     input.click()
-    user.value.imgSelected = true
+    user.value?.imgSelected = true
 }
 const showAvatarWindow = () => {
-    user.value.imgSelected = false
+    user.value?.imgSelected = false
 }
 
 const selectImageNew = e => {
-    user.value.tmpImg = e.target.src
-    user.value.imgSelected = true
+    user.value?.tmpImg = e.target.src
+    user.value?.imgSelected = true
 }
 
 const updateProfile = async () => {
-    if (user.value.tmpNick.length > 0 && user.value.tmpNick.length < 11) {
-        setUserName(user.value.tmpNick)
+    if (user.value?.tmpNick.length > 0 && user.value?.tmpNick.length < 11) {
+        setUserName(user.value?.tmpNick)
     } else {
         document.getElementById('nameErrMsg').innerHTML = 'Must be between 1-10 chars'
     }
-    if (user.value.tmpImg) {
+    if (user.value?.tmpImg) {
         setUserInfo({
             ...user_info.value,
-            image: user.value.tmpImg,
+            image: user.value?.tmpImg,
         })
     }
     await useUpdateUserInfo()

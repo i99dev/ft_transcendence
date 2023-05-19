@@ -81,7 +81,7 @@ const newUsername = ref('')
 
 const newAvatar = ref(null as any)
 
-const image = ref(userData.value.image)
+const image = ref(userData.value?.image)
 
 const formData = ref(new FormData())
 
@@ -91,12 +91,12 @@ const uploadeImage = async (event: any) => {
     const file = event.target.files[0]
     if (!file) return
 
-    formData.value.append('file', file)
+    formData.value?.append('file', file)
 
-    reader.value.readAsDataURL(file)
+    reader.value?.readAsDataURL(file)
 
     reader.value.onload = () => {
-        image.value = reader.value.result
+        image.value = reader.value?.result
         newAvatar.value = image.value
     }
 }
@@ -107,7 +107,7 @@ const submitProfile = async () => {
         await useUpdateUserInfo()
     }
     if (newAvatar.value != '') {
-        await useUplaod(userData.value.login, formData.value)
+        await useUplaod(userData.value?.login, formData.value)
     }
     emit('close')
     window.location.reload()

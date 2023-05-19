@@ -75,8 +75,7 @@ const searchedUsers = ref('')
 const props = defineProps(['isMe', 'search', 'unwantedUsers'])
 
 watch(searchedUsers, async val => {
-    if (!val)
-        setUsersList([])
+    if (!val) setUsersList([])
 })
 const users = ref()
 
@@ -85,8 +84,7 @@ onMounted(() => {
 })
 
 const getFilteredUsers = async () => {
-    if (!searchedUsers.value)
-        return
+    if (!searchedUsers.value) return
     const { data } = await useUsersSearch(searchedUsers.value)
     setUsersList(data.value)
 }

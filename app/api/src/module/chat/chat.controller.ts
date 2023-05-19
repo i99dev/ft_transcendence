@@ -62,8 +62,7 @@ export class ChatController {
         @Query('page', PosNumberPipe) page: number,
         @Query('sort', QueryParseStringPipe) sort: string,
     ) {
-        if (sort !== 'asc' && sort !== 'desc')
-            throw new BadRequestException('Invalid sort type')
+        if (sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
         if (!page) page = 1
         const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort)
         if (msgs == null) throw new NotFoundException('No Messages Found')
@@ -96,7 +95,11 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/groupChat/search')
-    async searchGroupChat(@Req() req, @Query('name', QueryParseStringPipe) search: string, @Query('page', PosNumberPipe) page: number) {
+    async searchGroupChat(
+        @Req() req,
+        @Query('name', QueryParseStringPipe) search: string,
+        @Query('page', PosNumberPipe) page: number,
+    ) {
         if (!page) page = 1
         if (!search) return await this.groupChatService.getAllGroupChats(page)
         return await this.groupChatService.searchGroupChat(search, req.user.login)

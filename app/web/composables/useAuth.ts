@@ -80,17 +80,17 @@ export const useAuth = async (route: any) => {
                 status: status,
             },
         })
-    return data.value.access_token
+    return data.value?.access_token
         ? navigateTo('/')
-        : data.value.two_fac_auth
+        : data.value?.two_fac_auth
         ? navigateTo({
               path: '/login/confirm',
               query: {
-                  login: data.value.login,
-                  two_fac_auth: data.value.two_fac_auth,
-                  type: data.value.type,
-                  code_length: data.value.code_length,
-                  period: data.value.period,
+                  login: data.value?.login,
+                  two_fac_auth: data.value?.two_fac_auth,
+                  type: data.value?.type,
+                  code_length: data.value?.code_length,
+                  period: data.value?.period,
               },
           })
         : await useIsAuth()
@@ -98,6 +98,6 @@ export const useAuth = async (route: any) => {
 
 export const setCookies = (tokenInfo: AccessTokenDto) => {
     useCookie('access_token').value = tokenInfo.access_token
-    useCookie('created_at').value = tokenInfo.created_at.toString()
+    useCookie('created_at').value = tokenInfo.created_at
     useCookie('expires_at').value = tokenInfo.expires_at
 }

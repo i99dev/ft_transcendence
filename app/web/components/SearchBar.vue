@@ -93,7 +93,7 @@ const onInputChange = () => {
         const data = await SearchUserNames(searchInput.value)
         showSuggestions.value = data && data?.length > 0 ? true : false
         users.value = data ? data : []
-        if (users.value.length > 10) users.value = users.value.slice(0, 10)
+        if (users.value?.length > 10) users.value = users.value?.slice(0, 10)
     }, 500)()
 }
 </script>

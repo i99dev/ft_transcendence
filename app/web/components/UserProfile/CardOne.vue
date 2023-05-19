@@ -329,7 +329,7 @@ const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBloc
 const isMe = ref(false)
 
 const userData = computed(() => {
-    if (user_info.value.username === props.username) {
+    if (user_info.value?.username === props.username) {
         const { login, username, image, xp, ladder, status } = user_info.value
         isMe.value = true
         return { login, username, image, xp, ladder, status }
@@ -350,7 +350,7 @@ const editUsername = () => {
 
 const updateUsername = async () => {
     editBoolaen.value = !editBoolaen.value
-    setUserName(userData.value.username)
+    setUserName(userData.value?.username)
     await useUpdateUserInfo()
 }
 
@@ -363,7 +363,7 @@ const updateAvatar = async (image: string) => {
     await useUpdateUserInfo()
 }
 const updateTwoFacAuth = async () => {
-    setUserTwoFacAuth(!user_info.value.two_fac_auth)
+    setUserTwoFacAuth(!user_info.value?.two_fac_auth)
     await useUpdateUserInfo()
 }
 
@@ -398,7 +398,7 @@ const defaultImages = [
 const { chat_info, setChatModalOpen, send_message } = useChat()
 const { friends_info, setFriendsModalOpen, addFriend, notifications } = await useFriends()
 function openChatModel() {
-    if (chat_info.value.chatModalOpen) {
+    if (chat_info.value?.chatModalOpen) {
         setChatModalOpen(false)
     } else {
         setChatModalOpen(true)
@@ -406,7 +406,7 @@ function openChatModel() {
 }
 
 function openFriendsModel() {
-    if (friends_info.value.friendsModalOpen) {
+    if (friends_info.value?.friendsModalOpen) {
         setFriendsModalOpen(false)
     } else {
         setFriendsModalOpen(true)
@@ -419,11 +419,11 @@ function handleDropDown() {
     showstat.value = !showstat.value
 }
 
-const WinRate = (await getPlayerWinRate(userData.value.username)) as number
+const WinRate = (await getPlayerWinRate(userData.value?.username)) as number
 
-const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
+const totaLoses = await getPlayerGameResult(userData.value?.username, 'false', 'true')
 
-const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
+const totalWins = await getPlayerGameResult(userData.value?.username, 'true', 'false')
 
 const getLadderRank = (ladder: number) => {
     switch (ladder) {

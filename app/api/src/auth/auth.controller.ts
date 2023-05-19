@@ -42,7 +42,7 @@ export class AuthController {
 
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth)
-            return res.status(HttpStatus.OK).JSON(await this.twoFacAuthService.handle2FA(user))
+            return res.status(HttpStatus.OK).json(await this.twoFacAuthService.handle2FA(user))
 
         try {
             const { accessToken, refreshToken } = this.authService.getUserTokens(user)
@@ -79,7 +79,9 @@ export class AuthController {
     }
 
     @Get('2fa/resend/:login')
-    async resendVerificationCode(@Param('login', ParseStringPipe) login: string): Promise<TwoFacAuthDto | string> {
+    async resendVerificationCode(
+        @Param('login', ParseStringPipe) login: string,
+    ): Promise<TwoFacAuthDto | string> {
         const user = await this.userService.getUser(login)
         if (!user) throw new NotFoundException('User not found')
 

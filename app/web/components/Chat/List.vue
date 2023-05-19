@@ -263,7 +263,7 @@ const joinGroupChat = () => {
     chatSocket.value?.emit(
         'join-group-chat',
         JSON.stringify({
-            room_id: selectedChat.value.chat_room_id,
+            room_id: selectedChat.value?.chat_room_id,
             password: joinGroupPassword.value,
         }),
     )
