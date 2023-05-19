@@ -10,13 +10,7 @@ import { NotificationModule } from '@module/notification/notification.module'
 import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
-    imports: [
-        AuthModule,
-        PrismaModule,
-        BlockModule,
-        FriendModule,
-        NotificationModule,
-    ],
+    imports: [AuthModule, PrismaModule, BlockModule, FriendModule, NotificationModule],
     providers: [FriendWsGateway, FriendWsService],
     exports: [FriendWsService],
 })
