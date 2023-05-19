@@ -1,4 +1,5 @@
 import { Socket, io } from 'socket.io-client'
+import { useToast } from 'primevue/usetoast'
 
 export const useChatSocket = () => {
     const chatSocket = useState<Socket | undefined>('chatSocket', undefined)
@@ -102,14 +103,30 @@ export const useSockets = () => {
     }
 
     const logSocketExceptions = () => {
+        const toast = useToast()
         chatSocket.value?.on('exception', err => {
-            console.log(`${err.status}: ${err.message}`)
+            toast.add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: err.message,
+                life: 3000,
+            })
         })
         gameSocket.value?.on('exception', err => {
-            console.log(`${err.status}: ${err.message}`)
+            toast.add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: err.message,
+                life: 3000,
+            })
         })
         friendSocket.value?.on('exception', err => {
-            console.log(`${err.status}: ${err.message}`)
+            toast.add({
+                severity: 'error',
+                summary: 'Opps!',
+                detail: err.message,
+                life: 3000,
+            })
         })
     }
     

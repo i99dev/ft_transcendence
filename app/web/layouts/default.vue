@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Toast />
         <!-- loading -->
         <div v-if="pending">Loading...</div>
         <!-- error -->
