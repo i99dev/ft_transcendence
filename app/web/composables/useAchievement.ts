@@ -66,12 +66,11 @@ export async function getPlayerWinRate(player: string): Promise<number | null> {
 
 export async function getPlayerGameResult(
     player: string,
-    isWin: string,
-    isLose: string,
+    isWin?: boolean,
 ): Promise<number | null> {
     const api = useRuntimeConfig().API_URL
     const { data } = await useFetch<number>(
-        `/match-history/${player}/totalgames?Win=${isWin}&Lose=${isLose}`,
+       isWin === undefined ? `/match-history/${player}/totalGames` : `/match-history/${player}/totalGames?isWin=${isWin}`,
         {
             method: 'GET',
             baseURL: api,

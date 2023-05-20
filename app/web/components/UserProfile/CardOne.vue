@@ -426,9 +426,9 @@ function handleDropDown() {
 
 const WinRate = (await getPlayerWinRate(userData.value.username)) as number
 
-const totaLoses = await getPlayerGameResult(userData.value.username, 'false', 'true')
+const totaLoses = await getPlayerGameResult(userData.value.username, false)
 
-const totalWins = await getPlayerGameResult(userData.value.username, 'true', 'false')
+const totalWins = await getPlayerGameResult(userData.value.username, true)
 
 const getLadderRank = (ladder: number) => {
     switch (ladder) {

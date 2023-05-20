@@ -92,6 +92,7 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
+import { getNewAchievement, deleteNewAchievement, getNewRank, deleteNewRank } from '../composables/useAchievement'
 
 let newAchievement = await getNewAchievement()
 
