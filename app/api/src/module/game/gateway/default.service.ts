@@ -111,6 +111,8 @@ export class DefaultService {
         invite.inviterId = user.id
         if (opponent && opponent.status == 'online') {
             // If the invite was successfuly sent to the opponent
+            user.status = 'busy'
+            opponent.status = 'busy'
             opponent.socket.emit('Invite-Received', invite)
         }
         else if (opponent) {
@@ -138,9 +140,13 @@ export class DefaultService {
 
             }
             else {
+                opponent.status = 'online'
+                user.status = 'online'
                 opponent.socket.emit('Respond-Invite', { accepted: false, playerStatus: user.status })
             }
         }
+        else
+            user.status = 'online'
     }
 
     public playerReady(userSocket: Socket) {

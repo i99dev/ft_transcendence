@@ -113,17 +113,33 @@
   
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useFriends } from '@/composables/Friends/useFriends'
 
 const mode = ref('' as string)
 const selectedPowerups = ref<string[]>([])
 const isLoading = ref(false)
 const { invite, inviteModal, send, accept, decline, reset } = useGameInvite()
+const { chat_info } = useChat()
+const { friends_info } = await useFriends()
 
 const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu']
+
+watchEffect(() => {
+  if (inviteModal.value.type === 'invited') {
+    chat_info.value.chatModalOpen = false
+    friends_info.value.friendsModalOpen = false
+  }
+})
 
 const selectMode = (newMode: string) => {
   mode.value = newMode
 }
+
+onBeforeUnmount(() => {
+  if(inviteModal.value.type === 'invited') {
+    decline()
+  }
+})
 
 const checkPowerupLimit = () => {
   if (selectedPowerups.value.length > 2) {
@@ -134,12 +150,14 @@ const checkPowerupLimit = () => {
 const acceptInvite = () => {
   invite.value.powerups = selectedPowerups.value
   accept()
+  inviteModal.value.type = ''
   navigateTo('/play')
 }
 
 const declineInvite = () => {
   invite.value.powerups = selectedPowerups.value
   decline()
+  inviteModal.value.type = ''
   reset()
 
 }

@@ -4,7 +4,7 @@ import { PongGame } from '../logic/pongGame'
 export interface ConnectedUser {
     id: string
     socket: Socket
-    status: 'ingame' | 'inqueue' | 'online'
+    status: 'ingame' | 'inqueue' | 'online' | 'busy' | 'offline'
     game?: PongGame
     powerUps?: string[]
 }
