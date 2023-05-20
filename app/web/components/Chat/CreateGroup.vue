@@ -91,7 +91,6 @@
                                                         :src="chatImage"
                                                         class="rounded-full w-10 h-8 object-cover"
                                                     />
-                                                    <!-- <div v-else >Nice</div> -->
                                                 </button>
                                             </div>
 

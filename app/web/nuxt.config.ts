@@ -11,6 +11,9 @@ export default defineNuxtConfig({
             PROTOCOL: process.env.PROTOCOL,
         },
     },
+    app: {
+        pageTransition: { name: 'page', mode: 'out-in' }
+    },
     css: [
         '~/assets/css/main.css',
         'primevue/resources/themes/saga-blue/theme.css',

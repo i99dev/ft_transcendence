@@ -2,38 +2,43 @@
     <div>
         <!--table-->
 
-        <div
+        <button
             v-for="(player, index) in players"
             :key="index"
-            class="w-full px-6 rounded m-2 bg-white shadow-sm p-2"
+            @click="navigateTo(`/users/${player.username}`)"
+            class="w-full h-20 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-accent"
+            :class="{
+                'bg-background': !(index % 2),
+                'bg-background_light': index % 2,
+            }"
         >
-            <table class="min-w-full text-left text-sm font-light">
-                <tbody>
-                    <tr>
-                        <td class="whitespace-nowrap px-2 py-4 font-medium">
-                            {{ player.rankNum }}
-                        </td>
-                        <td class="whitespace-nowrap px-2 py-4">
-                            <!-- <img src="https://www.pngitem.com/pimgs/m/536-5365344_icon-one-piece-png-transparent-png.png" alt="image-description" class="mr-2 w-0.3 h-20 rounded-full self-center"> -->
-                            <span class="mr-8 align-middle">{{
-                                getLadderRank(player.ladder)
-                            }}</span>
-                        </td>
-                        <td class="whitespace-nowrap px-2 py-4 flex items-center">
-                            <img
-                                :src="player.image"
-                                alt="image-description"
-                                class="rounded-full border-2 flex sm:flex-row sm:h-32 h-20 sm:w-32 w-20 object-cover"
-                            />
-                            <span class="m-3 w-96 align-middle">{{ player.username }}</span>
-                        </td>
-                        <td class="whitespace-nowrap px-1 py-4 align-middle">
-                            total games played {{ player.TotalMatches }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <div class="min-w-full text-left text-sm font-light text-white grid grid-cols-3">
+                <div class="centered justify-self-start">
+                    <div class="whitespace-nowrap font-medium p-1 m-2 w-8 aspect-square bg-accent rounded-xl text-center mr-4">
+                        {{ player.rankNum }}
+                    </div>
+                    <img
+                        :src="player.image"
+                        class="w-8 h-8 rounded-full object-cover"
+                    />
+                    <!-- name and result -->
+                    <div class="text-xs m-2 capitalize font-bold">
+                        {{ player.username }}
+                    </div>
+                </div>
+                <div class="whitespace-nowrap px-2 py-4 justify-self-center">
+                    <span class="mr-8 align-middle">{{
+                        getLadderRank(player.ladder)
+                    }}</span>
+                </div>
+                <div class="whitespace-nowrap px-1 py-4 align-middle uppercase justify-self-center">
+                    <span class="font-bold text-xl">
+                        {{ player.TotalMatches }}
+                    </span>
+                    wins
+                </div>
+            </div>
+        </button>
 
         <!---- Pagination ---->
 

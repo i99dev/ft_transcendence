@@ -81,7 +81,7 @@
                 <!-- chat element -->
                 <button
                     v-for="chat in chats"
-                    :key="chat.id"
+                    :key="chat?.id"
                     @click="setCurrentChat(chat)"
                     class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
                     @mouseover="hoverButton = chat"
@@ -90,19 +90,19 @@
                     <div class="relative" style="width: 10%">
                         <img
                             v-if="chatType === 'DM'"
-                            :src="chat.users[0].image"
+                            :src="chat?.users[0].image"
                             alt="User Photo"
                             class="rounded-full w-10 h-10 object-cover"
                         />
                         <img
                             v-else
-                            :src="chat.image"
+                            :src="chat?.image"
                             alt="User Photo"
                             class="rounded-full w-10 h-10 object-cover"
                         />
                         <!-- online badge -->
                         <span
-                            v-if="chatType === 'DM' && chat.users[0].status === 'ONLINE'"
+                            v-if="chatType === 'DM' && chat?.users[0].status === 'ONLINE'"
                             class="absolute bottom-1 left-8 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
                         />
                     </div>
@@ -111,7 +111,7 @@
                     <div class="flex justify-between" style="width: 90%">
                         <div class="flex flex-col mx-4 w-1/2">
                             <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">
-                                {{ chat.users[0].username }}
+                                {{ chat?.users[0].username }}
                             </div>
                             <!-- there should be one user only -->
                             <div
@@ -119,7 +119,7 @@
                                 class="flex justify-start text-slate-700"
                                 :class="{ 'h-10': !chatType, 'items-center': !chatType }"
                             >
-                                {{ chat.name }}
+                                {{ chat?.name }}
                             </div>
 
                             <div
@@ -127,13 +127,13 @@
                                 class="w-full flex justify-start whitespace-nowrap text-xs text-slate-400"
                             >
                                 <span v-if="chatType === 'GROUP'" class="w-auto mr-2">
-                                    {{ chat.chat_room.messages[0]?.sender_login
-                                    }}<span v-if="chat.chat_room.messages[0]">:</span>
+                                    {{ chat?.chat_room.messages[0]?.sender_login
+                                    }}<span v-if="chat?.chat_room.messages[0]">:</span>
                                 </span>
                                 <span
                                     class="inline-block max-w-full overflow-hidden whitespace-nowrap text-ellipsis"
                                 >
-                                    {{ chat.chat_room.messages[0]?.content }}
+                                    {{ chat?.chat_room.messages[0]?.content }}
                                 </span>
                             </div>
                         </div>
@@ -274,7 +274,6 @@ const changePasswordView = () => {
     let input = document.getElementById('joinGroupPassword') as HTMLInputElement
     input.type = input.type === 'text' ? 'password' : 'text'
 }
-
 const closejoinGroupPasswordPopup = () => {
     isJoinGroupChatOpened.value = false
     selectedChat.value = null
