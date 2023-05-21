@@ -51,9 +51,7 @@
                 <div class="flex sm:flex-col justify-center sm:p-6">
                     <!-- update username -->
                     <div class="flex flex-col justify-start w-full relative">
-                        <div
-                            class="centered w-full"
-                        >
+                        <div class="centered w-full">
                             <div
                                 class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap"
                                 v-if="editBoolaen"
@@ -148,7 +146,10 @@
             </div>
 
             <div v-if="isMe && !isProfile" class="flex flex-row space-x-6">
-                <button class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square" @click="openChatModel">
+                <button
+                    class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
+                    @click="openChatModel"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -161,7 +162,10 @@
                         />
                     </svg>
                 </button>
-                <button @click="openFriendsModel" class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
+                <button
+                    @click="openFriendsModel"
+                    class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -186,7 +190,10 @@
                         </div>
                     </div>
                 </button>
-                <button @click="useLogout" class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
+                <button
+                    @click="useLogout"
+                    class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="w-8 h-8 stroke-4 stroke-white fill-none"
@@ -199,7 +206,10 @@
                         <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
                     </svg>
                 </button>
-                <button @click="updateTwoFacAuth" class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
+                <button
+                    @click="updateTwoFacAuth"
+                    class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
+                >
                     <svg
                         v-if="user_info.two_fac_auth"
                         xmlns="http://www.w3.org/2000/svg"
@@ -230,7 +240,7 @@
                 </button>
                 <button
                     @click="navigateTo('/help')"
-                    class="relative  hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
+                    class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -263,9 +273,7 @@
                 </button>
                 <button
                     @click="
-                        isBlocked(user)
-                            ? removeUserFromBlockList(user)
-                            : addUserToBlockList(user)
+                        isBlocked(user) ? removeUserFromBlockList(user) : addUserToBlockList(user)
                     "
                     class="p-2 hover hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2 capitalize"
                     :class="{
@@ -418,5 +426,4 @@ const getLadderRank = (ladder: number) => {
             return 'Capin Boy'
     }
 }
-
 </script>

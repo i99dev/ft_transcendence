@@ -14,22 +14,19 @@
         >
             <div class="min-w-full text-left text-sm font-light text-white grid grid-cols-3">
                 <div class="centered justify-self-start">
-                    <div class="whitespace-nowrap font-medium p-1 m-2 w-8 aspect-square bg-tertiary rounded-xl text-center mr-4">
+                    <div
+                        class="whitespace-nowrap font-medium p-1 m-2 w-8 aspect-square bg-tertiary rounded-xl text-center mr-4"
+                    >
                         {{ player.rankNum }}
                     </div>
-                    <img
-                        :src="player.image"
-                        class="w-8 h-8 rounded-full object-cover"
-                    />
+                    <img :src="player.image" class="w-8 h-8 rounded-full object-cover" />
                     <!-- name and result -->
                     <div class="text-xs m-2 capitalize font-bold">
                         {{ player.username }}
                     </div>
                 </div>
                 <div class="whitespace-nowrap px-2 py-4 justify-self-center">
-                    <span class="mr-8 align-middle">{{
-                        getLadderRank(player.ladder)
-                    }}</span>
+                    <span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
                 </div>
                 <div class="whitespace-nowrap px-1 py-4 align-middle uppercase justify-self-center">
                     <span class="font-bold text-xl">

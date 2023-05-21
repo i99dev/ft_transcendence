@@ -14,7 +14,7 @@
                             'opacity-50 hover:opacity-100 text-md': !isActive(tab),
                         }"
                     >
-                            {{ tab.name }}
+                        {{ tab.name }}
                     </div>
                 </div>
             </div>

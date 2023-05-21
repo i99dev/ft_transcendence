@@ -1,5 +1,6 @@
 <template>
-    <div class="w-full h-full flex justify-center items-center"
+    <div
+        class="w-full h-full flex justify-center items-center"
         :class="{
             'flex-col': !horizontal,
             'flex-row': horizontal,
@@ -17,12 +18,10 @@
 </template>
 
 <script lang="ts" setup>
-
 const horizontal = ref(false)
 const props = defineProps(['horizontal'])
 
 onMounted(() => {
     if (props.horizontal) horizontal.value = props.horizontal
 })
-
 </script>

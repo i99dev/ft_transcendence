@@ -74,8 +74,9 @@
                     :class="{
                         'bg-secondary':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
-                        'bg-background_light':
-                            !(message.sender_login === user_info.login && message.type !== 'SPECIAL'),
+                        'bg-background_light': !(
+                            message.sender_login === user_info.login && message.type !== 'SPECIAL'
+                        ),
                         'self-end': message.sender_login === user_info.login,
                         'self-center': message.type === 'SPECIAL',
                         'w-9/12': message.type !== 'SPECIAL',
@@ -217,7 +218,10 @@ onMounted(async () => {
         // set random color for each participant
         if (participants.value)
             for (let i = 0; i < participants.value?.length; i++)
-                participantsColors.value?.set(participants.value[i].user_login, `${getLightColor()}`)
+                participantsColors.value?.set(
+                    participants.value[i].user_login,
+                    `${getLightColor()}`,
+                )
     }
 
     //scroll to bottom
@@ -260,7 +264,7 @@ const scrollToLastMessage = () => {
 }
 
 const getLightColor = () => {
-  return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+    return 'hsl(' + Math.random() * 360 + ', 100%, 75%)'
 }
 
 const sendMessage = () => {

@@ -1,5 +1,7 @@
 <template>
-    <div class="w-full items-center bg-background border-1 border-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2">
+    <div
+        class="w-full items-center bg-background border-1 border-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2"
+    >
         <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <div>
                 <p class="text-sm text-white">

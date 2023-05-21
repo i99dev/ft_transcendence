@@ -70,11 +70,19 @@
                                                         stroke-linecap="round"
                                                         stroke-linejoin="round"
                                                     >
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                        <path d="M12 20h-7a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v3.5"></path>
+                                                        <path
+                                                            stroke="none"
+                                                            d="M0 0h24v24H0z"
+                                                            fill="none"
+                                                        ></path>
+                                                        <path
+                                                            d="M12 20h-7a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v3.5"
+                                                        ></path>
                                                         <path d="M16 19h6"></path>
                                                         <path d="M19 16v6"></path>
-                                                        <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+                                                        <path
+                                                            d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"
+                                                        ></path>
                                                     </svg>
                                                     <img
                                                         v-else
@@ -147,7 +155,7 @@
                                             >
                                                 back
                                             </button>
-                                           <button
+                                            <button
                                                 class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
                                                 @click="nextStage"
