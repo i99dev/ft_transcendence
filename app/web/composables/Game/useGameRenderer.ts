@@ -240,7 +240,7 @@ export function useGameRenderer() {
     const init_game = async (canvasRef: Ref<HTMLCanvasElement>) => {
         initScene(canvasRef)
         initPostProcessing()
-        enableOrbitControls()
+        // enableOrbitControls()
         await createGameObjects()
         addEventListener('resize', onWindowResize)
         originalPaddleHeight = gameSetup.value?.game.players[0].paddle.height
@@ -255,7 +255,7 @@ export function useGameRenderer() {
 
     const animate = () => {
         requestAnimationFrame(animate)
-        controls.update()
+        // controls.update()
         // composer.render();
         renderer.render(scene, camera)
     }
