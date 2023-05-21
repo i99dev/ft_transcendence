@@ -150,12 +150,12 @@ export class GroupChatService {
                             user_login: user_login,
                             OR: [
                                 {
-                                    status: ChatUserStatus.NORMAL
+                                    status: ChatUserStatus.NORMAL,
                                 },
                                 {
-                                    status: ChatUserStatus.MUTE
-                                }
-                            ]
+                                    status: ChatUserStatus.MUTE,
+                                },
+                            ],
                         },
                     },
                 },

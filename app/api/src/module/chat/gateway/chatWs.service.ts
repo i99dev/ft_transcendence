@@ -298,6 +298,10 @@ export class ChatWsService {
             (room.password === '' || room.password === undefined || room.password === null)
         )
             throw new WsException('Password cannot be empty')
+        if (room.type === chatType.PROTECTED){
+            const salt = bcrypt.genSaltSync(10)
+            room.password = bcrypt.hashSync(room.password, salt)
+        }
         await this.groupChatService.updateGroupChat(room)
     }
 

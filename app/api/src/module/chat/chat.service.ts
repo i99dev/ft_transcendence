@@ -1,4 +1,4 @@
-import { Status } from './../../auth/interface/intra.interface';
+import { Status } from './../../auth/interface/intra.interface'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, Prisma } from '@prisma/client'
