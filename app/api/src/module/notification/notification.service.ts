@@ -37,12 +37,18 @@ export class NotificationService {
         }
     }
 
-    async getMyNotifications(user_login: string) {
+    async getMyNotifications(user_login: string, page: number) {
         try {
+            if (!page) page = 1
             const notifications = await this.prisma.notification.findMany({
                 where: {
                     user_login: user_login,
                 },
+                orderBy: {
+                    created_at: 'desc',
+                },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return notifications
         } catch (error) {

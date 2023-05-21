@@ -85,7 +85,7 @@ export class UserService {
         return this.deleteUser(name)
     }
 
-    async SearchUser(search: string) {
+    async SearchUser(search: string, page: number) {
         try {
             const users = await this.prisma.user.findMany({
                 where: {
@@ -94,6 +94,8 @@ export class UserService {
                         mode: 'insensitive',
                     },
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return users
         } catch (error) {
@@ -120,7 +122,7 @@ export class UserService {
         return user
     }
 
-    async SearchUserNames(name: string) {
+    async SearchUserNames(name: string, page: number) {
         try {
             const users = await this.prisma.user.findMany({
                 where: {
@@ -135,10 +137,18 @@ export class UserService {
                     ladder: true,
                     first_name: true,
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return users
         } catch (error) {
             console.log(error)
         }
+    }
+
+    async SortUserByWinGap(): Promise<UserGetDto[]> {
+        const users: UserGetDto[] = await this.prisma.user.findMany()
+        const sortedUsers: UserGetDto[] = users.sort(this.repository.SortUserByWinLose)
+        return sortedUsers
     }
 }

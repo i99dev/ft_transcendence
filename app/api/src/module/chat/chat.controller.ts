@@ -26,10 +26,11 @@ export class ChatController {
 
     @UseGuards(JwtAuthGuard)
     @Get('')
-    async getChatRooms(@Query('type', QueryParseStringPipe) type: string, @Req() req) {
-        if (!type) return await this.chatService.getChatRooms()
-        else if (type === 'GROUP') return await this.groupChatService.getGroupChats(req.user.login)
-        else if (type === 'DM') return await this.directChatService.getDirectChats(req.user.login)
+    async getChatRooms(@Query('type', QueryParseStringPipe) type: string, @Query('page') page: number, @Req() req) {
+        if (!page) page = 1
+        if (!type) return await this.chatService.getChatRooms(page)
+        else if (type === 'GROUP') return await this.groupChatService.getGroupChats(req.user.login, page)
+        else if (type === 'DM') return await this.directChatService.getDirectChats(req.user.login, page)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -102,6 +103,6 @@ export class ChatController {
     ) {
         if (!page) page = 1
         if (!search) return await this.groupChatService.getAllGroupChats(page)
-        return await this.groupChatService.searchGroupChat(search, req.user.login)
+        return await this.groupChatService.searchGroupChat(search, req.user.login, page)
     }
 }
