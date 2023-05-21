@@ -3,7 +3,7 @@
         <div class="overflow-auto rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
             <div
                 id="chat-participants"
-                class="relative flex gap-8 bg-white p-7 flex-col h-auto overflow-y-scroll"
+                class="relative flex gap-8 bg-background p-7 flex-col h-auto overflow-y-scroll"
                 style="max-height: 70vh"
             >
                 <TransitionRoot appear :show="isAdminOptionsOpened" as="template">
@@ -34,17 +34,17 @@
                                     leave-to="opacity-0 scale-95"
                                 >
                                     <DialogPanel
-                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
                                     >
                                         <h1
-                                            class="p-2 border-b border-indigo-500 text-indigo-500 font-semibold flex justify-center mb-2"
+                                            class="p-2 border-b border-tertiary text-white font-semibold flex justify-center mb-2"
                                         >
                                             {{ participant.user.username }}
                                         </h1>
                                         <button
                                             v-for="option in adminOptions"
                                             :key="option.action"
-                                            class="flex items-center p-2 w-full rounded-lg hover:bg-indigo-500 hover:text-white"
+                                            class="flex items-center p-2 w-full rounded-lg hover:bg-tertiary text-white"
                                             @click="setUser(option.action)"
                                         >
                                             {{ option.text }}
@@ -67,7 +67,7 @@
                             leave-from="opacity-100"
                             leave-to="opacity-0"
                         >
-                            <div class="fixed inset-0 bg-black bg-opacity-25" />
+                            <div class="fixed inset-0 bg-background bg-opacity-25" />
                         </TransitionChild>
 
                         <div class="fixed inset-0 overflow-y-auto">
@@ -84,7 +84,7 @@
                                     leave-to="opacity-0 scale-95"
                                 >
                                     <DialogPanel
-                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
                                     >
                                         <div
                                             v-for="user in users"
@@ -92,7 +92,7 @@
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
-                                                class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative"
+                                                class="border rounded-full bg-background ease-in-out transition duration-200 m-2 relative"
                                                 @click="removeUser(user)"
                                             >
                                                 <img
@@ -101,7 +101,7 @@
                                                     :alt="user.username"
                                                 />
                                                 <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-slate-200"
+                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-background_light"
                                                 >
                                                     <XMarkIcon class="h-2 w-2" aria-hidden="true" />
                                                 </div>
@@ -114,7 +114,7 @@
                                         />
                                         <div class="flex justify-end mt-2">
                                             <button
-                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize"
+                                                class="flex-shrink-0 bg-tertiary hover:bg-primary text-white py-1 px-2 rounded capitalize"
                                                 type="button"
                                                 @click="addUsers"
                                             >
@@ -133,8 +133,8 @@
                         class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
                         :class="{
                             'scale-125': participantsType === 'NORMAL',
-                            'text-indigo-500': participantsType === 'NORMAL',
-                            'text-slate-500': participantsType !== 'NORMAL',
+                            'text-primary': participantsType === 'NORMAL',
+                            'opacity-70': participantsType !== 'NORMAL',
                         }"
                         @click="updateParticipants()"
                     >
@@ -145,8 +145,8 @@
                         @click="updateParticipants('BAN')"
                         :class="{
                             'scale-125': participantsType === 'BAN',
-                            'text-indigo-500': participantsType === 'BAN',
-                            'text-slate-500': participantsType !== 'BAN',
+                            'text-primary': participantsType === 'BAN',
+                            'opacity-70': participantsType !== 'BAN',
                         }"
                     >
                         Banned
@@ -155,14 +155,14 @@
                 <div
                     v-for="participant in participants"
                     :key="participant.user.username"
-                    class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-tertiary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
                         @click="openAdminOptionsPopup(participant)"
                         class="relative w-full -m-3 flex items-center rounded-lg p-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
                         <div
-                            class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-slate-200 p-1 rounded-full"
+                            class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-background_light p-1 rounded-full"
                         >
                             <img
                                 :src="participant.user.image"
@@ -174,17 +174,17 @@
                             <div class="ml-4">
                                 <div
                                     v-if="participant.user_login === user_info.login"
-                                    class="font-medium text-gray-900 capitalize"
+                                    class="font-medium text-white capitalize"
                                 >
                                     you
                                 </div>
-                                <div v-else class="font-medium text-gray-900">
+                                <div v-else class="font-medium text-white">
                                     {{ participant.user.username }}
                                 </div>
                             </div>
                             <div
                                 v-if="participant.role !== 'MEMBER'"
-                                class="text-indigo-500 text-sm"
+                                class="text-white font-bold text-sm"
                             >
                                 {{ participant.role }}
                             </div>
@@ -192,19 +192,19 @@
                     </button>
                 </div>
             </div>
-            <div class="bg-gray-50 p-4">
+            <div class="bg-background_light p-4">
                 <div
                     class="flex justify-center rounded-md px-2 py-2 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
                         v-if="CanAddUsers()"
-                        class="border rounded-full hover:bg-blue-200 ease-in-out transition duration-200 p-2 mx-4"
+                        class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
                         @click="isAddUserOpened = true"
                     >
                         <UserPlusIcon class="w-6 h-6" />
                     </button>
                     <button
-                        class="border rounded-full hover:bg-red-200 ease-in-out transition duration-200 p-2 mx-4"
+                        class="border rounded-full hover:bg-tertiary ease-in-out transition duration-200 p-2 mx-4"
                         @click="exitChat"
                     >
                         <ArrowRightOnRectangleIcon class="w-6 h-6" />

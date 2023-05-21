@@ -13,7 +13,7 @@
             <input
                 v-model="searchedGroupChats"
                 @input="setSearchedGroupChats(searchedGroupChats)"
-                class="text-sm leading-none text-left text-gray-600 px-4 py-2 w-full border rounded border-gray-300 focus:outline-indigo-400"
+                class="text-sm leading-none text-left text-white bg-background_light px-4 py-3 w-full border rounded border-tertiary_light outline-none"
                 type="text"
                 ref="chatSearch"
                 placeholder="Search"
@@ -23,35 +23,29 @@
 
         <button
             @click="handleChatSearch($event)"
-            class="border rounded-full hover:bg-indigo-200 ease-in-out transition duration-200 p-2 mr-2 focus:outline-indigo-400"
+            class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mr-2 focus:outline-primary text-white"
             :class="{
-                'bg-white': !searching,
-                'text-indigo-400': !searching,
-                'bg-indigo-400': searching,
-                'text-white': searching,
+                'bg-background_light opacity-70': !searching,
+                'bg-primary': searching,
             }"
         >
             <MagnifyingGlassIcon class="w-6 h-6 right-3 z-10 cursor-pointer" />
         </button>
         <button
-            class="border rounded-full hover:bg-indigo-200 ease-in-out transition duration-200 p-2 mr-2 focus:outline-indigo-400"
+            class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mr-2 focus:outline-primary text-white"
             :class="{
-                'bg-white': chatType !== 'GROUP',
-                'text-indigo-400': chatType !== 'GROUP',
-                'bg-indigo-400': chatType === 'GROUP',
-                'text-white': chatType === 'GROUP',
+                'bg-background_light opacity-70': chatType !== 'GROUP',
+                'bg-primary': chatType === 'GROUP',
             }"
             @click="switchChatType('GROUP')"
         >
             <UserGroupIcon class="h-6 w-6" />
         </button>
         <button
-            class="border rounded-full hover:bg-indigo-200 ease-in-out transition duration-200 p-2 mr-2 focus:outline-indigo-400"
+            class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mr-2 focus:outline-primary text-white"
             :class="{
-                'bg-white': chatType !== 'DM',
-                'text-indigo-400': chatType !== 'DM',
-                'bg-indigo-400': chatType === 'DM',
-                'text-white': chatType === 'DM',
+                'bg-background_light opacity-70': chatType !== 'DM',
+                'bg-primary': chatType === 'DM',
             }"
             @click="switchChatType('DM')"
         >
