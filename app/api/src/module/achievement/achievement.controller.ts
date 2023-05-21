@@ -34,18 +34,6 @@ export class AchievementController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('new')
-    async getNewAchievements(@Req() req): Promise<any> {
-        try {
-            const achievement = await this.achievementService.getNewAchievements(req.user.login)
-            if (!achievement) throw new NotFoundException('Achievements not found')
-            return achievement
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    @UseGuards(JwtAuthGuard)
     @Get('newRank')
     async getNewRank(@Req() req): Promise<{ rank: string; isUp: boolean }> {
         return await this.achievementService.getNewRank(req.user.login)
