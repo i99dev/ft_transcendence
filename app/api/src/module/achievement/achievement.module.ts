@@ -4,9 +4,10 @@ import { Module } from '@nestjs/common'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { PrismaModule } from '@providers/prisma/prisma.module'
+import { NotificationModule } from '@module/notification/notification.module'
 
 @Module({
-    imports: [PrismaModule],
+    imports: [PrismaModule, NotificationModule],
     controllers: [AchievementController],
     providers: [AchievementService, gameAnalyzer],
 })
