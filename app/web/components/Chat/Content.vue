@@ -73,7 +73,7 @@
                 </div>
                 <div
                     class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
-                    v-for="message in messages?.slice().reverse()"
+                    v-for="message in messages?.slice().reverse()" :key="message.id"
                     :class="{
                         'bg-indigo-200':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',

@@ -126,14 +126,6 @@
         <!----
 		the match history component
 		-->
-
-        <!-- <div class="w-full px-2 m-2"> -->
-        <!-- <div class="flex flex-row justify-between px-2 mb-2"> -->
-        <!-- <div class="text-sm font-mono">Opponent 1</div>
-		  <div class="text-sm font-mono">vs</div>
-		  <div class="text-sm font-mono">Opponent 2</div> -->
-        <!-- </div> -->
-        <!-- </div> -->
         <div v-if="games.length > 0">
             <div
                 v-for="game in games"
@@ -290,11 +282,11 @@ const handleFilteration = async (filter: string) => {
         data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
     else if (filter == 'win')
         data = await useGameHistory(
-            `/match-history/${login.value}/result?page=${currentPage.value}&winning=true&losing=false`,
+            `/match-history/${login.value}/result?page=${currentPage.value}&isWin=true`,
         )
     else if (filter == 'lose')
         data = await useGameHistory(
-            `/match-history/${login.value}/result?page=${currentPage.value}&winning=false&losing=true`,
+            `/match-history/${login.value}/result?page=${currentPage.value}&isWin=false`,
         )
     else if (filter == 'asc')
         data = await useGameHistory(

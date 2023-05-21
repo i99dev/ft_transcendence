@@ -32,10 +32,9 @@ export class MatchHistoryController {
     async getMatchHistoryByResult(
         @Param('login', ParseStringPipe) login: string,
         @Query('page', ParseIntPipe) page: number,
-        @Query('winning', QueryParseStringPipe) winning: string,
-        @Query('losing', QueryParseStringPipe) losing: string,
+        @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false',
     ): Promise<MatchHistoryDto[]> {
-        if (winning === 'true') {
+        if (isWin === 'true') {
             const history = await this.matchHistoryService.getMatchHistoryByResult(
                 page,
                 login,
@@ -43,7 +42,7 @@ export class MatchHistoryController {
             )
             if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
             return history
-        } else if (losing === 'true') {
+        } else if (isWin === 'false') {
             const history = await this.matchHistoryService.getMatchHistoryByResult(
                 page,
                 login,
