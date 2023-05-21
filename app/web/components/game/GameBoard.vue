@@ -55,6 +55,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+    giveUp()
     clearEvents()
     reset()
 })
