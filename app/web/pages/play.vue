@@ -43,7 +43,7 @@
             </div>
             <GameResult
                 v-if="gameResult"
-                @vnode-mounted="exit = false"
+                @vue:mounted="exit = false"
                 :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain"
             />
