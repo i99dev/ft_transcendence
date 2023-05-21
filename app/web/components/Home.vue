@@ -33,6 +33,7 @@
                 </div>
                 <!-- Acheivement popup -->
                 <AchievPoPUp />
+                <GameInviteBox v-if="inviteModal.open" class="z-20" />
             </div>
         </div>
     </div>
@@ -41,6 +42,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const { inviteModal } = useGameInvite()
 const IsProfile = ref(false)
 
 const props = defineProps(['username'])

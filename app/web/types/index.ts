@@ -1,4 +1,4 @@
-export {}
+export { }
 
 declare global {
     type UserStatus = 'OFFLINE' | 'ONLINE' | 'INGAME' | 'INQUEUE'
@@ -39,6 +39,7 @@ declare global {
     interface gameStatusDto {
         players: PlayerDto[]
         ball: BallDto
+        time: number
     }
 
     interface SetupDto {
@@ -102,6 +103,7 @@ declare global {
     interface GameSelectDto {
         gameType: string
         gameMode: string
+        powerups: string[]
         invitedID?: string
     }
 
@@ -170,5 +172,28 @@ declare global {
     interface FetchError<T> extends Error {
         status: number
         statusText: string
+    }
+
+    interface InviteDto {
+        inviterId: string;
+        invitedId: string;
+        gameType: string;
+        powerups: string[];
+        accepted?: boolean;
+    }
+
+    interface InviteModal {
+        type: string;
+        open: boolean;
+        gameType: string;
+        target: string;
+        gameInProgress: boolean;
+        rejected: boolean;
+        playerStatus: string;
+    }
+
+    interface InviteResponseDto {
+        accepted: boolean;
+        playerStatus: string;
     }
 }

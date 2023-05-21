@@ -38,7 +38,7 @@
                                     </div>
                                     <ChatList
                                         v-if="chatView"
-                                        @closeNavBar="setChatModalOpen(false)"
+                                        @showInvite="showInviteBox"
                                     />
                                     <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                                 </div>
@@ -49,6 +49,7 @@
             </div>
         </Dialog>
     </TransitionRoot>
+    <GameInviteModal />
 </template>
 
 <script lang="ts" setup>
@@ -61,7 +62,15 @@ const { chat_info, setChatModalOpen, send_message } = useChat()
 const { chatView, setChatView } = useChatView()
 const { currentChat, setCurrentChat } = useCurrentChat()
 const { chatType } = useChatType()
+const { inviteModal, reset } = useGameInvite()
 
+const showInviteBox = (user: string) => {
+    reset()
+    inviteModal.value.type = 'invite'
+    inviteModal.value.target = user
+    inviteModal.value.open = true
+    setChatModalOpen(false)
+}
 watch(
     () => chatType.value,
     () => {
