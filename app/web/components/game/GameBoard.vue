@@ -20,13 +20,17 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
+let touchStartY = ref(0)
+let touchEndY = ref(0)
+
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } =
+    useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -47,14 +51,40 @@ const keys: { [key: string]: boolean } = {
 
 onMounted(() => {
     window.addEventListener('popstate', handleArrows)
+    window.addEventListener('touchstart', handleTouchStart)
+    window.addEventListener('touchmove', handleTouchMove)
+    window.addEventListener('touchend', handleTouchEnd)
 })
 
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeyDown)
     document.removeEventListener('keyup', handleKeyUp)
     window.removeEventListener('popstate', handleArrows)
+    window.removeEventListener('touchstart', handleTouchStart)
+    window.removeEventListener('touchmove', handleTouchMove)
+    window.removeEventListener('touchend', handleTouchEnd)
     reset()
 })
+
+const handleTouchMove = (event: TouchEvent): void => {
+    touchEndY.value = event.changedTouches[0].clientY
+
+    if (touchEndY.value < touchStartY.value) {
+        socket.value?.emit('move', 'up')
+    }
+    if (touchEndY.value > touchStartY.value) {
+        socket.value?.emit('move', 'down')
+    }
+}
+
+const handleTouchStart = (event: TouchEvent): void => {
+    touchStartY.value = event.touches[0].clientY
+}
+
+const handleTouchEnd = (): void => {
+    touchStartY.value = 0
+    touchEndY.value = 0
+}
 
 const handleArrows = (e: PopStateEvent): void => {
     giveUp()
@@ -93,8 +123,7 @@ function giveUp(): void {
 
 function setup(mode: GameSelectDto): void {
     resetSocket()
-    if(mode.gameMode != 'invite')
-        emitStartGame(mode)
+    if (mode.gameMode != 'invite') emitStartGame(mode)
     setupSocketHandlers()
     windowEvents()
 }
