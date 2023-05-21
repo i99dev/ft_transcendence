@@ -224,7 +224,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             payload.room_id,
             `${client.handshake.auth.login} left`,
         )
-
         client.leave(payload.room_id)
     }
 

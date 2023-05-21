@@ -54,7 +54,7 @@ export class ChatController {
                 : await this.groupChatService.getGroupChatUsers(room_id)
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('/:room_id/messages')
     async getRoomMessages(
         @Param('room_id', ParseStringPipe) room_id: string,
@@ -64,7 +64,7 @@ export class ChatController {
     ) {
         if (sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
         if (!page) page = 1
-        const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort)
+        const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort, req.user.login)
         if (msgs == null) throw new NotFoundException('No Messages Found')
         return msgs
     }
