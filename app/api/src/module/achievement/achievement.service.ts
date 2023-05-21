@@ -33,17 +33,6 @@ export class AchievementService {
         }
     }
 
-    async getNewAchievements(login: string): Promise<string[]> {
-        const notification = await this.notificationService.getMyNotificationsByType(login, NotificationType.ACHIEVEMENT)
-        if (!notification) return null
-        if (notification.length) if (notification.length === 0) return null
-        const achievements = []
-        for (const notif of notification) {
-            achievements.push(notif.content)
-        }
-        return achievements
-    }
-
     async getNewRank(login: string): Promise<{ rank: string; isUp: boolean }> {
         const RankUp = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_UP)
         const RankDown = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_DOWN)
