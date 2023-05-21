@@ -7,6 +7,7 @@
             :cooldown12="pu1Cooldowns[1]"
             :cooldown21="pu2Cooldowns[0]"
             :cooldown22="pu2Cooldowns[1]"
+            @powerup="activatePowerUp($event)"
         />
         <GameReadyModal v-if="showReadyModal" />
         <canvas ref="canvasRef" style="width: 100%; height: 100%"></canvas>
@@ -50,40 +51,30 @@ const keys: { [key: string]: boolean } = {
 }
 
 onMounted(() => {
-    window.addEventListener('popstate', handleArrows)
-    window.addEventListener('touchstart', handleTouchStart)
-    window.addEventListener('touchmove', handleTouchMove)
-    window.addEventListener('touchend', handleTouchEnd)
+    setupEvents()
 })
 
 onUnmounted(() => {
+    clearEvents()
+    reset()
+})
+
+const setupEvents = (): void => {
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp)
+    window.addEventListener('popstate', handleArrows)
+    window.addEventListener('touchstart', handleTouchStart, { passive: false })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
+    window.addEventListener('touchend', handleTouchEnd, { passive: false })
+}
+
+const clearEvents = (): void => {
     document.removeEventListener('keydown', handleKeyDown)
     document.removeEventListener('keyup', handleKeyUp)
     window.removeEventListener('popstate', handleArrows)
     window.removeEventListener('touchstart', handleTouchStart)
     window.removeEventListener('touchmove', handleTouchMove)
     window.removeEventListener('touchend', handleTouchEnd)
-    reset()
-})
-
-const handleTouchMove = (event: TouchEvent): void => {
-    touchEndY.value = event.changedTouches[0].clientY
-
-    if (touchEndY.value < touchStartY.value) {
-        socket.value?.emit('move', 'up')
-    }
-    if (touchEndY.value > touchStartY.value) {
-        socket.value?.emit('move', 'down')
-    }
-}
-
-const handleTouchStart = (event: TouchEvent): void => {
-    touchStartY.value = event.touches[0].clientY
-}
-
-const handleTouchEnd = (): void => {
-    touchStartY.value = 0
-    touchEndY.value = 0
 }
 
 const handleArrows = (e: PopStateEvent): void => {
@@ -125,12 +116,6 @@ function setup(mode: GameSelectDto): void {
     resetSocket()
     if (mode.gameMode != 'invite') emitStartGame(mode)
     setupSocketHandlers()
-    windowEvents()
-}
-
-const windowEvents = (): void => {
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('keyup', handleKeyUp)
 }
 
 watch(gameSetup, (newVal, oldVal) => {
@@ -169,7 +154,8 @@ const startPowerCooldown = (player: number, key: number): void => {
     }
 }
 
-const activatePowerUp = (key: string): void => {
+const activatePowerUp = (key: any): void => {
+    console.log('activatePowerup ', key)
     if (key == '1') {
         socket.value?.emit('Power-Up', 1)
         startPowerCooldown(gameSetup.value?.player, 0)
@@ -197,6 +183,40 @@ const handleKeyUp = (event: KeyboardEvent): void => {
         keys[event.key] = false
     }
 }
+
+const handleTouchMove = (event: TouchEvent): void => {
+    event.preventDefault()
+    touchEndY.value = event.changedTouches[0].clientY
+
+    if (touchEndY.value < touchStartY.value) {
+        socket.value?.emit('move', 'up')
+    }
+    if (touchEndY.value > touchStartY.value) {
+        socket.value?.emit('move', 'down')
+    }
+}
+
+const handleTouchStart = (event: TouchEvent): void => {
+    // event.preventDefault()
+    touchStartY.value = event.touches[0].clientY
+}
+
+const handleTouchEnd = (): void => {
+    touchStartY.value = 0
+    touchEndY.value = 0
+}
+
+// const isMoveEventThrottled = ref(false);
+
+// const throttleMoveEvent = (playerID: string, direction: string) => {
+//     if (!isMoveEventThrottled.value) {
+//         isMoveEventThrottled.value = true;
+//         socket.value?.emit('move', 'up')
+//         setTimeout(() => {
+//             isMoveEventThrottled.value = false;
+//         }, 1000 / 60); // throttle events at 60 FPS
+//     }
+// }
 
 const updatePaddleDirection = (): void => {
     if (keys.ArrowUp) {
