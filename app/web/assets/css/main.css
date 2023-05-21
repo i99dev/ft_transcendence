@@ -34,12 +34,15 @@
     }
 
     body {
-        @apply bg-background text-[primary];
+        @apply bg-background_dark text-[primary];
     }
 }
 
 @layer utilities {
     .centered {
         @apply flex justify-center items-center;
+    }
+    .smooth-transition {
+        @apply transition ease-in-out duration-300;
     }
 }

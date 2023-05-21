@@ -31,17 +31,17 @@
                                     leave-to="opacity-0 scale-95"
                                 >
                                     <DialogPanel
-                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background_light p-6 text-left align-middle shadow-xl transition-all"
                                     >
                                         <form @submit.prevent="" class="flex">
                                             <div class="relative mx-2">
                                                 <div
                                                     @click="changePasswordView"
-                                                    class="absolute right-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 flex items-center h-full cursor-pointer"
+                                                    class="absolute right-2 text-gray-600 hover:text-gray-700 flex items-center h-full cursor-pointer"
                                                 >
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        class="stroke-indigo-400 fill-none stroke-2 w-5 h-5"
+                                                        class="stroke-secondary fill-none stroke-2 w-5 h-5"
                                                         viewBox="0 0 24 24"
                                                     >
                                                         <path stroke="none" d="M0 0h24v24H0z" />
@@ -55,7 +55,7 @@
                                                     </svg>
                                                 </div>
                                                 <input
-                                                    class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 dark:focus:border-indigo-700 dark:bg-gray-800 bg-white dark:border-gray-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                                                    class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-secondary bg-background_light dark:border-gray-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
                                                     id="joinGroupPassword"
                                                     type="password"
                                                     v-model="joinGroupPassword"
@@ -63,7 +63,7 @@
                                                 />
                                             </div>
                                             <button
-                                                class="h-auto w-auto border rounded-lg bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
+                                                class="h-auto w-auto border rounded-lg bg-secondary hover:bg-secondary ease-in-out transition duration-200 p-1"
                                                 @click.stop="joinGroupChat()"
                                             >
                                                 <span class="text-sm p-1 text-white capitalize">
@@ -81,66 +81,67 @@
                 <!-- chat element -->
                 <button
                     v-for="chat in chats"
-                    :key="chat.id"
+                    :key="chat?.id"
                     @click="setCurrentChat(chat)"
-                    class="p-2 border-t border-slate-200 bg-slate-50 hover:bg-slate-100 flex relative w-full focus:outline-indigo-400"
+                    class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
                 >
                     <div class="relative" style="width: 10%">
                         <img
                             v-if="chatType === 'DM'"
-                            :src="chat.users[0].image"
+                            :src="chat?.users[0].image"
                             alt="User Photo"
                             class="rounded-full w-10 h-10 object-cover"
                         />
                         <img
                             v-else
-                            :src="chat.image"
+                            :src="chat?.image"
                             alt="User Photo"
                             class="rounded-full w-10 h-10 object-cover"
                         />
                         <!-- online badge -->
-                        <span
-                            v-if="chatType === 'DM' && chat.users[0].status === 'ONLINE'"
-                            class="absolute bottom-1 left-8 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
+                        <UserProfileStatus
+                            v-if="chatType === 'DM'"
+                            :status="chat?.users[0].status"
+                            class="absolute bottom-0 right-1 w-3 h-3"
                         />
                     </div>
 
                     <!-- last message details -->
                     <div class="flex justify-between" style="width: 90%">
                         <div class="flex flex-col mx-4 w-1/2">
-                            <div v-if="chatType === 'DM'" class="flex justify-start text-slate-700">
-                                {{ chat.users[0].username }}
+                            <div v-if="chatType === 'DM'" class="flex justify-start text-white">
+                                {{ chat?.users[0].username }}
                             </div>
                             <!-- there should be one user only -->
                             <div
                                 v-else
-                                class="flex justify-start text-slate-700"
+                                class="flex justify-start text-white"
                                 :class="{ 'h-10': !chatType, 'items-center': !chatType }"
                             >
-                                {{ chat.name }}
+                                {{ chat?.name }}
                             </div>
 
                             <div
                                 v-if="chatType"
-                                class="w-full flex justify-start whitespace-nowrap text-xs text-slate-400"
+                                class="w-full flex justify-start whitespace-nowrap text-xs text-white opacity-70 group-hover:opacity-100"
                             >
                                 <span v-if="chatType === 'GROUP'" class="w-auto mr-2">
-                                    {{ chat.chat_room.messages[0]?.sender_login
-                                    }}<span v-if="chat.chat_room.messages[0]">:</span>
+                                    {{ chat?.chat_room.messages[0]?.sender_login
+                                    }}<span v-if="chat?.chat_room.messages[0]">:</span>
                                 </span>
                                 <span
                                     class="inline-block max-w-full overflow-hidden whitespace-nowrap text-ellipsis"
                                 >
-                                    {{ chat.chat_room.messages[0]?.content }}
+                                    {{ chat?.chat_room.messages[0]?.content }}
                                 </span>
                             </div>
                         </div>
                         <!-- Invite Game Button -->
                         <button
                             v-if="(chatType === 'DM' || chatType === null) && hoverButton === chat"
-                            class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-indigo-400 hover:bg-indigo-600 ease-in-out transition duration-200 p-1"
+                            class="absolute right-1/4 top-1/4 h-auto w-auto border rounded-full bg-primary opacity-70 hover:opacity-100 hover:text-teri ease-in-out transition duration-200 p-1"
                             @click.stop="HandleItemButton(chat)"
                         >
                             <svg
@@ -160,7 +161,7 @@
                         </button>
                         <div class="w-20 flex justify-center">
                             <div
-                                class="text-xs text-slate-400 w-12 flex justify-center items-center"
+                                class="text-xs text-white opacity-70 group-hover:opacity-100 w-12 flex justify-center items-center"
                             >
                                 <span v-if="chatType && chat.chat_room.messages[0]">
                                     {{
@@ -192,7 +193,7 @@
                     <button
                         type="button"
                         @click="isChatCreateGroupOpened = true"
-                        class="rounded-full bg-indigo-500 bg-opacity-60 p-4 font-medium text-white hover:bg-opacity-90 transition duration-200 ease-in-out focus:outline-indigo-400"
+                        class="rounded-full bg-secondary hover:bg-primary smooth-transition opacity-60 p-4 font-medium text-white hover:opacity-90 transition duration-200 ease-in-out focus:outline-secondary"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -275,7 +276,6 @@ const changePasswordView = () => {
     let input = document.getElementById('joinGroupPassword') as HTMLInputElement
     input.type = input.type === 'text' ? 'password' : 'text'
 }
-
 const closejoinGroupPasswordPopup = () => {
     isJoinGroupChatOpened.value = false
     selectedChat.value = null

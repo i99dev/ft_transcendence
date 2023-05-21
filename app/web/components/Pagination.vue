@@ -1,21 +1,10 @@
 <template>
-    <div class="w-full items-center bg-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2">
-        <div class="flex flex-1 justify-between sm:hidden">
-            <a
-                href="#"
-                class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >Previous</a
-            >
-            <a
-                href="#"
-                class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >Next</a
-            >
-        </div>
-
+    <div
+        class="w-full items-center bg-background border-1 border-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2"
+    >
         <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <div>
-                <p class="text-sm text-gray-700">
+                <p class="text-sm text-white">
                     Showing
                     <span class="font-medium"> {{ currentPage }}</span>
                     of
@@ -32,7 +21,7 @@
                     <button
                         @click="handlePagination(currentPage - 1)"
                         type="button"
-                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
                         <span class="sr-only">Previous</span>
                         <svg
@@ -49,7 +38,6 @@
                         </svg>
                     </button>
 
-                    <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
                     <div>
                         <button
                             v-for="pageNumber in isPage.keys()"
@@ -57,11 +45,11 @@
                             @click="handlePagination(pageNumber)"
                             type="button"
                             aria-current="page"
-                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20"
+                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition"
                             :class="{
-                                'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600':
+                                'z-10 hover:bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white':
                                     isPage.get(pageNumber),
-                                ' text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50  focus:outline-offset-0':
+                                ' text-white ring-1 ring-inset ring-secondary hover:bg-primary focus:outline-offset-0':
                                     !isPage.get(pageNumber),
                             }"
                         >
@@ -72,7 +60,7 @@
                     <button
                         @click="handlePagination(currentPage + 1)"
                         type="button"
-                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
                         <span class="sr-only">Next</span>
                         <svg

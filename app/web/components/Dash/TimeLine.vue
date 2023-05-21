@@ -9,14 +9,13 @@
                     <button
                         @click="handleDropdown"
                         type="button"
-                        class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                        class="group inline-flex justify-center text-sm font-medium text-white hover:bg-primary p-1 rounded-lg"
                         id="menu-button"
                         aria-expanded="false"
                         aria-haspopup="true"
                     >
-                        Sort
                         <svg
-                            class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                            class="h-5 w-5 flex-shrink-0 text-white group-hover:bg-primary mr-2"
                             viewBox="0 0 20 20"
                             fill="currentColor"
                             aria-hidden="true"
@@ -27,6 +26,7 @@
                                 clip-rule="evenodd"
                             />
                         </svg>
+                        Sort
                     </button>
                 </div>
 
@@ -35,26 +35,19 @@
 			  -->
                 <div
                     v-if="showButton"
-                    class="absolute right-0 left-100 z-10 mt-1 w-40 rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    class="absolute right-0 left-100 z-10 mt-1 w-40 rounded-md bg-background border-1 border-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none text-white"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
                     tabindex="-1"
                 >
                     <div class="py-1" role="none">
-                        <!--
-					Clicked : 'text-gray-900 font-medium focus:bg-gray-100' 
-					Not Clicked : 'text-gray-500 hover:bg-gray-100'
-					Shared : 'w-full text-left block px-4 py-2 text-sm focus:outline-none'
-					on click previous buttn should be reset to default and current button should be clicked
-				  -->
-
                         <button
                             @click="handleFilteration('all')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
                             :class="{
-                                'text-gray-900 font-medium focus:bg-gray-100': isFilter.get('all'),
-                                ' text-gray-500 hover:bg-gray-100': !isFilter.get('all'),
+                                'font-medium focus:bg-white': isFilter.get('all'),
+                                ' hover:bg-white': !isFilter.get('all'),
                             }"
                             role="menuitem"
                             tabindex="-1"
@@ -67,8 +60,8 @@
                             @click="handleFilteration('win')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
                             :class="{
-                                'text-gray-900 font-medium focus:bg-gray-100': isFilter.get('win'),
-                                ' text-gray-500 hover:bg-gray-100': !isFilter.get('win'),
+                                'font-medium focus:bg-white': isFilter.get('win'),
+                                'hover:bg-white': !isFilter.get('win'),
                             }"
                             role="menuitem"
                             tabindex="-1"
@@ -81,8 +74,8 @@
                             @click="handleFilteration('lose')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
                             :class="{
-                                'text-gray-900 font-medium focus:bg-gray-100': isFilter.get('lose'),
-                                ' text-gray-500 hover:bg-gray-100': !isFilter.get('lose'),
+                                'font-medium focus:bg-white': isFilter.get('lose'),
+                                'hover:bg-white': !isFilter.get('lose'),
                             }"
                             role="menuitem"
                             tabindex="-1"
@@ -95,8 +88,8 @@
                             @click="handleFilteration('asc')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
                             :class="{
-                                'text-gray-900 font-medium focus:bg-gray-100': isFilter.get('asc'),
-                                ' text-gray-500 hover:bg-gray-100': !isFilter.get('asc'),
+                                'font-medium focus:bg-white': isFilter.get('asc'),
+                                'hover:bg-white': !isFilter.get('asc'),
                             }"
                             role="menuitem"
                             tabindex="-1"
@@ -109,8 +102,8 @@
                             @click="handleFilteration('desc')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
                             :class="{
-                                'text-gray-900 font-medium focus:bg-gray-100': isFilter.get('desc'),
-                                ' text-gray-500 hover:bg-gray-100': !isFilter.get('desc'),
+                                'font-medium focus:bg-white': isFilter.get('desc'),
+                                'hover:bg-white': !isFilter.get('desc'),
                             }"
                             role="menuitem"
                             tabindex="-1"
@@ -136,78 +129,48 @@
         <!-- </div> -->
         <div v-if="games.length > 0">
             <div
-                v-for="game in games"
+                v-for="(game, index) in games"
                 :key="game.id"
-                class="w-full px-2 rounded m-2 bg-white shadow-sm p-2"
+                class="w-full rounded-2xl m-2 bg-trasparent shadow-sm p-2 text-white border-1 smooth-transition hover:bg-secondary"
+                :class="{
+                    'bg-background': !(index % 2),
+                    'bg-background_light': index % 2,
+                }"
             >
-                <template v-if="!isSameLogin(game)">
-                    <div class="flex flex-row justify-between w-full">
-                        <div class="self-center">
-                            <span class="text-xs font-light">{{
-                                getLadderRank(getMe(game)?.user.ladder)
-                            }}</span>
+                <div v-if="!isSameLogin(game)">
+                    <div class="grid grid-cols-3 w-full">
+                        <div class="centered justify-self-start">
                             <img
                                 :src="getMe(game)?.user.image"
-                                class="w-8 h-8 rounded-full self-center"
+                                class="w-8 h-8 rounded-full object-cover"
                             />
                             <!-- name and result -->
-                            <div class="flex flex-col text-center justify-center">
-                                <div class="text-xs font-light">
-                                    {{ getMe(game)?.user.username }}
-                                </div>
-                                <div
-                                    v-if="getMe(game)?.IsWinner === true"
-                                    class="text-xs text-green-600 font-medium"
-                                >
-                                    Win
-                                </div>
-                                <div
-                                    v-else-if="getMe(game)?.IsWinner === false"
-                                    class="text-xs text-red-600 font-medium"
-                                >
-                                    Lose
-                                </div>
+                            <div class="text-xs m-2 capitalize font-bold">
+                                {{ getMe(game)?.user.username }}
                             </div>
                         </div>
-                        <!-- vs -->
-                        <div class="flex flex-row mt-3">
-                            <div class="pr-2">{{ getMe(game)?.score }}</div>
-                            <div class="text-xs font-light mt-1">vs</div>
-                            <div class="pl-2">{{ getOpponent(game)?.score }}</div>
+                        <!-- result -->
+                        <div class="centered relative">
+                            <div class="absolute left-1/4">{{ getMe(game)?.score }}</div>
+                            <div class="text-xs font-bold">-</div>
+                            <div class="absolute right-1/4">{{ getOpponent(game)?.score }}</div>
                         </div>
-                        <div class="flex flex-col items-center">
+                        <div class="centered justify-self-end">
                             <!-- name and result -->
-                            <div class="flex flex-col text-center justify-center">
-                                <div class="text-xs font-light">
-                                    {{ getOpponent(game)?.user.username }}
-                                </div>
-                                <div
-                                    v-if="getOpponent(game)?.IsWinner === true"
-                                    class="text-xs text-green-600 font-medium"
-                                >
-                                    Win
-                                </div>
-                                <div
-                                    v-else-if="getOpponent(game)?.IsWinner === false"
-                                    class="text-xs text-red-600 font-medium"
-                                >
-                                    Lose
-                                </div>
+                            <div class="text-xs m-2 capitalize font-bold">
+                                {{ getOpponent(game)?.user.username }}
                             </div>
                             <img
                                 :src="getOpponent(game)?.user.image"
-                                class="w-8 h-8 rounded-full self-center"
+                                class="w-8 h-8 rounded-full object-cover"
                             />
-                            <span class="text-xs font-light">{{
-                                getLadderRank(getOpponent(game)?.user.ladder)
-                            }}</span>
                         </div>
                     </div>
-                </template>
+                </div>
             </div>
         </div>
         <div v-else class="flex flex-col justify-center items-center rounded">
-            <div class="text-center text-gray-500">
+            <div class="text-center text-white">
                 <div class="text-2xl font-bold">No Games Found</div>
             </div>
         </div>
