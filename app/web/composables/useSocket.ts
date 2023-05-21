@@ -98,8 +98,12 @@ export const useSockets = () => {
 
     const reconnectSockets = () => {
         reconnectChatSocket()
-        reconnectGameSocket()
+        // reconnectGameSocket()
         reconnectFriendSocket()
+    }
+
+    const updateSocketsToken = () => {
+        gameSocket.value?.emit('Update-Token', useCookie('access_token').value)
     }
 
     const logSocketExceptions = () => {
@@ -148,5 +152,6 @@ export const useSockets = () => {
         disconnectSockets,
         reconnectSockets,
         logSocketExceptions,
+        updateSocketsToken,
     }
 }

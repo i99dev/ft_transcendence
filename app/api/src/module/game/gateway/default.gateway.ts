@@ -120,4 +120,17 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)
     }
+
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Update-Token')
+    updateToken(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new ParseSocketStringPipe) token: string) {
+        if (token) {
+            client.request.headers.authorization = 'Bearer ' + token;
+        }
+        else
+            throw new WsException('No Refersh token provided')
+
+    }
 }

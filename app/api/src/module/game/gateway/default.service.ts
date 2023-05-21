@@ -151,7 +151,7 @@ export class DefaultService {
 
     public playerReady(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if(player.status != 'ingame') return
+        if(player && player.status != 'ingame') return
         player.game.setPlayerReady(player.id)
     }
 
