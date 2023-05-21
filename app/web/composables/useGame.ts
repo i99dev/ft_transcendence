@@ -71,7 +71,7 @@ export function useGameInvite() {
         if (response.accepted) {
             inviteModal.value.open = false;
             inviteModal.value.gameInProgress = true;
-            await navigateTo('play')
+            await navigateTo('/play')
         } else {
             inviteModal.value.rejected = true;
             inviteModal.value.playerStatus = response.playerStatus;
@@ -88,7 +88,7 @@ export function useGameInvite() {
         socket.value?.emit('Respond-Invite', JSON.stringify({ ...invite.value, accepted: true }));
         inviteModal.value.open = false;
         inviteModal.value.gameInProgress = true;
-        await navigateTo('play')
+        await navigateTo('/play')
 
     };
 
