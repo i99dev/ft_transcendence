@@ -107,6 +107,7 @@ export class ChatService {
         try {
             const chat = await this.prisma.message.deleteMany({
                 where: {
+                    chat_room_id: room_id,
                     sender_login: user_login,
                     id: message_id,
                 },
