@@ -68,7 +68,8 @@ export class GameWsService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        player.game.setLoser(player.id)
+        if (player && player.status == 'ingame')
+            player.game.setLoser(player.id)
     }
 
     /* 
