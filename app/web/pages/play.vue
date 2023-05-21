@@ -29,8 +29,8 @@
                 <p>Please use the other tab.</p>
             </div>
         </div>
+        <GameInviteBox v-if="inviteModal.open" class="z-20" />
     </div>
-    <GameInviteBox v-if="inviteModal.open" class="z-20" />
 </template>
 
 <script lang="ts" setup>
@@ -141,8 +141,3 @@ watchEffect(() => {
 
 </script>
 
-<style>
-body {
-    background-color: #202020;
-}
-</style>

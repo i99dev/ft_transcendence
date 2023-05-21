@@ -32,7 +32,7 @@
                 <h2 class="text-white text-md md:text-lg lg:text-xl text-center capitalize m-5 p-2">
                     Didn't receive the code?
                     <button
-                        class="text-primary underline underline-offset-8 hover:text-accent hover:cursor-pointer transition duration-200 ease-in-out ml-2"
+                        class="text-primary underline underline-offset-8 hover:text-tertiary hover:cursor-pointer transition duration-200 ease-in-out ml-2"
                         @click="resendCode"
                     >
                         Resend

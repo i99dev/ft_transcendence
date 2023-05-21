@@ -1,19 +1,19 @@
 <template>
     <div>
         <button
-            class="cybr-btn text-white before:bg-primary group hover:before:opacity-80 before:border-r-4 before:border-r-accent text-4xl font-[CyberGlitch]"
+            class="cybr-btn text-white before:bg-primary group hover:before:opacity-80 before:border-r-4 before:border-r-tertiary text-4xl font-[CyberGlitch]"
             @click="clickButton"
         >
             {{ buttonName }}
             <span aria-hidden class=""></span>
             <span
                 aria-hidden
-                class="cybr-btn__glitch bg-tertiary before:border-r-4 before:border-r-accent"
+                class="cybr-btn__glitch bg-secondary before:border-r-4 before:border-r-tertiary"
                 >{{ props.buttonName }}_</span
             >
             <span
                 aria-hidden
-                class="absolute -bottom-2 right-2 bg-accent group-hover:opacity-80 w-1/6 h-1/4 centered text-sm rounded-sm font-normal"
+                class="absolute -bottom-2 right-2 bg-tertiary group-hover:opacity-80 w-1/6 h-1/4 centered text-sm rounded-sm font-normal"
                 >42</span
             >
         </button>

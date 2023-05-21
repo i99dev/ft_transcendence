@@ -5,12 +5,12 @@
                 id="search-input"
                 v-model="searchedUsers"
                 @input="getFilteredUsers()"
-                class="text-sm leading-none text-left text-gray-600 px-4 py-3 w-full border rounded border-gray-300 outline-none"
+                class="text-sm leading-none text-left text-white bg-background_light px-4 py-3 w-full border rounded border-secondary_light outline-none"
                 type="text"
                 placeholder="Search"
             />
             <svg
-                class="absolute right-3 z-10 cursor-pointer"
+                class="absolute right-3 z-10 cursor-pointer stroke-2 stroke-white"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -48,15 +48,15 @@
                         "
                         type="button"
                         @click="$emit('selectUser', user)"
-                        class="p-2 border-y border-slate-100 bg-slate-100 rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
+                        class="p-2 border smooth-transition border-white bg-background_light rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                         :class="{
-                            'bg-slate-300': isUserDimmed(user.login),
-                            'hover:bg-indigo-100': !isUserDimmed(user.login),
+                            'bg-background': isUserDimmed(user.login),
+                            'hover:bg-primary': !isUserDimmed(user.login),
                             'cursor-default': isUserDimmed(user.login),
                         }"
                     >
                         <img :src="user.image" class="rounded-full w-10 h-10 object-cover" />
-                        <div class="absolute top-2 left-16 block text-slate-700">
+                        <div class="absolute top-2 left-16 block text-white">
                             {{ user.username }}
                         </div>
                     </button>
@@ -90,7 +90,7 @@ const getFilteredUsers = async () => {
 }
 
 const isUserDimmed = (login: string) => {
-    return props.unwantedUsers.find((u: UserGetDto) => u.login === login)
+    return props.unwantedUsers?.find((u: UserGetDto) => u.login === login)
 }
 
 const setUsersList = (usersList: UserGetDto[]) => {

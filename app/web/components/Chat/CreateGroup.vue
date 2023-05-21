@@ -26,7 +26,7 @@
                             leave-to="opacity-0 scale-95"
                         >
                             <DialogPanel
-                                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background_light p-6 text-left align-middle shadow-xl transition-all"
                             >
                                 <!-- Popup content -->
 
@@ -39,12 +39,12 @@
                                     >
                                         <DialogTitle
                                             as="h3"
-                                            class="text-lg font-medium leading-6 text-gray-900"
+                                            class="text-lg font-medium leading-6 text-white"
                                         >
                                             Create Group
                                         </DialogTitle>
                                         <div
-                                            class="flex items-center border-b border-indigo-500 py-2"
+                                            class="flex items-center border-b border-secondary py-2"
                                         >
                                             <div class="file-upload">
                                                 <input
@@ -56,18 +56,16 @@
                                                 <button
                                                     @click="() => fileInput.click()"
                                                     type="button"
-                                                    class="bg-blue-100 rounded-full focus:outline-indigo-400"
+                                                    class="border-1 border-white smooth-transition hover:bg-primary rounded-full focus:outline-white"
                                                     :class="{ 'p-2': !chatImage }"
                                                 >
                                                     <svg
                                                         v-if="!chatImage"
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        class="icon icon-tabler icon-tabler-camera-plus"
+                                                        class="stroke-2 stroke-white fill-none"
                                                         width="24"
                                                         height="24"
                                                         viewBox="0 0 24 24"
-                                                        stroke-width="2"
-                                                        stroke="currentColor"
                                                         fill="none"
                                                         stroke-linecap="round"
                                                         stroke-linejoin="round"
@@ -91,12 +89,11 @@
                                                         :src="chatImage"
                                                         class="rounded-full w-10 h-8 object-cover"
                                                     />
-                                                    <!-- <div v-else >Nice</div> -->
                                                 </button>
                                             </div>
 
                                             <input
-                                                class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                                                class="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
                                                 id="groupChatName"
                                                 type="text"
                                                 placeholder="Enter group name"
@@ -108,7 +105,7 @@
                                         </div>
                                         <div class="flex justify-end mt-4">
                                             <button
-                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
                                                 @click="nextStage"
                                             >
@@ -129,7 +126,7 @@
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
-                                                class="border rounded-full bg-white ease-in-out transition duration-200 m-2 relative focus:outline-indigo-400"
+                                                class="border rounded-full bg-secondary ease-in-out transition duration-200 m-2 relative focus:outline-secondary"
                                                 type="button"
                                                 @click="removeUser(user)"
                                             >
@@ -139,7 +136,7 @@
                                                     :alt="user.username"
                                                 />
                                                 <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-slate-200"
+                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-secondary"
                                                 >
                                                     <XMarkIcon class="h-2 w-2" aria-hidden="true" />
                                                 </div>
@@ -152,14 +149,14 @@
                                         />
                                         <div class="flex justify-end mt-4">
                                             <button
-                                                class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                                                 type="button"
                                                 @click="prevStage"
                                             >
                                                 back
                                             </button>
                                             <button
-                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
                                                 @click="nextStage"
                                             >
@@ -192,10 +189,10 @@
                                                                 ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
                                                                 : '',
                                                             checked
-                                                                ? 'bg-indigo-600 bg-opacity-75 text-white '
-                                                                : 'bg-white ',
+                                                                ? 'bg-primary bg-opacity-75 text-white '
+                                                                : 'bg-background_light ',
                                                         ]"
-                                                        class="relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none"
+                                                        class="relative flex cursor-pointer border-1 border-white text-white rounded-lg px-5 py-4 shadow-md focus:outline-none"
                                                     >
                                                         <div
                                                             class="flex w-full items-center justify-between"
@@ -204,22 +201,12 @@
                                                                 <div class="text-sm">
                                                                     <RadioGroupLabel
                                                                         as="p"
-                                                                        :class="
-                                                                            checked
-                                                                                ? 'text-white'
-                                                                                : 'text-gray-900'
-                                                                        "
                                                                         class="font-medium"
                                                                     >
                                                                         {{ chatType.type }}
                                                                     </RadioGroupLabel>
                                                                     <RadioGroupDescription
                                                                         as="span"
-                                                                        :class="
-                                                                            checked
-                                                                                ? 'text-sky-100'
-                                                                                : 'text-gray-500'
-                                                                        "
                                                                         class="inline"
                                                                     >
                                                                         <div
@@ -234,8 +221,8 @@
                                                                                 class="text-sm font-bold leading-tight tracking-normal mb-2"
                                                                                 :class="
                                                                                     checked
-                                                                                        ? 'text-gray-200'
-                                                                                        : 'text-gray-500'
+                                                                                        ? 'opacity-100'
+                                                                                        : 'opacity-70'
                                                                                 "
                                                                             >
                                                                                 Password -
@@ -246,7 +233,7 @@
                                                                                     @click="
                                                                                         changeView
                                                                                     "
-                                                                                    class="absolute right-0 text-gray-600 dark:text-gray-400 hover:text-gray-700 flex items-center pr-3 h-full cursor-pointer"
+                                                                                    class="absolute right-0 text-white opacity-50 hover:opacity-100 flex items-center pr-3 h-full cursor-pointer"
                                                                                 >
                                                                                     <svg
                                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +265,7 @@
                                                                                     </svg>
                                                                                 </div>
                                                                                 <input
-                                                                                    class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 dark:focus:border-indigo-700 dark:bg-gray-800 bg-white dark:border-gray-700 font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                                                                                    class="text-white focus:outline-none focus:border focus:border-white bg-background_light font-normal w-64 h-10 flex items-center pl-3 text-sm border-white rounded border shadow"
                                                                                     id="createGroupPassword"
                                                                                     type="password"
                                                                                     v-model="
@@ -323,16 +310,16 @@
                                         </RadioGroup>
                                         <div class="flex justify-end mt-4">
                                             <button
-                                                class="flex-shrink-0 border-transparent border-4 text-indigo-500 hover:text-indigo-800 text-sm py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                                                 type="button"
                                                 @click="prevStage"
                                             >
                                                 back
                                             </button>
                                             <button
-                                                class="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white py-1 px-2 rounded capitalize focus:outline-indigo-400"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
-                                                @click="createGroupChat"
+                                                @click="nextStage"
                                             >
                                                 create
                                             </button>
