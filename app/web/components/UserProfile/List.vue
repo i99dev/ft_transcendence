@@ -5,7 +5,7 @@
                 id="search-input"
                 v-model="searchedUsers"
                 @input="getFilteredUsers()"
-                class="text-sm leading-none text-left text-white bg-background_light px-4 py-3 w-full border rounded border-tertiary_light outline-none"
+                class="text-sm leading-none text-left text-white bg-background_light px-4 py-3 w-full border rounded border-secondary_light outline-none"
                 type="text"
                 placeholder="Search"
             />

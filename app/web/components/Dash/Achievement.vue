@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            class="grid grid-cols-1 md:grid-cols-3 group text-white shadow-xl shadow-tertiary border"
+            class="grid grid-cols-1 md:grid-cols-3 group text-white shadow-xl shadow-secondary border"
         >
             <div
                 v-for="(acheivement, index) in acheivements"

@@ -37,14 +37,14 @@
                                         class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
                                     >
                                         <h1
-                                            class="p-2 border-b border-tertiary text-white font-semibold flex justify-center mb-2"
+                                            class="p-2 border-b border-secondary text-white font-semibold flex justify-center mb-2"
                                         >
                                             {{ participant.user.username }}
                                         </h1>
                                         <button
                                             v-for="option in adminOptions"
                                             :key="option.action"
-                                            class="flex items-center p-2 w-full rounded-lg hover:bg-tertiary text-white"
+                                            class="flex items-center p-2 w-full rounded-lg hover:bg-secondary text-white"
                                             @click="setUser(option.action)"
                                         >
                                             {{ option.text }}
@@ -114,7 +114,7 @@
                                         />
                                         <div class="flex justify-end mt-2">
                                             <button
-                                                class="flex-shrink-0 bg-tertiary hover:bg-primary text-white py-1 px-2 rounded capitalize"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary text-white py-1 px-2 rounded capitalize"
                                                 type="button"
                                                 @click="addUsers"
                                             >
@@ -155,7 +155,7 @@
                 <div
                     v-for="participant in participants"
                     :key="participant.user.username"
-                    class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-tertiary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
                         @click="openAdminOptionsPopup(participant)"
@@ -204,7 +204,7 @@
                         <UserPlusIcon class="w-6 h-6" />
                     </button>
                     <button
-                        class="border rounded-full hover:bg-tertiary ease-in-out transition duration-200 p-2 mx-4"
+                        class="border rounded-full hover:bg-secondary ease-in-out transition duration-200 p-2 mx-4"
                         @click="exitChat"
                     >
                         <ArrowRightOnRectangleIcon class="w-6 h-6" />

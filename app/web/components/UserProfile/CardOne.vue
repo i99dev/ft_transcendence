@@ -63,7 +63,7 @@
                             <input
                                 v-if="!editBoolaen"
                                 :disabled="editBoolaen"
-                                class="border-2 border-tertiary bg-background text-white rounded-md p-1 max-w-xs w-32 h-8 mx-2"
+                                class="border-2 border-secondary bg-background text-white rounded-md p-1 max-w-xs w-32 h-8 mx-2"
                                 type="text"
                                 v-model="userData.username"
                             />
@@ -178,7 +178,7 @@
                         class="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3.5 h-3.5 p-2.5"
                         :class="{
                             'bg-current': notifications?.length == 0,
-                            'bg-accent': notifications?.length != 0,
+                            'bg-tertiary': notifications?.length != 0,
                         }"
                     >
                         <div class="text-xs font-semibold text-center text-white">
@@ -269,7 +269,7 @@
                     "
                     class="p-2 hover hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2 capitalize"
                     :class="{
-                        'bg-tertiary': isBlocked(user),
+                        'bg-secondary': isBlocked(user),
                     }"
                 >
                     {{ isBlocked(user) ? 'unblock' : 'block' }}

@@ -6,7 +6,7 @@
             v-for="(player, index) in players"
             :key="index"
             @click="navigateTo(`/users/${player.username}`)"
-            class="w-full h-20 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-accent"
+            class="w-full h-20 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-tertiary"
             :class="{
                 'bg-background': !(index % 2),
                 'bg-background_light': index % 2,
@@ -14,7 +14,7 @@
         >
             <div class="min-w-full text-left text-sm font-light text-white grid grid-cols-3">
                 <div class="centered justify-self-start">
-                    <div class="whitespace-nowrap font-medium p-1 m-2 w-8 aspect-square bg-accent rounded-xl text-center mr-4">
+                    <div class="whitespace-nowrap font-medium p-1 m-2 w-8 aspect-square bg-tertiary rounded-xl text-center mr-4">
                         {{ player.rankNum }}
                     </div>
                     <img

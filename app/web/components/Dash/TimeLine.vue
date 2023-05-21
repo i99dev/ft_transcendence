@@ -131,7 +131,7 @@
             <div
                 v-for="(game, index) in games"
                 :key="game.id"
-                class="w-full rounded-2xl m-2 bg-trasparent shadow-sm p-2 text-white border-1 smooth-transition  hover:bg-tertiary"
+                class="w-full rounded-2xl m-2 bg-trasparent shadow-sm p-2 text-white border-1 smooth-transition  hover:bg-secondary"
                 :class="{
                     'bg-background': !(index % 2),
                     'bg-background_light': index % 2,

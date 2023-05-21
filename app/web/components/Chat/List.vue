@@ -41,7 +41,7 @@
                                                 >
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        class="stroke-tertiary fill-none stroke-2 w-5 h-5"
+                                                        class="stroke-secondary fill-none stroke-2 w-5 h-5"
                                                         viewBox="0 0 24 24"
                                                     >
                                                         <path stroke="none" d="M0 0h24v24H0z" />
@@ -55,7 +55,7 @@
                                                     </svg>
                                                 </div>
                                                 <input
-                                                    class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-tertiary bg-background_light dark:border-gray-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                                                    class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-secondary bg-background_light dark:border-gray-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
                                                     id="joinGroupPassword"
                                                     type="password"
                                                     v-model="joinGroupPassword"
@@ -63,7 +63,7 @@
                                                 />
                                             </div>
                                             <button
-                                                class="h-auto w-auto border rounded-lg bg-tertiary hover:bg-tertiary ease-in-out transition duration-200 p-1"
+                                                class="h-auto w-auto border rounded-lg bg-secondary hover:bg-secondary ease-in-out transition duration-200 p-1"
                                                 @click.stop="joinGroupChat()"
                                             >
                                                 <span class="text-sm p-1 text-white capitalize">
@@ -83,7 +83,7 @@
                     v-for="chat in chats"
                     :key="chat?.id"
                     @click="setCurrentChat(chat)"
-                    class="p-2 border-t border-white bg-background_light hover:bg-tertiary group smooth-transition flex relative w-full focus:outline-tertiary"
+                    class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
                 >
@@ -192,7 +192,7 @@
                     <button
                         type="button"
                         @click="isChatCreateGroupOpened = true"
-                        class="rounded-full bg-tertiary hover:bg-primary smooth-transition opacity-60 p-4 font-medium text-white hover:opacity-90 transition duration-200 ease-in-out focus:outline-tertiary"
+                        class="rounded-full bg-secondary hover:bg-primary smooth-transition opacity-60 p-4 font-medium text-white hover:opacity-90 transition duration-200 ease-in-out focus:outline-secondary"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

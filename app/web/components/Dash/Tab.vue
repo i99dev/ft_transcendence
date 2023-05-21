@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col w-full items-center">
         <div
-            class="w-full items-center pb-2 border-b border-tertiary flex sm:space-x-0 space-x-6 justify-center"
+            class="w-full items-center pb-2 border-b border-secondary flex sm:space-x-0 space-x-6 justify-center"
         >
             <div v-for="tab in tabs" :key="tab.name" class="flex flex-col">
                 <div
@@ -10,7 +10,7 @@
                 >
                     <div
                         :class="{
-                            'border-b-2 p-2 border-tertiary text-lg': isActive(tab),
+                            'border-b-2 p-2 border-secondary text-lg': isActive(tab),
                             'opacity-50 hover:opacity-100 text-md': !isActive(tab),
                         }"
                     >

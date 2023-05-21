@@ -8,7 +8,7 @@
             <div
                 class="centered flex-col text-center text-white w-2/3 mobile:h-2/3"
             >
-                <h1 class="mt-6 font-bold tracking-tight text-accent lg:text-9xl text-5xl">
+                <h1 class="mt-6 font-bold tracking-tight text-tertiary lg:text-9xl text-5xl">
                     {{ error.statusCode }}
                 </h1>
                 <h2 class="m-5 w-full text-lg h-1/2 max-h-28 text-ellipsis overflow-hidden text-white">

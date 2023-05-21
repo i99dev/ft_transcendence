@@ -2,7 +2,7 @@
     <div class="bg-background_light text-white rounded-lg mt-2">
         <div class="p-2 relative flex">
             <button
-                class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-tertiary"
+                class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
                 @click="setCurrentChat(null)"
             >
                 <svg
@@ -42,7 +42,7 @@
                 @click="
                     chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened)
                 "
-                class="w-full flex items-center hover:bg-primary smooth-transition rounded-lg pl-2 focus:outline-tertiary"
+                class="w-full flex items-center hover:bg-primary smooth-transition rounded-lg pl-2 focus:outline-secondary"
             >
                 <div v-if="chatType === 'DM'" class="text-xl py-1">
                     {{ currentChat?.users[0].username }}
@@ -72,7 +72,7 @@
                     class="rounded-lg p-2 mx-2 my-2 group relative"
                     v-for="message in messages?.slice().reverse()"
                     :class="{
-                        'bg-tertiary':
+                        'bg-secondary':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
                         'bg-background_light':
                             !(message.sender_login === user_info.login && message.type !== 'SPECIAL'),
@@ -93,7 +93,7 @@
                         <div
                             class="h-3 w-3 origin-bottom-left rotate-45 transform"
                             :class="{
-                                'bg-tertiary': message.sender_login === user_info.login,
+                                'bg-secondary': message.sender_login === user_info.login,
                                 'bg-background_light': message.sender_login !== user_info.login,
                             }"
                         ></div>
@@ -122,7 +122,7 @@
                         v-if="
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
-                        class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-tertiary"
+                        class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
                         @click="deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
@@ -148,13 +148,13 @@
                         v-model="newMessage"
                         type="text"
                         placeholder="Message"
-                        class="w-11/12 p-3 border-2 border-tertiary rounded-xl focus:border-tertiary bg-background"
+                        class="w-11/12 p-3 border-2 border-secondary rounded-xl focus:border-secondary bg-background"
                         style="outline: none"
                         :disabled="AmIAllowed"
                     />
                     <button
                         type="submit"
-                        class="bg-tertiary hover:bg-primary smooth-transition text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full focus:outline-tertiary"
+                        class="bg-secondary hover:bg-primary smooth-transition text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full focus:outline-secondary"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -4,8 +4,8 @@
       :class="{
           'bg-background': status === 'OFFLINE',
           'bg-primary': status === 'ONLINE',
-          'bg-tertiary': status === 'INQUEUE',
-          'bg-accent': status === 'INGAME',
+          'bg-secondary': status === 'INQUEUE',
+          'bg-tertiary': status === 'INGAME',
       }"
   > 
   </div>

@@ -44,7 +44,7 @@
                                             Create Group
                                         </DialogTitle>
                                         <div
-                                            class="flex items-center border-b border-tertiary py-2"
+                                            class="flex items-center border-b border-secondary py-2"
                                         >
                                             <div class="file-upload">
                                                 <input
@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="flex justify-end mt-4">
                                             <button
-                                                class="flex-shrink-0 bg-tertiary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-tertiary hover:focus:outline-primary"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
                                                 @click="nextStage"
                                             >
@@ -118,7 +118,7 @@
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
-                                                class="border rounded-full bg-tertiary ease-in-out transition duration-200 m-2 relative focus:outline-tertiary"
+                                                class="border rounded-full bg-secondary ease-in-out transition duration-200 m-2 relative focus:outline-secondary"
                                                 type="button"
                                                 @click="removeUser(user)"
                                             >
@@ -128,7 +128,7 @@
                                                     :alt="user.username"
                                                 />
                                                 <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-tertiary"
+                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-secondary"
                                                 >
                                                     <XMarkIcon class="h-2 w-2" aria-hidden="true" />
                                                 </div>
@@ -148,7 +148,7 @@
                                                 back
                                             </button>
                                            <button
-                                                class="flex-shrink-0 bg-tertiary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-tertiary hover:focus:outline-primary"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
                                                 @click="nextStage"
                                             >
@@ -309,7 +309,7 @@
                                                 back
                                             </button>
                                             <button
-                                                class="flex-shrink-0 bg-tertiary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-tertiary hover:focus:outline-primary"
+                                                class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
                                                 @click="nextStage"
                                             >

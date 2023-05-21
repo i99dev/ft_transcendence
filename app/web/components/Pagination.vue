@@ -19,7 +19,7 @@
                     <button
                         @click="handlePagination(currentPage - 1)"
                         type="button"
-                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-white ring-1 ring-inset ring-tertiary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
+                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
                         <span class="sr-only">Previous</span>
                         <svg
@@ -45,9 +45,9 @@
                             aria-current="page"
                             class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition"
                             :class="{
-                                'z-10 hover:bg-accent text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white':
+                                'z-10 hover:bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white':
                                     isPage.get(pageNumber),
-                                ' text-white ring-1 ring-inset ring-tertiary hover:bg-primary focus:outline-offset-0':
+                                ' text-white ring-1 ring-inset ring-secondary hover:bg-primary focus:outline-offset-0':
                                     !isPage.get(pageNumber),
                             }"
                         >
@@ -58,7 +58,7 @@
                     <button
                         @click="handlePagination(currentPage + 1)"
                         type="button"
-                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-white ring-1 ring-inset ring-tertiary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
+                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
                         <span class="sr-only">Next</span>
                         <svg
