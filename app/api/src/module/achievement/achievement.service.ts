@@ -43,6 +43,7 @@ export class AchievementService {
         }
         return achievements
     }
+
     async getNewRank(login: string): Promise<{ rank: string; isUp: boolean }> {
         const RankUp = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_UP)
         const RankDown = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_DOWN)

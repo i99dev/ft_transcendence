@@ -65,6 +65,25 @@ export class NotificationService {
         }
     }
 
+    getType(type: string) {
+        switch (type) {
+            case 'ACHIEVEMENT':
+                return NotificationType.ACHIEVEMENT
+            case 'FRIEND_REQUEST':
+                return NotificationType.FRIEND_REQUEST
+            case 'FRIEND_REQUEST_ACCEPTED':
+                return NotificationType.FRIEND_REQUEST_ACCEPTED
+            case 'MATCH_INVITE':
+                return NotificationType.MATCH_INVITE
+            case 'CHAT_INVITE':
+                return NotificationType.CHAT_INVITE
+            case 'RANK_UP':
+                return NotificationType.RANK_UP
+            case 'RANK_DOWN':
+                return NotificationType.RANK_DOWN
+        }
+    }
+
     setUpNotificationMessage(socket: Socket, message) {
         socket.emit('notification', message)
     }
