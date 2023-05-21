@@ -105,6 +105,7 @@ export class PongGame {
                 radius: 0.015,
                 color: 'white',
             },
+            time: 120,
         }
     }
 
@@ -155,6 +156,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
+            ready: false
         }
     }
 
@@ -166,6 +168,20 @@ export class PongGame {
         ).map(powerUp => JSON.parse(JSON.stringify(powerUp)))
 
         return powerUps
+    }
+
+    public setPlayerReady(playerID: string): void {
+        const player = this.game_status.players.find(player => player.username === playerID)
+        if (player) player.ready = true
+    }
+
+    public isPlayersReady(playerID?: string): boolean {
+        if (playerID) {
+            const player = this.game_status.players.find(player => player.username === playerID)
+            if (player) return player.ready
+        }
+        const players = this.game_status.players
+        return players[0].ready && players[1].ready
     }
 
     public setLoser(playerID: string): void {
@@ -205,6 +221,8 @@ export class PongGame {
     // update the game by updating the ball position and checking for collisions
     public updateGame(): void {
         this.updateBall()
+        this.updateTimer()
+        if (this.getPlayer2ID() === 'Computer') this.updateComputer()
     }
 
     // update the ball position and check for collisions
@@ -401,6 +419,14 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             }
+        }
+    }
+
+    public updateTimer(): void {
+        if (this.game_status.time > 0) {
+            this.game_status.time -= 1 / 60
+        } else {
+            this.game_status.time = 0
         }
     }
 

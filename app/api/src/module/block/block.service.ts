@@ -34,6 +34,7 @@ export class BlockService {
                     },
                 },
             })
+            if (!block) return false
             if (block.block_list.length > 0) return true
             return false
         } catch (error) {

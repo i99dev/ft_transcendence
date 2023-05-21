@@ -12,7 +12,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { DefaultService } from './default.service'
-import { GameSelectDto, PlayerDto } from '../dto/game.dto'
+import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
 import { SocketService } from './socket.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
@@ -35,7 +35,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         private gameService: DefaultService,
         private socketService: SocketService,
         private jwtService: JwtService,
-    ) {}
+    ) { }
 
     afterInit(server: Server) {
         this.socketService.setServer(server)
@@ -64,8 +64,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     ) {
         if (payload.gameMode == 'single') this.gameService.createSingleGame(client, payload)
         else if (payload.gameMode == 'multi') await this.gameService.matchPlayer(client, payload)
-        // else if (payload.gameMode == 'invite')
-        // this.gameService.createInviteGame(client, payload.gameType, payload.invitedId)
     }
 
     @UseGuards(WsGuard)
@@ -91,6 +89,31 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     ) {
         this.gameService.movePaddle(client, direction)
     }
+
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Ready')
+    ready(@ConnectedSocket() client: any,) {
+        this.gameService.playerReady(client)
+    }
+
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Send-Invite')
+    sendInvite(
+        @ConnectedSocket() client: any,
+        @MessageBody(new SocketValidationPipe()) payload: InviteDto,
+    ) {
+        this.gameService.sendInvite(client, payload)
+    }
+
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Respond-Invite')
+    respondInvite(
+        @ConnectedSocket() client: any,
+        @MessageBody(new SocketValidationPipe()) payload: InviteDto,
+    ) {
+        this.gameService.respondInvite(client, payload)
+    }
+
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
