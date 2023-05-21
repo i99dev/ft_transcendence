@@ -213,8 +213,8 @@ import { ref, computed } from 'vue'
 const addFriendOpen = ref(false)
 const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } =
     await useFriends()
-const open = computed(() => friends_info.value.friendsModalOpen)
-const friends_list = computed(() => friends_info.value.friends)
+const open = computed(() => friends_info.value?.friendsModalOpen)
+const friends_list = computed(() => friends_info.value?.friends)
 const { deleteNotification } = await useNotifications()
 
 setupSocketHandlers()

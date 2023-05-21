@@ -37,16 +37,16 @@ let gameResultMessage = ref('')
 let gameBoard = ref()
 
 const startGame = (): void => {
-    gameBoard.value.setup()
+    gameBoard.value?.setup()
     gameResult.value = false
 }
 
 const playAgain = (): void => {
-    gameBoard.value.setup()
+    gameBoard.value?.setup()
 }
 
 const gameOver = (message: string): void => {
-    gameBoard.value.destroy()
+    gameBoard.value?.destroy()
     firstGameReady.value = false
     ready.value = false
     gameResult.value = true
@@ -59,8 +59,8 @@ const setGameReady = (): void => {
 }
 
 const exitGame = (): void => {
-    gameBoard.value.giveUp()
-    gameBoard.value.destroy()
+    gameBoard.value?.giveUp()
+    gameBoard.value?.destroy()
     exit.value = false
     ready.value = false
     gameResult.value = false

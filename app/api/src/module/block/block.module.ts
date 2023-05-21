@@ -5,11 +5,12 @@ import { PrismaService } from '@providers/prisma/prisma.service'
 import { JwtService } from '@nestjs/jwt'
 import { FriendModule } from '@module/friend/friend.module'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
+import { PrismaModule } from '@providers/prisma/prisma.module'
 
 @Module({
-    imports: [FriendModule, forwardRef(() => FriendWsModule)],
+    imports: [FriendModule, forwardRef(() => FriendWsModule), PrismaModule],
     controllers: [BlockController],
-    providers: [BlockService, PrismaService, JwtService],
+    providers: [BlockService, JwtService],
     exports: [BlockService],
 })
 export class BlockModule {}

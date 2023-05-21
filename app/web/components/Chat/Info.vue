@@ -87,7 +87,8 @@
                                         class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
                                     >
                                         <div
-                                            v-for="user in users" :key="user.username"
+                                            v-for="user in users"
+                                            :key="user.username"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
@@ -127,6 +128,30 @@
                     </Dialog>
                 </TransitionRoot>
 
+                <div class="text-md font-semibold centered">
+                    <button
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        :class="{
+                            'scale-125': participantsType === 'NORMAL',
+                            'text-indigo-500': participantsType === 'NORMAL',
+                            'text-slate-500': participantsType !== 'NORMAL',
+                        }"
+                        @click="updateParticipants()"
+                    >
+                        Participants
+                    </button>
+                    <button
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        @click="updateParticipants('BAN')"
+                        :class="{
+                            'scale-125': participantsType === 'BAN',
+                            'text-indigo-500': participantsType === 'BAN',
+                            'text-slate-500': participantsType !== 'BAN',
+                        }"
+                    >
+                        Banned
+                    </button>
+                </div>
                 <div
                     v-for="participant in participants"
                     :key="participant.user.username"
@@ -201,12 +226,13 @@ watch(chatSocket, async () => {
     socketOn()
 })
 
-const { participants, setParticipants } = useGroupChatParticipants()
+const { participants, participantsType, setParticipantsType, setParticipants, updateParticipants } =
+    useGroupChatParticipants()
 const participant = ref({} as ChatUser)
 const adminOptions = ref([
     {
-        action: participant.value.role === 'ADMIN' ? 'downgrade' : 'upgrade',
-        text: participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
+        action: participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade',
+        text: participant.value?.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
     },
     {
         action: 'mute',
@@ -236,21 +262,35 @@ onMounted(() => {
 const socketOn = () => {
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
         setParticipants(payload)
+        setParticipantsType('NORMAL')
+    })
+    chatSocket.value?.on('group-chat-banned-users', (payload: ChatUser[]) => {
+        setParticipantsType('BAN')
+        setParticipants(payload)
     })
 }
 
 const setAdminOptions = () => {
+    if (participant.value.status === 'BAN') {
+        adminOptions.value = []
+        adminOptions.value[0] = {
+            action: 'reset',
+            text: 'Unban',
+        }
+        return
+    }
+
     // check whether participant is admin to downgrade hime or not to upgrade him
-    adminOptions.value[0].action = participant.value.role === 'ADMIN' ? 'downgrade' : 'upgrade'
+    adminOptions.value[0].action = participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade'
     adminOptions.value[0].text =
-        participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin'
+        participant.value?.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin'
 
     // check if participant is OWNER to change ownership
     const myRole = participants.value?.find(
-        chatUser => chatUser.user_login === user_info.value.login,
+        chatUser => chatUser.user_login === user_info.value?.login,
     )?.role
-    if (myRole === 'OWNER' && participant.value.role === 'ADMIN')
-        adminOptions.value.unshift({
+    if (myRole === 'OWNER' && participant.value?.role === 'ADMIN')
+        adminOptions.value?.unshift({
             action: 'owner',
             text: 'Pass ownership',
         })
@@ -259,8 +299,8 @@ const setAdminOptions = () => {
 const resetAdminOptions = () => {
     adminOptions.value = [
         {
-            action: participant.value.role === 'ADMIN' ? 'downgrade' : 'upgrade',
-            text: participant.value.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
+            action: participant.value?.role === 'ADMIN' ? 'downgrade' : 'upgrade',
+            text: participant.value?.role === 'ADMIN' ? 'Dismiss as admin' : 'Make group admin',
         },
         {
             action: 'mute',
@@ -279,10 +319,10 @@ const resetAdminOptions = () => {
 
 const openAdminOptionsPopup = (chatUser: ChatUser) => {
     const myChatUser = participants.value?.find(
-        chatUser => chatUser.user_login === user_info.value.login,
+        chatUser => chatUser.user_login === user_info.value?.login,
     )
     if (
-        chatUser.user_login === user_info.value.login ||
+        chatUser.user_login === user_info.value?.login ||
         chatUser.role === 'OWNER' ||
         myChatUser?.role === 'MEMBER'
     )
@@ -312,7 +352,7 @@ const setUser = (action: string) => {
             'admin-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
-                user_login: participant.value.user_login,
+                user_login: participant.value?.user_login,
                 action: action,
             }),
         )
@@ -321,7 +361,7 @@ const setUser = (action: string) => {
             'user-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
-                user_login: participant.value.user_login,
+                user_login: participant.value?.user_login,
                 action: action,
             }),
         )
@@ -336,7 +376,7 @@ const exitChat = () => {
 }
 
 const addUsers = () => {
-    for (let i = 0; i < users.value.length; i++) {
+    for (let i = 0; i < users.value?.length; i++) {
         chatSocket.value?.emit(
             'user-group-chat',
             JSON.stringify({
@@ -351,22 +391,22 @@ const addUsers = () => {
 
 const selectUser = (user: UserGetDto) => {
     if (
-        !users.value.find(u => u.login === user.login) &&
-        user.login !== user_info.value.login &&
+        !users.value?.find(u => u.login === user.login) &&
+        user.login !== user_info.value?.login &&
         !participants.value?.find(p => p.user_login === user.login)
     )
-        users.value.push(user)
+        users.value?.push(user)
 }
 
 const removeUser = (user: UserGetDto) => {
-    users.value = users.value.filter(u => u.id !== user.id)
+    users.value = users.value?.filter(u => u.id !== user.id)
 }
 
 const CanAddUsers = () => {
     if (participants.value)
-        for (let i = 0; i < participants.value.length; i++)
+        for (let i = 0; i < participants.value?.length; i++)
             if (
-                participants.value[i].user_login === user_info.value.login &&
+                participants.value[i].user_login === user_info.value?.login &&
                 participants.value[i].role !== 'MEMBER'
             )
                 return true

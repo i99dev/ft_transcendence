@@ -263,7 +263,7 @@ export class DefaultService {
             return
         }
 
-        this.game_result.addHistory()
+        this.game_result?.addHistory()
 
         for (let i = 0; i < game_status.players.length; i++) {
             await this.gameAnalyzer.updatePlayerXP(

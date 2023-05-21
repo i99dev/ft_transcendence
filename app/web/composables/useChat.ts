@@ -1,3 +1,5 @@
+import { useToast } from 'primevue/usetoast'
+
 export const useChat = () => {
     const chat_info = useState<any | null>('chat_info', () => {
         return {
@@ -12,7 +14,7 @@ export const useChat = () => {
     }
 
     const send_message = async (message: string) => {
-        chat_info.value.messages.push({
+        chat_info.value?.messages.push({
             message,
             user: 'me',
         })
@@ -29,6 +31,23 @@ export async function useDirectChats(): Promise<any> {
         refresh,
         pending,
     } = await useFetch('chats/directChat/me', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        server: false,
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error, refresh, pending }
+}
+
+export async function useDirectChatWith(user_login: string): Promise<any> {
+    const {
+        data,
+        error: errorRef,
+        refresh,
+        pending,
+    } = await useFetch(`chats/directChat/user/${user_login}`, {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -56,7 +75,10 @@ export async function useGroupChats(): Promise<any> {
     return { data, error, refresh, pending }
 }
 
-export async function useGetGroupChatParticipants(room_id: string): Promise<any> {
+export async function useGetGroupChatParticipants(
+    room_id: string,
+    user_type: string = 'NORMAL',
+): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -64,7 +86,7 @@ export async function useGetGroupChatParticipants(room_id: string): Promise<any>
         pending,
     } = await useFetch(`chats/${room_id}/users`, {
         baseURL: useRuntimeConfig().API_URL,
-        query: { type: 'GROUP' },
+        query: { type: 'GROUP', user_type: user_type },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
@@ -125,8 +147,9 @@ export const useChatType = () => {
                 ? await useDirectChats()
                 : type === 'GROUP'
                 ? await useGroupChats()
-                : await useGroupChatSearch('')
+                : { data: { value: undefined } }
         if (data.value) setChats(data.value)
+        else setChats([])
 
         chatType.value = type
     }
@@ -148,6 +171,10 @@ export const useChats = () => {
     }
 
     const setSearchedGroupChats = async (name: string) => {
+        if (!name) {
+            setChats([])
+            return
+        }
         const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
@@ -163,6 +190,10 @@ export const useSearchedGroupChats = () => {
 
     const setSearchedGroupChats = async (name: string) => {
         const { setChats } = useChats()
+        if (!name) {
+            setChats([])
+            return
+        }
         const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
@@ -182,22 +213,37 @@ export const useCurrentChat = () => {
 
 export const useGroupChatParticipants = () => {
     const participants = useState<ChatUser[] | null>('group_chat_participants', () => null)
+    const participantsType = useState<string>('group_chat_participants_type', () => 'NORMAL')
 
     const setParticipants = (groupChatParticipants: ChatUser[] | null) => {
         participants.value = groupChatParticipants
     }
 
-    const updateParticipants = async () => {
+    const setParticipantsType = (groupChatParticipantsType: string) => {
+        participantsType.value = groupChatParticipantsType
+    }
+
+    const updateParticipants = async (user_type: string = 'NORMAL') => {
+        if (participants.value?.length && participantsType.value === user_type) return
         const { currentChat } = useCurrentChat()
         if (currentChat.value) {
             const { data: chatUsers } = await useGetGroupChatParticipants(
                 currentChat.value.chat_room_id,
+                user_type,
             )
-            if (chatUsers) setParticipants(chatUsers.value.chat_user)
+            if (chatUsers.value?.chat_user) setParticipants(chatUsers.value?.chat_user)
+            if (user_type === 'BAN') participantsType.value = 'BAN'
+            else participantsType.value = 'NORMAL'
         }
     }
 
-    return { participants, setParticipants, updateParticipants }
+    return {
+        participants,
+        setParticipantsType,
+        participantsType,
+        setParticipants,
+        updateParticipants,
+    }
 }
 
 export const useChatView = () => {
@@ -208,4 +254,33 @@ export const useChatView = () => {
     }
 
     return { chatView, setChatView }
+}
+
+export const useDMUser = async (user_login: string) => {
+    const openDM = (chat: GroupChat & DirectChat) => {
+        const { setChatModalOpen } = useChat()
+        const { setChatView } = useChatView()
+        const { setCurrentChat } = useCurrentChat()
+        setChatModalOpen(true)
+        setChatView(true)
+        setCurrentChat(chat)
+    }
+
+    const { data } = await useDirectChatWith(user_login)
+    if (data.value && data.value.length !== 0) openDM(data.value[0])
+    else {
+        const { chatSocket } = useChatSocket()
+        chatSocket.value?.emit('create-direct-chat', JSON.stringify({ user: user_login }))
+        chatSocket.value?.on('new-direct-list', async (payload: any) => {
+            const { data } = await useDirectChatWith(user_login)
+            if (data.value && data.value.length !== 0) openDM(data.value[0])
+            else
+                useToast().add({
+                    severity: 'error',
+                    summary: 'Opps!',
+                    detail: `error: can't DM ${user_login}`,
+                    life: 3000,
+                })
+        })
+    }
 }

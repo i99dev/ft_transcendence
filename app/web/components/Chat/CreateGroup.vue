@@ -124,7 +124,8 @@
                                         v-else-if="stage === 2"
                                     >
                                         <div
-                                            v-for="user in users" :key="user.id"
+                                            v-for="user in users"
+                                            :key="user.id"
                                             class="flex-row inline-flex flex-nowrap"
                                         >
                                             <button
@@ -397,7 +398,7 @@ onMounted(() => {
 
 const socketOn = () => {
     chatSocket.value?.on('create-group-chat', async payload => {
-        for (let i = 0; i < users.value.length; i++) {
+        for (let i = 0; i < users.value?.length; i++) {
             chatSocket.value?.emit(
                 'user-group-chat',
                 JSON.stringify({
@@ -411,8 +412,8 @@ const socketOn = () => {
 
         const { data, error } = await useUplaod(payload.room_id, formData.value)
         if (!data.value)
-            chats.value.forEach((chat: GroupChat) => {
-                if (chat.chat_room_id === payload.room_id) chat.image = data.value.file_url
+            chats.value?.forEach((chat: GroupChat) => {
+                if (chat.chat_room_id === payload.room_id) chat.image = data.value?.file_url
             })
     })
 }
@@ -433,19 +434,18 @@ const props = defineProps(['isOpened'])
 const emit = defineEmits(['closeGroupChatCreation'])
 
 const selectUser = (user: UserGetDto) => {
-    if (!users.value.find(u => u.id === user.id) && user.login !== user_info.value.login)
-        users.value.push(user)
+    if (!users.value?.find(u => u.id === user.id) && user.login !== user_info.value?.login)
+        users.value?.push(user)
 }
 
 const removeUser = (user: UserGetDto) => {
-    users.value = users.value.filter(u => u.id !== user.id)
+    users.value = users.value?.filter(u => u.id !== user.id)
 }
 
 const nextStage = () => {
     const formElement = document.getElementsByClassName(
         'chat-form',
     ) as HTMLCollectionOf<HTMLFormElement>
-    console.log(formElement[stage.value - 1])
     if (
         stage.value !== 3 &&
         (!formElement[stage.value - 1] || formElement[stage.value - 1].reportValidity())
@@ -462,7 +462,7 @@ const closePopup = () => {
     setTimeout(() => {
         groupChat.value = {
             name: '',
-            image: 'https://picsum.photos/200',
+            image: '',
             chatType: chatTypes[0],
             password: '',
         }
@@ -477,15 +477,15 @@ const createGroupChat = () => {
     chatSocket.value?.emit(
         'create-group-chat',
         JSON.stringify({
-            name: groupChat.value.name,
-            image: groupChat.value.image,
+            name: groupChat.value?.name,
+            image: groupChat.value?.image,
             type:
-                groupChat.value.chatType.type === 'PRIVATE'
+                groupChat.value?.chatType.type === 'PRIVATE'
                     ? 'PRIVATE'
-                    : groupChat.value.password
+                    : groupChat.value?.password
                     ? 'PROTECTED'
                     : 'PUBLIC',
-            password: groupChat.value.password,
+            password: groupChat.value?.password,
         }),
     )
 }
@@ -493,15 +493,15 @@ const createGroupChat = () => {
 const handleForm = () => {}
 
 const handleFileUpload = async () => {
-    const file = fileInput.value.files[0]
-    formData.value.append('file', file)
+    const file = fileInput.value?.files[0]
+    formData.value?.append('file', file)
 
     // Read the file as a data URL
-    reader.value.readAsDataURL(file)
+    reader.value?.readAsDataURL(file)
 
     // Set the image data property to the data URL
     reader.value.onload = () => {
-        chatImage.value = reader.value.result
+        chatImage.value = reader.value?.result
     }
 }
 </script>

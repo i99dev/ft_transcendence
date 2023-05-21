@@ -103,7 +103,7 @@ const announceAchiev = ref([] as boolean[])
 const showAciev = ref(false)
 
 const closeAcievPopUp = async (index: number) => {
-    if (achievements && achievements.value && index < achievements.value.length) {
+    if (achievements && achievements.value && index < achievements.value?.length) {
         announceAchiev.value[index] = false
         return
     }
@@ -154,7 +154,7 @@ onMounted(async () => {
     if (newAchievement && newAchievement.length > 0) {
         showAciev.value = true
         announceAchiev.value = new Array(newAchievement.length).fill(true)
-        if (newRank && newRank.rank != null) announceAchiev.value.push(true)
+        if (newRank && newRank.rank != null) announceAchiev.value?.push(true)
     } else if (newRank && newRank.rank != null) {
         showAciev.value = true
         announceAchiev.value = new Array(1).fill(true)

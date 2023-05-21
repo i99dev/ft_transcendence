@@ -78,7 +78,7 @@ const handleChatSearch = (e: any) => {
     searching.value = true
     setChatType(null)
     setTimeout(() => {
-        chatSearch.value.focus()
+        chatSearch.value?.focus()
     }, 100)
 }
 

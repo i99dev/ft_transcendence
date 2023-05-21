@@ -3,11 +3,12 @@ import { MulterController } from './multer.controller'
 import { MulterService } from './multer.service'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
+import { PrismaModule } from '@providers/prisma/prisma.module'
 
 @Module({
-    imports: [],
+    imports: [PrismaModule],
     controllers: [MulterController],
-    providers: [MulterService, PrismaService, ConfigService],
+    providers: [MulterService, ConfigService],
     exports: [MulterService],
 })
 export class MulterModule {}

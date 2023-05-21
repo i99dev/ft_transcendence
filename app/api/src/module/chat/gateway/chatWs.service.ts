@@ -227,9 +227,9 @@ export class ChatWsService {
         if (await this.isUserBanned(room_id, user_login))
             throw new WsException('User is already banned')
 
-        this.chatService.updateUserStatus(user_login, room_id, 'BAN')
+        await this.chatService.updateUserStatus(user_login, room_id, 'BAN')
 
-        return await this.groupChatService.getGroupChatUsers(room_id)
+        return await this.groupChatService.getGroupChatBannedUsers(room_id, ChatUserStatus.BAN)
     }
 
     async muteUser(room_id: string, user_login: string, sender: string) {

@@ -74,7 +74,7 @@ const getLB = async () => {
     const playersArray = []
     if (data.value) {
         if (currentPage.value === 1) Ranknum.value = 1
-        for (let i = 0; i < data.value.length; i++) {
+        for (let i = 0; i < data.value?.length; i++) {
             playersArray.push({
                 rankNum: Ranknum.value + i,
                 ...data.value[i],

@@ -18,13 +18,15 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { BlockModule } from '@module/block/block.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core'
+import { FriendModule } from '@module/friend/friend.module'
 
 @Module({
     imports: [
+        PrismaModule,
         ThrottlerModule.forRoot({
             ttl: 60,
-            limit: 20,
+            limit: 100,
         }),
         MailerModule.forRootAsync({
             imports: [ConfigModule],
@@ -56,7 +58,7 @@ import { APP_GUARD } from '@nestjs/core';
         }),
         AuthModule,
         UserModule,
-        PrismaModule,
+        FriendWsModule,
         GameModule,
         ChatModule,
         MatchHistoryModule,
@@ -64,13 +66,15 @@ import { APP_GUARD } from '@nestjs/core';
         LeaderboardModule,
         MulterModule,
         NotificationModule,
-        FriendWsModule,
         BlockModule,
     ],
     controllers: [AppController],
-    providers: [AppService, {
-        provide: APP_GUARD,
-        useClass: ThrottlerGuard,
-      },],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
 export class AppModule {}

@@ -4,9 +4,10 @@ import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
-import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { ParseIntPipe } from '@nestjs/common'
-
+import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
+import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 @Controller('match-history/:login')
 export class MatchHistoryController {
     constructor(
@@ -31,8 +32,8 @@ export class MatchHistoryController {
     async getMatchHistoryByResult(
         @Param('login', ParseStringPipe) login: string,
         @Query('page', ParseIntPipe) page: number,
-        @Query('winning') winning: string,
-        @Query('losing') losing: string,
+        @Query('winning', QueryParseStringPipe) winning: string,
+        @Query('losing', QueryParseStringPipe) losing: string,
     ): Promise<MatchHistoryDto[]> {
         if (winning === 'true') {
             const history = await this.matchHistoryService.getMatchHistoryByResult(
@@ -58,7 +59,7 @@ export class MatchHistoryController {
     async getMatchHistoryBySort(
         @Param('login', ParseStringPipe) login: string,
         @Query('page', ParseIntPipe) page: number,
-        @Query('sort') sort: 'asc' | 'desc',
+        @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
     ): Promise<MatchHistoryDto[]> {
         const history = await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
         if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
@@ -75,7 +76,7 @@ export class MatchHistoryController {
     @Get('totalGames') // /match-history/totalgames/login?isWin=true
     async getTotal(
         @Param('login', ParseStringPipe) login: string,
-        @Query('isWin') isWin: 'true' | 'false' | undefined,
+        @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false' | undefined,
     ): Promise<number> {
         if (isWin === 'false') return await this.gameAnalyzer.getTotalDefeats(login)
         else if (isWin === 'true') return await this.gameAnalyzer.getTotalVictories(login)
