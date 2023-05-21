@@ -1,4 +1,4 @@
-import { NotificationService } from '@module/notification/notification.service';
+import { NotificationService } from '@module/notification/notification.service'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { AchievementDto } from './dto/achievement.dto'
@@ -33,19 +33,25 @@ export class AchievementService {
         }
     }
 
-    async getNewRank(login: string): Promise<{ rank: string; isUp: boolean }> {
-        const RankUp = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_UP)
-        const RankDown = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_DOWN)
+    async getNewRank(login: string): Promise<{ rank: string; isUp: boolean; id: number }> {
+        const RankUp = await this.notificationService.getMyNotificationsByType(
+            login,
+            NotificationType.RANK_UP,
+        )
+        const RankDown = await this.notificationService.getMyNotificationsByType(
+            login,
+            NotificationType.RANK_DOWN,
+        )
 
         if (RankUp) {
             if (RankUp.length !== 0 && RankUp[0].content !== null)
-                return { rank: RankUp[0].content, isUp: false }
+                return { rank: RankUp[0].content, isUp: false, id: RankUp[0].id }
         }
         if (RankDown) {
             if (RankDown.length !== 0 && RankDown[0].content !== null)
-                return { rank: RankDown[0].content, isUp: true }
+                return { rank: RankDown[0].content, isUp: true, id: RankDown[0].id }
         }
 
-        return { rank: null, isUp: null }
+        return { rank: null, isUp: null, id: -1 }
     }
 }

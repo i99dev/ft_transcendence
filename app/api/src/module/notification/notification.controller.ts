@@ -21,7 +21,10 @@ export class NotificationController {
     @UseGuards(JwtAuthGuard)
     @Get('/me/:type')
     async getMyNotificationsByType(@Req() req, @Param('type', ParseStringPipe) type: string) {
-        const notif = await this.notificationService.getMyNotificationsByType(req.user.login, this.notificationService.getType(type))
+        const notif = await this.notificationService.getMyNotificationsByType(
+            req.user.login,
+            this.notificationService.getType(type),
+        )
         if (!notif) return new NotFoundException('No notifications found')
         return notif
     }

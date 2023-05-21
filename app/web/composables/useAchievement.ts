@@ -8,9 +8,9 @@ export const useAchievement = () => {
     return { achievement, setAchievement }
 }
 
-export async function getNewAchievement(): Promise<string[] | null> {
+export async function getNewAchievement(): Promise<any[] | null> {
     const api = useRuntimeConfig().API_URL
-    const { data } = await useFetch<string[]>(`/achievement/new`, {
+    const { data } = await useFetch<any[]>(`/Notification/me/ACHIEVEMENT`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -20,9 +20,9 @@ export async function getNewAchievement(): Promise<string[] | null> {
     return data.value
 }
 
-export async function getNewRank(): Promise<{ rank: string; isUp: boolean } | null> {
+export async function getNewRank(): Promise<{ rank: string; isUp: boolean, id: number } | null> {
     const api = useRuntimeConfig().API_URL
-    const { data } = await useFetch<{ rank: string; isUp: boolean }>(`/achievement/newRank`, {
+    const { data } = await useFetch<{ rank: string; isUp: boolean, id: number }>(`/achievement/newRank`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -32,19 +32,9 @@ export async function getNewRank(): Promise<{ rank: string; isUp: boolean } | nu
     return data.value
 }
 
-export async function deleteNewAchievement(content: string): Promise<void> {
+export async function deleteNewNotif(id: number): Promise<void> {
     const api = useRuntimeConfig().API_URL
-    await fetch(`${api}/achievement/${content}?type=ACHIEVEMENT`, {
-        method: 'DELETE',
-        headers: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-    })
-}
-
-export async function deleteNewRank(content: string, type: string): Promise<void> {
-    const api = useRuntimeConfig().API_URL
-    await fetch(`${api}/achievement/${content}?type=${type}`, {
+    await fetch(`${api}/Notification/${id}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
