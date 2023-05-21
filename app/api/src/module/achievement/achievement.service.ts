@@ -1,3 +1,4 @@
+import { NotificationService } from '@module/notification/notification.service';
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { AchievementDto } from './dto/achievement.dto'
@@ -6,7 +7,7 @@ import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable({})
 export class AchievementService {
-    constructor(private gameAnalyzer: gameAnalyzer, private prisma: PrismaService) {}
+    constructor(private notificationService: NotificationService, private prisma: PrismaService) {}
 
     async getAchievements(login: string): Promise<AchievementDto[]> {
         const user = await this.prisma.user.findUnique({
@@ -32,28 +33,8 @@ export class AchievementService {
         }
     }
 
-    async deleteAchievNotification(user_login: string, content: string, type: string) {
-        try {
-            const notification = await this.prisma.notification.deleteMany({
-                where: {
-                    user_login: user_login,
-                    content: content,
-                    type: this.findType(type),
-                },
-            })
-            return notification
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async getNewAchievements(login: string): Promise<string[]> {
-        const notification = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.ACHIEVEMENT,
-            },
-        })
+        const notification = await this.notificationService.getMyNotificationsByType(login, NotificationType.ACHIEVEMENT)
         if (!notification) return null
         if (notification.length) if (notification.length === 0) return null
         const achievements = []
@@ -63,23 +44,17 @@ export class AchievementService {
         return achievements
     }
     async getNewRank(login: string): Promise<{ rank: string; isUp: boolean }> {
-        const RankUp = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.RANK_UP,
-            },
-        })
-        const RankDown = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.RANK_DOWN,
-            },
-        })
+        const RankUp = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_UP)
+        const RankDown = await this.notificationService.getMyNotificationsByType(login, NotificationType.RANK_DOWN)
 
-        if (RankUp.length !== 0 && RankUp[0].content !== null)
-            return { rank: RankUp[0].content, isUp: false }
-        if (RankDown.length !== 0 && RankDown[0].content !== null)
-            return { rank: RankDown[0].content, isUp: true }
+        if (RankUp) {
+            if (RankUp.length !== 0 && RankUp[0].content !== null)
+                return { rank: RankUp[0].content, isUp: false }
+        }
+        if (RankDown) {
+            if (RankDown.length !== 0 && RankDown[0].content !== null)
+                return { rank: RankDown[0].content, isUp: true }
+        }
 
         return { rank: null, isUp: null }
     }

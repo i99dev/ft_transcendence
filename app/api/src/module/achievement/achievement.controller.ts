@@ -20,16 +20,6 @@ export class AchievementController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('/:content')
-    async deleteAchievNotification(
-        @Param('content', ParseStringPipe) content: string,
-        @Query('type', QueryParseStringPipe) type: string,
-        @Req() req,
-    ) {
-        return await this.achievementService.deleteAchievNotification(req.user.login, content, type)
-    }
-
-    @UseGuards(JwtAuthGuard)
     @Get('user/:login')
     async getAchievements(
         @Param('login', ParseStringPipe) login: string,
