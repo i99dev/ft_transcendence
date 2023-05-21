@@ -11,7 +11,6 @@ export const refreshAccessToken = async (reconnect: boolean = true) => {
     const tokenInfo = data.value as AccessTokenDto | null
     if (tokenInfo) await setCookies(tokenInfo)
     updateSocketsToken()
-    if (reconnect) reconnectSockets()
     return error.value?.status
 }
 

@@ -17,6 +17,7 @@ import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { FriendWs } from './dto/friend.dto'
 import { BlockService } from '@module/block/block.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
+import { ParseSocketStringPipe } from '../../../common/pipes/socketString.pipe';
 
 @WebSocketGateway({
     namespace: '/friend',
@@ -195,6 +196,19 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
             'friends-list',
             await this.friendService.getFriends(this.getID(client) as string),
         )
+    }
+
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Update-Token')
+    updateToken(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new ParseSocketStringPipe) token: string) {
+        if (token) {
+            client.request.headers.authorization = 'Bearer ' + token;
+        }
+        else
+            throw new WsException('No Refersh token provided')
+
     }
 
     getSocket(user): Socket {

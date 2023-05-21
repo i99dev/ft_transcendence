@@ -103,7 +103,9 @@ export const useSockets = () => {
     }
 
     const updateSocketsToken = () => {
+        chatSocket.value?.emit('Update-Token', useCookie('access_token').value)
         gameSocket.value?.emit('Update-Token', useCookie('access_token').value)
+        friendSocket.value?.emit('Update-Token', useCookie('access_token').value)
     }
 
     const logSocketExceptions = () => {
