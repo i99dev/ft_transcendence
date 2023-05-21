@@ -54,7 +54,7 @@ export async function deleteNewRank(content: string, type: string): Promise<void
 
 export async function getPlayerWinRate(player: string): Promise<number | null> {
     const api = useRuntimeConfig().API_URL
-    const { data } = await useFetch<number>(`/achievement/winningrate/${player}`, {
+    const { data } = await useFetch<number>(`/match-history/${player}/winningrate`, {
         method: 'GET',
         baseURL: api,
         headers: {

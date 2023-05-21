@@ -5,7 +5,6 @@ import { MatchHistoryDto } from './dto/match-history.dto'
 import { UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { ParseIntPipe } from '@nestjs/common'
-import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
 @Controller('match-history/:login')
@@ -80,5 +79,11 @@ export class MatchHistoryController {
         if (isWin === 'false') return await this.gameAnalyzer.getTotalDefeats(login)
         else if (isWin === 'true') return await this.gameAnalyzer.getTotalVictories(login)
         else return await this.gameAnalyzer.getTotalMatches(login)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('winningrate') // /match-history/:login/winningrate
+    async getWinningRate(@Param('login', ParseStringPipe) login: string): Promise<number> {
+        return await this.gameAnalyzer.calcWinRate(login)
     }
 }

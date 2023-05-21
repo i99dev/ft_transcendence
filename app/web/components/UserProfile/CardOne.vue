@@ -4,33 +4,17 @@
             <div
                 class="flex flex-col mobile:flex-col items-center shadow bg-white dark:bg-gray-800 space-y-4 sm:p-6 p-1 w-full">
                 <div class="flex sm:flex-row flex-col items-center">
-                    <div class="relative">
-                        <img class="rounded-full border-2 sm:h-32 h-20 sm:w-32 w-20 object-cover" :src="
-                            userData?.image ||
-                            defaultImages[Math.floor(Math.random() * defaultImages.length)]
-                        " alt="logo" />
-                        <div v-if="isMe && !isProfile" @click="handleChangeImage"
-                            class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50">
-                            <img class="absolute inset-0 w-full h-full object-cover rounded-full"
-                                src="https://icon-library.com/images/change-an-icon/change-an-icon-14.jpg"
-                                alt="hover image" />
-                        </div>
-                        <div v-if="updatePhoto" class="relative">
-                            <div class="absolute right-7 bg-white rounded-lg shadow-lg" style="width: 15rem">
-                                <div class="grid grid-cols-5 gap-4 p-4">
-                                    <div v-for="(image, index) in defaultImages" :key="index">
-                                        <img class="w-20 h-10 object-cover rounded-lg" :src="image"
-                                            @click="updateAvatar(image)" alt="icon" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
+                    <!-- user avatar -->
+                    <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :image="userData?.image ||
+                            defaultImages[Math.floor(Math.random() * defaultImages.length)]" />
 
+                    <!-- content of user card -->
                     <div class="flex sm:flex-col justify-center sm:p-6">
                         <p v-if="isMe && !isProfile" class="sm:text-3xl text-lg text-black dark:text-white">
                             Welcome
                         </p>
+
                         <!-- update username -->
                         <div class="flex flex-row items-center w-full justify-between">
                             <div class="sm:text-2xl text-lg text-black dark:text-white px-2 w-32 h-8 overflow-hidden"
@@ -43,6 +27,7 @@
                             <input v-if="!editBoolaen" :disabled="editBoolaen"
                                 class="border-2 border-gray-300 rounded-md p-1 max-w-xs w-32 h-8 mx-2" type="text"
                                 v-model="userData.username" />
+
                             <!-- edit icon  -->
                             <div class="flex justify-center" @click="editUsername" v-if="editBoolaen && isMe && !isProfile">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -52,9 +37,7 @@
                                 </svg>
                             </div>
 
-                            <!----
-						rank dropdown
-					-->
+                             <!---- rank dropdown -->
                             <div class="relative">
                                 <div class="flex sm:flex-col justify-end sm:p-2">
                                     <div class="ml-14">
@@ -95,6 +78,7 @@
                     </div>
                 </div>
 
+                <!--- user control banner -->
                 <div v-if="isMe && !isProfile" class="flex flex-row space-x-6">
                     <div class="relative cursor-pointer" @click="openChatModel">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -260,7 +244,6 @@ const defaultImages = [
     'https://i1.ae/img/icons/5.png',
     'https://i1.ae/img/icons/6.png',
     'https://i1.ae/img/icons/7.png',
-    'https://i1.ae/img/icons/15.png',
     'https://i1.ae/img/icons/8.png',
     'https://i1.ae/img/icons/9.png',
     'https://i1.ae/img/icons/10.png',
@@ -268,10 +251,6 @@ const defaultImages = [
     'https://i1.ae/img/icons/12.png',
     'https://i1.ae/img/icons/13.png',
     'https://i1.ae/img/icons/14.png',
-    'https://i1.ae/img/icons/16.png',
-    'https://i1.ae/img/icons/17.png',
-    'https://i1.ae/img/icons/18.png',
-    'https://i1.ae/img/icons/19.png',
     'https://i1.ae/img/icons/20.png',
 ]
 
