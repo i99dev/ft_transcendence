@@ -8,6 +8,7 @@
             :cooldown21="pu2Cooldowns[0]"
             :cooldown22="pu2Cooldowns[1]"
         />
+        <GameReadyModal v-if="showReadyModal" />
         <canvas ref="canvasRef" style="width: 100%; height: 100%"></canvas>
     </div>
 </template>
@@ -22,9 +23,10 @@ let gameData = useState<gameStatusDto>('gameData')
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
+const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } = useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -91,7 +93,8 @@ function giveUp(): void {
 
 function setup(mode: GameSelectDto): void {
     resetSocket()
-    emitStartGame(mode)
+    if(mode.gameMode != 'invite')
+        emitStartGame(mode)
     setupSocketHandlers()
     windowEvents()
 }
@@ -103,6 +106,7 @@ const windowEvents = (): void => {
 
 watch(gameSetup, (newVal, oldVal) => {
     if (newVal.game != oldVal.game) {
+        showReadyModal.value = true
         emit('ReadyGame')
         rescaleGameData(newVal.game)
         init_game(canvasRef as Ref<HTMLCanvasElement>)
@@ -112,6 +116,7 @@ watch(gameSetup, (newVal, oldVal) => {
 
 watch(gameData, (newVal, oldVal) => {
     if (newVal) {
+        showReadyModal.value = false
         updatePaddleDirection()
         rescaleGameData(newVal)
         updatePlayer(gameData.value?.players)

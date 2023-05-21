@@ -3,7 +3,7 @@
         <div class="rounded-xl bg-opacity-50 px-16 py-10 backdrop-blur-md max-sm:px-8">
             <div class="text-white centered flex-col">
                 <div class="h-32 w-32">
-                    <LoginLogo />
+                    <LoginLogo class="text-4xl" />
                 </div>
                 <div class="mt-8 flex justify-center text-lg text-black">
                     <LoginCyberPunkButton buttonName="Login" @click="loginWithIntra" />

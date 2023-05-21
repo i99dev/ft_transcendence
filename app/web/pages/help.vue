@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="min-h-screen text-center justify-center overflow-hidden bg-gray-50 py-20">
+        <div class="min-h-screen text-center justify-center overflow-hidden py-20">
             <div class="flex flex-col items-center">
                 <div class="w-1 h-2 centered animate-bounce">
                     <h1
@@ -10,8 +10,8 @@
                     </h1>
                 </div>
             </div>
-            <h1 class="text-2xl font-bold mb-20 mt-20">The Ping Pong Game</h1>
-            <div>
+            <h1 class="text-2xl font-bold mb-20 mt-20 text-white">The Ping Pong Game</h1>
+            <div class="text-white">
                 <div class="mb-8">
                     <h2 class="text-xl font-bold mb-2">Game Modes</h2>
                     <p>There are two game modes available:</p>

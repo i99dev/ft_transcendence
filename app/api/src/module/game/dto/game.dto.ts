@@ -1,5 +1,6 @@
 import {
     IsAscii,
+    IsBoolean,
     IsEnum,
     IsNotEmpty,
     IsNumber,
@@ -14,6 +15,7 @@ import { PowerUp } from '../interface/game.interface'
 export class gameStatusDto {
     players: PlayerDto[]
     ball: BallDto
+    time: number
 }
 
 export class SetupDto {
@@ -49,6 +51,7 @@ export class PlayerDto {
     gameID?: string
 
     powerUps: PowerUp[]
+    ready: boolean
 }
 
 export class PaddleDto {
@@ -107,4 +110,22 @@ export class GameSelectDto {
 export class PowerUpInfoDto {
     type: string
     player: number
+}
+
+export class InviteDto {
+    @IsString()
+    inviterId: string;
+
+    @IsString()
+    invitedId: string;
+
+    @IsNotEmpty()
+    @IsEnum(gameType)
+    gameType: gameType
+    
+    powerups: string[];
+
+    @IsOptional()
+    @IsBoolean()
+    accepted?: boolean;
 }

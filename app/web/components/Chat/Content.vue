@@ -1,19 +1,14 @@
 <template>
-    <div class="bg-slate-100 rounded-lg mt-2">
+    <div class="bg-background_light text-white rounded-lg mt-2">
         <div class="p-2 relative flex">
             <button
-                class="flex flex-row justify-between w-24 hover:bg-slate-200 items-center rounded-full p-1 focus:outline-indigo-400"
+                class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
                 @click="setCurrentChat(null)"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="icon icon-tabler icon-tabler-arrow-left"
-                    width="24"
-                    height="24"
+                    class="stroke-2 stroke-white file-none w-6 h-6"
                     viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="#555"
-                    fill="none"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 >
@@ -35,8 +30,10 @@
                         alt="User Photo"
                         class="rounded-full w-10 h-10 object-cover mx-1"
                     />
-                    <span
-                        class="absolute bottom-1 right-0 block h-3 w-3 rounded-full bg-indigo-500 border-2 border-white"
+                    <UserProfileStatus
+                        v-if="chatType === 'DM'"
+                        :status="currentChat?.users[0].status"
+                        class="absolute bottom-0 right-1 w-3 h-3"
                     />
                 </div>
             </button>
@@ -45,12 +42,12 @@
                 @click="
                     chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened)
                 "
-                class="w-full flex hover:bg-slate-200 rounded-lg pl-2 focus:outline-indigo-400"
+                class="w-full flex items-center hover:bg-primary smooth-transition rounded-lg pl-2 focus:outline-secondary"
             >
-                <div v-if="chatType === 'DM'" class="text-slate-700 text-xl py-1">
+                <div v-if="chatType === 'DM'" class="text-xl py-1">
                     {{ currentChat?.users[0].username }}
                 </div>
-                <div v-else class="text-slate-700 text-xl py-1">{{ currentChat?.name }}</div>
+                <div v-else class="text-xl py-1">{{ currentChat?.name }}</div>
             </button>
         </div>
         <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" />
@@ -61,22 +58,25 @@
         >
             <div
                 id="chat-messages"
-                class="bg-white overflow-y-scroll box-content flex flex-col h-full"
+                class="bg-background overflow-y-scroll box-content flex flex-col h-full"
             >
                 <div class="centered" v-if="enableLoadMoreButton">
                     <button
-                        class="bg-slate-200 p-2 rounded-2xl my-2"
+                        class="bg-primary p-2 rounded-2xl my-2"
                         @click="loadMoreMessages(messagesPage)"
                     >
                         Load more
                     </button>
                 </div>
                 <div
-                    class="bg-gray-200 rounded-lg p-2 mx-2 my-2 group relative"
-                    v-for="message in messages?.slice().reverse()" :key="message.id"
+                    class="rounded-lg p-2 mx-2 my-2 group relative"
+                    v-for="message in messages?.slice().reverse()"
                     :class="{
-                        'bg-indigo-200':
+                        'bg-secondary':
                             message.sender_login === user_info.login && message.type !== 'SPECIAL',
+                        'bg-background_light': !(
+                            message.sender_login === user_info.login && message.type !== 'SPECIAL'
+                        ),
                         'self-end': message.sender_login === user_info.login,
                         'self-center': message.type === 'SPECIAL',
                         'w-9/12': message.type !== 'SPECIAL',
@@ -92,13 +92,16 @@
                         }"
                     >
                         <div
-                            class="h-3 w-3 origin-bottom-left rotate-45 transform bg-gray-200"
-                            :class="{ 'bg-indigo-200': message.sender_login === user_info.login }"
+                            class="h-3 w-3 origin-bottom-left rotate-45 transform"
+                            :class="{
+                                'bg-secondary': message.sender_login === user_info.login,
+                                'bg-background_light': message.sender_login !== user_info.login,
+                            }"
                         ></div>
                     </div>
                     <div
                         v-if="chatType === 'GROUP' && message.type !== 'SPECIAL'"
-                        class="text-sm"
+                        class="text-sm font-bold capitalize"
                         :style="{ color: participantsColors.get(message.sender_login) }"
                     >
                         {{ message.sender.username }}
@@ -120,16 +123,15 @@
                         v-if="
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
-                        class="text-slate-700 hidden group-hover:block absolute -top-2 left-0 bg-inherit rounded-full focus:outline-indigo-400"
+                        class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
                         @click="deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>
                     <div
                         v-if="message.type !== 'SPECIAL'"
-                        class="text-gray-600 text-sm flex justify-end"
+                        class="text-white opacity-70 text-sm flex justify-end"
                     >
-                        <!-- {{ new Date(message.created_at).toLocaleDateString('en-GB') }} -->
                         {{
                             new Date(message.created_at).toLocaleTimeString('en-US', {
                                 hour: 'numeric',
@@ -140,20 +142,20 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full h-min mb-8">
+            <div class="w-full h-28 centered mb-8">
                 <form @submit.prevent="sendMessage" class="w-full flex justify-center my-4">
                     <input
                         id="message-input"
                         v-model="newMessage"
                         type="text"
                         placeholder="Message"
-                        class="w-11/12 p-3 border-2 border-gray-300 rounded-xl focus:border-indigo-400"
+                        class="w-11/12 p-3 border-2 border-secondary rounded-xl focus:border-secondary bg-background"
                         style="outline: none"
                         :disabled="AmIAllowed"
                     />
                     <button
                         type="submit"
-                        class="bg-indigo-400 hover:bg-indigo-500 text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full focus:outline-indigo-400"
+                        class="bg-secondary hover:bg-primary smooth-transition text-white py-2 px-2 -ml-11 mt-2 rounded-full h-full focus:outline-secondary"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +218,10 @@ onMounted(async () => {
         // set random color for each participant
         if (participants.value)
             for (let i = 0; i < participants.value?.length; i++)
-                participantsColors.value?.set(participants.value[i].user_login, `${getDarkColor()}`)
+                participantsColors.value?.set(
+                    participants.value[i].user_login,
+                    `${getLightColor()}`,
+                )
     }
 
     //scroll to bottom
@@ -258,12 +263,8 @@ const scrollToLastMessage = () => {
     }, 100)
 }
 
-const getDarkColor = () => {
-    var color = '#'
-    for (var i = 0; i < 6; i++) {
-        color += Math.floor(Math.random() * 10)
-    }
-    return color
+const getLightColor = () => {
+    return 'hsl(' + Math.random() * 360 + ', 100%, 75%)'
 }
 
 const sendMessage = () => {
