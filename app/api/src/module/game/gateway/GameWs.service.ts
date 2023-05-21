@@ -13,7 +13,7 @@ const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 
 @Injectable()
-export class DefaultService {
+export class GameWsService {
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
     private custom_queue: string[] = []
@@ -151,7 +151,7 @@ export class DefaultService {
 
     public playerReady(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if(player && player.status != 'ingame') return
+        if (player && player.status != 'ingame') return
         player.game.setPlayerReady(player.id)
     }
 

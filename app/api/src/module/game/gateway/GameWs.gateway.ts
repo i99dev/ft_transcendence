@@ -11,7 +11,7 @@ import {
     WsException,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { DefaultService } from './default.service'
+import { GameWsService } from './GameWs.service'
 import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
 import { SocketService } from './socket.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
@@ -32,7 +32,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private decoded: any
 
     constructor(
-        private gameService: DefaultService,
+        private gameService: GameWsService,
         private socketService: SocketService,
         private jwtService: JwtService,
     ) { }
