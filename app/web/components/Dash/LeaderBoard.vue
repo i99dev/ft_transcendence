@@ -80,7 +80,7 @@ const getLB = async () => {
             playersArray.push({
                 rankNum: Ranknum.value + i,
                 ...data.value[i],
-                TotalMatches: await getPlayerGameResult(data.value[i].login, 'false', 'false'),
+                TotalMatches: await getPlayerGameResult(data.value[i].login),
             })
         }
         Ranknum.value += playersArray.length

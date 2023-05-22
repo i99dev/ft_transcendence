@@ -6,18 +6,12 @@
     
                 <div class="fixed inset-0 overflow-hidden">
                     <div class="absolute inset-0 overflow-hidden">
-                        <div
-                            class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16"
-                        >
-                            <TransitionChild
-                                as="template"
+                        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                            <TransitionChild as="template"
                                 enter="transform transition ease-in-out duration-500 sm:duration-700"
-                                enter-from="translate-x-full"
-                                enter-to="translate-x-0"
+                                enter-from="translate-x-full" enter-to="translate-x-0"
                                 leave="transform transition ease-in-out duration-500 sm:duration-700"
-                                leave-from="translate-x-0"
-                                leave-to="translate-x-full"
-                            >
+                                leave-from="translate-x-0" leave-to="translate-x-full">
                                 <DialogPanel class="pointer-events-auto w-screen max-w-md">
                                     <div
                                         class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border"
@@ -204,13 +198,13 @@ function viewProfile(name: string) {
     navigateTo(`/users/${name}`)
 }
 
-function sendMsg(name: string) {}
+function sendMsg(name: string) { }
 
 function remove(name: string) {
     removeFriend(name)
 }
 
-function block(name: string) {}
+function block(name: string) { }
 
 const removeNotification = (index: number) => {
     if (notifications.value && notifications.value[index]) {

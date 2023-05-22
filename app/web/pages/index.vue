@@ -1,6 +1,6 @@
 <template>
     <div>
-        <FirstTimeLogin v-if="isFirsTimeUser" @close="closeSetup()" />
+        <UserProfileSetup v-if="isFirsTimeUser" @close="closeSetup()" />
         <Home :username="user" />
     </div>
 </template>
