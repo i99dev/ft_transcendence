@@ -1,55 +1,57 @@
 <template>
-    <TransitionRoot as="template" :show="open">
-        <Dialog as="div" class="relative z-10">
-            <div class="fixed inset-0" />
-
-            <div class="fixed inset-0 overflow-hidden">
-                <div class="absolute inset-0 overflow-hidden">
-                    <div
-                        class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16"
-                    >
-                        <TransitionChild
-                            as="template"
-                            enter="transform transition ease-in-out duration-500 sm:duration-700"
-                            enter-from="translate-x-full"
-                            enter-to="translate-x-0"
-                            leave="transform transition ease-in-out duration-500 sm:duration-700"
-                            leave-from="translate-x-0"
-                            leave-to="translate-x-full"
+    <div>
+        <TransitionRoot as="template" :show="open">
+            <Dialog as="div" class="relative z-10">
+                <div class="fixed inset-0" />
+    
+                <div class="fixed inset-0 overflow-hidden">
+                    <div class="absolute inset-0 overflow-hidden">
+                        <div
+                            class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16"
                         >
-                            <DialogPanel class="pointer-events-auto w-screen max-w-md">
-                                <div
-                                    class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border"
-                                >
-                                    <div class="pt-2">
-                                        <div class="flex items-start justify-between">
-                                            <div class="ml-3 flex items-center">
-                                                <button
-                                                    type="button"
-                                                    class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                                    @click="setChatModalOpen(false)"
-                                                >
-                                                    <span class="sr-only">Close panel</span>
-                                                    <XMarkIcon class="h-6 w-6" aria-hidden="true" />
-                                                </button>
+                            <TransitionChild
+                                as="template"
+                                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                                enter-from="translate-x-full"
+                                enter-to="translate-x-0"
+                                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                                leave-from="translate-x-0"
+                                leave-to="translate-x-full"
+                            >
+                                <DialogPanel class="pointer-events-auto w-screen max-w-md">
+                                    <div
+                                        class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border"
+                                    >
+                                        <div class="pt-2">
+                                            <div class="flex items-start justify-between">
+                                                <div class="ml-3 flex items-center">
+                                                    <button
+                                                        type="button"
+                                                        class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
+                                                        @click="setChatModalOpen(false)"
+                                                    >
+                                                        <span class="sr-only">Close panel</span>
+                                                        <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                                                    </button>
+                                                </div>
+                                                <ChatOptions />
                                             </div>
-                                            <ChatOptions />
                                         </div>
+                                        <ChatList
+                                            v-if="chatView"
+                                            @showInvite="showInviteBox"
+                                        />
+                                        <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                                     </div>
-                                    <ChatList
-                                        v-if="chatView"
-                                        @showInvite="showInviteBox"
-                                    />
-                                    <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
-                                </div>
-                            </DialogPanel>
-                        </TransitionChild>
+                                </DialogPanel>
+                            </TransitionChild>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Dialog>
-    </TransitionRoot>
-    <GameInviteModal />
+            </Dialog>
+        </TransitionRoot>
+        <GameInviteModal />
+    </div>
 </template>
 
 <script lang="ts" setup>

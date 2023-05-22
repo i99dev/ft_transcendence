@@ -14,12 +14,6 @@ export class UserRepository {
         return winLoseB - winLoseA
     }
 
-    async SortUserByWinGap(): Promise<UserGetDto[]> {
-        const users: UserGetDto[] = await this.prisma.user.findMany()
-        const sortedUsers: UserGetDto[] = users.sort(this.SortUserByWinLose)
-        return sortedUsers
-    }
-
     CreateUserObject(data: Me): NewUser {
         const user: NewUser = {
             login: data.login,
