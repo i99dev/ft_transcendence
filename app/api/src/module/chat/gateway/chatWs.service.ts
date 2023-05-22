@@ -195,6 +195,7 @@ export class ChatWsService {
             throw new WsException('Owner cannot leave chat room')
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
+            role: ChatUserRole.MEMBER,
         })
         return await this.groupChatService.getGroupChatUsers(room_id)
     }
@@ -227,7 +228,10 @@ export class ChatWsService {
         if (await this.isUserBanned(room_id, user_login))
             throw new WsException('User is already banned')
 
-        await this.chatService.updateUserStatus(user_login, room_id, 'BAN')
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.BAN,
+            role: ChatUserRole.MEMBER,
+        })
 
         return await this.groupChatService.getGroupChatBannedUsers(room_id, ChatUserStatus.BAN)
     }

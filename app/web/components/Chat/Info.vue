@@ -133,26 +133,24 @@
 
                 <div class="text-md font-semibold centered">
                     <button
-                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
                         :class="{
-                            'scale-125': participantsType === 'NORMAL',
-                            'text-primary': participantsType === 'NORMAL',
+                            'scale-125 text-primary': participantsType === 'NORMAL',
                             'opacity-70': participantsType !== 'NORMAL',
                         }"
-                        @click="updateParticipants()"
+                        @click="switchParticipantsList()"
                     >
-                        Participants
+                        participants
                     </button>
                     <button
-                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
-                        @click="updateParticipants('BAN')"
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
+                        @click="switchParticipantsList('BAN')"
                         :class="{
-                            'scale-125': participantsType === 'BAN',
-                            'text-primary': participantsType === 'BAN',
+                            'scale-125 text-primary': participantsType === 'BAN',
                             'opacity-70': participantsType !== 'BAN',
                         }"
                     >
-                        Banned
+                        banned
                     </button>
                 </div>
                 <div
@@ -275,12 +273,14 @@ const socketOn = () => {
 }
 
 const setAdminOptions = () => {
-    adminOptions.value = []
-    if (participant.value.role === 'OWNER')
+    if (participant.value.role === 'OWNER') {
+        adminOptions.value = []
         return
-
-
+    }
+    
+    
     if (participant.value.status === 'BAN') {
+        adminOptions.value = []
         adminOptions.value[0] = {
             action: 'reset',
             text: 'Unban',
@@ -326,10 +326,6 @@ const resetAdminOptions = () => {
 }
 
 const openAdminOptionsPopup = (chatUser: ChatUser) => {
-    const myChatUser = participants.value?.find(
-        chatUser => chatUser.user_login === user_info.value?.login,
-    )
-
     participant.value = chatUser
     setAdminOptions()
     isAdminOptionsOpened.value = true
@@ -423,6 +419,13 @@ const goToUserProfile = (username: string) => {
     navigateTo(`/users/${username}`)
     emit('closeNavBar')
 }
+const switchParticipantsList = (type: string = 'NORMAL') => {
+    if (type === 'NORMAL' && participantsType.value !== 'NORMAL')
+        updateParticipants()
+    else if (type === 'BAN' && participantsType.value !== 'BAN')
+        updateParticipants('BAN')
+}
+
 </script>
 
 <style scoped>

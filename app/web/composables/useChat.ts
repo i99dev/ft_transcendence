@@ -224,7 +224,6 @@ export const useGroupChatParticipants = () => {
     }
 
     const updateParticipants = async (user_type: string = 'NORMAL') => {
-        if (participants.value?.length && participantsType.value === user_type) return
         const { currentChat } = useCurrentChat()
         if (currentChat.value) {
             const { data: chatUsers } = await useGetGroupChatParticipants(
