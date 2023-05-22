@@ -283,18 +283,24 @@ export class ChatService {
 
     async validateChatUser(room_id: string, user_login: string) {
         try {
-            const chatUser = await this.prisma.chatUser.findFirst({
-                where: {
-                    chat_room_id: room_id,
-                    user_login: user_login,
-                    NOT: {
-                        status: {
-                            in: ['OUT', 'BAN', 'INVITED'],
+            const room = await this.prisma.chatRoom.findFirst({ where: { room_id: room_id } })
+            if (room.type === 'GROUP') {
+                const chatUser = await this.prisma.chatUser.findFirst({
+                    where: {
+                        chat_room_id: room_id,
+                        user_login: user_login,
+                        NOT: {
+                            status: {
+                                in: ['OUT', 'BAN', 'INVITED'],
+                            },
                         },
                     },
-                },
-            })
-            return chatUser
+                })
+                return chatUser
+            }
+            else {
+                return true
+            }
         } catch (error) {
             console.log(error)
         }
