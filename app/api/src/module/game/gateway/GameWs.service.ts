@@ -126,12 +126,20 @@ export class GameWsService {
     }
 
     /* Respond to the inviter with either Accept or Decline */
-    public respondInvite(userSocket: Socket, response: InviteDto) {
+    public respondInvite(userSocket: Socket, response: InviteDto, error?: boolean) {
         const user = this.connected_users.find((user => user.socket == userSocket))
         const opponent = this.connected_users.find(user => user.id == response.inviterId)
+        if (error) {
+            if (user.status == 'busy')
+                user.status = 'online'
+            if (opponent.status == 'busy')
+                opponent.status = 'online'
+            userSocket.emit('Respond-Invite', { status: 'error', playerStatus: opponent.status })
+            return
+        }
         if (opponent) {
             if (response.accepted == true) {
-                opponent.socket.emit('Respond-Invite', { accepted: true, playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', { status: 'accepted', playerStatus: user.status })
                 user.powerUps = response.powerups
                 setTimeout(() => {
                     this.createMultiGame(opponent, user, response.gameType)
@@ -143,7 +151,7 @@ export class GameWsService {
             else {
                 opponent.status = 'online'
                 user.status = 'online'
-                opponent.socket.emit('Respond-Invite', { accepted: false, playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', { status: 'declined', playerStatus: user.status })
             }
         }
         else

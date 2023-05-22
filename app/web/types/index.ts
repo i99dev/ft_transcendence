@@ -193,7 +193,7 @@ declare global {
     }
 
     interface InviteResponseDto {
-        accepted: boolean;
+        status: string;
         playerStatus: string;
     }
 }

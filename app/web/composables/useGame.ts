@@ -68,13 +68,16 @@ export function useGameInvite() {
     });
 
     socket.value?.on('Respond-Invite', async (response: InviteResponseDto) => {
-        if (response.accepted) {
+        if (response.status == 'accepted') {
             inviteModal.value.open = false;
             inviteModal.value.gameInProgress = true;
             await navigateTo('/play')
-        } else {
+        } else if (response.status == 'rejected'){
             inviteModal.value.rejected = true;
             inviteModal.value.playerStatus = response.playerStatus;
+        }
+        else {
+            inviteModal.value.open = false;
         }
     });
 
