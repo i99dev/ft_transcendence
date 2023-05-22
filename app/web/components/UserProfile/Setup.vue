@@ -152,17 +152,21 @@ const backtoImageSelection = () => {
 const submitProfile = async () => {
     if (newUsername.value != '') {
         setUserName(newUsername.value)
-        await useUpdateUserInfo()
+        const { resStatus } = await useUpdateUserInfo()
+        console.log(resStatus)
     }
     if (newAvatar.value != '' && isUploading.value) {
-        await useUplaod(userData.value?.login, formData.value)
+        const { resStatus } = await useUplaod(userData.value?.login, formData.value)
+        console.log(resStatus)
     }
     if (newAvatar.value != '' && isDefault.value) {
         setUserAvatar(newAvatar.value)
         await useUpdateUserInfo()
+        const { resStatus } = await useUpdateUserInfo()
+        console.log(resStatus)
     }
     emit('close')
-    window.location.reload()
+    // window.location.reload()
 }
 
 const defaultImages = [
