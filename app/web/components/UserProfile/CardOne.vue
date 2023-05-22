@@ -12,20 +12,18 @@
 
                     <!-- update username -->
                     <div class="flex flex-col justify-start w-full relative">
+                        
                         <div class="centered w-full">
-                            <div class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap"
-                                v-if="editBoolaen">
+                            <div class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
                                 {{ userData?.username }}
                             </div>
-                            <input v-if="!editBoolaen" :disabled="editBoolaen"
-                                class="border-2 border-secondary bg-background text-white rounded-md p-1 max-w-xs w-32 h-8 mx-2"
-                                type="text" v-model="userData.username" />
-
+                            
                             <!-- edit icon  -->
                             <div class="mx-2">
+                                
                                 <button
                                     class="flex justify-center hover:bg-primary rounded-full p-2 w-12 h-12 smooth-transition"
-                                    @click="editUsername" v-if="editBoolaen && isMe && !isProfile">
+                                    @click="editProfile" v-if="isMe && !isProfile">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                         class="w-8 h-8 stroke-4 stroke-white fill-none">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -33,13 +31,7 @@
                                     </svg>
                                 </button>
 
-                                <!-- save -->
-                                <button class="flex justify-center" @click="updateUsername" v-if="!editBoolaen">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="white" class="min-w-full h-8 bg-primary rounded-md">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
+                                <Setup v-if="isEdit" />
 
                             </div>
                         </div>
@@ -63,6 +55,7 @@
 import Avatar from './Avatar.vue';
 import Control from './Control.vue';
 import Stats from './Stats.vue';
+import Setup from './Setup.vue';
 
 const props = defineProps({
     username: {
@@ -75,7 +68,7 @@ const props = defineProps({
     },
 })
 
-const { user_info, setUserName } = useUserInfo()
+const { user_info } = useUserInfo()
 
 const user = await getUserbyUserName(props.username)
 
@@ -95,17 +88,10 @@ const userData = computed(() => {
 /**
  * edit username
  */
-const editBoolaen = ref(true)
+const isEdit = ref(false)
 
-const editUsername = () => {
-    editBoolaen.value = !editBoolaen.value
-}
-
-const updateUsername = async () => {
-    editBoolaen.value = !editBoolaen.value
-    setUserName(userData.value?.username)
-    await useUpdateUserInfo()
-    window.location.reload()
+const editProfile = () => {
+    isEdit.value = !isEdit.value
 }
 
 
