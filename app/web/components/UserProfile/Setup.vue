@@ -132,6 +132,7 @@ const uploadeImage = async (event: any) => {
     reader.value.onload = () => {
         image.value = reader.value?.result
         newAvatar.value = image.value
+        setUserAvatar(image.value)
     }
 }
 
@@ -163,10 +164,13 @@ const submitProfile = async () => {
     }
     if (newAvatar.value != '' && isUploading.value) {
         const { resStatus } = await useUplaod(user_info.value?.login, formData.value)
+        setUserAvatar(newAvatar.value)
+        console.log('s image', newAvatar.value)
         errCode.value = resStatus
     }
     if (newAvatar.value != '' && isDefault.value) {
         setUserAvatar(newAvatar.value)
+        console.log('s image', newAvatar.value)
         await useUpdateUserInfo()
         const { resStatus } = await useUpdateUserInfo()
         errCode.value = resStatus
@@ -174,7 +178,7 @@ const submitProfile = async () => {
     if (errCode.value == 0)
     {
         emit('close')
-        window.location.reload()
+        // window.location.reload()
     }
 }
 
