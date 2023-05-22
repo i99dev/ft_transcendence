@@ -1,6 +1,6 @@
 <template>
-    <div class="border-y border-gray-200 h-full overflow-hidden">
-        <div id="chat-list" class="overflow-y-scroll" style="max-height: 92vh; height: 92vh">
+    <div class="border-y border-white h-full overflow-hidden">
+        <div id="chat-list" class="overflow-y-scroll h-90vh">
             <!-- chat list -->
             <div class="flex flex-col" x-descriptions="Tab component">
                 <TransitionRoot appear :show="isJoinGroupChatOpened" as="template">
@@ -55,7 +55,7 @@
                                                     </svg>
                                                 </div>
                                                 <input
-                                                    class="text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-secondary bg-background_light dark:border-gray-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                                                    class="text-white focus:outline-none focus:border focus:border-secondary bg-background_light font-normal w-full h-10 flex items-center pl-3 text-sm border-white rounded border shadow"
                                                     id="joinGroupPassword"
                                                     type="password"
                                                     v-model="joinGroupPassword"

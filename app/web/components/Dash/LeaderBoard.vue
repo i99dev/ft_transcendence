@@ -50,8 +50,6 @@ const lbPlayers = ref([] as any)
 
 const players = computed(() => lbPlayers.value)
 
-const Ranknum = ref(1)
-
 const currentPage = ref(1)
 
 const totalPagesURL = `/leaderboard/totalPages`
@@ -75,15 +73,13 @@ const getLB = async () => {
     })
     const playersArray = []
     if (data.value) {
-        if (currentPage.value === 1) Ranknum.value = 1
         for (let i = 0; i < data.value?.length; i++) {
             playersArray.push({
-                rankNum: Ranknum.value + i,
+                rankNum: (3 * (currentPage.value - 1)) + (i + 1),
                 ...data.value[i],
-                TotalMatches: await getPlayerGameResult(data.value[i].login, 'false', 'false'),
+                TotalMatches: await getPlayerGameResult(data.value[i].login),
             })
         }
-        Ranknum.value += playersArray.length
     }
     if (data.value) lbPlayers.value = playersArray
 }

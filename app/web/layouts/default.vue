@@ -1,18 +1,13 @@
 <template>
     <div>
         <Toast />
-        <div class="fixed top-0 w-full h-20 z-10">
-            <button @click="navigateTo('/')" class="absolute bottom-0 left-20 w-32">
-                <LoginLogo :horizontal="true" class="text-2xl" />
-            </button>
-        </div>
         <!-- loading -->
         <div v-if="pending">Loading...</div>
         <!-- error -->
         <div v-if="error">Error: {{ error.message }}</div>
         <!-- success -->
         <div v-if="me">
-            <!-- <Header /> -->
+            <Header />
             <ChatNavBar class="z-10" />
             <FriendsListNav />
             <slot />

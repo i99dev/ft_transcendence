@@ -1,6 +1,6 @@
 <template>
     <div>
-        <FirstTimeLogin v-if="isFirsTimeUser" @close="closeSetup()" />
+        <UserProfileSetup v-if="isFirstTimeLogin" @close="closeSetup()" />
         <Home :username="user" />
     </div>
 </template>
@@ -11,15 +11,16 @@ definePageMeta({
 })
 
 const { user_info } = useUserInfo()
+const { isFirstTimeLogin, setIsFirstTimeLogin } = useIsFirstTime()
 
 const user = ref('')
 onMounted(() => {
     if (user_info.value) user.value = user_info.value?.username
 })
 
-let isFirsTimeUser = ref(useRoute().query.status == '201' ? true : false)
+if (user_info.value) user.value = user_info.value?.username
 
 const closeSetup = () => {
-    isFirsTimeUser.value = false
+    setIsFirstTimeLogin(false)
 }
 </script>

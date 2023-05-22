@@ -73,13 +73,11 @@ export const useAuth = async (route: any) => {
     const tokenInfo = data.value as AccessTokenDto | null
     if (tokenInfo) setCookies(tokenInfo)
 
-    if (status === 201)
-        return navigateTo({
-            path: '/',
-            query: {
-                status: status,
-            },
-        })
+    if (status === 201) {
+        const { isFirstTimeLogin, setIsFirstTimeLogin } = useIsFirstTime()
+        setIsFirstTimeLogin(true)
+    }
+
     return data.value?.access_token
         ? navigateTo('/')
         : data.value?.two_fac_auth
@@ -94,6 +92,16 @@ export const useAuth = async (route: any) => {
               },
           })
         : await useIsAuth()
+}
+
+export const useIsFirstTime = () => {
+    const isFirstTimeLogin = useState<boolean>('first_time_login', () => false)
+
+    const setIsFirstTimeLogin = (status: boolean) => {
+        isFirstTimeLogin.value = status
+    }
+
+    return { isFirstTimeLogin, setIsFirstTimeLogin }
 }
 
 export const setCookies = (tokenInfo: AccessTokenDto) => {

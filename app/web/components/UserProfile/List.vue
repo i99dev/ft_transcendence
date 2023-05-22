@@ -43,16 +43,16 @@
                 >
                     <button
                         v-if="
-                            user.login !== user_info.login ||
-                            (user.login === user_info.login && props.isMe === true)
+                            user.username !== user_info.username ||
+                            (user.username === user_info.username && props.isMe === true)
                         "
                         type="button"
-                        @click="$emit('selectUser', user)"
+                        @click="handleUserSelection(user)"
                         class="p-2 border smooth-transition border-white bg-background_light rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                         :class="{
-                            'bg-background': isUserDimmed(user.login),
-                            'hover:bg-primary': !isUserDimmed(user.login),
-                            'cursor-default': isUserDimmed(user.login),
+                            'bg-background': isUserDimmed(user.username),
+                            'hover:bg-primary': !isUserDimmed(user.username),
+                            'cursor-default': isUserDimmed(user.username),
                         }"
                     >
                         <img :src="user.image" class="rounded-full w-10 h-10 object-cover" />
@@ -72,7 +72,8 @@ import { onMounted, ref, watch } from 'vue'
 const { user_info } = useUserInfo()
 const searchedUsers = ref('')
 
-const props = defineProps(['isMe', 'search', 'unwantedUsers'])
+const props = defineProps(['isMe', 'search', 'unwantedUsers', 'reset'])
+const emit = defineEmits(['selectUser'])
 
 watch(searchedUsers, async val => {
     if (!val) setUsersList([])
@@ -89,13 +90,19 @@ const getFilteredUsers = async () => {
     setUsersList(data.value)
 }
 
-const isUserDimmed = (login: string) => {
-    return props.unwantedUsers?.find((u: UserGetDto) => u.login === login)
+const isUserDimmed = (username: string) => {
+    return props.unwantedUsers?.find((u: UserGetDto) => u.username === username)
 }
 
 const setUsersList = (usersList: UserGetDto[]) => {
     users.value = usersList
 }
+
+const handleUserSelection = (user: UserGetDto) => {
+    if (props.reset) searchedUsers.value = ''
+    emit('selectUser', user)
+}
+
 </script>
 
 <style scoped>

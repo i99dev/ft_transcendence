@@ -2,29 +2,16 @@
     <div>
         <TransitionRoot appear :show="props.isOpened" as="template">
             <Dialog as="div" @close="closePopup" class="relative z-10">
-                <TransitionChild
-                    as="template"
-                    enter="duration-300 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-200 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
-                >
+                <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+                    leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-black bg-opacity-25" />
                 </TransitionChild>
 
                 <div class="fixed inset-0 overflow-y-auto">
                     <div class="flex min-h-full items-center justify-center p-4 text-center">
-                        <TransitionChild
-                            as="template"
-                            enter="duration-300 ease-out"
-                            enter-from="opacity-0 scale-95"
-                            enter-to="opacity-100 scale-100"
-                            leave="duration-200 ease-in"
-                            leave-from="opacity-100 scale-100"
-                            leave-to="opacity-0 scale-95"
-                        >
+                        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
+                            leave-to="opacity-0 scale-95">
                             <DialogPanel
                                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background_light p-6 text-left align-middle shadow-xl transition-all"
                             >
@@ -71,18 +58,11 @@
                                                         stroke-linejoin="round"
                                                     >
                                                         <path
-                                                            stroke="none"
-                                                            d="M0 0h24v24H0z"
-                                                            fill="none"
-                                                        ></path>
-                                                        <path
-                                                            d="M12 20h-7a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v3.5"
-                                                        ></path>
+                                                            d="M12 20h-7a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v3.5">
+                                                        </path>
                                                         <path d="M16 19h6"></path>
                                                         <path d="M19 16v6"></path>
-                                                        <path
-                                                            d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"
-                                                        ></path>
+                                                        <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
                                                     </svg>
                                                     <img
                                                         v-else
@@ -115,16 +95,8 @@
                                     </form>
 
                                     <!-- Stage 2 -->
-                                    <form
-                                        class="chat-form"
-                                        @submit.prevent=""
-                                        v-else-if="stage === 2"
-                                    >
-                                        <div
-                                            v-for="user in users"
-                                            :key="user.id"
-                                            class="flex-row inline-flex flex-nowrap"
-                                        >
+                                    <form class="chat-form" @submit.prevent="" v-else-if="stage === 2">
+                                        <div v-for="user in users" :key="user.id" class="flex-row inline-flex flex-nowrap">
                                             <button
                                                 class="border rounded-full bg-secondary ease-in-out transition duration-200 m-2 relative focus:outline-secondary"
                                                 type="button"
@@ -142,11 +114,7 @@
                                                 </div>
                                             </button>
                                         </div>
-                                        <UserProfileList
-                                            @selectUser="selectUser"
-                                            :search="true"
-                                            :unwanted-users="users"
-                                        />
+                                        <UserProfileList @selectUser="selectUser" :search="true" :unwanted-users="users" />
                                         <div class="flex justify-end mt-4">
                                             <button
                                                 class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
@@ -166,15 +134,9 @@
                                     </form>
 
                                     <!-- Stage 3 -->
-                                    <form
-                                        class="chat-form"
-                                        @submit.prevent=""
-                                        v-else-if="stage === lastStage"
-                                    >
+                                    <form class="chat-form" @submit.prevent="" v-else-if="stage === lastStage">
                                         <RadioGroup v-model="groupChat.chatType">
-                                            <RadioGroupLabel class="sr-only"
-                                                >Server size</RadioGroupLabel
-                                            >
+                                            <RadioGroupLabel class="sr-only">Server size</RadioGroupLabel>
                                             <div class="space-y-2">
                                                 <RadioGroupOption
                                                     as="template"
@@ -238,30 +200,19 @@
                                                                                     <svg
                                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                                         class="icon icon-tabler icon-tabler-eye"
-                                                                                        width="20"
-                                                                                        height="20"
+                                                                                        width="20" height="20"
                                                                                         viewBox="0 0 24 24"
                                                                                         stroke-width="1.5"
-                                                                                        stroke="currentColor"
-                                                                                        fill="none"
+                                                                                        stroke="currentColor" fill="none"
                                                                                         stroke-linecap="round"
-                                                                                        stroke-linejoin="round"
-                                                                                    >
+                                                                                        stroke-linejoin="round">
+                                                                                        <path stroke="none"
+                                                                                            d="M0 0h24v24H0z" />
+                                                                                        <circle cx="12" cy="12" r="2" />
                                                                                         <path
-                                                                                            stroke="none"
-                                                                                            d="M0 0h24v24H0z"
-                                                                                        />
-                                                                                        <circle
-                                                                                            cx="12"
-                                                                                            cy="12"
-                                                                                            r="2"
-                                                                                        />
+                                                                                            d="M2 12l1.5 2a11 11 0 0 0 17 0l1.5 -2" />
                                                                                         <path
-                                                                                            d="M2 12l1.5 2a11 11 0 0 0 17 0l1.5 -2"
-                                                                                        />
-                                                                                        <path
-                                                                                            d="M2 12l1.5 -2a11 11 0 0 1 17 0l1.5 2"
-                                                                                        />
+                                                                                            d="M2 12l1.5 -2a11 11 0 0 1 17 0l1.5 2" />
                                                                                     </svg>
                                                                                 </div>
                                                                                 <input
@@ -270,37 +221,18 @@
                                                                                     type="password"
                                                                                     v-model="
                                                                                         groupChat.password
-                                                                                    "
-                                                                                    placeholder="Enter password"
-                                                                                />
+                                                                                    " placeholder="Enter password" />
                                                                             </div>
                                                                         </div>
                                                                     </RadioGroupDescription>
                                                                 </div>
                                                             </div>
-                                                            <div
-                                                                v-show="checked"
-                                                                class="shrink-0 text-white"
-                                                            >
-                                                                <svg
-                                                                    class="h-6 w-6"
-                                                                    viewBox="0 0 24 24"
-                                                                    fill="none"
-                                                                >
-                                                                    <circle
-                                                                        cx="12"
-                                                                        cy="12"
-                                                                        r="12"
-                                                                        fill="#fff"
-                                                                        fill-opacity="0.2"
-                                                                    />
-                                                                    <path
-                                                                        d="M7 13l3 3 7-7"
-                                                                        stroke="#fff"
-                                                                        stroke-width="1.5"
-                                                                        stroke-linecap="round"
-                                                                        stroke-linejoin="round"
-                                                                    />
+                                                            <div v-show="checked" class="shrink-0 text-white">
+                                                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none">
+                                                                    <circle cx="12" cy="12" r="12" fill="#fff"
+                                                                        fill-opacity="0.2" />
+                                                                    <path d="M7 13l3 3 7-7" stroke="#fff" stroke-width="1.5"
+                                                                        stroke-linecap="round" stroke-linejoin="round" />
                                                                 </svg>
                                                             </div>
                                                         </div>
@@ -319,7 +251,7 @@
                                             <button
                                                 class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
-                                                @click="nextStage"
+                                                @click="createGroupChat"
                                             >
                                                 create
                                             </button>
@@ -470,14 +402,14 @@ const createGroupChat = () => {
                 groupChat.value?.chatType.type === 'PRIVATE'
                     ? 'PRIVATE'
                     : groupChat.value?.password
-                    ? 'PROTECTED'
-                    : 'PUBLIC',
+                        ? 'PROTECTED'
+                        : 'PUBLIC',
             password: groupChat.value?.password,
         }),
     )
 }
 
-const handleForm = () => {}
+const handleForm = () => { }
 
 const handleFileUpload = async () => {
     const file = fileInput.value?.files[0]
