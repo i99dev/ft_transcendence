@@ -73,7 +73,8 @@ export const useAuth = async (route: any) => {
     const tokenInfo = data.value as AccessTokenDto | null
     if (tokenInfo) setCookies(tokenInfo)
 
-    if (status === 201)
+    console.log('status', status)
+    if (status === '201')
         return navigateTo({
             path: '/',
             query: {

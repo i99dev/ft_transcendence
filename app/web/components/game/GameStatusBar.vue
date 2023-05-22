@@ -57,8 +57,8 @@ defineEmits(['ExitBtn'])
 
 const gameSetup = useState<SetupDto>('gameSetup')
 const gameData = useState<gameStatusDto>('gameData')
-const scoreAudio = new Audio('/sounds/score.mp3')
-scoreAudio.volume = 0.2
+const scoreAudio = ref(new Audio('/sounds/score.mp3'))
+scoreAudio.value.volume = 0.2
 
 const players = computed(() => {
     return [
@@ -89,10 +89,10 @@ const formatTime = (seconds: number) => {
 
 watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
     if (newPlayer1.score !== 11 && newPlayer1.score !== oldPlayer1.score) {
-        scoreAudio.play()
+        scoreAudio.value.play()
     }
     if (newPlayer2.score !== 11 && newPlayer2.score !== oldPlayer2.score) {
-        scoreAudio.play()
+        scoreAudio.value.play()
     }
 })
 
