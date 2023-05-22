@@ -5,7 +5,7 @@
         </button>
         <div v-if="useRoute().path !== '/play'" class="flex justify-center items-start w-full">
             <div class="md:w-1/2 w-3/4">
-                <UserProfileList :reset="true" :search="true" @selectUser="navigateTo(`/users/${$event?.login}`)" />
+                <UserProfileList :reset="true" :search="true" @selectUser="navigateTo(`/users/${$event?.username}`)" />
             </div>
         </div>
     </div>
