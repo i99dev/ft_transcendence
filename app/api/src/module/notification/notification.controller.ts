@@ -1,4 +1,4 @@
-import { Get, Param, Delete, NotFoundException } from '@nestjs/common'
+import { Get, Param, Delete, NotFoundException, Query } from '@nestjs/common'
 import { Controller } from '@nestjs/common'
 import { UseGuards, Req } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
@@ -11,8 +11,9 @@ export class NotificationController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/me')
-    async getMyNotifications(@Req() req) {
-        const notif = await this.notificationService.getMyNotifications(req.user.login)
+    async getMyNotifications(@Req() req, @Query('page') page: number) {
+        if (!page) page = 1
+        const notif = await this.notificationService.getMyNotifications(req.user.login, page)
         if (!notif) return new NotFoundException('No notifications found')
         return notif
     }

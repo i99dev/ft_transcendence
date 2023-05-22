@@ -69,7 +69,7 @@ export class DirectChatService {
         }
     }
 
-    async getDirectChats(user: string) {
+    async getDirectChats(user: string, page: number) {
         try {
             const directChats = await this.prisma.directChat.findMany({
                 where: {
@@ -79,9 +79,16 @@ export class DirectChatService {
                         },
                     },
                 },
+                orderBy: {
+                    chat_room: {
+                        created_at: 'desc',
+                    }
+                },
                 include: {
                     users: true,
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return directChats
         } catch (error) {

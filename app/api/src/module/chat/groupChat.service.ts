@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common'
 import { ChatRoom, ChatUserStatus } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 import { ChatService } from './chat.service'
+import { skip } from 'rxjs'
 
 @Injectable()
 export class GroupChatService {
@@ -106,7 +107,7 @@ export class GroupChatService {
         }
     }
 
-    async getGroupChats(user_login: string) {
+    async getGroupChats(user_login: string, page: number) {
         try {
             const groupChats = await this.prisma.groupChat.findMany({
                 where: {
@@ -116,6 +117,13 @@ export class GroupChatService {
                         },
                     },
                 },
+                orderBy: {
+                    chat_room: {
+                        created_at: 'desc',
+                    }
+                },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return groupChats
         } catch (error) {
@@ -179,7 +187,7 @@ export class GroupChatService {
         }
     }
 
-    async searchGroupChat(search: string, user_login: string) {
+    async searchGroupChat(search: string, user_login: string, page: number) {
         try {
             const chat = await this.prisma.groupChat.findMany({
                 where: {
@@ -203,6 +211,8 @@ export class GroupChatService {
                         },
                     },
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             return chat
         } catch (error) {

@@ -338,9 +338,15 @@ export class ChatService {
         }
     }
 
-    async getChatRooms() {
+    async getChatRooms(page: number) {
         try {
-            const chatRooms = await this.prisma.chatRoom.findMany()
+            const chatRooms = await this.prisma.chatRoom.findMany({
+                orderBy: {
+                    created_at: 'desc',
+                },
+                skip: (page - 1) * 20,
+                take: 20,
+            })
             return chatRooms
         } catch (error) {
             console.log(error)
