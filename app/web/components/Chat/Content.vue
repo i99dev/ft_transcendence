@@ -50,7 +50,7 @@
                 <div v-else class="text-xl py-1">{{ currentChat?.name }}</div>
             </button>
         </div>
-        <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" />
+        <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" @closeNavBar="$emit('closeNavBar')" />
         <div
             v-else
             class="flex flex-col justify-between overflow-hidden w-full h-full"
@@ -295,7 +295,7 @@ const deleteMessage = (message_id: number) => {
 }
 
 const goToUserProfile = () => {
-    navigateTo(`/users/${currentChat.value?.users[0]?.login}`)
+    navigateTo(`/users/${currentChat.value?.users[0]?.username}`)
     emit('closeNavBar')
 }
 </script>
