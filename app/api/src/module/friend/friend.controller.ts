@@ -1,5 +1,5 @@
 import { FriendService } from './friend.service'
-import { Get, Controller, Param, Post, Delete } from '@nestjs/common'
+import { Get, Controller, Param, Post, Delete, BadRequestException } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { UseGuards, Req } from '@nestjs/common'
 import { UserGetDto } from '@module/user/dto/user.dto'
@@ -19,7 +19,9 @@ export class FriendController {
         @Param('user', ParseStringPipe) user: string,
         @Param('friend', ParseStringPipe) friend: string,
     ): Promise<UserGetDto> {
-        return await this.FriendService.CheckFriendsUpdate(user, friend)
+        const newFriend = await this.FriendService.CheckFriendsUpdate(user, friend)
+        if (!newFriend) throw new BadRequestException('Friend not found')
+        return newFriend
     }
 
     @Delete('/:friend')
@@ -27,6 +29,8 @@ export class FriendController {
         @Param('user', ParseStringPipe) user: string,
         @Param('friend', ParseStringPipe) friend: string,
     ): Promise<UserGetDto> {
-        return await this.FriendService.DeleteFriend(friend, user)
+        const deletedFriend = await this.FriendService.DeleteFriend(friend, user)
+        if (!deletedFriend) throw new BadRequestException('Friend not found')
+        return deletedFriend
     }
 }

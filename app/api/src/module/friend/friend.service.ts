@@ -18,13 +18,22 @@ export class FriendService {
     }
 
     async CheckFriendsUpdate(user: string, friend: string): Promise<UserGetDto> {
-        await this.validateUsers(user, friend)
-        return await this.UpdateUserFriends(user, friend)
+        try {
+            await this.validateUsers(user, friend)
+            return await this.UpdateUserFriends(user, friend)
+        } catch (error) {
+            return null
+        }
     }
 
     async DeleteFriend(friends: string, user: string): Promise<UserGetDto> {
-        await this.validateUsers(user, friends)
-        if (friends) return this.deleteFriend(user, friends)
+        try {
+            await this.validateUsers(user, friends)
+            if (friends) return await this.deleteFriend(user, friends)
+            else return null
+        } catch (error) {
+            return null
+        }
     }
 
     async getFriends(login: string): Promise<UserGetDto[]> {
