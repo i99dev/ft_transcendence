@@ -66,7 +66,7 @@ export class GroupChatService {
                         where: {
                             NOT: {
                                 status: {
-                                    in: ['OUT', 'BAN'],
+                                    in: ['OUT', 'BAN', 'INVITED'],
                                 },
                             },
                         },
@@ -148,6 +148,14 @@ export class GroupChatService {
                     chat_user: {
                         some: {
                             user_login: user_login,
+                            OR: [
+                                {
+                                    status: ChatUserStatus.NORMAL,
+                                },
+                                {
+                                    status: ChatUserStatus.MUTE,
+                                },
+                            ],
                         },
                     },
                 },

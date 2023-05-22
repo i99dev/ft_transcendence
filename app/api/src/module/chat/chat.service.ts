@@ -1,5 +1,6 @@
+import { Status } from './../../auth/interface/intra.interface'
 import { PrismaService } from '../../providers/prisma/prisma.service'
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, Prisma } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
 import { ChatRepository } from './repository/chat.repository'
@@ -105,8 +106,10 @@ export class ChatService {
 
     async deleteMessage(user_login: string, room_id: string, message_id: number) {
         try {
-            const chat = await this.prisma.message.delete({
+            const chat = await this.prisma.message.deleteMany({
                 where: {
+                    chat_room_id: room_id,
+                    sender_login: user_login,
                     id: message_id,
                 },
             })
@@ -278,8 +281,29 @@ export class ChatService {
         }
     }
 
-    async getChatRoomMessages(room_id: string, page: number, sort: any = 'asc') {
+    async validateChatUser(room_id: string, user_login: string) {
         try {
+            const chatUser = await this.prisma.chatUser.findFirst({
+                where: {
+                    chat_room_id: room_id,
+                    user_login: user_login,
+                    NOT: {
+                        status: {
+                            in: ['OUT', 'BAN', 'INVITED'],
+                        },
+                    },
+                },
+            })
+            return chatUser
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getChatRoomMessages(room_id: string, page: number, sort: any = 'asc', login: string) {
+        try {
+            if (!(await this.validateChatUser(room_id, login)))
+                throw new NotFoundException('You are not a member of this chat')
             const chat = await this.prisma.message.findMany({
                 where: {
                     chat_room: {

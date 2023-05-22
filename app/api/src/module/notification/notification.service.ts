@@ -2,6 +2,7 @@ import { PrismaService } from '@providers/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { Socket } from 'socket.io'
 import { CreateNotificationDto } from '@common/dtos/notification.dto'
+import { NotificationType } from '@prisma/client'
 
 @Injectable()
 export class NotificationService {
@@ -42,6 +43,20 @@ export class NotificationService {
             const notifications = await this.prisma.notification.findMany({
                 where: {
                     user_login: user_login,
+                },
+            })
+            return notifications
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async getMyNotificationsByType(user_login: string, type: NotificationType) {
+        try {
+            const notifications = await this.prisma.notification.findMany({
+                where: {
+                    user_login: user_login,
+                    type: type,
                 },
             })
             return notifications
