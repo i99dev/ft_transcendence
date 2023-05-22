@@ -47,7 +47,7 @@
                             (user.login === user_info.login && props.isMe === true)
                         "
                         type="button"
-                        @click="$emit('selectUser', user)"
+                        @click="handleUserSelection(user)"
                         class="p-2 border smooth-transition border-white bg-background_light rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                         :class="{
                             'bg-background': isUserDimmed(user.login),
@@ -72,7 +72,8 @@ import { onMounted, ref, watch } from 'vue'
 const { user_info } = useUserInfo()
 const searchedUsers = ref('')
 
-const props = defineProps(['isMe', 'search', 'unwantedUsers'])
+const props = defineProps(['isMe', 'search', 'unwantedUsers', 'reset'])
+const emit = defineEmits(['selectUser'])
 
 watch(searchedUsers, async val => {
     if (!val) setUsersList([])
@@ -96,6 +97,12 @@ const isUserDimmed = (login: string) => {
 const setUsersList = (usersList: UserGetDto[]) => {
     users.value = usersList
 }
+
+const handleUserSelection = (user: UserGetDto) => {
+    if (props.reset) searchedUsers.value = ''
+    emit('selectUser', user)
+}
+
 </script>
 
 <style scoped>

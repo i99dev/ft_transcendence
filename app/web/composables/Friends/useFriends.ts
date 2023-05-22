@@ -19,7 +19,7 @@ export const useFriends = async () => {
             friends: data.value?.map(friend => {
                 return {
                     id: friend.id,
-                    name: friend.login,
+                    name: friend.username,
                     photo: friend.image,
                     status: friend.status,
                 }
@@ -46,7 +46,7 @@ export const useFriends = async () => {
             friends_info.value.friends = payload.map((friend: UserGetDto) => {
                 return {
                     id: friend.id,
-                    name: friend.login,
+                    name: friend.username,
                     photo: friend.image,
                     status: friend.status,
                 }
