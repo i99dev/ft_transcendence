@@ -3,10 +3,10 @@
         <div
             v-if="props.username"
             id="Home"
-            class="flex min-h-screen justify-center overflow-hidden py-6 sm:py-12 mobile:p-2"
+            class="flex min-h-screen justify-center overflow-hidden py-5 mobile:p-2"
         >
             <div class="flex flex-col w-full space-y-6 items-center">
-                <UserProfileList :search="true" @selectUser="handleUserSearch($event?.login)" />
+                <!-- <UserProfileList :search="true" @selectUser="handleUserSearch($event?.login)" /> -->
                 <!-- <SearchBar @userInput="handleUserSearch" class="w-1/2 inline-block z-10" /> -->
                 <div class="flex flex-row justify-center md:w-1/2 w-3/4">
                     <UserProfileCardOne
