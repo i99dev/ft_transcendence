@@ -24,10 +24,15 @@
                                     <img class="h-20 w-20 object-cover rounded-full" :src="image"
                                         alt="Current profile photo" />
                                 </div>
-
-                                <div v-if="!isDefault && !isUploading" class="flex space-x-4">
-                                    <a @click="isUploadingImage" href="#" class="h-10 mt-20 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Upload</a>
-                                    <a @click="isDefaultImage" href="#" class="h-10 mt-20 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Default</a>
+                                <div v-if="!isDefault && !isUploading" class="mt-4 text-xl text-center">
+                                    <span> Select your preferred method for changing the Avatar upload new or use Default:
+                                    </span>
+                                    <div class="flex space-x-4">
+                                        <a @click="isUploadingImage" href="#"
+                                            class="h-10 mt-5 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Upload</a>
+                                        <a @click="isDefaultImage" href="#"
+                                            class="h-10 mt-5 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Default</a>
+                                    </div>
                                 </div>
 
                                 <div v-if="isUploading" class="max-w-1xl pt-3 mx-auto">
@@ -56,24 +61,25 @@
 
                                 <div v-if="isDefault" class="grid grid-cols-4 gap-4 p-4">
                                     <div v-for="(image, index) in defaultImages" :key="index">
-                                        <img class="w-25 h-15 items-center justify-center object-cover rounded-lg hover:shadow-lg" :src="image"
-                                           @click="changeImage(image)" alt="icon" />
+                                        <img class="w-25 h-15 items-center justify-center object-cover rounded-lg hover:shadow-lg"
+                                            :src="image" @click="changeImage(image)" alt="icon" />
                                     </div>
                                 </div>
 
                             </form>
                             <div v-if="isDefault || isUploading" class="flex space-x-4">
-                                    <a @click="backtoImageSelection" href="#" class="h-10 mt-5 mb-5 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Back</a>
+                                <a @click="backtoImageSelection" href="#"
+                                    class="h-10 mb-2 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Back</a>
                             </div>
                             <div>
-                            <button @click="submitProfile()"
-                                class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
-                                Update
-                            </button>
-                            <button @click="emit('close')"
-                                class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
-                                Cancel
-                            </button>
+                                <button @click="submitProfile()"
+                                    class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
+                                    Ok
+                                </button>
+                                <button @click="emit('close')"
+                                    class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
+                                    Cancel
+                                </button>
                             </div>
                         </div>
                     </div>
