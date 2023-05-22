@@ -109,17 +109,23 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         @ConnectedSocket() client: any,
         @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
-        if (client.handshake.auth.login != payload.inviterId)
-            return this.socketError(`You can't someone's identity`), []
-        if (client.handshake.auth.login == payload.invitedId)
+        if (client.handshake.auth.login == payload.invitedId) {
+            this.gameService.respondInvite(client, payload, true)
             return this.socketError(`You can't invite yourself`), []
+        }
+        if (client.handshake.auth.login != payload.inviterId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't take someone's identity`), []
+        }
         if (
             !(await this.blockService.checkIfAvailableFromBlock(
                 payload.inviterId,
                 payload.invitedId,
             ))
-        )
+        ) {
+            this.gameService.respondInvite(client, payload, true)
             return this.socketError(`This user is unreachable`), []
+        }
         this.gameService.sendInvite(client, payload)
     }
 
@@ -129,17 +135,23 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         @ConnectedSocket() client: any,
         @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
-        if (client.handshake.auth.login != payload.inviterId)
-            return this.socketError(`You can't someone's identity`), []
-        if (client.handshake.auth.login == payload.invitedId)
-            return this.socketError(`You can't invite yourself`), []
+        if (client.handshake.auth.login != payload.invitedId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't take someone's identity`), []
+        }
+        if (client.handshake.auth.login == payload.inviterId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't respond to yourself`), []
+        }
         if (
             !(await this.blockService.checkIfAvailableFromBlock(
                 payload.inviterId,
                 payload.invitedId,
             ))
-        )
+        ) {
+            this.gameService.respondInvite(client, payload, true)
             return this.socketError(`This user is unreachable`), []
+        }
         this.gameService.respondInvite(client, payload)
     }
 
@@ -149,4 +161,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)
     }
+
+
 }
