@@ -130,26 +130,24 @@
 
                 <div class="text-md font-semibold centered">
                     <button
-                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
                         :class="{
-                            'scale-125': participantsType === 'NORMAL',
-                            'text-primary': participantsType === 'NORMAL',
+                            'scale-125 text-primary': participantsType === 'NORMAL',
                             'opacity-70': participantsType !== 'NORMAL',
                         }"
                         @click="updateParticipants()"
                     >
-                        Participants
+                        participants
                     </button>
                     <button
-                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
                         @click="updateParticipants('BAN')"
                         :class="{
-                            'scale-125': participantsType === 'BAN',
-                            'text-primary': participantsType === 'BAN',
+                            'scale-125 text-primary': participantsType === 'BAN',
                             'opacity-70': participantsType !== 'BAN',
                         }"
                     >
-                        Banned
+                        banned
                     </button>
                 </div>
                 <div
@@ -413,6 +411,14 @@ const CanAddUsers = () => {
 
     return false
 }
+
+const switchParticipantsList = (type: string = 'NORMAL') => {
+    if (type === 'NORMAL' && participantsType.value !== 'NORMAL')
+        updateParticipants()
+    else if (type === 'BAN' && participantsType.value !== 'BAN')
+        updateParticipants('BAN')
+}
+
 </script>
 
 <style scoped>
