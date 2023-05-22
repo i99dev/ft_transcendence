@@ -15,7 +15,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
                     class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
             </div>
         </div>
-        <div class="text-white font-semibold text-2xl mx-4">{{ formatTime(timer) }}</div>
+        <div class="border-r border-white border-opacity-50 h-8 mx-4"></div>
         <div class="flex space-x-4">
             <div v-for="(powerUp, i) in players[1].powerUps" :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
@@ -77,9 +77,6 @@ const players = computed(() => {
         },
     ]
 })
-const timer = computed(() => {
-    return Math.floor(gameData.value?.time) | 0
-})
 
 onMounted(() => { })
 
@@ -88,12 +85,6 @@ const onPowerUpClick = (player: number, powerup: number) => {
         emit('powerup', powerup.toString());
     }
 };
-
-const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-}
 
 watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
     if (newPlayer1.score !== 11 && newPlayer1.score !== oldPlayer1.score) {
