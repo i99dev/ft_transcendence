@@ -18,7 +18,7 @@
                                         User Name
                                     </span>
                                     <input class="w-full bg-transparent p-0 text-sm text-gray-500 focus:outline-none"
-                                        id="name" type="text" :placeholder="userData.username" v-model="newUsername" />
+                                        id="name" type="text" :placeholder="user_info?.username" v-model="newUsername" />
                                 </label>
                                 <div class="mt-10 px-20">
                                     <img class="h-20 w-20 object-cover rounded-full" :src="image"
@@ -96,16 +96,11 @@ const { user_info, setUserName, setUserAvatar } = useUserInfo()
 
 const emit = defineEmits(['close'])
 
-const userData = computed(() => {
-    const { username, image, login } = user_info.value
-    return { username, image, login }
-})
-
 const newUsername = ref('')
 
 const newAvatar = ref(null as any)
 
-const image = ref(userData.value?.image)
+const image = ref(user_info.value?.image)
 
 const formData = ref(new FormData())
 
@@ -155,7 +150,7 @@ const submitProfile = async () => {
         await useUpdateUserInfo()
     }
     if (newAvatar.value != '' && isUploading.value) {
-        await useUplaod(userData.value?.login, formData.value)
+        await useUplaod(user_info.value?.login, formData.value)
     }
     if (newAvatar.value != '' && isDefault.value) {
         setUserAvatar(newAvatar.value)
