@@ -19,6 +19,7 @@ import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { ParseSocketStringPipe } from '@common/pipes/socketString.pipe'
+import { BlockService } from '@module/block/block.service'
 @WebSocketGateway({
     namespace: '/game',
     cors: { origin: '*' },
@@ -35,6 +36,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         private gameService: DefaultService,
         private socketService: SocketService,
         private jwtService: JwtService,
+        private blockService: BlockService
     ) { }
 
     afterInit(server: Server) {
@@ -96,21 +98,60 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.playerReady(client)
     }
 
+    socketError(error: string) {
+        this.logger.error(error)
+        throw new WsException(error)
+    }
+
     @UseGuards(WsGuard)
     @SubscribeMessage('Send-Invite')
-    sendInvite(
+    async sendInvite(
         @ConnectedSocket() client: any,
         @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
+        if (client.handshake.auth.login == payload.invitedId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't invite yourself`), []
+        }
+        if (client.handshake.auth.login != payload.inviterId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't take someone's identity`), []
+        }
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                payload.inviterId,
+                payload.invitedId,
+            ))
+        ) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`This user is unreachable`), []
+        }
         this.gameService.sendInvite(client, payload)
     }
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Respond-Invite')
-    respondInvite(
+    async respondInvite(
         @ConnectedSocket() client: any,
         @MessageBody(new SocketValidationPipe()) payload: InviteDto,
     ) {
+        if (client.handshake.auth.login != payload.invitedId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't take someone's identity`), []
+        }
+        if (client.handshake.auth.login == payload.inviterId) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`You can't respond to yourself`), []
+        }
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                payload.inviterId,
+                payload.invitedId,
+            ))
+        ) {
+            this.gameService.respondInvite(client, payload, true)
+            return this.socketError(`This user is unreachable`), []
+        }
         this.gameService.respondInvite(client, payload)
     }
 
@@ -120,4 +161,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)
     }
+
+
 }
