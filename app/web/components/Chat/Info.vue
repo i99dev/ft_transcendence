@@ -36,15 +36,18 @@
                                     <DialogPanel
                                         class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
                                     >
-                                        <h1
-                                            class="p-2 border-b border-secondary text-white font-semibold flex justify-center mb-2"
-                                        >
-                                            {{ participant.user.username }}
-                                        </h1>
+                                        <div class="border-b border-secondary mb-2 centered">
+                                            <button
+                                                @click="goToUserProfile(participant.user.username)"
+                                                class="p-2 text-white font-semibold flex justify-center items-center hover:bg-primary mb-2 rounded-xl smooth-transition"
+                                            >
+                                                {{ participant.user.username }}
+                                            </button>
+                                        </div>
                                         <button
                                             v-for="option in adminOptions"
                                             :key="option.action"
-                                            class="flex items-center p-2 w-full rounded-lg hover:bg-secondary text-white"
+                                            class="flex items-center justify-center p-2 w-full rounded-lg hover:bg-secondary text-white"
                                             @click="setUser(option.action)"
                                         >
                                             {{ option.text }}
@@ -252,6 +255,7 @@ const isAddUserOpened = ref(false)
 
 const { user_info } = useUserInfo()
 const { currentChat } = useCurrentChat()
+const emit = defineEmits(['closeNavBar'])
 
 const users = ref([] as UserGetDto[])
 
@@ -271,8 +275,12 @@ const socketOn = () => {
 }
 
 const setAdminOptions = () => {
+    adminOptions.value = []
+    if (participant.value.role === 'OWNER')
+        return
+
+
     if (participant.value.status === 'BAN') {
-        adminOptions.value = []
         adminOptions.value[0] = {
             action: 'reset',
             text: 'Unban',
@@ -321,12 +329,7 @@ const openAdminOptionsPopup = (chatUser: ChatUser) => {
     const myChatUser = participants.value?.find(
         chatUser => chatUser.user_login === user_info.value?.login,
     )
-    if (
-        chatUser.user_login === user_info.value?.login ||
-        chatUser.role === 'OWNER' ||
-        myChatUser?.role === 'MEMBER'
-    )
-        return
+
     participant.value = chatUser
     setAdminOptions()
     isAdminOptionsOpened.value = true
@@ -412,6 +415,13 @@ const CanAddUsers = () => {
                 return true
 
     return false
+}
+
+const goToUserProfile = (username: string) => {
+    isAdminOptionsOpened.value = false
+    isAddUserOpened.value = false
+    navigateTo(`/users/${username}`)
+    emit('closeNavBar')
 }
 </script>
 
