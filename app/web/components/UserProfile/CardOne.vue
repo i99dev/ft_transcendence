@@ -31,7 +31,7 @@
                                     </svg>
                                 </button>
 
-                                <Setup v-if="isEdit" />
+                                <Setup v-if="isEdit" v-on:close="closeSetupProfile" />
 
                             </div>
                         </div>
@@ -89,6 +89,10 @@ const userData = computed(() => {
  * edit username
  */
 const isEdit = ref(false)
+
+const closeSetupProfile = () => {
+    isEdit.value = false
+}
 
 const editProfile = () => {
     isEdit.value = !isEdit.value

@@ -65,10 +65,16 @@
                             <div v-if="isDefault || isUploading" class="flex space-x-4">
                                     <a @click="backtoImageSelection" href="#" class="h-10 mt-5 mb-5 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Back</a>
                             </div>
+                            <div>
                             <button @click="submitProfile()"
                                 class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
                                 Update
                             </button>
+                            <button @click="emit('close')"
+                                class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
+                                Cancel
+                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,7 +84,6 @@
 </template>
 
 <script setup lang="ts">
-import { is } from '@babel/types';
 import { ref, computed } from 'vue'
 
 const { user_info, setUserName, setUserAvatar } = useUserInfo()
