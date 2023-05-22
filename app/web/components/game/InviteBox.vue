@@ -118,7 +118,7 @@ import { useFriends } from '@/composables/Friends/useFriends'
 const mode = ref('' as string)
 const selectedPowerups = ref<string[]>([])
 const isLoading = ref(false)
-const { invite, inviteModal, send, accept, decline, reset } = useGameInvite()
+const { invite, inviteModal, send, accept, decline, reset } = await useGameInvite()
 const { chat_info } = useChat()
 const { friends_info } = await useFriends()
 

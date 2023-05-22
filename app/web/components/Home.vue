@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const { inviteModal } = useGameInvite()
+const { inviteModal } = await useGameInvite()
 const IsProfile = ref(false)
 
 const props = defineProps(['username'])
