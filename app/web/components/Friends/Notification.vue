@@ -1,31 +1,34 @@
 <template>
     <div
         v-if="show"
-        class="bg-white border-t-4 border-slate-900 text-slate-900 px-4 py-3 shadow-md relative"
+        class="bg-z m-2 border h-5vh border-white text-white text-sm rounded-2xl p-1 shadow-md font-bold"
     >
-        <div class="flex items-center">
-            <div class="py-1">
-                <span class="font-bold">{{ props.notification?.content }}</span>
+        <div class="centered">
+            <div class="px-2">
+                <span class="">{{ props.notification?.content }}</span>
             </div>
-            <div class="ml-auto flex items-center">
-                <button
+            <div class="ml-auto">
+                <div
                     v-if="props.notification?.type === 'FRIEND_REQUEST'"
-                    @click="accept"
-                    class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-2 rounded mr-2"
                 >
-                    Accept
-                </button>
-                <button
-                    v-if="props.notification?.type === 'FRIEND_REQUEST'"
-                    @click="decline"
-                    class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-1 px-2 rounded mr-2"
-                >
-                    Decline
-                </button>
+                    <button
+                        @click="accept"
+                        class="bg-primary hover:scale-105 smooth-transition py-1 px-2 rounded-full mr-2 capitalize"
+                    >
+                        accept
+                    </button>
+                    <button
+                        v-if="props.notification?.type === 'FRIEND_REQUEST'"
+                        @click="decline"
+                        class="bg-secondary hover:scale-105 smooth-transition py-1 px-2 rounded-full mr-2 capitalize"
+                    >
+                        decline
+                    </button>
+                </div>
                 <button
                     v-if="props.notification?.type === 'FRIEND_REQUEST_ACCEPTED'"
                     @click="close"
-                    class="text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                    class="text-white hover:bg-primary rounded-full p-1 mr-1 smooth-transition focus:ring-2 focus:ring-primary"
                 >
                     <span class="sr-only">Close notification</span>
                     <XMarkIcon class="h-6 w-6" aria-hidden="true" />
