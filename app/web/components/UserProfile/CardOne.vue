@@ -4,7 +4,7 @@
             <div class="flex sm:flex-row flex-col items-center">
 
                 <!--  avatar  -->
-                <Avatar :isMe="isMe" :isProfile="isProfile" :image="userData?.image ||
+                <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :image="userData?.image ||
                     defaultImages[Math.floor(Math.random() * defaultImages.length)]" :status="userData?.status" />
 
 
@@ -31,31 +31,26 @@
                                     </svg>
                                 </button>
 
-                                <Setup v-if="isEdit" v-on:close="closeSetupProfile" />
+                                <UserProfileSetup v-if="isEdit" v-on:close="closeSetupProfile" />
 
                             </div>
                         </div>
 
                         <!---- rank dropdown -->
-                        <Stats :ladder="userData.ladder" :xp="userData.xp" :username="props.username" />
+                        <UserProfileStats :ladder="userData.ladder" :xp="userData.xp" :username="props.username" />
 
                     </div>
                 </div>
             </div>
 
             <!--- control buttons -->
-            <Control :isProfile="props.isProfile" :isMe="isMe" :login="userData.login" :username="props.username" />
+            <UserProfileControl :isProfile="props.isProfile" :isMe="isMe" :login="userData.login" :username="props.username" />
 
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-
-import Avatar from './Avatar.vue';
-import Control from './Control.vue';
-import Stats from './Stats.vue';
-import Setup from './Setup.vue';
 
 const props = defineProps({
     username: {
