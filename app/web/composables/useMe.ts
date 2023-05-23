@@ -81,8 +81,6 @@ export async function useUpdateUserInfo(): Promise<any> {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
     })
-    console.log(resStatus)
-    console.log(data)
     const error = errorRef.value as FetchError<any> | null
     return { data, error, resStatus}
 }
