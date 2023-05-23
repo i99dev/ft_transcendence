@@ -1,4 +1,4 @@
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer';
+import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { UserGetDto } from '@module/user/dto/user.dto'
 import { PrismaService } from '@providers/prisma/prisma.service'
@@ -6,7 +6,11 @@ import { MatchService } from '@module/match/match.service'
 
 @Injectable()
 export class LeaderboardService {
-    constructor(private prisma: PrismaService, private gameAnalyzer: gameAnalyzer, private matchService: MatchService) {}
+    constructor(
+        private prisma: PrismaService,
+        private gameAnalyzer: gameAnalyzer,
+        private matchService: MatchService,
+    ) {}
 
     private readonly limit = 3
 

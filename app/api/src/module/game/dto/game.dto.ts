@@ -114,18 +114,18 @@ export class PowerUpInfoDto {
 
 export class InviteDto {
     @IsString()
-    inviterId: string;
+    inviterId: string
 
     @IsString()
-    invitedId: string;
+    invitedId: string
 
     @IsNotEmpty()
     @IsEnum(gameType)
     gameType: gameType
-    
-    powerups: string[];
+
+    powerups: string[]
 
     @IsOptional()
     @IsBoolean()
-    accepted?: boolean;
+    accepted?: boolean
 }

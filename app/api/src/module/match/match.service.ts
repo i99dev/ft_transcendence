@@ -5,10 +5,7 @@ import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class MatchService {
-    constructor(
-        private jwtService: JwtService,
-        private prisma: PrismaService,
-    ) {}
+    constructor(private jwtService: JwtService, private prisma: PrismaService) {}
     readonly limit = 3
 
     async getLoginFromToken(authHeader: string): Promise<string> {

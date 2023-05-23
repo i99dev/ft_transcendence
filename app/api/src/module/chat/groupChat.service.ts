@@ -119,7 +119,7 @@ export class GroupChatService {
                 orderBy: {
                     chat_room: {
                         created_at: 'desc',
-                    }
+                    },
                 },
                 skip: (page - 1) * 20,
                 take: 20,

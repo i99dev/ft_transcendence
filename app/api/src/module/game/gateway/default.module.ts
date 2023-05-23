@@ -11,7 +11,14 @@ import { PrismaModule } from '@providers/prisma/prisma.module'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
 
 @Module({
-    imports: [AuthModule, forwardRef(() => GameModule), BlockModule, MatchModule, NotificationModule, PrismaModule],
+    imports: [
+        AuthModule,
+        forwardRef(() => GameModule),
+        BlockModule,
+        MatchModule,
+        NotificationModule,
+        PrismaModule,
+    ],
     providers: [DefaultGateway, DefaultService, SocketService, Array],
 })
 export class DefaultModule {}

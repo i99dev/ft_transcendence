@@ -29,8 +29,7 @@ export class AchievementService {
                 },
             })
             return achievementType
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error)
         }
     }

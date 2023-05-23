@@ -65,7 +65,11 @@ export class UserController {
     }
 
     @Get('/search')
-    async SearchUser(@Query('search', QueryParseStringPipe) search: string, @Query('page') page: number, @Req() req) {
+    async SearchUser(
+        @Query('search', QueryParseStringPipe) search: string,
+        @Query('page') page: number,
+        @Req() req,
+    ) {
         if (!search || search === '') return await this.UserService.SortMany({ id: 'asc' })
         else if (search.length > 255) throw new BadRequestException('Search is too long')
 
@@ -112,14 +116,19 @@ export class UserController {
         @Body(new ValidationPipe()) data: UserPatchDto,
         @Req() req,
     ): Promise<UserGetDto> {
-        if (name !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
+        if (name !== req.user.login)
+            throw new BadRequestException('You cannot add a friend for someone else')
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
         return await this.UserService.updateUser(data, existingUser.login)
     }
 
     @Delete('/:name')
-    async DeleteUser(@Param('name', ParseStringPipe) name: string, @Req() req): Promise<UserGetDto> {
-        if (name !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
+    async DeleteUser(
+        @Param('name', ParseStringPipe) name: string,
+        @Req() req,
+    ): Promise<UserGetDto> {
+        if (name !== req.user.login)
+            throw new BadRequestException('You cannot add a friend for someone else')
         return await this.UserService.DeleteUser(name)
     }
 }

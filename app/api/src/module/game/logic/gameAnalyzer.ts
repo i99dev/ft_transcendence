@@ -18,7 +18,13 @@ const ladderLevel = {
 
 @Injectable()
 export class gameAnalyzer {
-    constructor(private matchService: MatchService, private notificationService: NotificationService, private prisma: PrismaService, private userService: UserService, private achievementService: AchievementService) {}
+    constructor(
+        private matchService: MatchService,
+        private notificationService: NotificationService,
+        private prisma: PrismaService,
+        private userService: UserService,
+        private achievementService: AchievementService,
+    ) {}
 
     // Data retrievals
     async getLadderLevel(player: string): Promise<number> {
@@ -123,9 +129,12 @@ export class gameAnalyzer {
     }
 
     async updatePlayerLadder(player: string): Promise<void> {
-        await this.userService.updateUser({
-            ladder: await this.calcLadder(player),
-        }, player)
+        await this.userService.updateUser(
+            {
+                ladder: await this.calcLadder(player),
+            },
+            player,
+        )
     }
 
     async updatePlayerAcheivments(player: string, achievement: string): Promise<void> {
@@ -137,9 +146,12 @@ export class gameAnalyzer {
 
     async updatePlayerWinningRate(player: string): Promise<void> {
         const winRate = await this.calcWinRate(player)
-        await this.userService.updateUser({
-            wr: winRate,
-        }, player)
+        await this.userService.updateUser(
+            {
+                wr: winRate,
+            },
+            player,
+        )
     }
 
     async calcWinStreak(player: string, winNum: number): Promise<number> {

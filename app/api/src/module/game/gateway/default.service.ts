@@ -21,7 +21,7 @@ export class DefaultService {
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService, private gameAnalyzer: gameAnalyzer) { }
+    constructor(private socketService: SocketService, private gameAnalyzer: gameAnalyzer) {}
 
     /* 
         Adds a new user to connected_users array
@@ -114,46 +114,45 @@ export class DefaultService {
             user.status = 'busy'
             opponent.status = 'busy'
             opponent.socket.emit('Invite-Received', invite)
-        }
-        else if (opponent) {
+        } else if (opponent) {
             // Incase user it not online or not found
             userSocket.emit('Respond-Invite', { accepted: false, playerStatus: opponent.status })
-        }
-        else {
+        } else {
             userSocket.emit('Respond-Invite', { accepted: false, playerStatus: 'offline' })
         }
     }
 
     /* Respond to the inviter with either Accept or Decline */
     public respondInvite(userSocket: Socket, response: InviteDto, error?: boolean) {
-        const user = this.connected_users.find((user => user.socket == userSocket))
+        const user = this.connected_users.find(user => user.socket == userSocket)
         const opponent = this.connected_users.find(user => user.id == response.inviterId)
         if (error) {
-            if (user.status == 'busy')
-                user.status = 'online'
-            if (opponent.status == 'busy')
-                opponent.status = 'online'
+            if (user.status == 'busy') user.status = 'online'
+            if (opponent.status == 'busy') opponent.status = 'online'
             userSocket.emit('Respond-Invite', { status: 'error', playerStatus: opponent.status })
             return
         }
         if (opponent) {
             if (response.accepted == true) {
-                opponent.socket.emit('Respond-Invite', { status: 'accepted', playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', {
+                    status: 'accepted',
+                    playerStatus: user.status,
+                })
                 user.powerUps = response.powerups
                 setTimeout(() => {
                     this.createMultiGame(opponent, user, response.gameType)
                     user.status = 'ingame'
                     opponent.status = 'ingame'
                 }, 3000)
-            }
-            else {
+            } else {
                 opponent.status = 'online'
                 user.status = 'online'
-                opponent.socket.emit('Respond-Invite', { status: 'declined', playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', {
+                    status: 'declined',
+                    playerStatus: user.status,
+                })
             }
-        }
-        else
-            user.status = 'online'
+        } else user.status = 'online'
     }
 
     public playerReady(userSocket: Socket) {
@@ -249,7 +248,12 @@ export class DefaultService {
     /* 
         Creates a new pongGame object and emit the game setup to both players
     */
-    private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string, gameMode?: string) {
+    private createMultiGame(
+        player1: ConnectedUser,
+        player2: ConnectedUser,
+        gameType: string,
+        gameMode?: string,
+    ) {
         let game
         if (gameType == 'custom') {
             game = new PongGame(

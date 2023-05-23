@@ -158,7 +158,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
-            ready: false
+            ready: false,
         }
     }
 

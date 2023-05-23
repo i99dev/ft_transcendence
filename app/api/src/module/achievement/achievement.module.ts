@@ -8,7 +8,13 @@ import { UserModule } from '@module/user/user.module'
 import { GameModule } from '@module/game/game.module'
 
 @Module({
-    imports: [PrismaModule, NotificationModule, MatchModule, UserModule, forwardRef(() => GameModule)],
+    imports: [
+        PrismaModule,
+        NotificationModule,
+        MatchModule,
+        UserModule,
+        forwardRef(() => GameModule),
+    ],
     controllers: [AchievementController],
     providers: [AchievementService],
     exports: [AchievementService],

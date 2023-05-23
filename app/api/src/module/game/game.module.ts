@@ -10,7 +10,14 @@ import { UserModule } from '@module/user/user.module'
 import { AchievementModule } from '@module/achievement/achievement.module'
 
 @Module({
-    imports: [forwardRef(() => DefaultModule), MatchModule, PrismaModule, NotificationModule, UserModule, AchievementModule],
+    imports: [
+        forwardRef(() => DefaultModule),
+        MatchModule,
+        PrismaModule,
+        NotificationModule,
+        UserModule,
+        AchievementModule,
+    ],
     controllers: [GameController],
     providers: [gameAnalyzer, PongGame, String, Array],
     exports: [gameAnalyzer],
