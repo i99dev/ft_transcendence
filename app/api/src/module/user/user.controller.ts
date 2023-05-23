@@ -27,12 +27,11 @@ import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 
 @ApiBearerAuth()
 @ApiTags('users')
-@Controller('users')
+@UseGuards(JwtAuthGuard)
 @Controller('/users')
 export class UserController {
     constructor(private readonly UserService: UserService) {}
 
-    @UseGuards(JwtAuthGuard)
     @Get()
     @ApiOperation({
         operationId: 'getUsers',
@@ -48,7 +47,6 @@ export class UserController {
         return await this.UserService.SortMany(type)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/me')
     @ApiOperation({
         operationId: 'getMe',
@@ -66,7 +64,6 @@ export class UserController {
         return await this.UserService.getUser(req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/search')
     async SearchUser(@Query('search', QueryParseStringPipe) search: string, @Query('page') page: number, @Req() req) {
         if (!search || search === '') return await this.UserService.SortMany({ id: 'asc' })
@@ -76,7 +73,6 @@ export class UserController {
         return await this.UserService.SearchUser(search, page)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/:name')
     @ApiOperation({
         operationId: 'getUser',
@@ -94,13 +90,11 @@ export class UserController {
         return await this.UserService.checkUser(await this.UserService.getUser(name))
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('username/:name/')
     async GetUserByUserName(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
         return await this.UserService.checkUser(await this.UserService.getUserbyUserName(name))
     }
 
-    @UseGuards(JwtAuthGuard)
     @Patch('/:name')
     @ApiOperation({
         operationId: 'updateUser',
@@ -123,7 +117,6 @@ export class UserController {
         return await this.UserService.updateUser(data, existingUser.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete('/:name')
     async DeleteUser(@Param('name', ParseStringPipe) name: string, @Req() req): Promise<UserGetDto> {
         if (name !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')

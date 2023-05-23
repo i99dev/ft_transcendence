@@ -7,6 +7,8 @@ import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { ParseIntPipe } from '@nestjs/common'
 import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
+
+@UseGuards(JwtAuthGuard)
 @Controller('match-history/:login')
 export class MatchHistoryController {
     constructor(
@@ -14,7 +16,6 @@ export class MatchHistoryController {
         private gameAnalyzer: gameAnalyzer,
     ) {}
 
-    @UseGuards(JwtAuthGuard)
     @Get('')
     async getPlayerMatchHistory(
         @Param('login', ParseStringPipe) login: string,
@@ -28,7 +29,6 @@ export class MatchHistoryController {
         return matchHistory
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('result')
     async getMatchHistoryByResult(
         @Param('login', ParseStringPipe) login: string,
@@ -56,7 +56,6 @@ export class MatchHistoryController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('score')
     async getMatchHistoryBySort(
         @Param('login', ParseStringPipe) login: string,
@@ -70,14 +69,12 @@ export class MatchHistoryController {
         return history
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('totalPages')
     async getTotalPages(@Param('login', ParseStringPipe) login: string, @Req() req): Promise<number> {
         if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         return await this.matchHistoryService.getTotalPages(login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('totalGames')
     async getTotal(
         @Param('login', ParseStringPipe) login: string,
@@ -90,7 +87,6 @@ export class MatchHistoryController {
         else return await this.gameAnalyzer.getTotalMatches(login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('winningrate')
     async getWinningRate(@Param('login', ParseStringPipe) login: string, @Req() req): Promise<number> {
         if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')

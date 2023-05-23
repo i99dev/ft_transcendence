@@ -4,17 +4,16 @@ import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { UseGuards, Req } from '@nestjs/common'
 import { UserGetDto } from '@module/user/dto/user.dto'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
+@UseGuards(JwtAuthGuard)
 @Controller('/users/:user/friends')
 export class FriendController {
     constructor(private readonly FriendService: FriendService) {}
 
-    @UseGuards(JwtAuthGuard)
     @Get('')
     async GetFriends(@Req() req): Promise<UserGetDto[]> {
         return await this.FriendService.getFriends(req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post('/:friend')
     async UpdateFriend(
         @Param('user', ParseStringPipe) user: string,
@@ -28,7 +27,6 @@ export class FriendController {
         return newFriend
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete('/:friend')
     async DeleteFriend(
         @Param('user', ParseStringPipe) user: string,

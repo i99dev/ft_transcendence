@@ -4,11 +4,11 @@ import { UseGuards, Req, Get } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { AchievementDto } from './dto/achievement.dto'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
+@UseGuards(JwtAuthGuard)
 @Controller('achievement')
 export class AchievementController {
     constructor(private readonly achievementService: AchievementService) {}
 
-    @UseGuards(JwtAuthGuard)
     @Get('user/:login')
     async getAchievements(
         @Param('login', ParseStringPipe) login: string,
@@ -22,7 +22,6 @@ export class AchievementController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('newRank')
     async getNewRank(@Req() req): Promise<{ rank: string; isUp: boolean }> {
         return await this.achievementService.getNewRank(req.user.login)
