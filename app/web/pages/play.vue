@@ -32,7 +32,7 @@
         <GameInviteBox v-if="inviteModal.open" class="z-20" />
         <div
         v-show="showRotateOverlay"
-        class="fixed inset-0 bg-gray-900 opacity-75 flex items-center justify-center text-white text-2xl z-30"
+        class="fixed inset-0 bg-gray-900 opacity-100 flex items-center justify-center text-white text-2xl z-30"
         >
         Please rotate your phone to landscape.
       </div>
