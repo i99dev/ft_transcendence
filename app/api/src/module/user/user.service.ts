@@ -89,7 +89,7 @@ export class UserService {
         try {
             const users = await this.prisma.user.findMany({
                 where: {
-                    login: {
+                    username: {
                         contains: search,
                         mode: 'insensitive',
                     },
@@ -130,12 +130,6 @@ export class UserService {
                         contains: name,
                         mode: 'insensitive',
                     },
-                },
-                select: {
-                    username: true,
-                    image: true,
-                    ladder: true,
-                    first_name: true,
                 },
                 skip: (page - 1) * 20,
                 take: 20,
