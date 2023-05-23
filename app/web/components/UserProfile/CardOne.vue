@@ -4,7 +4,7 @@
             <div class="flex sm:flex-row flex-col items-center">
 
                 <!--  avatar  -->
-                <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :image="userData.image" :status="userData?.status" />
+                <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :Image="userData.image" :status="userData?.status" />
 
 
                 <div class="flex sm:flex-col justify-center sm:p-6">
