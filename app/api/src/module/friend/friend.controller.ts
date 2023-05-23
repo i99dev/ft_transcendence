@@ -14,21 +14,29 @@ export class FriendController {
         return await this.FriendService.getFriends(req.user.login)
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('/:friend')
     async UpdateFriend(
         @Param('user', ParseStringPipe) user: string,
         @Param('friend', ParseStringPipe) friend: string,
+        @Req() req,
     ): Promise<UserGetDto> {
+        if (user === friend) throw new BadRequestException('You cannot add yourself as a friend')
+        if (user !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         const newFriend = await this.FriendService.CheckFriendsUpdate(user, friend)
         if (!newFriend) throw new BadRequestException('Friend not found')
         return newFriend
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete('/:friend')
     async DeleteFriend(
         @Param('user', ParseStringPipe) user: string,
         @Param('friend', ParseStringPipe) friend: string,
+        @Req() req,
     ): Promise<UserGetDto> {
+        if (user === friend) throw new BadRequestException('You cannot remove yourself as a friend')
+        if (user !== req.user.login) throw new BadRequestException('You cannot remove a friend for someone else')
         const deletedFriend = await this.FriendService.DeleteFriend(friend, user)
         if (!deletedFriend) throw new BadRequestException('Friend not found')
         return deletedFriend

@@ -19,7 +19,6 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { BlockModule } from '@module/block/block.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { APP_GUARD } from '@nestjs/core'
-import { FriendModule } from '@module/friend/friend.module'
 
 @Module({
     imports: [

@@ -1,18 +1,22 @@
-import { Controller, Get, NotFoundException, Query } from '@nestjs/common'
+import { Controller, Get, NotFoundException, Query, UseGuards } from '@nestjs/common'
 import { LeaderboardService } from './leaderboard.service'
 import { UserGetDto } from '@module/user/dto/user.dto'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
+import { JwtAuthGuard } from '@common/guards/jwt.guard'
 
 @Controller('leaderboard')
 export class LeaderboardController {
     constructor(private readonly leaderboardService: LeaderboardService) {}
 
+    @UseGuards(JwtAuthGuard)
     @Get('')
     async getLeaderboard(@Query('page', PosNumberPipe) page: number): Promise<UserGetDto[]> {
         const ldr = await this.leaderboardService.getLeaderboard(page)
         if (!ldr) throw new NotFoundException('Leaderboard not found')
         return ldr
     }
+
+    @UseGuards(JwtAuthGuard)
     @Get('totalPages')
     async getTotalPages(): Promise<number> {
         return await this.leaderboardService.getTotalPages()

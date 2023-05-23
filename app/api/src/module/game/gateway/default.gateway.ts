@@ -17,7 +17,6 @@ import { SocketService } from './socket.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
-import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { ParseSocketStringPipe } from '@common/pipes/socketString.pipe'
 import { BlockService } from '@module/block/block.service'
 @WebSocketGateway({

@@ -7,7 +7,6 @@ import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
 import { gameHistory } from '../logic/gameHistory'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { GameRepository } from '../repository/game.repository'
-import e from 'express'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND

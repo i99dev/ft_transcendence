@@ -1,5 +1,4 @@
 import { Logger, UseGuards } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
     OnGatewayConnection,

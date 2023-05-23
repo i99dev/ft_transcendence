@@ -1,5 +1,5 @@
 import { gameAnalyzer } from './../game/logic/gameAnalyzer'
-import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common'
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query, Req } from '@nestjs/common'
 import { MatchHistoryService } from './match-history.service'
 import { MatchHistoryDto } from './dto/match-history.dto'
 import { UseGuards } from '@nestjs/common'
@@ -15,11 +15,13 @@ export class MatchHistoryController {
     ) {}
 
     @UseGuards(JwtAuthGuard)
-    @Get('') // /match-history?page=1
+    @Get('')
     async getPlayerMatchHistory(
         @Param('login', ParseStringPipe) login: string,
         @Query('page', ParseIntPipe) page: number,
+        @Req() req,
     ): Promise<MatchHistoryDto[]> {
+        if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         const matchHistory = await this.matchHistoryService.getPlayerMatchHistory(page, login)
         if (!matchHistory)
             throw new NotFoundException(`Match history for player ${login} not found`)
@@ -27,12 +29,14 @@ export class MatchHistoryController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('result') // /match-history/result?winning=true&losing=false
+    @Get('result')
     async getMatchHistoryByResult(
         @Param('login', ParseStringPipe) login: string,
         @Query('page', ParseIntPipe) page: number,
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false',
+        @Req() req,
     ): Promise<MatchHistoryDto[]> {
+        if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         if (isWin === 'true') {
             const history = await this.matchHistoryService.getMatchHistoryByResult(
                 page,
@@ -53,12 +57,14 @@ export class MatchHistoryController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('score') // /match-history/score?sort=asc&sort=desc
+    @Get('score')
     async getMatchHistoryBySort(
         @Param('login', ParseStringPipe) login: string,
         @Query('page', ParseIntPipe) page: number,
         @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
+        @Req() req,
     ): Promise<MatchHistoryDto[]> {
+        if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         const history = await this.matchHistoryService.getMatchHistoryBySort(page, login, sort)
         if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
         return history
@@ -66,24 +72,28 @@ export class MatchHistoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get('totalPages')
-    async getTotalPages(@Param('login', ParseStringPipe) login: string): Promise<number> {
+    async getTotalPages(@Param('login', ParseStringPipe) login: string, @Req() req): Promise<number> {
+        if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         return await this.matchHistoryService.getTotalPages(login)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('totalGames') // /match-history/totalgames/login?isWin=true
+    @Get('totalGames')
     async getTotal(
         @Param('login', ParseStringPipe) login: string,
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false' | undefined,
+        @Req() req,
     ): Promise<number> {
+        if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         if (isWin === 'false') return await this.gameAnalyzer.getTotalDefeats(login)
         else if (isWin === 'true') return await this.gameAnalyzer.getTotalVictories(login)
         else return await this.gameAnalyzer.getTotalMatches(login)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('winningrate') // /match-history/:login/winningrate
-    async getWinningRate(@Param('login', ParseStringPipe) login: string): Promise<number> {
+    @Get('winningrate')
+    async getWinningRate(@Param('login', ParseStringPipe) login: string, @Req() req): Promise<number> {
+        if (login !== req.user.login) throw new BadRequestException('You cannot add a friend for someone else')
         return await this.gameAnalyzer.calcWinRate(login)
     }
 }

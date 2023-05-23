@@ -1,10 +1,9 @@
 import { AchievementService } from './achievement.service'
 import { Controller, NotFoundException, Param } from '@nestjs/common'
-import { UseGuards, Req, Get, Query, Delete } from '@nestjs/common'
+import { UseGuards, Req, Get } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import { AchievementDto } from './dto/achievement.dto'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
-import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 @Controller('achievement')
 export class AchievementController {
     constructor(private readonly achievementService: AchievementService) {}

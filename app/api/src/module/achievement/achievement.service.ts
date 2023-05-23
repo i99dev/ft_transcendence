@@ -1,5 +1,4 @@
 import { NotificationService } from '@module/notification/notification.service'
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { AchievementDto } from './dto/achievement.dto'
 import { NotificationType } from '@prisma/client'

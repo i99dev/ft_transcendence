@@ -1,7 +1,6 @@
 import { AchievementService } from './achievement.service'
 import { AchievementController } from './achievement.controller'
 import { Module } from '@nestjs/common'
-import { PrismaService } from '@providers/prisma/prisma.service'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { PrismaModule } from '@providers/prisma/prisma.module'
 import { NotificationModule } from '@module/notification/notification.module'

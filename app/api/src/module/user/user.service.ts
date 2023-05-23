@@ -122,24 +122,6 @@ export class UserService {
         return user
     }
 
-    async SearchUserNames(name: string, page: number) {
-        try {
-            const users = await this.prisma.user.findMany({
-                where: {
-                    username: {
-                        contains: name,
-                        mode: 'insensitive',
-                    },
-                },
-                skip: (page - 1) * 20,
-                take: 20,
-            })
-            return users
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async SortUserByWinGap(): Promise<UserGetDto[]> {
         const users: UserGetDto[] = await this.prisma.user.findMany()
         const sortedUsers: UserGetDto[] = users.sort(this.repository.SortUserByWinLose)
