@@ -1,4 +1,5 @@
 import { useSocket } from '@/composables/Game/useSocket'
+import { useFriends } from '@/composables/Friends/useFriends'
 export const useGameApi = () => { }
 
 export const useGame = () => {
@@ -32,9 +33,11 @@ export async function useGameHistory(ep_URL: string): Promise<MatchHistoryDto[] 
     return data.value
 }
 
-export function useGameInvite() {
+export async function useGameInvite() {
 
     const { user_info } = useUserInfo()
+    const { setChatModalOpen } = useChat()
+    const { setFriendsModalOpen } = await useFriends()
 
     const invite = useState<InviteDto>('invite', () => {
         return {
@@ -101,6 +104,15 @@ export function useGameInvite() {
         inviteModal.value.open = false;
     };
 
+    const showInviteModal = (user: string) => {
+        reset()
+        inviteModal.value.type = 'invite'
+        inviteModal.value.target = user
+        inviteModal.value.open = true
+        setChatModalOpen(false)
+        setFriendsModalOpen(false)
+    }
+
     const reset = () => {
         inviteModal.value.open = false;
         inviteModal.value.type = ''
@@ -110,5 +122,5 @@ export function useGameInvite() {
         inviteModal.value.rejected = false
     };
 
-    return { invite, inviteModal, send, accept, decline, reset };
+    return { invite, inviteModal, send, accept, decline, showInviteModal, reset };
 }

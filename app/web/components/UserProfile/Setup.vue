@@ -7,7 +7,16 @@
                     <div class="mt-4 mr-auto mb-4 ml-auto bg-white max-w-lg">
                         <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
                             <!-- component -->
-
+                       <div v-if="errCode != 0" class="flex bg-red-100 rounded-lg mb-4 z-50 text-sm text-red-700" role="alert">
+                            <svg class="w-5 h-5 inline mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <span class="font-medium">Error !</span> {{ errMsgs.get(errCode) }}
+                            </div>
+                        </div>
                             <h1 class="font-thinner flex text-4xl pt-10 px-5 py-10">
                                 Setup Your Profile
                             </h1>
@@ -110,6 +119,8 @@ const isUploading = ref(false)
 
 const isDefault = ref(false)
 
+const errCode = ref(0)
+
 const uploadeImage = async (event: any) => {
     const file = event.target.files[0]
     if (!file) return
@@ -121,6 +132,7 @@ const uploadeImage = async (event: any) => {
     reader.value.onload = () => {
         image.value = reader.value?.result
         newAvatar.value = image.value
+        setUserAvatar(image.value)
     }
 }
 
@@ -145,20 +157,33 @@ const backtoImageSelection = () => {
 }
 
 const submitProfile = async () => {
-    if (newUsername.value != '') {
+    if (newUsername?.value && newUsername?.value != '') {
         setUserName(newUsername.value)
-        await useUpdateUserInfo()
+        const { resStatus } = await useUpdateUserInfo()
+        errCode.value = resStatus
     }
-    if (newAvatar.value != '' && isUploading.value) {
-        await useUplaod(user_info.value?.login, formData.value)
+    if (newAvatar?.value && newAvatar?.value != '' && isUploading.value) {
+        const { resStatus } = await useUplaod(user_info.value?.login, formData.value)
+        setUserAvatar(newAvatar.value)
+        errCode.value = resStatus
     }
-    if (newAvatar.value != '' && isDefault.value) {
+    if (newAvatar?.value && newAvatar.value != '' && isDefault.value) {
         setUserAvatar(newAvatar.value)
         await useUpdateUserInfo()
+        const { resStatus } = await useUpdateUserInfo()
+        errCode.value = resStatus
     }
-    emit('close')
-    window.location.reload()
+    if (errCode.value == 0)
+        emit('close')
 }
+
+const errMsgs = computed(() => {
+    const map = new Map();
+    map.set(400, "Please choose a shorter name. The current name is too long.");
+    map.set(415, "Please select a different image. The chosen file format is not supported.");
+    map.set(500, "Please select a different username as it is already in use.");
+    return map;
+})
 
 const defaultImages = [
     'https://i1.ae/img/icons/1.png',

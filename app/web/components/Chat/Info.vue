@@ -36,15 +36,18 @@
                                     <DialogPanel
                                         class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
                                     >
-                                        <h1
-                                            class="p-2 border-b border-secondary text-white font-semibold flex justify-center mb-2"
-                                        >
-                                            {{ participant.user.username }}
-                                        </h1>
+                                        <div class="border-b border-secondary mb-2 centered">
+                                            <button
+                                                @click="goToUserProfile(participant.user.username)"
+                                                class="p-2 text-white font-semibold flex justify-center items-center hover:bg-primary mb-2 rounded-xl smooth-transition"
+                                            >
+                                                {{ participant.user.username }}
+                                            </button>
+                                        </div>
                                         <button
                                             v-for="option in adminOptions"
                                             :key="option.action"
-                                            class="flex items-center p-2 w-full rounded-lg hover:bg-secondary text-white"
+                                            class="flex items-center justify-center p-2 w-full rounded-lg hover:bg-secondary text-white"
                                             @click="setUser(option.action)"
                                         >
                                             {{ option.text }}
@@ -101,7 +104,7 @@
                                                     :alt="user.username"
                                                 />
                                                 <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-background_light"
+                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-primary hover:bg-primary hover:text-white smooth-transition"
                                                 >
                                                     <XMarkIcon class="h-2 w-2" aria-hidden="true" />
                                                 </div>
@@ -110,7 +113,7 @@
                                         <UserProfileList
                                             @selectUser="selectUser"
                                             :search="true"
-                                            :unwantedUsers="participants"
+                                            :unwantedUsers="participants?.map(a => a.user)"
                                         />
                                         <div class="flex justify-end mt-2">
                                             <button
@@ -130,26 +133,24 @@
 
                 <div class="text-md font-semibold centered">
                     <button
-                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
                         :class="{
-                            'scale-125': participantsType === 'NORMAL',
-                            'text-primary': participantsType === 'NORMAL',
+                            'scale-125 text-primary': participantsType === 'NORMAL',
                             'opacity-70': participantsType !== 'NORMAL',
                         }"
-                        @click="updateParticipants()"
+                        @click="switchParticipantsList()"
                     >
-                        Participants
+                        participants
                     </button>
                     <button
-                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8"
-                        @click="updateParticipants('BAN')"
+                        class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
+                        @click="switchParticipantsList('BAN')"
                         :class="{
-                            'scale-125': participantsType === 'BAN',
-                            'text-primary': participantsType === 'BAN',
+                            'scale-125 text-primary': participantsType === 'BAN',
                             'opacity-70': participantsType !== 'BAN',
                         }"
                     >
-                        Banned
+                        banned
                     </button>
                 </div>
                 <div
@@ -249,9 +250,9 @@ const adminOptions = ref([
 ])
 const isAdminOptionsOpened = ref(false)
 const isAddUserOpened = ref(false)
-
 const { user_info } = useUserInfo()
 const { currentChat } = useCurrentChat()
+const emit = defineEmits(['closeNavBar'])
 
 const users = ref([] as UserGetDto[])
 
@@ -271,6 +272,12 @@ const socketOn = () => {
 }
 
 const setAdminOptions = () => {
+    if (participant.value.role === 'OWNER') {
+        adminOptions.value = []
+        return
+    }
+    
+    
     if (participant.value.status === 'BAN') {
         adminOptions.value = []
         adminOptions.value[0] = {
@@ -318,15 +325,6 @@ const resetAdminOptions = () => {
 }
 
 const openAdminOptionsPopup = (chatUser: ChatUser) => {
-    const myChatUser = participants.value?.find(
-        chatUser => chatUser.user_login === user_info.value?.login,
-    )
-    if (
-        chatUser.user_login === user_info.value?.login ||
-        chatUser.role === 'OWNER' ||
-        myChatUser?.role === 'MEMBER'
-    )
-        return
     participant.value = chatUser
     setAdminOptions()
     isAdminOptionsOpened.value = true
@@ -413,6 +411,20 @@ const CanAddUsers = () => {
 
     return false
 }
+
+const goToUserProfile = (username: string) => {
+    isAdminOptionsOpened.value = false
+    isAddUserOpened.value = false
+    navigateTo(`/users/${username}`)
+    emit('closeNavBar')
+}
+const switchParticipantsList = (type: string = 'NORMAL') => {
+    if (type === 'NORMAL' && participantsType.value !== 'NORMAL')
+        updateParticipants()
+    else if (type === 'BAN' && participantsType.value !== 'BAN')
+        updateParticipants('BAN')
+}
+
 </script>
 
 <style scoped>

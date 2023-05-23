@@ -159,6 +159,16 @@ export const useChatType = () => {
     return { chatType, setChatType }
 }
 
+export const useGroupChatSearching = () => {
+    const groupChatSearching = useState<boolean>('group_chat_search', () => false)
+
+    const setGroupChatSearching = async (status: boolean) => {
+        groupChatSearching.value = status
+    }
+
+    return { groupChatSearching, setGroupChatSearching }
+}
+
 export const useChats = () => {
     const chats = useState<any | null>('chats', () => null)
     const searchedGroupChats = useState<(GroupChat[] & DirectChat[]) | null>(
@@ -224,7 +234,6 @@ export const useGroupChatParticipants = () => {
     }
 
     const updateParticipants = async (user_type: string = 'NORMAL') => {
-        if (participants.value?.length && participantsType.value === user_type) return
         const { currentChat } = useCurrentChat()
         if (currentChat.value) {
             const { data: chatUsers } = await useGetGroupChatParticipants(

@@ -329,11 +329,13 @@ const socketOn = () => {
         }
         closePopup()
 
-        const { data, error } = await useUplaod(payload.room_id, formData.value)
-        if (!data.value)
-            chats.value?.forEach((chat: GroupChat) => {
-                if (chat.chat_room_id === payload.room_id) chat.image = data.value?.file_url
-            })
+        if (chatImage.value) {
+            const { data } = await useUplaod(payload.room_id, formData.value)
+            if (data.value)
+                chats.value?.forEach((chat: GroupChat) => {
+                    if (chat.chat_room_id === payload.room_id) chat.image = data.value?.file_url
+                })
+        }
     })
 }
 

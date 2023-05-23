@@ -48,11 +48,10 @@
                         "
                         type="button"
                         @click="handleUserSelection(user)"
-                        class="p-2 border smooth-transition border-white bg-background_light rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
+                        class="p-2 border smooth-transition border-white rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                         :class="{
-                            'bg-background': isUserDimmed(user.username),
-                            'hover:bg-primary': !isUserDimmed(user.username),
-                            'cursor-default': isUserDimmed(user.username),
+                            'bg-background cursor-default': isUserDimmed(user.username),
+                            'bg-background_light hover:bg-primary': !isUserDimmed(user.username),
                         }"
                     >
                         <img :src="user.image" class="rounded-full w-10 h-10 object-cover" />

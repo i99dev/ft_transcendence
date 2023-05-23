@@ -45,7 +45,7 @@ import { useSocket, useTabEvent } from '../composables/Game/useSocket'
 import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
 
 const route = useRoute()
-const { invite, inviteModal } = useGameInvite()
+const { invite, inviteModal } = await useGameInvite()
 const emit = defineEmits(['showTabModal'])
 const exit = ref(false)
 const showSelector = ref(true)

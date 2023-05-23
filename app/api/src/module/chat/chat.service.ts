@@ -6,10 +6,11 @@ import { UpdateChatUserInterface } from './interface/chat.interface'
 import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
 import { number } from 'joi'
+import { DirectChatService } from './directChat.service'
 
 @Injectable()
 export class ChatService {
-    constructor(private prisma: PrismaService, private chatRepository: ChatRepository) {}
+    constructor(private prisma: PrismaService, private chatRepository: ChatRepository, private directChatService: DirectChatService) {}
     private chatRooms: ChatRoom[]
 
     async getUser(login: string) {
@@ -283,18 +284,26 @@ export class ChatService {
 
     async validateChatUser(room_id: string, user_login: string) {
         try {
-            const chatUser = await this.prisma.chatUser.findFirst({
-                where: {
-                    chat_room_id: room_id,
-                    user_login: user_login,
-                    NOT: {
-                        status: {
-                            in: ['OUT', 'BAN', 'INVITED'],
+            const room = await this.prisma.chatRoom.findFirst({ where: { room_id: room_id } })
+            if (room.type === 'GROUP') {
+                const chatUser = await this.prisma.chatUser.findFirst({
+                    where: {
+                        chat_room_id: room_id,
+                        user_login: user_login,
+                        NOT: {
+                            status: {
+                                in: ['OUT', 'BAN', 'INVITED'],
+                            },
                         },
                     },
-                },
-            })
-            return chatUser
+                })
+                return chatUser
+            }
+            else {
+                const chatUser = await this.directChatService.getDirectChatUser(room_id, user_login)
+                if (chatUser) return true
+                return false
+            }
         } catch (error) {
             console.log(error)
         }

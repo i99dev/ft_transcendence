@@ -63,8 +63,12 @@ export const useUserInfo = () => {
 
 export async function useUpdateUserInfo(): Promise<any> {
     const store = useUserInfo()
+    let resStatus = 0
     const { login, image, username, two_fac_auth, status }: any = store.user_info.value
     const { data, error: errorRef } = await useFetch(`users/${login}`, {
+        onResponseError: (error) => {
+            resStatus = error.response.status
+        },
         method: 'PATCH',
         body: {
             username,
@@ -78,5 +82,5 @@ export async function useUpdateUserInfo(): Promise<any> {
         },
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error }
+    return { data, error, resStatus}
 }

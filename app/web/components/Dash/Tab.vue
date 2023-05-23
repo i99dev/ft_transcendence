@@ -23,7 +23,7 @@
         <div class="w-full px-3">
             <component :is="getComponent(activeTab)" />
 
-            <DashTimeLine v-if="isActive(tabs[0])" :username="props.username" />
+            <DashMatchHistory v-if="isActive(tabs[0])" :username="props.username" />
             <DashAchievement v-if="isActive(tabs[1])" :username="props.username" />
             <DashLeaderBoard v-if="isMe && isActive(tabs[2])" />
         </div>
@@ -53,7 +53,7 @@ const tabs = computed(() => {
         return [
             {
                 name: 'Match History',
-                component: 'DashTimeLine',
+                component: 'DashMatchHistory',
             },
             {
                 name: 'Achievements',
@@ -64,10 +64,10 @@ const tabs = computed(() => {
                 component: 'DashLeaderBoard',
             },
         ]
-    return [
+    return [ 
         {
             name: 'Match History',
-            component: 'DashTimeLine',
+            component: 'DashMatchHistory',
         },
         {
             name: 'Achievements',
