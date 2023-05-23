@@ -157,17 +157,17 @@ const backtoImageSelection = () => {
 }
 
 const submitProfile = async () => {
-    if (newUsername.value != '') {
+    if (newUsername?.value && newUsername?.value != '') {
         setUserName(newUsername.value)
         const { resStatus } = await useUpdateUserInfo()
         errCode.value = resStatus
     }
-    if (newAvatar.value != '' && isUploading.value) {
+    if (newAvatar?.value && newAvatar?.value != '' && isUploading.value) {
         const { resStatus } = await useUplaod(user_info.value?.login, formData.value)
         setUserAvatar(newAvatar.value)
         errCode.value = resStatus
     }
-    if (newAvatar.value != '' && isDefault.value) {
+    if (newAvatar?.value && newAvatar.value != '' && isDefault.value) {
         setUserAvatar(newAvatar.value)
         await useUpdateUserInfo()
         const { resStatus } = await useUpdateUserInfo()
