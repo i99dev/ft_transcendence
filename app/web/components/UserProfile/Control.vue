@@ -82,6 +82,11 @@
 <script setup lang="ts">
 
 import { useFriends } from '../../composables/Friends/useFriends'
+import {
+    UserPlusIcon,
+    UserMinusIcon,
+    ChatBubbleOvalLeftEllipsisIcon,
+} from '@heroicons/vue/24/outline'
 
 const props = defineProps({
     username: {
