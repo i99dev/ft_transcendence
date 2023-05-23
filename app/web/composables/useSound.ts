@@ -17,6 +17,8 @@ export const useSound = () => {
         ['play', new Audio('/sounds/ost1.mp3')],
     ]))
     const play = (effect: string) => {
+        if (effect === 'click')
+            sound.value.get(effect).currentTime = 0
         sound.value.get(effect).play()
     }
     const pause = (effect: string) => {
