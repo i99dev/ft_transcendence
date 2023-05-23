@@ -1,5 +1,5 @@
 export default defineNuxtPlugin((nuxtApp) => {
-  const { play, stop } = useSound()
+  const { play, stop, volume } = useSound()
   nuxtApp.vueApp.directive('click-effect', {
     mounted (el, binding) {
       el.addEventListener('click', function(event: any) {
@@ -7,7 +7,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         console.log('click sound', binding.arg)
         play('click')
         if (binding.arg === 'play')
+        {
           play('play')
+          volume('play', 0.5)
+        }
         if (binding.arg === 'unplay')
           stop('play')
         

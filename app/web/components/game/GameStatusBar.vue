@@ -27,7 +27,7 @@
             <div class="text-white font-semibold text-2xl">{{ players[1].score }}</div>
         </div>
     </div>
-    <button @click="$emit('ExitBtn')"
+    <button v-click-effect="()=> $emit('ExitBtn')"
         class="fixed top-14 left-1/2 mt-2 transform -translate-x-1/2 z-20 bg-transparent text-white text-xl px-2 py-1">
         <img src="/imgs/leave.png" alt="Leave Game" class="w-6 h-6" />
     </button>
