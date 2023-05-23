@@ -133,12 +133,12 @@
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
                             <img
-                                :src="userInfo.image"
+                                :src="user_info.image"
                                 class="w-8 h-8 rounded-full object-cover"
                             />
                             <!-- name and result -->
                             <div class="text-xs m-2 capitalize font-bold">
-                                {{ userInfo.username }}
+                                {{ user_info.username }}
                             </div>
                         </div>
                         <!-- result -->
@@ -175,7 +175,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 
-const userInfo = ref() as any
+const { user_info } = useUserInfo()
 
 const props = defineProps({
     username: {
@@ -214,8 +214,6 @@ onMounted(async () => {
     currentFilter.value = 'all'
     const data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
     if (data && game_history) game_history.values = data
-    const { user_info } = useUserInfo()
-    userInfo.value = user_info.value
 })
 
 const getOpponent = (game: MatchHistoryDto) => {

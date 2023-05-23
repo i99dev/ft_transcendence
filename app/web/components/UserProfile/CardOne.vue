@@ -56,8 +56,6 @@
 
 const { user_info } = useUserInfo()
 
-const user = await getUserbyUserName(props.username)
-
 const props = defineProps({
     username: {
         type: String,
@@ -68,6 +66,8 @@ const props = defineProps({
         default: false,
     },
 })
+
+const user = await getUserbyUserName(props.username)
 
 const isMe = ref(false)
 
