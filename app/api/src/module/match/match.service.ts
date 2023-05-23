@@ -1,15 +1,13 @@
-import { gameAnalyzer } from './../game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
-import { MatchHistoryDto } from './dto/match-history.dto'
+import { MatchDto } from './dto/match.dto'
 import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
-export class MatchHistoryService {
+export class MatchService {
     constructor(
         private jwtService: JwtService,
         private prisma: PrismaService,
-        private gameAnalyzer: gameAnalyzer,
     ) {}
     readonly limit = 3
 
@@ -37,7 +35,7 @@ export class MatchHistoryService {
         }
     }
 
-    async getPlayerMatchHistory(page: number, player: string): Promise<MatchHistoryDto[]> {
+    async getPlayerMatchHistory(page: number, player: string): Promise<MatchDto[]> {
         try {
             const skip = (page - 1) * this.limit
             const match = await this.prisma.match.findMany({
@@ -74,7 +72,7 @@ export class MatchHistoryService {
         page: number,
         player: string,
         winning: boolean,
-    ): Promise<MatchHistoryDto[]> {
+    ): Promise<MatchDto[]> {
         const match = await this.getPlayerMatchHistory(page, player)
         if (!match) return null
         const winningMatch = []
@@ -95,7 +93,7 @@ export class MatchHistoryService {
         page: number,
         player: string,
         sort: 'asc' | 'desc',
-    ): Promise<MatchHistoryDto[]> {
+    ): Promise<MatchDto[]> {
         const match = await this.getPlayerMatchHistory(page, player)
         if (!match) return null
         match.sort((a, b) => {
@@ -118,5 +116,103 @@ export class MatchHistoryService {
             }
         })
         return match
+    }
+
+    async getTotalVictories(player: string): Promise<number> {
+        return await this.prisma.match.count({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                        IsWinner: true,
+                    },
+                },
+            },
+        })
+    }
+
+    async getTotalDefeats(player: string): Promise<number> {
+        return await this.prisma.match.count({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                        IsWinner: false,
+                    },
+                },
+            },
+        })
+    }
+
+    async getTotalMatches(player: string): Promise<number> {
+        return await this.prisma.match.count({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                    },
+                },
+            },
+        })
+    }
+
+    async getMatches(player: string): Promise<MatchDto[]> {
+        return await this.prisma.match.findMany({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                start: 'desc',
+            },
+            include: {
+                opponents: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        })
+    }
+
+    async getVictories(player: string): Promise<MatchDto[]> {
+        return await this.prisma.match.findMany({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                        IsWinner: true,
+                    },
+                },
+            },
+        })
+    }
+
+    async getDefeats(player: string): Promise<MatchDto[]> {
+        return await this.prisma.match.findMany({
+            where: {
+                opponents: {
+                    some: {
+                        user: {
+                            login: player,
+                        },
+                        IsWinner: false,
+                    },
+                },
+            },
+        })
     }
 }

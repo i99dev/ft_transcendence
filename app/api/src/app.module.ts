@@ -1,5 +1,5 @@
 import { ChatModule } from './module/chat/chat.module'
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './module/user/user.module'
@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
-import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { AchievementModule } from './module/achievement/achievement.module'
 import { LeaderboardModule } from './module/leaderboard/leaderboard.module'
 import { MulterModule } from './module/multer/multer.module'
@@ -19,6 +18,7 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { BlockModule } from '@module/block/block.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { APP_GUARD } from '@nestjs/core'
+import { MatchModule } from '@module/match/match.module'
 
 @Module({
     imports: [
@@ -60,7 +60,7 @@ import { APP_GUARD } from '@nestjs/core'
         FriendWsModule,
         GameModule,
         ChatModule,
-        MatchHistoryModule,
+        MatchModule,
         AchievementModule,
         LeaderboardModule,
         MulterModule,

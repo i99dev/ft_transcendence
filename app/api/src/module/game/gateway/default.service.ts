@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { ConnectedUser } from '../interface/game.interface'
 import { Socket } from 'socket.io'
-import { PongGame } from '../logic/pongGame'
 import { SocketService } from './socket.service'
 import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
-import { gameHistory } from '../logic/gameHistory'
-import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { GameRepository } from '../repository/game.repository'
+import { gameAnalyzer } from '../logic/gameAnalyzer'
+import { PongGame } from '../logic/pongGame'
+import { gameHistory } from '../logic/gameHistory'
+import { PrismaService } from '@providers/prisma/prisma.service'
+import { UserService } from '@module/user/user.service'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
@@ -16,11 +18,10 @@ export class DefaultService {
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
     private custom_queue: string[] = []
-    private gameAnalyzer = new gameAnalyzer()
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService) { }
+    constructor(private socketService: SocketService, private gameAnalyzer: gameAnalyzer) { }
 
     /* 
         Adds a new user to connected_users array
@@ -275,7 +276,7 @@ export class DefaultService {
     }
 
     private startGame(game: PongGame) {
-        this.game_result = new gameHistory(game.getGameStatus())
+        this.game_result = new gameHistory(game.getGameStatus(), new PrismaService())
         game.events.on('play-sound', (sound: string) => {
             this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
         })

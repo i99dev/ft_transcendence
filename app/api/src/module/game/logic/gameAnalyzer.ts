@@ -1,8 +1,11 @@
-import { MatchHistoryDto } from '../../match-history/dto/match-history.dto'
+import { MatchService } from '@module/match/match.service'
 import { ConnectedUser } from '../interface/game.interface'
 import { NotificationService } from '@module/notification/notification.service'
 import { NotificationType } from '@prisma/client'
 import { PrismaService } from '@providers/prisma/prisma.service'
+import { Injectable } from '@nestjs/common'
+import { UserService } from '@module/user/user.service'
+import { AchievementService } from '@module/achievement/achievement.service'
 
 const ladderLevel = {
     CapinBoy: { Rank: 6, lowXP: 0, highXP: 100, winRate: 0 },
@@ -12,131 +15,26 @@ const ladderLevel = {
     Yonko: { Rank: 2, lowXP: 1500, highXP: 3500, winRate: 0.45 },
     KaizokuOu: { Rank: 1, lowXP: 3500, highXP: 6000, winRate: 0.4 },
 }
+
+@Injectable()
 export class gameAnalyzer {
-    private prisma = new PrismaService()
-    private notificationService = new NotificationService(new PrismaService())
+    constructor(private matchService: MatchService, private notificationService: NotificationService, private prisma: PrismaService, private userService: UserService, private achievementService: AchievementService) {}
 
     // Data retrievals
-    async getTotalVictories(player: string): Promise<number> {
-        return await this.prisma.match.count({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
-                        },
-                        IsWinner: true,
-                    },
-                },
-            },
-        })
-    }
-
-    async getTotalDefeats(player: string): Promise<number> {
-        return await this.prisma.match.count({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
-                        },
-                        IsWinner: false,
-                    },
-                },
-            },
-        })
-    }
-
-    async getTotalMatches(player: string): Promise<number> {
-        return await this.prisma.match.count({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
-                        },
-                    },
-                },
-            },
-        })
-    }
-
-    async getMatches(player: string): Promise<MatchHistoryDto[]> {
-        return await this.prisma.match.findMany({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
-                        },
-                    },
-                },
-            },
-            orderBy: {
-                start: 'desc',
-            },
-            include: {
-                opponents: {
-                    include: {
-                        user: true,
-                    },
-                },
-            },
-        })
-    }
-
-    async getVictories(player: string): Promise<MatchHistoryDto[]> {
-        return await this.prisma.match.findMany({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
-                        },
-                        IsWinner: true,
-                    },
-                },
-            },
-        })
-    }
-
-    async getDefeats(player: string): Promise<MatchHistoryDto[]> {
-        return await this.prisma.match.findMany({
-            where: {
-                opponents: {
-                    some: {
-                        user: {
-                            login: player,
-                        },
-                        IsWinner: false,
-                    },
-                },
-            },
-        })
-    }
-
     async getLadderLevel(player: string): Promise<number> {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                login: player,
-            },
-        })
+        const user = await this.userService.getUser(player)
         return user.ladder
     }
 
     async getXP(player: string): Promise<number> {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                login: player,
-            },
-        })
+        const user = await this.userService.getUser(player)
         return user.xp
     }
 
     // Rank calculations
     async calcWinRate(player: string): Promise<number> {
-        const totalWins = await this.getTotalVictories(player)
-        const totalMatches = await this.getTotalMatches(player)
+        const totalWins = await this.matchService.getTotalVictories(player)
+        const totalMatches = await this.matchService.getTotalMatches(player)
         return totalWins / totalMatches
     }
 
@@ -197,7 +95,7 @@ export class gameAnalyzer {
         const ladder = await this.getLadderLevel(player)
         const xp = await this.getXP(player)
         const winningrate = await this.calcWinRate(player)
-        const totalWins = await this.getTotalVictories(player)
+        const totalWins = await this.matchService.getTotalVictories(player)
         if (
             this.RankUp(ladder, xp, winningrate, totalWins) != ladder &&
             this.RankDown(ladder, winningrate) == ladder
@@ -221,65 +119,31 @@ export class gameAnalyzer {
 
     // Update Data
     async updatePlayerXP(player: string, IsWinner: boolean): Promise<void> {
-        await this.prisma.user.update({
-            where: {
-                login: player,
-            },
-            data: {
-                xp: {
-                    increment: await this.calcXP(player, IsWinner),
-                },
-            },
-        })
+        await this.userService.updatePlayerXP(player, await this.calcXP(player, IsWinner))
     }
 
     async updatePlayerLadder(player: string): Promise<void> {
-        await this.prisma.user.update({
-            where: {
-                login: player,
-            },
-            data: {
-                ladder: await this.calcLadder(player),
-            },
-        })
+        await this.userService.updateUser({
+            ladder: await this.calcLadder(player),
+        }, player)
     }
 
     async updatePlayerAcheivments(player: string, achievement: string): Promise<void> {
-        const ach = await this.prisma.achievement.findUnique({
-            where: {
-                type: achievement,
-            },
-        })
+        const ach = await this.achievementService.getAchievementType(achievement)
 
         if (ach == null) return
-        await this.prisma.user.update({
-            where: {
-                login: player,
-            },
-            data: {
-                achievements: {
-                    connect: {
-                        id: ach.id,
-                    },
-                },
-            },
-        })
+        await this.achievementService.addAchievement(player, ach)
     }
 
     async updatePlayerWinningRate(player: string): Promise<void> {
         const winRate = await this.calcWinRate(player)
-        await this.prisma.user.update({
-            where: {
-                login: player,
-            },
-            data: {
-                wr: winRate,
-            },
-        })
+        await this.userService.updateUser({
+            wr: winRate,
+        }, player)
     }
 
     async calcWinStreak(player: string, winNum: number): Promise<number> {
-        const matches = await this.getMatches(player)
+        const matches = await this.matchService.getMatches(player)
         let winStreak = 0
         for (let i = 0; i < matches.length; i++) {
             for (let j = 0; j < matches[i].opponents.length; j++) {
@@ -296,24 +160,14 @@ export class gameAnalyzer {
     }
 
     async checkIfAchievementExists(player: string, achievement: string): Promise<boolean> {
-        const count = await this.prisma.user.count({
-            where: {
-                login: player,
-                achievements: {
-                    some: {
-                        type: achievement,
-                    },
-                },
-            },
-        })
+        const count = await this.achievementService.checkPlayerAchievements(player, achievement)
         if (count > 0) return true
         return false
     }
 
-    // achievements
     async grantAchievements(player: string): Promise<string[]> {
         const totalAcheivments = []
-        const totalWins = await this.getTotalVictories(player)
+        const totalWins = await this.matchService.getTotalVictories(player)
         const ladder = await this.getLadderLevel(player)
         if (!(await this.checkIfAchievementExists(player, 'First Blood')) && totalWins == 1)
             totalAcheivments.push('First Blood')
@@ -346,12 +200,6 @@ export class gameAnalyzer {
             type: NotificationType.ACHIEVEMENT,
             target: 'test',
         })
-        // const notf = await this.prisma.notification.findMany({
-        //     where: {
-        //         user_login: login,
-        //         type: NotificationType.ACHIEVEMENT,
-        //     },
-        // })
     }
 
     async storeRankingAsNotification(login: string, rank: number, newRank: boolean): Promise<void> {
@@ -361,12 +209,6 @@ export class gameAnalyzer {
             type: newRank ? NotificationType.RANK_UP : NotificationType.RANK_DOWN,
             target: 'test',
         })
-        // const notf = await this.prisma.notification.findMany({
-        //     where: {
-        //         user_login: login,
-        //         type: NotificationType.ACHIEVEMENT,
-        //     },
-        // })
     }
 
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {

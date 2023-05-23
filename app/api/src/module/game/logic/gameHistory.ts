@@ -1,13 +1,10 @@
-// import { MatchHistory } from '@prisma/client'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { gameStatusDto, PlayerDto } from '../dto/game.dto'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class gameHistory {
-    private prisma = new PrismaService()
-    private game: gameStatusDto
-
-    constructor(game: gameStatusDto) {
-        this.game = game
+    constructor(private game: gameStatusDto, private prisma: PrismaService) {
         this.createGame()
     }
 

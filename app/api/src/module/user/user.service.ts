@@ -49,6 +49,7 @@ export class UserService {
                 image: data?.image,
                 status: data?.status,
                 wr: data?.wr,
+                ladder: data?.ladder,
                 two_fac_auth: data?.two_fac_auth,
             },
         })
@@ -126,5 +127,18 @@ export class UserService {
         const users: UserGetDto[] = await this.prisma.user.findMany()
         const sortedUsers: UserGetDto[] = users.sort(this.repository.SortUserByWinLose)
         return sortedUsers
+    }
+
+    async updatePlayerXP(player: string, xp: number): Promise<void> {
+        await this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                xp: {
+                    increment: xp,
+                },
+            },
+        })
     }
 }

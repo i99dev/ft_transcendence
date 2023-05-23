@@ -5,10 +5,10 @@ export class PlayerDto {
     score: number
     IsWinner: boolean
     user?: UserGetDto
-    matches?: MatchHistoryDto
+    matches?: MatchDto
 }
 
-export class MatchHistoryDto {
+export class MatchDto {
     gameID: string
     start: Date
     end: Date
