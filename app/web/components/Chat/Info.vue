@@ -104,7 +104,7 @@
                                                     :alt="user.username"
                                                 />
                                                 <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-background_light"
+                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-primary hover:bg-primary hover:text-white smooth-transition"
                                                 >
                                                     <XMarkIcon class="h-2 w-2" aria-hidden="true" />
                                                 </div>
@@ -113,7 +113,7 @@
                                         <UserProfileList
                                             @selectUser="selectUser"
                                             :search="true"
-                                            :unwantedUsers="participants"
+                                            :unwantedUsers="participants?.map(a => a.user)"
                                         />
                                         <div class="flex justify-end mt-2">
                                             <button
@@ -250,7 +250,6 @@ const adminOptions = ref([
 ])
 const isAdminOptionsOpened = ref(false)
 const isAddUserOpened = ref(false)
-
 const { user_info } = useUserInfo()
 const { currentChat } = useCurrentChat()
 const emit = defineEmits(['closeNavBar'])
