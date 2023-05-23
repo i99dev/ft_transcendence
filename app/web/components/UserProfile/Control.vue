@@ -1,13 +1,13 @@
 <template>
     <div v-if="props.isMe && !props.isProfile" class="flex flex-row space-x-6">
         <button class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
-            @click="openChatModel">
+            v-click-effect="openChatModel">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8 sroke-4 stroke-white fill-none">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
             </svg>
         </button>
-        <button @click="openFriendsModel"
+        <button v-click-effect="openFriendsModel"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8 sroke-4 stroke-white fill-none">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -23,14 +23,14 @@
                 </div>
             </div>
         </button>
-        <button @click="useLogout" class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
+        <button v-click-effect="useLogout" class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-4 stroke-white fill-none" viewBox="0 0 24 24">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
                 <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
             </svg>
         </button>
-        <button @click="updateTwoFacAuth"
+        <button v-click-effect="updateTwoFacAuth"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
             <svg v-if="user_info.two_fac_auth" xmlns="http://www.w3.org/2000/svg"
                 class="w-8 h-8 fill-white stroke-white stroke-4" viewBox="0 0 24 24" stroke-linecap="round"
@@ -47,7 +47,7 @@
                 </path>
             </svg>
         </button>
-        <button @click="navigateTo('/help')"
+        <button v-click-effect="goToHelp"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
             <svg xmlns="http://www.w3.org/2000/svg" class="fill-white w-8 h-8" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -57,18 +57,16 @@
         </button>
     </div>
     <div v-else-if="!props.isMe" class="flex space-x-6">
-        <button @click="useDMUser(props.login)"
+        <button v-click-effect="()=>useDMUser(props.login)"
             class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2">
             <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
         </button>
-        <button @click="addFriend(props.username)" :title="'Add to friend list'"
+        <button v-click-effect="()=>addFriend(props.username)" :title="'Add to friend list'"
             class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2">
             <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
             <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
         </button>
-        <button @click="
-            isBlocked(user) ? removeUserFromBlockList(user) : addUserToBlockList(user)
-        "
+        <button v-click-effect="handleUserBlock"
             class="p-2 hover hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2 capitalize"
             :class="{
                 'bg-secondary': isBlocked(user),
@@ -120,6 +118,18 @@ function openChatModel() {
         setChatModalOpen(false)
     } else {
         setChatModalOpen(true)
+    }
+}
+
+function goToHelp() {
+    navigateTo('/help')
+}
+
+function handleUserBlock() {
+    if (isBlocked(user)) {
+        removeUserFromBlockList(user)
+    } else {
+        addUserToBlockList(user)
     }
 }
 

@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="flex flex-col mobile:flex-col items-center shadow bg-background space-y-4 sm:p-6 p-1 w-full rounded-2xl">
+        <div
+            class="flex flex-col mobile:flex-col items-center shadow bg-background space-y-4 sm:p-6 p-1 w-full rounded-2xl">
             <div class="flex sm:flex-row flex-col items-center">
 
                 <!--  avatar  -->
@@ -11,18 +12,20 @@
 
                     <!-- update username -->
                     <div class="flex flex-col justify-start w-full relative">
-                        
+
                         <div class="centered w-full">
-                            <div v-if="isMe" class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
+                            <div v-if="isMe"
+                                class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
                                 {{ user_info?.username }}
                             </div>
-                            <div v-else class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
+                            <div v-else
+                                class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
                                 {{ userData?.username }}
                             </div>
 
                             <!-- edit icon  -->
                             <div class="mx-2">
-                                
+
                                 <button
                                     class="flex justify-center hover:bg-primary rounded-full p-2 w-12 h-12 smooth-transition"
                                     v-click-effect="editProfile" v-if="isMe && !isProfile">
@@ -46,7 +49,8 @@
             </div>
 
             <!--- control buttons -->
-            <UserProfileControl :isProfile="props.isProfile" :isMe="isMe" :login="userData.login" :username="props.username" />
+            <UserProfileControl :isProfile="props.isProfile" :isMe="isMe" :login="userData.login"
+                :username="props.username" />
 
         </div>
     </div>

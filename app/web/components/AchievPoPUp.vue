@@ -41,10 +41,10 @@
                                             {{ getLadderRank(achv.content) }} " !
                                         </p>
                                         <div class="w-full mt-6">
-                                            <a v-if="achv.type == 'RANK_DOWN'" @click="closeAcievPopUp(index)"
+                                            <a v-if="achv.type == 'RANK_DOWN'" v-click-effect="()=>closeAcievPopUp(index)"
                                                 class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Oops
                                                 !</a>
-                                            <a v-else @click="closeAcievPopUp(index)"
+                                            <a v-else v-click-effect="()=>closeAcievPopUp(index)"
                                                 class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                 YAY !</a>
                                         </div>
