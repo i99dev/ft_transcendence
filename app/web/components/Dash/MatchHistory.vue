@@ -83,11 +83,11 @@
                 <div v-if="!isSameLogin(game)">
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
-                            <img :src="getMe(game)?.user.image" class="w-8 h-8 rounded-full object-cover" />
+                            <img v-if="user.login == user_info.login" :src="user_info.image" class="w-8 h-8 rounded-full object-cover" />
+                            <img v-else :src="getMe(game)?.user.image" class="w-8 h-8 rounded-full object-cover" />
                             <!-- name and result -->
-                            <div class="text-xs m-2 capitalize font-bold">
-                                {{ getMe(game)?.user.username }}
-                            </div>
+                            <div v-if="user.login == user_info.login" class="text-xs m-2 capitalize font-bold"> {{ user_info.username }} </div>
+                            <div v-else class="text-xs m-2 capitalize font-bold"> {{ getMe(game)?.user.username }} </div>
                         </div>
                         <!-- result -->
                         <div class="centered relative">
@@ -97,9 +97,7 @@
                         </div>
                         <div class="centered justify-self-end">
                             <!-- name and result -->
-                            <div class="text-xs m-2 capitalize font-bold">
-                                {{ getOpponent(game)?.user.username }}
-                            </div>
+                            <div class="text-xs m-2 capitalize font-bold"> {{ getOpponent(game)?.user.username }} </div>
                             <img :src="getOpponent(game)?.user.image" class="w-8 h-8 rounded-full object-cover" />
                         </div>
                     </div>
@@ -131,8 +129,6 @@ const props = defineProps({
 
 const user = await getUserbyUserName(props.username)
 
-const login = computed(() => user.login)
-
 const gameHistoryRef = ref([] as MatchHistoryDto[])
 
 const game_history = computed(() => gameHistoryRef.value)
@@ -149,7 +145,7 @@ const currentFilter = ref('all')
 
 const isFilter = ref(new Map<string, boolean>())
 
-const totalPagesURL = `/match-history/${login.value}/totalPages`
+const totalPagesURL = `/match-history/${user.login}/totalPages`
 
 onMounted(async () => {
     isFilter.value?.set('all', true)
@@ -159,16 +155,16 @@ onMounted(async () => {
     isFilter.value?.set('desc', false)
     currentPage.value = 1
     currentFilter.value = 'all'
-    const data: MatchHistoryDto[] = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`) as MatchHistoryDto[]
+    const data: MatchHistoryDto[] = await useGameHistory(`/match-history/${user.login}?page=${currentPage.value}`) as MatchHistoryDto[]
     if (data && game_history) gameHistoryRef.value = data ? data : []
 })
 
 const getOpponent = (game: MatchHistoryDto) => {
-    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login !== login.value)
+    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login !== user.login)
 }
 
 const getMe = (game: MatchHistoryDto) => {
-    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login === login.value)
+    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login === user.login)
 }
 
 const handleDropdown = () => {
@@ -189,22 +185,22 @@ const handleFilteration = async (filter: string) => {
     for (const key of isFilter.value?.keys()) isFilter.value?.set(key, false)
     let data
     if (filter == 'all')
-        data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
+        data = await useGameHistory(`/match-history/${user.login}?page=${currentPage.value}`)
     else if (filter == 'win')
         data = await useGameHistory(
-            `/match-history/${login.value}/result?page=${currentPage.value}&isWin=true`,
+            `/match-history/${user.login}/result?page=${currentPage.value}&isWin=true`,
         )
     else if (filter == 'lose')
         data = await useGameHistory(
-            `/match-history/${login.value}/result?page=${currentPage.value}&isWin=false`,
+            `/match-history/${user.login}/result?page=${currentPage.value}&isWin=false`,
         )
     else if (filter == 'asc')
         data = await useGameHistory(
-            `/match-history/${login.value}/score?page=${currentPage.value}&sort=asc`,
+            `/match-history/${user.login}/score?page=${currentPage.value}&sort=asc`,
         )
     else if (filter == 'desc')
         data = await useGameHistory(
-            `/match-history/${login.value}/score?page=${currentPage.value}&sort=desc`,
+            `/match-history/${user.login}/score?page=${currentPage.value}&sort=desc`,
         )
     if (data && game_history) gameHistoryRef.value = data ? data : []
     currentFilter.value = filter
