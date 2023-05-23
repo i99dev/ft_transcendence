@@ -30,4 +30,5 @@ export default defineNuxtConfig({
         },
     },
     modules: ['@nuxtjs/tailwindcss'],
+    plugins: ['~/plugins/test.client.ts'],
 })

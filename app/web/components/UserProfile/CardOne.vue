@@ -19,13 +19,13 @@
                             <div v-else class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
                                 {{ userData?.username }}
                             </div>
-                            
+
                             <!-- edit icon  -->
                             <div class="mx-2">
                                 
                                 <button
                                     class="flex justify-center hover:bg-primary rounded-full p-2 w-12 h-12 smooth-transition"
-                                    @click="editProfile" v-if="isMe && !isProfile">
+                                    v-test="editProfile" v-if="isMe && !isProfile">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                         class="w-8 h-8 stroke-4 stroke-white fill-none">
                                         <path stroke-linecap="round" stroke-linejoin="round"
