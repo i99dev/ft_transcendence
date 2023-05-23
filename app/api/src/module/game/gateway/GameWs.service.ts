@@ -150,7 +150,7 @@ export class GameWsService {
             else {
                 opponent.status = 'online'
                 user.status = 'online'
-                opponent.socket.emit('Respond-Invite', { status: 'declined', playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', { status: 'rejected', playerStatus: user.status })
             }
         }
         else
