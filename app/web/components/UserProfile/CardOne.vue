@@ -14,7 +14,7 @@
                         
                         <div class="centered w-full">
                             <div v-if="isMe" class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
-                                {{ userInfo?.username }}
+                                {{ user_info?.username }}
                             </div>
                             <div v-else class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
                                 {{ userData?.username }}
@@ -54,7 +54,9 @@
 
 <script setup lang="ts">
 
-const userInfo = ref() as any
+const { user_info } = useUserInfo()
+
+const user = await getUserbyUserName(props.username)
 
 const props = defineProps({
     username: {
@@ -67,12 +69,7 @@ const props = defineProps({
     },
 })
 
-
-const user = await getUserbyUserName(props.username)
-
 const isMe = ref(false)
-
-const { user_info } = useUserInfo()
 
 const userData = computed(() => {
     if (user_info.value?.username === props.username) {
@@ -83,11 +80,6 @@ const userData = computed(() => {
         const { login, username, image, xp, ladder, status } = user
         return { login, username, image, xp, ladder, status }
     }
-})
-
-onMounted(() => {
-    const { user_info } = useUserInfo()
-    userInfo.value = user_info.value
 })
 
 /**
