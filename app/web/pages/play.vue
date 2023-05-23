@@ -49,25 +49,12 @@ const gameBoard = ref()
 const gameSelector = ref()
 const { emitLeaveQueue } = useSocket()
 const { showTab } = useTabEvent()
-const audio = ref(new Audio('/sounds/ost1.mp3'))
-audio.value.loop = true
-audio.value.volume = 0.1
+const { play, pause, loop, isPaused } = useSound()
 
-onMounted(() => {
-    // audio.play().catch(err => {
-    //     audio.pause()
-    //     document.addEventListener('click', function () {
-    //         audio.play()
-    //     })
-    // })
-})
-
-onBeforeUnmount(() => {
-    // audio.pause()
-})
+loop('play')
 
 onUnmounted(() => {
-    audio.value?.pause()
+    pause('play')
 })
 
 const startGame = (mode: GameSelectDto): void => {
@@ -113,10 +100,10 @@ const exitGame = (): void => {
 }
 
 const toggleAudio = (): void => {
-    if (audio.value?.paused) {
-        audio.value?.play()
+    if (isPaused('play')) {
+        play('play')
     } else {
-        audio.value?.pause()
+        pause('play')
     }
 }
 const switchExistStatus = (status: boolean): void => {

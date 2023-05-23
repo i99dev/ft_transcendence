@@ -14,7 +14,7 @@
                     />
                 </div>
                 <button
-                    v-click-effect="() => navigateTo('/play')"
+                    v-click-effect:play="() => navigateTo('/play')"
                     class="h-10 w-30 hover:scale-125 smooth-transition text-white bg-primary hover:bg-access font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 inline-flex items-center"
                 >
                     Play
