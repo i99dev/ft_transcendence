@@ -165,12 +165,10 @@ const submitProfile = async () => {
     if (newAvatar.value != '' && isUploading.value) {
         const { resStatus } = await useUplaod(user_info.value?.login, formData.value)
         setUserAvatar(newAvatar.value)
-        console.log('s image', newAvatar.value)
         errCode.value = resStatus
     }
     if (newAvatar.value != '' && isDefault.value) {
         setUserAvatar(newAvatar.value)
-        console.log('s image', newAvatar.value)
         await useUpdateUserInfo()
         const { resStatus } = await useUpdateUserInfo()
         errCode.value = resStatus
