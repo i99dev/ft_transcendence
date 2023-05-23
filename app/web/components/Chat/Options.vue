@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-row mb-2">
         <TransitionRoot
-            :show="searching"
+            :show="groupChatSearching"
             enter="transition-opacity duration-500 ease-in-out"
             enter-from="opacity-0"
             enter-to="opacity-100"
@@ -25,8 +25,8 @@
             @click="handleChatSearch($event)"
             class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mr-2 focus:outline-primary text-white"
             :class="{
-                'bg-background_light opacity-70': !searching,
-                'bg-primary': searching,
+                'bg-background_light opacity-70': !groupChatSearching,
+                'bg-primary': groupChatSearching,
             }"
         >
             <MagnifyingGlassIcon class="w-6 h-6 right-3 z-10 cursor-pointer" />
@@ -59,9 +59,9 @@ import { TransitionRoot } from '@headlessui/vue'
 import { MagnifyingGlassIcon, UserIcon, UserGroupIcon } from '@heroicons/vue/24/outline'
 
 const searchedGroupChats = ref('')
-const searching = ref(false)
 const chatSearch = ref()
 const { chatType, setChatType } = useChatType()
+const { groupChatSearching, setGroupChatSearching } = useGroupChatSearching()
 const { setSearchedGroupChats } = useSearchedGroupChats()
 const { setChatView } = useChatView()
 const { setCurrentChat } = useCurrentChat()
@@ -69,7 +69,7 @@ const { setCurrentChat } = useCurrentChat()
 const handleChatSearch = (e: any) => {
     e.preventDefault()
     e.stopPropagation()
-    searching.value = true
+    setGroupChatSearching(true)
     setChatType(null)
     setTimeout(() => {
         chatSearch.value?.focus()
@@ -77,7 +77,7 @@ const handleChatSearch = (e: any) => {
 }
 
 const switchChatType = (type: ChatRoomType) => {
-    searching.value = false
+    setGroupChatSearching(false)
     setChatType(type)
 }
 </script>
