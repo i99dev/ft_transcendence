@@ -4,8 +4,7 @@
             <div class="flex sm:flex-row flex-col items-center">
 
                 <!--  avatar  -->
-                <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :image="userData?.image ||
-                    defaultImages[Math.floor(Math.random() * defaultImages.length)]" :status="userData?.status" />
+                <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :Image="userData.image" :status="userData?.status" />
 
 
                 <div class="flex sm:flex-col justify-center sm:p-6">
@@ -14,7 +13,10 @@
                     <div class="flex flex-col justify-start w-full relative">
                         
                         <div class="centered w-full">
-                            <div class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
+                            <div v-if="isMe" class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
+                                {{ user_info?.username }}
+                            </div>
+                            <div v-else class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap">
                                 {{ userData?.username }}
                             </div>
                             
@@ -52,6 +54,8 @@
 
 <script setup lang="ts">
 
+const { user_info } = useUserInfo()
+
 const props = defineProps({
     username: {
         type: String,
@@ -62,8 +66,6 @@ const props = defineProps({
         default: false,
     },
 })
-
-const { user_info } = useUserInfo()
 
 const user = await getUserbyUserName(props.username)
 
@@ -81,7 +83,7 @@ const userData = computed(() => {
 })
 
 /**
- * edit username
+ * set up profile
  */
 const isEdit = ref(false)
 
@@ -93,23 +95,5 @@ const editProfile = () => {
     isEdit.value = !isEdit.value
 }
 
-
-const defaultImages = [
-    'https://i1.ae/img/icons/1.png',
-    'https://i1.ae/img/icons/2.png',
-    'https://i1.ae/img/icons/3.png',
-    'https://i1.ae/img/icons/4.png',
-    'https://i1.ae/img/icons/5.png',
-    'https://i1.ae/img/icons/6.png',
-    'https://i1.ae/img/icons/7.png',
-    'https://i1.ae/img/icons/8.png',
-    'https://i1.ae/img/icons/9.png',
-    'https://i1.ae/img/icons/10.png',
-    'https://i1.ae/img/icons/11.png',
-    'https://i1.ae/img/icons/12.png',
-    'https://i1.ae/img/icons/13.png',
-    'https://i1.ae/img/icons/14.png',
-    'https://i1.ae/img/icons/20.png',
-]
 
 </script>

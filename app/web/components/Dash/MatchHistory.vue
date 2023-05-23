@@ -133,12 +133,12 @@
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
                             <img
-                                :src="getMe(game)?.user.image"
+                                :src="user_info.image"
                                 class="w-8 h-8 rounded-full object-cover"
                             />
                             <!-- name and result -->
                             <div class="text-xs m-2 capitalize font-bold">
-                                {{ getMe(game)?.user.username }}
+                                {{ user_info.username }}
                             </div>
                         </div>
                         <!-- result -->
@@ -167,15 +167,15 @@
             </div>
         </div>
 
-        <!----
-	 the pagination part 
-	-->
+        <!---- the pagination part -->
         <Pagination @page="handlePagination" :url="totalPagesURL" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
+
+const { user_info } = useUserInfo()
 
 const props = defineProps({
     username: {
@@ -264,20 +264,4 @@ const handleFilteration = async (filter: string) => {
     isFilter.value?.set(filter, true)
 }
 
-const getLadderRank = (ladder: number | undefined) => {
-    switch (ladder) {
-        case 1:
-            return 'Kaizoku Ou'
-        case 2:
-            return 'Yonkou'
-        case 3:
-            return 'Shichibukai'
-        case 4:
-            return 'Super Rookie'
-        case 5:
-            return 'Kaizoku'
-        case 6:
-            return 'Capin Boy'
-    }
-}
 </script>

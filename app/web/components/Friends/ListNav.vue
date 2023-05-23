@@ -164,10 +164,6 @@ const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBloc
 const { showInviteModal } = await useGameInvite()
 setupSocketHandlers()
 
-onMounted(() => {
-    console.log('friends_list', friends_list.value)
-})
-
 function add_new_friend() {
     addFriendOpen.value = true
 }

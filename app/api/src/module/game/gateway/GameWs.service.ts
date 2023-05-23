@@ -118,10 +118,10 @@ export class GameWsService {
         }
         else if (opponent) {
             // Incase user it not online or not found
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: opponent.status })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: opponent.status })
         }
         else {
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: 'offline' })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: 'offline' })
         }
     }
 
@@ -287,13 +287,11 @@ export class GameWsService {
                 game.updateGame()
                 this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             }
-            if (game.getPlayer1Score() >= 11 || game.getPlayer2Score() >= 11) {
+            if (game.checkWinner()) {
                 clearInterval(intervalId)
                 await this.endGame(
                     game,
-                    game.getPlayer1Score() >= 11
-                        ? game.getGameStatus().players[0]
-                        : game.getGameStatus().players[1],
+                    game.getWinner()
                 )
                 return
             }

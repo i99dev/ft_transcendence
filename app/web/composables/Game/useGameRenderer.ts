@@ -249,7 +249,7 @@ export function useGameRenderer() {
         loadLogo()
 
         scene.add(gameGroup)
-        scene.background = new THREE.Color(0x202020)
+        scene.background = new THREE.Color(0x17213c)
         animate()
     }
 

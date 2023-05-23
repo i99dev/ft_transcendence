@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="no-context-menu">
         <GameStatusBar
             v-if="showStatusBar"
             @ExitBtn="$emit('ExitBtn')"
@@ -9,8 +9,9 @@
             :cooldown22="pu2Cooldowns[1]"
             @powerup="activatePowerUp($event)"
         />
-        <GameReadyModal v-if="showReadyModal" />
-        <canvas ref="canvasRef" style="width: 100%; height: 100%"></canvas>
+        <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
+        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd"></GameMobileControls>
+        <canvas ref="canvasRef" class=" fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2" style="width: 100%; height: 100%"></canvas>
     </div>
 </template>
 
@@ -21,8 +22,6 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
-let touchStartY = ref(0)
-let touchEndY = ref(0)
 
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
@@ -30,7 +29,7 @@ const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } =
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } =
     useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
@@ -50,7 +49,12 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false,
 }
 
+const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+const isMobile = ref(false)
+
 onMounted(() => {
+    isMobile.value = mobileRegex.test(navigator.userAgent);
+    console.log('isMobile ', isMobile.value)
     setupEvents()
 })
 
@@ -64,18 +68,12 @@ const setupEvents = (): void => {
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
     window.addEventListener('popstate', handleArrows)
-    window.addEventListener('touchstart', handleTouchStart, { passive: false })
-    window.addEventListener('touchmove', handleTouchMove, { passive: false })
-    window.addEventListener('touchend', handleTouchEnd, { passive: false })
 }
 
 const clearEvents = (): void => {
     document.removeEventListener('keydown', handleKeyDown)
     document.removeEventListener('keyup', handleKeyUp)
     window.removeEventListener('popstate', handleArrows)
-    window.removeEventListener('touchstart', handleTouchStart)
-    window.removeEventListener('touchmove', handleTouchMove)
-    window.removeEventListener('touchend', handleTouchEnd)
 }
 
 const handleArrows = (e: PopStateEvent): void => {
@@ -185,39 +183,21 @@ const handleKeyUp = (event: KeyboardEvent): void => {
     }
 }
 
-const handleTouchMove = (event: TouchEvent): void => {
-    event.preventDefault()
-    touchEndY.value = event.changedTouches[0].clientY
-
-    if (touchEndY.value < touchStartY.value) {
-        socket.value?.emit('move', 'up')
-    }
-    if (touchEndY.value > touchStartY.value) {
-        socket.value?.emit('move', 'down')
+const handleTouchStart = (dir: string) => {
+    if(dir == 'up') {
+        keys.ArrowUp = true
+    } else if(dir == 'down') {
+        keys.ArrowDown = true
     }
 }
 
-const handleTouchStart = (event: TouchEvent): void => {
-    // event.preventDefault()
-    touchStartY.value = event.touches[0].clientY
+const handleTouchEnd = (dir: string) => {
+    if(dir == 'up') {
+        keys.ArrowUp = false
+    } else if(dir == 'down') {
+        keys.ArrowDown = false
+    }
 }
-
-const handleTouchEnd = (): void => {
-    touchStartY.value = 0
-    touchEndY.value = 0
-}
-
-// const isMoveEventThrottled = ref(false);
-
-// const throttleMoveEvent = (playerID: string, direction: string) => {
-//     if (!isMoveEventThrottled.value) {
-//         isMoveEventThrottled.value = true;
-//         socket.value?.emit('move', 'up')
-//         setTimeout(() => {
-//             isMoveEventThrottled.value = false;
-//         }, 1000 / 60); // throttle events at 60 FPS
-//     }
-// }
 
 const updatePaddleDirection = (): void => {
     if (keys.ArrowUp) {
@@ -227,3 +207,12 @@ const updatePaddleDirection = (): void => {
     }
 }
 </script>
+
+
+
+<style>
+.no-context-menu {
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+</style>

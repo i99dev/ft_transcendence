@@ -14,7 +14,6 @@ export const useFriends = async () => {
     })
 
     const friends_info = useState<any | null>('friends_info', () => {
-        console.log(data.value)
         return {
             friendsModalOpen: false,
             friends: data.value
@@ -38,7 +37,6 @@ export const useFriends = async () => {
         })
 
         friendSocket.value?.on('friends-list', (payload: UserGetDto) => {
-            console.log(payload)
             friends_info.value.friends = payload
             sortFriends()
         })
