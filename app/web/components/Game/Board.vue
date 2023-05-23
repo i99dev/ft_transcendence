@@ -1,5 +1,5 @@
 <template>
-    <div class="no-context-menu ">
+    <div class="no-context-menu">
         <GameStatusBar
             v-if="showStatusBar"
             @ExitBtn="$emit('ExitBtn')"
@@ -10,7 +10,7 @@
             @powerup="activatePowerUp($event)"
         />
         <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
-        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd"></GameMobileControls>
+        <!-- <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd"></GameMobileControls> -->
         <canvas ref="canvasRef" class=" fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2" style="width: 100%; height: 100%"></canvas>
     </div>
 </template>
@@ -22,8 +22,6 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
-let touchStartY = ref(0)
-let touchEndY = ref(0)
 
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
@@ -31,7 +29,7 @@ const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } =
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } =
     useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
@@ -57,6 +55,7 @@ const isMobile = ref(false)
 onMounted(() => {
     isMobile.value = mobileRegex.test(navigator.userAgent);
     console.log('isMobile ', isMobile.value)
+    setupEvents()
 })
 
 onUnmounted(() => {
@@ -69,18 +68,12 @@ const setupEvents = (): void => {
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
     window.addEventListener('popstate', handleArrows)
-    // window.addEventListener('touchstart', handleTouchStart, { passive: false })
-    // window.addEventListener('touchmove', handleTouchMove, { passive: false })
-    // window.addEventListener('touchend', handleTouchEnd, { passive: false })
 }
 
 const clearEvents = (): void => {
     document.removeEventListener('keydown', handleKeyDown)
     document.removeEventListener('keyup', handleKeyUp)
     window.removeEventListener('popstate', handleArrows)
-    // window.removeEventListener('touchstart', handleTouchStart)
-    // window.removeEventListener('touchmove', handleTouchMove)
-    // window.removeEventListener('touchend', handleTouchEnd)
 }
 
 const handleArrows = (e: PopStateEvent): void => {
@@ -205,6 +198,7 @@ const handleTouchEnd = (dir: string) => {
         keys.ArrowDown = false
     }
 }
+
 const updatePaddleDirection = (): void => {
     if (keys.ArrowUp) {
         socket.value?.emit('move', 'up')
