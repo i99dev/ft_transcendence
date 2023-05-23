@@ -35,7 +35,7 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
 
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
-const PADDLE_SPEED = 0.025
+const PADDLE_SPEED = 0.0175
 const REFLECT_ANGLE = 80
 const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
