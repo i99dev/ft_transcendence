@@ -37,9 +37,9 @@
                                     <span> Select your preferred method for changing the Avatar upload new or use Default:
                                     </span>
                                     <div class="flex space-x-4">
-                                        <a @click="isUploadingImage" href="#"
+                                        <a v-click-effect="isUploadingImage" href="#"
                                             class="h-10 mt-5 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Upload</a>
-                                        <a @click="isDefaultImage" href="#"
+                                        <a v-click-effect="isDefaultImage" href="#"
                                             class="h-10 mt-5 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Default</a>
                                     </div>
                                 </div>
@@ -71,21 +71,21 @@
                                 <div v-if="isDefault" class="grid grid-cols-4 gap-4 p-4">
                                     <div v-for="(image, index) in defaultImages" :key="index">
                                         <img class="w-25 h-15 items-center justify-center object-cover rounded-lg hover:shadow-lg"
-                                            :src="image" @click="changeImage(image)" alt="icon" />
+                                            :src="image" v-click-effect="()=> changeImage(image)" alt="icon" />
                                     </div>
                                 </div>
 
                             </form>
                             <div v-if="isDefault || isUploading" class="flex space-x-4">
-                                <a @click="backtoImageSelection" href="#"
+                                <a v-click-effect="backtoImageSelection" href="#"
                                     class="h-10 mb-2 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">Back</a>
                             </div>
                             <div>
-                                <button @click="submitProfile()"
+                                <button v-click-effect="submitProfile"
                                     class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
                                     Ok
                                 </button>
-                                <button @click="emit('close')"
+                                <button v-click-effect="()=> emit('close')"
                                     class="h-10 w-30 text-white bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center">
                                     Cancel
                                 </button>

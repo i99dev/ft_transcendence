@@ -6,7 +6,7 @@
         <div class="flex items-center justify-between">
             <div class="relative inline-block text-left">
                 <div>
-                    <button @click="handleDropdown" type="button"
+                    <button v-click-effect="handleDropdown" type="button"
                         class="group inline-flex justify-center text-sm font-medium text-white hover:bg-primary p-1 rounded-lg"
                         id="menu-button" aria-expanded="false" aria-haspopup="true">
                         <svg class="h-5 w-5 flex-shrink-0 text-white group-hover:bg-primary mr-2" viewBox="0 0 20 20"
@@ -26,7 +26,7 @@
                     class="absolute right-0 left-100 z-10 mt-1 w-40 rounded-md bg-background border-1 border-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none text-white"
                     role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
-                        <button @click="handleFilteration('all')"
+                        <button v-click-effect="()=> handleFilteration('all')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('all'),
                                 ' hover:bg-white': !isFilter.get('all'),
@@ -34,7 +34,7 @@
                             Latest
                         </button>
 
-                        <button @click="handleFilteration('win')"
+                        <button v-click-effect="()=> handleFilteration('win')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('win'),
                                 'hover:bg-white': !isFilter.get('win'),
@@ -42,7 +42,7 @@
                             Result: Victories only
                         </button>
 
-                        <button @click="handleFilteration('lose')"
+                        <button v-click-effect="()=> handleFilteration('lose')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('lose'),
                                 'hover:bg-white': !isFilter.get('lose'),
@@ -50,7 +50,7 @@
                             Result: Defeats only
                         </button>
 
-                        <button @click="handleFilteration('asc')"
+                        <button v-click-effect="()=> handleFilteration('asc')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('asc'),
                                 'hover:bg-white': !isFilter.get('asc'),
@@ -58,7 +58,7 @@
                             Score: Low to High
                         </button>
 
-                        <button @click="handleFilteration('desc')"
+                        <button v-click-effect="()=> handleFilteration('desc')"
                             class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('desc'),
                                 'hover:bg-white': !isFilter.get('desc'),

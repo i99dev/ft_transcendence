@@ -1,6 +1,6 @@
 <template>
     <div>
-        <img src="/imgs/audio.png" alt="Stop audio" @click="toggleAudio"
+        <img src="/imgs/audio.png" alt="Stop audio" v-click-effect="toggleAudio"
             class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50" />
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">

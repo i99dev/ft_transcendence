@@ -1,7 +1,7 @@
 <template>
         <!---- rank dropdown -->
         <div class="mt-4 w-full">
-            <button @click="handleDropDown"
+            <button v-click-effect="handleDropDown"
                 class="sm:text-xl p-2 flex justify-start items-start w-fit rounded-xl text-lg text-white hover:bg-primary smooth-transition focus:outline-none"
                 title="Your Rank">
                 {{ getLadderRank(props.ladder) }}
