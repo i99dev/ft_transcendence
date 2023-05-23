@@ -118,10 +118,10 @@ export class GameWsService {
         }
         else if (opponent) {
             // Incase user it not online or not found
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: opponent.status })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: opponent.status })
         }
         else {
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: 'offline' })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: 'offline' })
         }
     }
 
