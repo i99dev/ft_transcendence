@@ -176,10 +176,7 @@ const submitProfile = async () => {
         errCode.value = resStatus
     }
     if (errCode.value == 0)
-    {
         emit('close')
-        // window.location.reload()
-    }
 }
 
 const errMsgs = computed(() => {
