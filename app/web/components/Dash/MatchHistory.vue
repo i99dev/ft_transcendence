@@ -83,10 +83,12 @@
                 <div v-if="!isSameLogin(game)">
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
-                            <img v-if="user.login == user_info.login" :src="user_info.image" class="w-8 h-8 rounded-full object-cover" />
+                            <img v-if="user.login == user_info.login" :src="user_info.image"
+                                class="w-8 h-8 rounded-full object-cover" />
                             <img v-else :src="getMe(game)?.user.image" class="w-8 h-8 rounded-full object-cover" />
                             <!-- name and result -->
-                            <div v-if="user.login == user_info.login" class="text-xs m-2 capitalize font-bold"> {{ user_info.username }} </div>
+                            <div v-if="user.login == user_info.login" class="text-xs m-2 capitalize font-bold"> {{
+                                user_info.username }} </div>
                             <div v-else class="text-xs m-2 capitalize font-bold"> {{ getMe(game)?.user.username }} </div>
                         </div>
                         <!-- result -->
@@ -143,18 +145,17 @@ const currentPage = ref(1)
 
 const currentFilter = ref('all')
 
-const isFilter = ref(new Map<string, boolean>())
+const isFilter = ref(new Map([
+    ['all', true],
+    ['win', false],
+    ['lose', false],
+    ['asc', false],
+    ['desc', false],
+]));
 
-const totalPagesURL = `/match-history/${user.login}/totalPages`
+const totalPagesURL = ref(`/match-history/${user.login}/totalPages`)
 
 onMounted(async () => {
-    isFilter.value?.set('all', true)
-    isFilter.value?.set('win', false)
-    isFilter.value?.set('lose', false)
-    isFilter.value?.set('asc', false)
-    isFilter.value?.set('desc', false)
-    currentPage.value = 1
-    currentFilter.value = 'all'
     const data: MatchHistoryDto[] = await useGameHistory(`/match-history/${user.login}?page=${currentPage.value}`) as MatchHistoryDto[]
     if (data && game_history) gameHistoryRef.value = data ? data : []
 })
