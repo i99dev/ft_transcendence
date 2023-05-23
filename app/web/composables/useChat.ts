@@ -159,6 +159,16 @@ export const useChatType = () => {
     return { chatType, setChatType }
 }
 
+export const useGroupChatSearching = () => {
+    const groupChatSearching = useState<boolean>('group_chat_search', () => false)
+
+    const setGroupChatSearching = async (status: boolean) => {
+        groupChatSearching.value = status
+    }
+
+    return { groupChatSearching, setGroupChatSearching }
+}
+
 export const useChats = () => {
     const chats = useState<any | null>('chats', () => null)
     const searchedGroupChats = useState<(GroupChat[] & DirectChat[]) | null>(

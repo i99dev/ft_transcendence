@@ -16,16 +16,10 @@ export const useFriends = async () => {
     const friends_info = useState<any | null>('friends_info', () => {
         return {
             friendsModalOpen: false,
-            friends: data.value?.map(friend => {
-                return {
-                    id: friend.id,
-                    name: friend.username,
-                    photo: friend.image,
-                    status: friend.status,
-                }
-            }),
+            friends: data.value
         }
     })
+    
     const setupSocketHandlers = () => {
         friendSocket.value?.on('notification', payload => {
             if (!Array.isArray(payload)) {
@@ -42,15 +36,8 @@ export const useFriends = async () => {
             })
         })
 
-        friendSocket.value?.on('friends-list', payload => {
-            friends_info.value.friends = payload.map((friend: UserGetDto) => {
-                return {
-                    id: friend.id,
-                    name: friend.username,
-                    photo: friend.image,
-                    status: friend.status,
-                }
-            })
+        friendSocket.value?.on('friends-list', (payload: UserGetDto) => {
+            friends_info.value.friends = payload
             sortFriends()
         })
     }

@@ -144,8 +144,7 @@ export class DefaultService {
                     this.createMultiGame(opponent, user, response.gameType)
                     user.status = 'ingame'
                     opponent.status = 'ingame'
-                }, 2000)
-
+                }, 3000)
             }
             else {
                 opponent.status = 'online'

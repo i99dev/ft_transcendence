@@ -231,7 +231,8 @@ watch(chatSocket, async () => {
     socketOn()
 })
 const { chats, setChats } = useChats()
-const { chatType } = useChatType()
+const { chatType, setChatType } = useChatType()
+const { setGroupChatSearching } = useGroupChatSearching()
 const { setCurrentChat } = useCurrentChat()
 const isChatCreateGroupOpened = ref(false)
 const isJoinGroupChatOpened = ref(false)
@@ -247,6 +248,8 @@ onMounted(() => {
 const socketOn = () => {
     chatSocket.value?.on('new-group-list', payload => {
         if (chatType.value) setChats(payload.content)
+        setChatType('GROUP')
+        setGroupChatSearching(false)
     })
 }
 
