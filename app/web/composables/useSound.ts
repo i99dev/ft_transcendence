@@ -11,3 +11,7 @@ export const useEmit = emitter.emit
 
 export const useListen = emitter.on
 
+export const usePlaySoundEffect = (effect: string) => {
+    const audio = new Audio(`/sounds/${effect}.mp3`)
+    audio.play()
+}
