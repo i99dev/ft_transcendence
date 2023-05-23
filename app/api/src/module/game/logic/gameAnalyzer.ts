@@ -21,7 +21,6 @@ export class gameAnalyzer {
     constructor(
         private matchService: MatchService,
         private notificationService: NotificationService,
-        private prisma: PrismaService,
         private userService: UserService,
         private achievementService: AchievementService,
     ) {}

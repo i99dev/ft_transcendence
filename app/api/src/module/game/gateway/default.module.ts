@@ -9,6 +9,7 @@ import { MatchModule } from '@module/match/match.module'
 import { NotificationModule } from '@module/notification/notification.module'
 import { PrismaModule } from '@providers/prisma/prisma.module'
 import { gameAnalyzer } from '../logic/gameAnalyzer'
+import { UserModule } from '@module/user/user.module'
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { gameAnalyzer } from '../logic/gameAnalyzer'
         MatchModule,
         NotificationModule,
         PrismaModule,
+        UserModule,
     ],
     providers: [DefaultGateway, DefaultService, SocketService, Array],
 })

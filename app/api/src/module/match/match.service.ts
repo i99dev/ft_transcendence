@@ -212,4 +212,49 @@ export class MatchService {
             },
         })
     }
+
+    async setTimeEnded(id) {
+        try {
+            await this.prisma.match.update({
+                where: {
+                    gameID: id,
+                },
+                data: {
+                    end: new Date(),
+                },
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async assignOpponnents(id, opponents) {
+        try {
+            await this.prisma.match.update({
+                where: {
+                    gameID: id,
+                },
+                data: {
+                    opponents: {
+                        create: opponents,
+                    },
+                },
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async createMatch(id) {
+        try {
+            await this.prisma.match.create({
+                data: {
+                    gameID: id,
+                    start: new Date(),
+                },
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

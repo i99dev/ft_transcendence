@@ -9,6 +9,7 @@ import { PongGame } from '../logic/pongGame'
 import { gameHistory } from '../logic/gameHistory'
 import { PrismaService } from '@providers/prisma/prisma.service'
 import { UserService } from '@module/user/user.service'
+import { MatchService } from '@module/match/match.service'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
@@ -21,7 +22,13 @@ export class DefaultService {
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService, private gameAnalyzer: gameAnalyzer) {}
+    constructor(
+        private socketService: SocketService,
+        private gameAnalyzer: gameAnalyzer,
+        private prisma: PrismaService,
+        private userService: UserService,
+        private matchService: MatchService,
+    ) {}
 
     /* 
         Adds a new user to connected_users array
@@ -280,7 +287,12 @@ export class DefaultService {
     }
 
     private startGame(game: PongGame) {
-        this.game_result = new gameHistory(game.getGameStatus(), new PrismaService())
+        this.game_result = new gameHistory(
+            game.getGameStatus(),
+            this.prisma,
+            this.userService,
+            this.matchService,
+        )
         game.events.on('play-sound', (sound: string) => {
             this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
         })
