@@ -75,8 +75,7 @@ export class GameWsService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player && player.status == 'ingame')
-            player.game.setLoser(player.id)
+        if (player && player.status == 'ingame') player.game.setLoser(player.id)
     }
 
     /* 
@@ -125,8 +124,7 @@ export class GameWsService {
         } else if (opponent) {
             // Incase user it not online or not found
             userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: opponent.status })
-        }
-        else {
+        } else {
             userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: 'offline' })
         }
     }
@@ -156,7 +154,10 @@ export class GameWsService {
             } else {
                 opponent.status = 'online'
                 user.status = 'online'
-                opponent.socket.emit('Respond-Invite', { status: 'rejected', playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', {
+                    status: 'rejected',
+                    playerStatus: user.status,
+                })
             }
         } else user.status = 'online'
     }
@@ -303,10 +304,7 @@ export class GameWsService {
             }
             if (game.checkWinner()) {
                 clearInterval(intervalId)
-                await this.endGame(
-                    game,
-                    game.getWinner()
-                )
+                await this.endGame(game, game.getWinner())
                 return
             }
         }, FRAME_INTERVAL)

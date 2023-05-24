@@ -110,8 +110,7 @@ export class ChatWsService {
 
     async isOwner(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.OWNER)
-            return true
+        if (chatUser.role === ChatUserRole.OWNER) return true
         return false
     }
 
