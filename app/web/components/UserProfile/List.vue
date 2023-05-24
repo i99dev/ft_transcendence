@@ -79,8 +79,11 @@ watch(searchedUsers, async val => {
 })
 const users = ref()
 
+
 onMounted(() => {
-    if (props.search) document.getElementById('search-input')?.focus()
+    setTimeout(() => {
+        if (props.search) document.getElementById('search-input')?.focus()
+    }, 1000)
 })
 
 const getFilteredUsers = async () => {

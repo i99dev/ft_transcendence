@@ -59,77 +59,12 @@
                     </Dialog>
                 </TransitionRoot>
 
-                <TransitionRoot appear :show="isAddUserOpened" as="template">
-                    <Dialog as="div" @close="closeAddUsersPopup" class="relative z-10">
-                        <TransitionChild
-                            as="template"
-                            enter="duration-300 ease-out"
-                            enter-from="opacity-0"
-                            enter-to="opacity-100"
-                            leave="duration-200 ease-in"
-                            leave-from="opacity-100"
-                            leave-to="opacity-0"
-                        >
-                            <div class="fixed inset-0 bg-background bg-opacity-25" />
-                        </TransitionChild>
-
-                        <div class="fixed inset-0 overflow-y-auto">
-                            <div
-                                class="flex min-h-full items-center justify-center p-4 text-center"
-                            >
-                                <TransitionChild
-                                    as="template"
-                                    enter="duration-300 ease-out"
-                                    enter-from="opacity-0 scale-95"
-                                    enter-to="opacity-100 scale-100"
-                                    leave="duration-200 ease-in"
-                                    leave-from="opacity-100 scale-100"
-                                    leave-to="opacity-0 scale-95"
-                                >
-                                    <DialogPanel
-                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
-                                    >
-                                        <div
-                                            v-for="user in users"
-                                            :key="user.username"
-                                            class="flex-row inline-flex flex-nowrap"
-                                        >
-                                            <button
-                                                class="border rounded-full bg-background ease-in-out transition duration-200 m-2 relative"
-                                                @click="removeUser(user)"
-                                            >
-                                                <img
-                                                    class="rounded-full w-8 h-8 object-cover"
-                                                    :src="user.image"
-                                                    :alt="user.username"
-                                                />
-                                                <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-primary hover:bg-primary hover:text-white smooth-transition"
-                                                >
-                                                    <XMarkIcon class="h-2 w-2" aria-hidden="true" />
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <UserProfileList
-                                            @selectUser="selectUser"
-                                            :search="true"
-                                            :unwantedUsers="participants?.map(a => a.user)"
-                                        />
-                                        <div class="flex justify-end mt-2">
-                                            <button
-                                                class="flex-shrink-0 bg-secondary hover:bg-primary text-white py-1 px-2 rounded capitalize"
-                                                type="button"
-                                                @click="addUsers"
-                                            >
-                                                add
-                                            </button>
-                                        </div>
-                                    </DialogPanel>
-                                </TransitionChild>
-                            </div>
-                        </div>
-                    </Dialog>
-                </TransitionRoot>
+                <ChatUsers
+                    :show="isAddUserOpened"
+                    @addUsers="addUsers"
+                    @closeChatUsers="isAddUserOpened = false"
+                    :participants="participants"
+                />
 
                 <div class="text-md font-semibold centered">
                     <button
@@ -373,31 +308,18 @@ const exitChat = () => {
     )
 }
 
-const addUsers = () => {
-    for (let i = 0; i < users.value?.length; i++) {
+const addUsers = (newUsers: UserGetDto[]) => {
+    for (let i = 0; i < newUsers?.length; i++) {
         chatSocket.value?.emit(
             'user-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
-                user_login: users.value[i].login,
+                user_login: newUsers[i].login,
                 action: 'add',
             }),
         )
     }
-    closeAddUsersPopup()
-}
-
-const selectUser = (user: UserGetDto) => {
-    if (
-        !users.value?.find(u => u.login === user.login) &&
-        user.login !== user_info.value?.login &&
-        !participants.value?.find(p => p.user_login === user.login)
-    )
-        users.value?.push(user)
-}
-
-const removeUser = (user: UserGetDto) => {
-    users.value = users.value?.filter(u => u.id !== user.id)
+    isAddUserOpened.value = false
 }
 
 const CanAddUsers = () => {
