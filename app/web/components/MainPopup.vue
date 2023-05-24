@@ -1,5 +1,4 @@
 <template>
-  <div>
     <TransitionRoot appear :show="props?.show" as="template">
         <Dialog as="div" @close="$emit('closeMainPopup')" class="relative z-10">
             <TransitionChild
@@ -37,7 +36,6 @@
             </div>
         </Dialog>
     </TransitionRoot>
-  </div>
 </template>
 
 <script setup>

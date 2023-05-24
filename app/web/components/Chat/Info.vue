@@ -61,8 +61,8 @@
 
                 <ChatUsers
                     :show="isAddUserOpened"
-                    @addUsers="addUsers"
-                    @closeChatUsers="isAddUserOpened = false"
+                    @usersList="addUsers"
+                    @closePopup="isAddUserOpened = false"
                     :participants="participants"
                 />
 
@@ -270,13 +270,6 @@ const closeAdminOptionsPopup = () => {
     setTimeout(() => {
         resetAdminOptions()
     }, 200)
-}
-
-const closeAddUsersPopup = () => {
-    setTimeout(() => {
-        users.value = []
-    }, 200)
-    isAddUserOpened.value = false
 }
 
 const setUser = (action: string) => {
