@@ -89,7 +89,7 @@
                         class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
                         :class="{
                             'scale-125 text-primary': participantsType === 'NORMAL',
-                            'opacity-70': participantsType !== 'NORMAL',
+                            'opacity-70 hover:opacity-100': participantsType !== 'NORMAL',
                         }"
                         @click="switchParticipantsList()"
                     >
@@ -100,51 +100,47 @@
                         @click="switchParticipantsList('BAN')"
                         :class="{
                             'scale-125 text-primary': participantsType === 'BAN',
-                            'opacity-70': participantsType !== 'BAN',
+                            'opacity-70 hover:opacity-100': participantsType !== 'BAN',
                         }"
                     >
                         banned
                     </button>
                 </div>
-                <div
+                <button
                     v-for="participant in participants"
                     :key="participant.user.username"
-                    class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    class="relative w-full pl-3 z-10 -my-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    @click="openAdminOptionsPopup(participant)"
                 >
-                    <button
-                        @click="openAdminOptionsPopup(participant)"
-                        class="relative w-full -m-3 flex items-center rounded-lg p-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    <div
+                        class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-background_light p-1 rounded-full"
                     >
-                        <div
-                            class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-background_light p-1 rounded-full"
-                        >
-                            <img
-                                :src="participant.user.image"
-                                :alt="participant.user.username"
-                                class="rounded-full w-10 h-10 object-cover"
-                            />
-                        </div>
-                        <div class="flex justify-between w-full">
-                            <div class="ml-4">
-                                <div
-                                    v-if="participant.user_login === user_info.login"
-                                    class="font-medium text-white capitalize"
-                                >
-                                    you
-                                </div>
-                                <div v-else class="font-medium text-white">
-                                    {{ participant.user.username }}
-                                </div>
-                            </div>
+                        <img
+                            :src="participant.user.image"
+                            :alt="participant.user.username"
+                            class="rounded-full w-10 h-10 object-cover"
+                        />
+                    </div>
+                    <div class="flex justify-between w-full">
+                        <div class="ml-4">
                             <div
-                                v-if="participant.role !== 'MEMBER'"
-                                class="text-white font-bold text-sm"
+                                v-if="participant.user_login === user_info.login"
+                                class="font-medium text-white capitalize"
                             >
-                                {{ participant.role }}
+                                you
+                            </div>
+                            <div v-else class="font-medium text-white">
+                                {{ participant.user.username }}
                             </div>
                         </div>
-                    </button>
-                </div>
+                        <div
+                            v-if="participant.role !== 'MEMBER'"
+                            class="text-white font-bold text-sm"
+                        >
+                            {{ participant.role }}
+                        </div>
+                    </div>
+                </button>
             </div>
             <div class="bg-background_light p-4">
                 <div

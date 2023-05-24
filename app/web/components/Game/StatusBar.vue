@@ -8,22 +8,40 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
             <div class="text-white font-semibold text-2xl">{{ players[0].score }}</div>
         </div>
         <div class="flex space-x-4">
-            <div v-for="(powerUp, i) in players[0].powerUps" :key="i"
+            <div
+                v-for="(powerUp, i) in players[0].powerUps"
+                :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
-                @click="onPowerUpClick(0, i + 1)">
-                <img :src="`/imgs/${powerUp.type}.png`" :alt="`Icon ${i + 1}`" class="w-full h-full rounded-md" />
-                <div v-if="!powerUp.ready"
-                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
+                @click="onPowerUpClick(0, i + 1)"
+            >
+                <img
+                    :src="`/imgs/${powerUp.type}.png`"
+                    :alt="`Icon ${i + 1}`"
+                    class="w-full h-full rounded-md"
+                />
+                <div
+                    v-if="!powerUp.ready"
+                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"
+                ></div>
             </div>
         </div>
         <div class="border-r border-white border-opacity-50 h-8 mx-4"></div>
         <div class="flex space-x-4">
-            <div v-for="(powerUp, i) in players[1].powerUps" :key="i"
+            <div
+                v-for="(powerUp, i) in players[1].powerUps"
+                :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
-                @click="onPowerUpClick(1, i + 1)">
-                <img :src="`/imgs/${powerUp.type}.png`" :alt="`Icon ${i + 1}`" class="w-full h-full rounded-md" />
-                <div v-if="!powerUp.ready"
-                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
+                @click="onPowerUpClick(1, i + 1)"
+            >
+                <img
+                    :src="`/imgs/${powerUp.type}.png`"
+                    :alt="`Icon ${i + 1}`"
+                    class="w-full h-full rounded-md"
+                />
+                <div
+                    v-if="!powerUp.ready"
+                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"
+                ></div>
             </div>
         </div>
         <div class="flex flex-col items-center text-xl">
@@ -81,13 +99,13 @@ const players = computed(() => {
     ]
 })
 
-onMounted(() => { })
+onMounted(() => {})
 
 const onPowerUpClick = (player: number, powerup: number) => {
-    if(gameSetup.value.player == player) {
-        emit('powerup', powerup.toString());
+    if (gameSetup.value.player == player) {
+        emit('powerup', powerup.toString())
     }
-};
+}
 
 watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
     if (newPlayer1.score !== 11 && newPlayer1.score !== oldPlayer1.score) {

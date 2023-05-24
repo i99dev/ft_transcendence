@@ -164,12 +164,10 @@ export class GameWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('Update-Token')
     updateToken(
         @ConnectedSocket() client: Socket,
-        @MessageBody(new ParseSocketStringPipe) token: string) {
+        @MessageBody(new ParseSocketStringPipe()) token: string,
+    ) {
         if (token) {
-            client.request.headers.authorization = 'Bearer ' + token;
-        }
-        else
-            throw new WsException('No Refersh token provided')
-
+            client.request.headers.authorization = 'Bearer ' + token
+        } else throw new WsException('No Refersh token provided')
     }
 }
