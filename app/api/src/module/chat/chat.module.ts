@@ -1,4 +1,3 @@
-import { PrismaService } from '../../providers/prisma/prisma.service'
 import { ChatService } from './chat.service'
 import { ChatController } from './chat.controller'
 import { Module, forwardRef } from '@nestjs/common'

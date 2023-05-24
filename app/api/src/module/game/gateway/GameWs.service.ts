@@ -1,27 +1,34 @@
 import { Injectable } from '@nestjs/common'
 import { ConnectedUser } from '../interface/game.interface'
 import { Socket } from 'socket.io'
-import { PongGame } from '../logic/pongGame'
 import { SocketService } from './socket.service'
 import { GameSelectDto, InviteDto, PlayerDto } from '../dto/game.dto'
-import { gameHistory } from '../logic/gameHistory'
-import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { GameRepository } from '../repository/game.repository'
-import e from 'express'
+import { gameAnalyzer } from '../logic/gameAnalyzer'
+import { PongGame } from '../logic/pongGame'
+import { gameHistory } from '../logic/gameHistory'
+import { PrismaService } from '@providers/prisma/prisma.service'
+import { UserService } from '@module/user/user.service'
+import { MatchService } from '@module/match/match.service'
 
 const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 
 @Injectable()
-export class DefaultService {
+export class GameWsService {
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
     private custom_queue: string[] = []
-    private gameAnalyzer = new gameAnalyzer()
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
 
-    constructor(private socketService: SocketService) { }
+    constructor(
+        private socketService: SocketService,
+        private gameAnalyzer: gameAnalyzer,
+        private prisma: PrismaService,
+        private userService: UserService,
+        private matchService: MatchService,
+    ) {}
 
     /* 
         Adds a new user to connected_users array
@@ -68,7 +75,8 @@ export class DefaultService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        player.game.setLoser(player.id)
+        if (player && player.status == 'ingame')
+            player.game.setLoser(player.id)
     }
 
     /* 
@@ -114,51 +122,48 @@ export class DefaultService {
             user.status = 'busy'
             opponent.status = 'busy'
             opponent.socket.emit('Invite-Received', invite)
-        }
-        else if (opponent) {
+        } else if (opponent) {
             // Incase user it not online or not found
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: opponent.status })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: opponent.status })
         }
         else {
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: 'offline' })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: 'offline' })
         }
     }
 
     /* Respond to the inviter with either Accept or Decline */
     public respondInvite(userSocket: Socket, response: InviteDto, error?: boolean) {
-        const user = this.connected_users.find((user => user.socket == userSocket))
+        const user = this.connected_users.find(user => user.socket == userSocket)
         const opponent = this.connected_users.find(user => user.id == response.inviterId)
         if (error) {
-            if (user.status == 'busy')
-                user.status = 'online'
-            if (opponent.status == 'busy')
-                opponent.status = 'online'
+            if (user.status == 'busy') user.status = 'online'
+            if (opponent.status == 'busy') opponent.status = 'online'
             userSocket.emit('Respond-Invite', { status: 'error', playerStatus: opponent.status })
             return
         }
         if (opponent) {
             if (response.accepted == true) {
-                opponent.socket.emit('Respond-Invite', { status: 'accepted', playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', {
+                    status: 'accepted',
+                    playerStatus: user.status,
+                })
                 user.powerUps = response.powerups
                 setTimeout(() => {
                     this.createMultiGame(opponent, user, response.gameType)
                     user.status = 'ingame'
                     opponent.status = 'ingame'
                 }, 3000)
-            }
-            else {
+            } else {
                 opponent.status = 'online'
                 user.status = 'online'
-                opponent.socket.emit('Respond-Invite', { status: 'declined', playerStatus: user.status })
+                opponent.socket.emit('Respond-Invite', { status: 'rejected', playerStatus: user.status })
             }
-        }
-        else
-            user.status = 'online'
+        } else user.status = 'online'
     }
 
     public playerReady(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player.status != 'ingame') return
+        if (player && player.status != 'ingame') return
         player.game.setPlayerReady(player.id)
     }
 
@@ -249,7 +254,12 @@ export class DefaultService {
     /* 
         Creates a new pongGame object and emit the game setup to both players
     */
-    private createMultiGame(player1: ConnectedUser, player2: ConnectedUser, gameType: string, gameMode?: string) {
+    private createMultiGame(
+        player1: ConnectedUser,
+        player2: ConnectedUser,
+        gameType: string,
+        gameMode?: string,
+    ) {
         let game
         if (gameType == 'custom') {
             game = new PongGame(
@@ -276,7 +286,12 @@ export class DefaultService {
     }
 
     private startGame(game: PongGame) {
-        this.game_result = new gameHistory(game.getGameStatus())
+        this.game_result = new gameHistory(
+            game.getGameStatus(),
+            this.prisma,
+            this.userService,
+            this.matchService,
+        )
         game.events.on('play-sound', (sound: string) => {
             this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
         })
@@ -286,13 +301,11 @@ export class DefaultService {
                 game.updateGame()
                 this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             }
-            if (game.getPlayer1Score() >= 11 || game.getPlayer2Score() >= 11) {
+            if (game.checkWinner()) {
                 clearInterval(intervalId)
                 await this.endGame(
                     game,
-                    game.getPlayer1Score() >= 11
-                        ? game.getGameStatus().players[0]
-                        : game.getGameStatus().players[1],
+                    game.getWinner()
                 )
                 return
             }

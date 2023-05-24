@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
     <div>
         <div class="fixed top-4 right-8 cursor-pointer w-8 h-8 z-50">
             <button v-if="muteSound" v-click-effect="handleMuteSound"
@@ -22,6 +23,11 @@
                 </svg>
             </button>
         </div>
+=======
+    <div class="no-context-menu">
+        <img src="/imgs/audio.png" alt="Stop audio" @click="toggleAudio"
+            class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50" />
+>>>>>>> origin/min-requirements
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
@@ -50,7 +56,14 @@
             </div>
         </div>
         <GameInviteBox v-if="inviteModal.open" class="z-20" />
+        <div
+        v-show="showRotateOverlay"
+        class="fixed inset-0 bg-gray-900 opacity-100 flex items-center justify-center text-white text-2xl z-30"
+        >
+        Please rotate your phone to landscape.
+      </div>
     </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -71,8 +84,31 @@ const { emitLeaveQueue } = useSocket()
 const { showTab } = useTabEvent()
 const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
+const showRotateOverlay = ref(false)
 
 loop('play')
+
+onMounted(() => {
+  checkOrientation();
+  window.addEventListener('orientationchange', checkOrientation);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('orientationchange', checkOrientation);
+});
+
+const checkOrientation = () => {
+  let isPortrait;
+
+  if ('orientation' in window.screen) {
+    isPortrait = window.screen.orientation.type.startsWith('portrait');
+  } else if ('orientation' in window) {
+    isPortrait = window.orientation === 0 || window.orientation === 180;
+  } else {
+    isPortrait = window.innerHeight > window.innerWidth;
+  }
+  showRotateOverlay.value = isPortrait;
+};
 
 onUnmounted(() => {
     pause('play')
@@ -148,4 +184,11 @@ watchEffect(() => {
 })
 
 </script>
+
+<style>
+.no-context-menu {
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+</style>
 

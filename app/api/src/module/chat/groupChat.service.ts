@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common'
 import { ChatRoom, ChatUserStatus } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 import { ChatService } from './chat.service'
-import { skip } from 'rxjs'
 
 @Injectable()
 export class GroupChatService {
@@ -120,7 +119,7 @@ export class GroupChatService {
                 orderBy: {
                     chat_room: {
                         created_at: 'desc',
-                    }
+                    },
                 },
                 skip: (page - 1) * 20,
                 take: 20,

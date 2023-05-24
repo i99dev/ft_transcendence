@@ -44,7 +44,7 @@ export async function deleteNewNotif(id: number): Promise<void> {
 
 export async function getPlayerWinRate(player: string): Promise<number | null> {
     const api = useRuntimeConfig().API_URL
-    const { data } = await useFetch<number>(`/match-history/${player}/winningrate`, {
+    const { data } = await useFetch<number>(`/match/${player}/winningrate`, {
         method: 'GET',
         baseURL: api,
         headers: {
@@ -60,7 +60,7 @@ export async function getPlayerGameResult(
 ): Promise<number | null> {
     const api = useRuntimeConfig().API_URL
     const { data } = await useFetch<number>(
-       isWin === undefined ? `/match-history/${player}/totalGames` : `/match-history/${player}/totalGames?isWin=${isWin}`,
+       isWin === undefined ? `/match/${player}/totalGames` : `/match/${player}/totalGames?isWin=${isWin}`,
         {
             method: 'GET',
             baseURL: api,

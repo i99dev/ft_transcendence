@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common'
 import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
 import { EventEmitter } from 'events'
+import { Player } from '@prisma/client'
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -35,7 +37,7 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
 
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
-const PADDLE_SPEED = 0.019
+const PADDLE_SPEED = 0.0175
 const REFLECT_ANGLE = 80
 const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
@@ -48,10 +50,12 @@ interface gameAnalyzer {
     Achievements: string[]
 }
 
+@Injectable()
 export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
+    private winner: string
     public events: EventEmitter
     public analyzePlayer = new Map<string, gameAnalyzer>()
     constructor(
@@ -64,6 +68,7 @@ export class PongGame {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
         this.events = new EventEmitter()
+        this.winner = null
         if (gameType == 'classic')
             this.game_status = this.instanciateGame(player1Login, Player2Login)
         else
@@ -156,7 +161,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
-            ready: false
+            ready: false,
         }
     }
 
@@ -184,6 +189,26 @@ export class PongGame {
         return players[0].ready && players[1].ready
     }
 
+    // public setLoser(playerID: string): void {
+    //     const playerIndex = this.game_status.players.findIndex(
+    //         player => player.username === playerID,
+    //     )
+
+    //     if (playerIndex !== -1) {
+    //         const opponentIndex = playerIndex === 0 ? 1 : 0
+    //         this.game_status.players[opponentIndex].score = 11
+    //     }
+    // }
+
+    public setWinner(playerID: string): void {
+        const playerIndex = this.game_status.players.findIndex(
+            player => player.username === playerID,
+        )
+        if (playerIndex !== -1) {
+            this.winner = this.game_status.players[playerIndex].username;
+        }
+    }
+
     public setLoser(playerID: string): void {
         const playerIndex = this.game_status.players.findIndex(
             player => player.username === playerID,
@@ -191,8 +216,27 @@ export class PongGame {
 
         if (playerIndex !== -1) {
             const opponentIndex = playerIndex === 0 ? 1 : 0
-            this.game_status.players[opponentIndex].score = 11
+            this.winner = this.game_status.players[opponentIndex].username;
         }
+    }
+
+    public checkWinner(): boolean {
+        if (this.winner) return true
+        const player1Score = this.game_status.players[0].score
+        const player2Score = this.game_status.players[1].score
+        if (player1Score === 11) {
+            this.winner = this.game_status.players[0].username
+            return true
+        }
+        if (player2Score === 11) {
+            this.winner = this.game_status.players[1].username
+            return true
+        }
+        return false
+    }
+
+    public getWinner(): PlayerDto {
+        return this.game_status.players.find(player => player.username === this.winner)
     }
 
     public updateComputer(): void {

@@ -153,10 +153,10 @@ const isFilter = ref(new Map([
     ['desc', false],
 ]));
 
-const totalPagesURL = ref(`/match-history/${user.login}/totalPages`)
+const totalPagesURL = ref(`/match/${user.login}/totalPages`)
 
 onMounted(async () => {
-    const data: MatchHistoryDto[] = await useGameHistory(`/match-history/${user.login}?page=${currentPage.value}`) as MatchHistoryDto[]
+    const data: MatchHistoryDto[] = await useGameHistory(`/match/${user.login}?page=${currentPage.value}`) as MatchHistoryDto[]
     if (data && game_history) gameHistoryRef.value = data ? data : []
 })
 
@@ -186,22 +186,22 @@ const handleFilteration = async (filter: string) => {
     for (const key of isFilter.value?.keys()) isFilter.value?.set(key, false)
     let data
     if (filter == 'all')
-        data = await useGameHistory(`/match-history/${user.login}?page=${currentPage.value}`)
+        data = await useGameHistory(`/match/${user.login}?page=${currentPage.value}`)
     else if (filter == 'win')
         data = await useGameHistory(
-            `/match-history/${user.login}/result?page=${currentPage.value}&isWin=true`,
+            `/match/${user.login}/result?page=${currentPage.value}&isWin=true`,
         )
     else if (filter == 'lose')
         data = await useGameHistory(
-            `/match-history/${user.login}/result?page=${currentPage.value}&isWin=false`,
+            `/match/${user.login}/result?page=${currentPage.value}&isWin=false`,
         )
     else if (filter == 'asc')
         data = await useGameHistory(
-            `/match-history/${user.login}/score?page=${currentPage.value}&sort=asc`,
+            `/match/${user.login}/score?page=${currentPage.value}&sort=asc`,
         )
     else if (filter == 'desc')
         data = await useGameHistory(
-            `/match-history/${user.login}/score?page=${currentPage.value}&sort=desc`,
+            `/match/${user.login}/score?page=${currentPage.value}&sort=desc`,
         )
     if (data && game_history) gameHistoryRef.value = data ? data : []
     currentFilter.value = filter
