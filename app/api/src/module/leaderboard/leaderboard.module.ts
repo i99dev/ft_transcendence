@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common'
 import { LeaderboardController } from './leaderboard.controller'
 import { LeaderboardService } from './leaderboard.service'
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
-import { PrismaService } from '@providers/prisma/prisma.service'
 import { PrismaModule } from '@providers/prisma/prisma.module'
+import { MatchModule } from '@module/match/match.module'
+import { NotificationModule } from '@module/notification/notification.module'
+import { GameModule } from '@module/game/game.module'
 
 @Module({
-    imports: [PrismaModule],
+    imports: [PrismaModule, MatchModule, NotificationModule, GameModule],
     controllers: [LeaderboardController],
-    providers: [LeaderboardService, gameAnalyzer],
+    providers: [LeaderboardService],
     exports: [LeaderboardService],
 })
 export class LeaderboardModule {}

@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
-import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { AchievementModule } from './module/achievement/achievement.module'
 import { LeaderboardModule } from './module/leaderboard/leaderboard.module'
 import { MulterModule } from './module/multer/multer.module'
@@ -19,7 +18,7 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { BlockModule } from '@module/block/block.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { APP_GUARD } from '@nestjs/core'
-import { FriendModule } from '@module/friend/friend.module'
+import { MatchModule } from '@module/match/match.module'
 
 @Module({
     imports: [
@@ -61,7 +60,7 @@ import { FriendModule } from '@module/friend/friend.module'
         FriendWsModule,
         GameModule,
         ChatModule,
-        MatchHistoryModule,
+        MatchModule,
         AchievementModule,
         LeaderboardModule,
         MulterModule,

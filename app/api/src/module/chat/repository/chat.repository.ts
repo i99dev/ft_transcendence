@@ -3,7 +3,7 @@ import { PrismaService } from '../../../providers/prisma/prisma.service'
 
 @Injectable({})
 export class ChatRepository {
-    constructor(private prisma: PrismaService) {}
+    constructor() {}
 
     sort(chatRooms: any[]): any[] {
         chatRooms.sort((a, b) => {

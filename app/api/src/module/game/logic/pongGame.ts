@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
 import { EventEmitter } from 'events'
@@ -49,6 +50,7 @@ interface gameAnalyzer {
     Achievements: string[]
 }
 
+@Injectable()
 export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
@@ -159,7 +161,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
-            ready: false
+            ready: false,
         }
     }
 

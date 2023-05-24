@@ -17,7 +17,6 @@ import { SocketService } from './socket.service'
 import { WsGuard } from '../../../common/guards/ws.guard'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
-import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { ParseSocketStringPipe } from '@common/pipes/socketString.pipe'
 import { BlockService } from '@module/block/block.service'
 @WebSocketGateway({
@@ -25,19 +24,19 @@ import { BlockService } from '@module/block/block.service'
     cors: { origin: '*' },
     path: '/api/socket.io',
 })
-export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class GameWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server
 
-    private logger = new Logger('DefaultGateway')
+    private logger = new Logger('GameWsGateway')
     private decoded: any
 
     constructor(
         private gameService: GameWsService,
         private socketService: SocketService,
         private jwtService: JwtService,
-        private blockService: BlockService
-    ) { }
+        private blockService: BlockService,
+    ) {}
 
     afterInit(server: Server) {
         this.socketService.setServer(server)
@@ -94,7 +93,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Ready')
-    ready(@ConnectedSocket() client: any,) {
+    ready(@ConnectedSocket() client: any) {
         this.gameService.playerReady(client)
     }
 
@@ -154,7 +153,6 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         }
         this.gameService.respondInvite(client, payload)
     }
-
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
