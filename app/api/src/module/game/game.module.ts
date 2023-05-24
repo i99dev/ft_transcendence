@@ -1,5 +1,4 @@
 import { Module, forwardRef } from '@nestjs/common'
-import { GameController } from './game.controller'
 import { MatchModule } from '@module/match/match.module'
 import { PrismaModule } from '@providers/prisma/prisma.module'
 import { NotificationModule } from '@module/notification/notification.module'
@@ -18,7 +17,6 @@ import { AchievementModule } from '@module/achievement/achievement.module'
         UserModule,
         AchievementModule,
     ],
-    controllers: [GameController],
     providers: [gameAnalyzer, PongGame, String, Array],
     exports: [gameAnalyzer],
 })
