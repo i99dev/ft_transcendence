@@ -1,6 +1,5 @@
 <template>
-<<<<<<< HEAD
-    <div>
+    <div class="no-context-menu">
         <div class="fixed top-4 right-8 cursor-pointer w-8 h-8 z-50">
             <button v-if="muteSound" v-click-effect="handleMuteSound"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
@@ -23,11 +22,6 @@
                 </svg>
             </button>
         </div>
-=======
-    <div class="no-context-menu">
-        <img src="/imgs/audio.png" alt="Stop audio" @click="toggleAudio"
-            class="fixed top-4 right-4 cursor-pointer w-8 h-8 z-50" />
->>>>>>> origin/min-requirements
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
