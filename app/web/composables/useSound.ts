@@ -26,7 +26,6 @@ export const useSound = () => {
             sound.value.get(effect).loop = true
             sound.value.get(effect).volume = 0.2
         }
-        console.log('effect', effect)
         if (sound.value.get(effect).paused)
             sound.value.get(effect).play()
     }

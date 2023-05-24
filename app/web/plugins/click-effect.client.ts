@@ -4,7 +4,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     mounted (el, binding) {
       el.addEventListener('click', function(event: any) {
         // Common logic for all elements with the directive
-        console.log('click sound', binding.arg)
         play('click')
         if (binding.arg !== undefined)
         {
