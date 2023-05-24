@@ -7,6 +7,7 @@
             <div class="flex items-center border-b border-secondary py-2">
                 <div class="file-upload">
                     <input
+                        id="groupChatImage"
                         type="file"
                         ref="fileInput"
                         @change="handleFileUpload"
@@ -73,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps(['show', 'submitButton', 'cancelButton'])
+const props = defineProps(['show', 'submitButton', 'cancelButton', 'name', 'image'])
 const emit = defineEmits(['chatData', 'closePopup', 'cancel'])
 
 const chatImage = ref(undefined as string | undefined)
@@ -81,6 +82,14 @@ const chatName = ref('')
 const fileInput = ref()
 const formData = ref(undefined as FormData | undefined)
 const reader = ref(undefined as FileReader | undefined)
+
+watch(
+    () => props.show,
+    () => {
+        if (props.name) chatName.value = props.name
+        if (props.image) chatImage.value = props.image
+    },
+)
 
 onUnmounted(() => {
     reset()
@@ -118,7 +127,7 @@ const sendChatData = () => {
 const closePopup = (action: 'chatData' | 'closePopup' | 'cancel' = 'closePopup') => {
     setTimeout(() => {
         reset()
-    }, 100)
+    }, 200)
     emit(action)
 }
 </script>

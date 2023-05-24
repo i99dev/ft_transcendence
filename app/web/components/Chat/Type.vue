@@ -132,7 +132,7 @@ import {
     RadioGroupOption,
 } from '@headlessui/vue'
 
-const props = defineProps(['show', 'submitButton', 'cancelButton'])
+const props = defineProps(['show', 'submitButton', 'cancelButton', 'type'])
 const emit = defineEmits(['chatType', 'closePopup', 'cancel'])
 
 const chatTypes = [
@@ -145,6 +145,13 @@ const chatTypes = [
 ]
 const groupChatType = ref(chatTypes[0] as { type: string } | undefined)
 const chatPassword = ref('')
+
+watch(
+    () => props.show,
+    () => {
+        if (props?.type === 'PRIVATE') groupChatType.value = chatTypes[1]
+    },
+)
 
 onUnmounted(() => {
     closePopup()

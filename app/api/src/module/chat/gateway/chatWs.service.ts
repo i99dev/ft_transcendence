@@ -306,7 +306,7 @@ export class ChatWsService {
             const salt = bcrypt.genSaltSync(10)
             room.password = bcrypt.hashSync(room.password, salt)
         }
-        await this.groupChatService.updateGroupChat(room)
+        return await this.groupChatService.updateGroupChat(room)
     }
 
     async validateGroupChat(room_id: string) {

@@ -11,6 +11,17 @@
                         >
                             <TransitionChild
                                 as="template"
+                                enter="duration-300 ease-out"
+                                enter-from="opacity-0"
+                                enter-to="opacity-100"
+                                leave="duration-200 ease-in"
+                                leave-from="opacity-100"
+                                leave-to="opacity-0"
+                            >
+                                <div class="fixed inset-0 bg-background bg-opacity-40" />
+                            </TransitionChild>
+                            <TransitionChild
+                                as="template"
                                 enter="transform transition ease-in-out duration-500 sm:duration-700"
                                 enter-from="translate-x-full"
                                 enter-to="translate-x-0"

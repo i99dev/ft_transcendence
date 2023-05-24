@@ -228,7 +228,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @UseGuards(WsGuard)
-    @SubscribeMessage('update')
+    @SubscribeMessage('update-group-chat')
     async UpdateChatInfo(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: UpdateChatDto,
@@ -239,12 +239,16 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             !(await this.chatService.validateChatRoom(payload.room_id, client.handshake.auth.login))
         )
             return this.socketError('Invalid reciever')
-        await this.chatWsService.updateGroupChatRoom(payload, client.handshake.auth.login)
+        const groupChat = await this.chatWsService.updateGroupChatRoom(
+            payload,
+            client.handshake.auth.login,
+        )
 
+        this.wss.to(payload.room_id).emit('group-chat-info', groupChat)
         await this.setupSpecialMessage(
             this.getID(client),
             payload.room_id,
-            `${client.handshake.auth.login} updated a group chat`,
+            `${client.handshake.auth.login} updated group chat info`,
         )
     }
 

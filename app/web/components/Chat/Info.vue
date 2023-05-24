@@ -59,11 +59,29 @@
                     </Dialog>
                 </TransitionRoot>
 
+                <ChatImageAndName
+                    :show="isEditChatImageAndNameOpened"
+                    :submitButton="'update'"
+                    :name="currentChat?.name"
+                    :image="currentChat?.image"
+                    @chatData="updateChatInfo"
+                    @closePopup="closeChatImageAndNamePopup"
+                />
+
                 <ChatUsers
                     :show="isAddUserOpened"
-                    @usersList="addUsers"
-                    @closePopup="isAddUserOpened = false"
+                    :submitButton="'add'"
                     :participants="participants"
+                    @usersList="addUsers"
+                    @closePopup="closeAddUsersPopup"
+                />
+
+                <ChatType
+                    :show="isEditChatTypeOpened"
+                    :submitButton="'update'"
+                    :type="currentChat?.type"
+                    @chatType="updateChatInfo"
+                    @closePopup="closeChatTypePopup"
                 />
 
                 <div class="text-md font-semibold centered">
@@ -133,11 +151,25 @@
                     class="flex justify-center rounded-md px-2 py-2 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
-                        v-if="CanAddUsers()"
+                        v-if="isAllowed()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
                         @click="isAddUserOpened = true"
                     >
                         <UserPlusIcon class="w-6 h-6" />
+                    </button>
+                    <button
+                        v-if="isAllowed()"
+                        class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
+                        @click="isEditChatImageAndNameOpened = true"
+                    >
+                        <PencilSquareIcon class="w-6 h-6" />
+                    </button>
+                    <button
+                        v-if="isAllowed()"
+                        class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
+                        @click="isEditChatTypeOpened = true"
+                    >
+                        <KeyIcon class="w-6 h-6" />
                     </button>
                     <button
                         class="border rounded-full hover:bg-secondary ease-in-out transition duration-200 p-2 mx-4"
@@ -153,8 +185,12 @@
 
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { UserPlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import {
+    UserPlusIcon,
+    PencilSquareIcon,
+    KeyIcon,
+    ArrowRightOnRectangleIcon,
+} from '@heroicons/vue/24/outline'
 import { ref, onMounted, watch } from 'vue'
 
 const { chatSocket } = useChatSocket()
@@ -185,11 +221,11 @@ const adminOptions = ref([
 ])
 const isAdminOptionsOpened = ref(false)
 const isAddUserOpened = ref(false)
+const isEditChatImageAndNameOpened = ref(false)
+const isEditChatTypeOpened = ref(false)
 const { user_info } = useUserInfo()
-const { currentChat } = useCurrentChat()
+const { currentChat, setCurrentChat } = useCurrentChat()
 const emit = defineEmits(['closeNavBar'])
-
-const users = ref([] as UserGetDto[])
 
 onMounted(() => {
     socketOn()
@@ -203,6 +239,9 @@ const socketOn = () => {
     chatSocket.value?.on('group-chat-banned-users', (payload: ChatUser[]) => {
         setParticipantsType('BAN')
         setParticipants(payload)
+    })
+    chatSocket.value?.on('group-chat-info', (payload: GroupChat & DirectChat) => {
+        setCurrentChat(payload)
     })
 }
 
@@ -314,7 +353,60 @@ const addUsers = (newUsers: UserGetDto[]) => {
     isAddUserOpened.value = false
 }
 
-const CanAddUsers = () => {
+const updateChatInfo = async (payload: {
+    name: string
+    image: FormData
+    type: string
+    password: string
+}) => {
+    const chatData = {} as {
+        room_id: string
+        name: string
+        image: FormData
+        password: string
+        type: string
+    }
+
+    chatData.room_id = currentChat.value?.chat_room_id as string
+    if (payload?.name) chatData.name = payload.name
+    if (payload?.image && currentChat.value?.chat_room_id) {
+        const { data } = await useUplaod(currentChat.value?.chat_room_id, payload.image)
+        if (data?.value) chatData.image = data?.value?.file_url
+    }
+    if (payload?.type) chatData.type = payload.type
+    if (payload.type === 'PROTECTED') chatData.password = payload.password
+
+    chatSocket.value?.emit('update-group-chat', JSON.stringify(chatData))
+
+    closeChatImageAndNamePopup()
+    closeChatTypePopup()
+}
+
+// const updateChatType = () => {
+//     const chatData = {} as {
+//         room_id: string,
+//         name: string,
+//         image: string,
+//         password: string,
+//         type: string,
+//     }
+
+//     closeChatTypePopup()
+// }
+
+const closeChatImageAndNamePopup = () => {
+    isEditChatImageAndNameOpened.value = false
+}
+
+const closeAddUsersPopup = () => {
+    isAddUserOpened.value = false
+}
+
+const closeChatTypePopup = () => {
+    isEditChatTypeOpened.value = false
+}
+
+const isAllowed = () => {
     if (participants.value)
         for (let i = 0; i < participants.value?.length; i++)
             if (
