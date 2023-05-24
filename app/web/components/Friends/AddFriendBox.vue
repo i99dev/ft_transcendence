@@ -19,7 +19,7 @@
                     <div
                         class="inline-block align-bottom bg-background rounded-lg text-left text-white overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                     >
-                        <div class=" px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg leading-6 font-medium">Add Friend</h3>
                             <div class="mt-2">
                                 <input

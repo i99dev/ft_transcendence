@@ -36,8 +36,8 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         private gameService: DefaultService,
         private socketService: SocketService,
         private jwtService: JwtService,
-        private blockService: BlockService
-    ) { }
+        private blockService: BlockService,
+    ) {}
 
     afterInit(server: Server) {
         this.socketService.setServer(server)
@@ -94,7 +94,7 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Ready')
-    ready(@ConnectedSocket() client: any,) {
+    ready(@ConnectedSocket() client: any) {
         this.gameService.playerReady(client)
     }
 
@@ -155,12 +155,9 @@ export class DefaultGateway implements OnGatewayConnection, OnGatewayDisconnect 
         this.gameService.respondInvite(client, payload)
     }
 
-
     @UseGuards(WsGuard)
     @SubscribeMessage('Leave-Queue')
     leaveQueue(@ConnectedSocket() client: Socket) {
         this.gameService.leaveQueue(client)
     }
-
-
 }

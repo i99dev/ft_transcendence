@@ -50,7 +50,8 @@ services:
             [
                 'sh',
                 '-c',
-                'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio | yarn dev',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && npx prisma studio
+                | yarn dev',
             ]
         environment:
             - NODE_ENV=${NODE_ENV}

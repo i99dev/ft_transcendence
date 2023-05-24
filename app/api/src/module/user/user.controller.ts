@@ -68,7 +68,11 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async SearchUser(@Query('search', QueryParseStringPipe) search: string, @Query('page') page: number, @Req() req) {
+    async SearchUser(
+        @Query('search', QueryParseStringPipe) search: string,
+        @Query('page') page: number,
+        @Req() req,
+    ) {
         if (!search || search === '') return await this.UserService.SortMany({ id: 'asc' })
         else if (search.length > 255) throw new BadRequestException('Search is too long')
 

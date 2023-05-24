@@ -14,9 +14,7 @@
             </TransitionChild>
 
             <div class="fixed inset-0 overflow-y-auto">
-                <div
-                    class="flex min-h-full items-center justify-center p-4 text-center"
-                >
+                <div class="flex min-h-full items-center justify-center p-4 text-center">
                     <TransitionChild
                         as="template"
                         enter="duration-300 ease-out"
@@ -41,5 +39,4 @@
 <script setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 const props = defineProps(['show'])
-
 </script>

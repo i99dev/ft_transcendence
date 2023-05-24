@@ -79,7 +79,6 @@ watch(searchedUsers, async val => {
 })
 const users = ref()
 
-
 onMounted(() => {
     setTimeout(() => {
         if (props.search) document.getElementById('search-input')?.focus()
@@ -104,7 +103,6 @@ const handleUserSelection = (user: UserGetDto) => {
     if (props.reset) searchedUsers.value = ''
     emit('selectUser', user)
 }
-
 </script>
 
 <style scoped>

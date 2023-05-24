@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ChatImageAndName 
+        <ChatImageAndName
             :show="props.isOpened && stage === 1"
             :submitButton="'next'"
             @chatData="setImageAndName"
@@ -36,18 +36,20 @@ const { chats } = useChats()
 const users = ref([] as UserGetDto[])
 const stage = ref(1)
 const formData = ref(undefined as FormData | undefined)
-const groupChat = ref({} as {
-    name: string,
-    image: string,
-    type: string,
-    password: string,
-})
+const groupChat = ref(
+    {} as {
+        name: string
+        image: string
+        type: string
+        password: string
+    },
+)
 
 onMounted(() => {
     socketOn()
 })
 
-onUnmounted(()=>{
+onUnmounted(() => {
     reset()
 })
 
@@ -56,10 +58,10 @@ const reset = () => {
     stage.value = 1
     formData.value = undefined
     groupChat.value = {} as {
-        name: string,
-        image: string,
-        type: string,
-        password: string,
+        name: string
+        image: string
+        type: string
+        password: string
     }
 }
 
@@ -101,15 +103,15 @@ const setNewUsers = (newUsers: UserGetDto[]) => {
     nextStage()
 }
 
-const setImageAndName = (data: {name:string, image: FormData}) => {
+const setImageAndName = (data: { name: string; image: FormData }) => {
     groupChat.value.name = data?.name
     if (data?.image) formData.value = data?.image
-    
+
     nextStage()
 }
 
-const setType = (data: {type:string, password: string}) => {
-    groupChat.value.type = data.type 
+const setType = (data: { type: string; password: string }) => {
+    groupChat.value.type = data.type
     if (data.type === 'PROTECTED') groupChat.value.password = data.password
 
     createGroupChat()
@@ -138,10 +140,6 @@ const closePopup = () => {
 }
 
 const createGroupChat = () => {
-    chatSocket.value?.emit(
-        'create-group-chat',
-        JSON.stringify(groupChat.value),
-    )
+    chatSocket.value?.emit('create-group-chat', JSON.stringify(groupChat.value))
 }
-
 </script>

@@ -82,7 +82,7 @@ export class DirectChatService {
                 orderBy: {
                     chat_room: {
                         created_at: 'desc',
-                    }
+                    },
                 },
                 include: {
                     users: true,

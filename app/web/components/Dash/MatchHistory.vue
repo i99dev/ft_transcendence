@@ -132,10 +132,7 @@
                 <div v-if="!isSameLogin(game)">
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
-                            <img
-                                :src="user_info.image"
-                                class="w-8 h-8 rounded-full object-cover"
-                            />
+                            <img :src="user_info.image" class="w-8 h-8 rounded-full object-cover" />
                             <!-- name and result -->
                             <div class="text-xs m-2 capitalize font-bold">
                                 {{ user_info.username }}
@@ -263,5 +260,4 @@ const handleFilteration = async (filter: string) => {
     currentFilter.value = filter
     isFilter.value?.set(filter, true)
 }
-
 </script>

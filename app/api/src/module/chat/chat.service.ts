@@ -10,7 +10,11 @@ import { DirectChatService } from './directChat.service'
 
 @Injectable()
 export class ChatService {
-    constructor(private prisma: PrismaService, private chatRepository: ChatRepository, private directChatService: DirectChatService) {}
+    constructor(
+        private prisma: PrismaService,
+        private chatRepository: ChatRepository,
+        private directChatService: DirectChatService,
+    ) {}
     private chatRooms: ChatRoom[]
 
     async getUser(login: string) {
@@ -298,8 +302,7 @@ export class ChatService {
                     },
                 })
                 return chatUser
-            }
-            else {
+            } else {
                 const chatUser = await this.directChatService.getDirectChatUser(room_id, user_login)
                 if (chatUser) return true
                 return false

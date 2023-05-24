@@ -3,7 +3,7 @@
         <TransitionRoot as="template" :show="open">
             <Dialog as="div" class="relative z-10">
                 <div class="fixed inset-0" />
-    
+
                 <div class="fixed inset-0 overflow-hidden">
                     <div class="absolute inset-0 overflow-hidden">
                         <div
@@ -31,17 +31,20 @@
                                                         @click="setChatModalOpen(false)"
                                                     >
                                                         <span class="sr-only">Close panel</span>
-                                                        <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                                                        <XMarkIcon
+                                                            class="h-6 w-6"
+                                                            aria-hidden="true"
+                                                        />
                                                     </button>
                                                 </div>
                                                 <ChatOptions />
                                             </div>
                                         </div>
-                                        <ChatList
-                                            v-if="chatView"
-                                            @showInvite="showInviteModal"
+                                        <ChatList v-if="chatView" @showInvite="showInviteModal" />
+                                        <ChatContent
+                                            v-else
+                                            @closeNavBar="setChatModalOpen(false)"
                                         />
-                                        <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                                     </div>
                                 </DialogPanel>
                             </TransitionChild>

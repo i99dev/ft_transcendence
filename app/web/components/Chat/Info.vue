@@ -211,8 +211,7 @@ const setAdminOptions = () => {
         adminOptions.value = []
         return
     }
-    
-    
+
     if (participant.value.status === 'BAN') {
         adminOptions.value = []
         adminOptions.value[0] = {
@@ -334,12 +333,9 @@ const goToUserProfile = (username: string) => {
     emit('closeNavBar')
 }
 const switchParticipantsList = (type: string = 'NORMAL') => {
-    if (type === 'NORMAL' && participantsType.value !== 'NORMAL')
-        updateParticipants()
-    else if (type === 'BAN' && participantsType.value !== 'BAN')
-        updateParticipants('BAN')
+    if (type === 'NORMAL' && participantsType.value !== 'NORMAL') updateParticipants()
+    else if (type === 'BAN' && participantsType.value !== 'BAN') updateParticipants('BAN')
 }
-
 </script>
 
 <style scoped>

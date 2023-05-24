@@ -26,7 +26,8 @@ const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } =
+    useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -93,8 +94,7 @@ function giveUp(): void {
 
 function setup(mode: GameSelectDto): void {
     resetSocket()
-    if(mode.gameMode != 'invite')
-        emitStartGame(mode)
+    if (mode.gameMode != 'invite') emitStartGame(mode)
     setupSocketHandlers()
     windowEvents()
 }
