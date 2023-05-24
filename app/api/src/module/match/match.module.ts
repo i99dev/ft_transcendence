@@ -4,7 +4,6 @@ import { MatchService } from './match.service'
 import { MatchController } from './match.controller'
 import { PrismaModule } from '@providers/prisma/prisma.module'
 import { NotificationModule } from '@module/notification/notification.module'
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { GameModule } from '@module/game/game.module'
 
 @Module({

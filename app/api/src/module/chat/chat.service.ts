@@ -2,7 +2,6 @@ import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, Prisma } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
-import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
 import { DirectChatService } from './directChat.service'
 
@@ -10,7 +9,6 @@ import { DirectChatService } from './directChat.service'
 export class ChatService {
     constructor(
         private prisma: PrismaService,
-        private chatRepository: ChatRepository,
         private directChatService: DirectChatService,
     ) {}
     private chatRooms: ChatRoom[]

@@ -1,5 +1,5 @@
 import { ChatModule } from './module/chat/chat.module'
-import { Module, forwardRef } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './module/user/user.module'

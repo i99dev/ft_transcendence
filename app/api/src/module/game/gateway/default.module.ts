@@ -8,7 +8,6 @@ import { BlockModule } from '@module/block/block.module'
 import { MatchModule } from '@module/match/match.module'
 import { NotificationModule } from '@module/notification/notification.module'
 import { PrismaModule } from '@providers/prisma/prisma.module'
-import { gameAnalyzer } from '../logic/gameAnalyzer'
 import { UserModule } from '@module/user/user.module'
 
 @Module({

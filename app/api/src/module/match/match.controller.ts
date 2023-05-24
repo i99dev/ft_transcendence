@@ -17,7 +17,7 @@ import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 
 @UseGuards(JwtAuthGuard)
-@Controller('match-history/:login')
+@Controller('match/:login')
 export class MatchController {
     constructor(private readonly matchService: MatchService, private gameAnalyzer: gameAnalyzer) {}
 

@@ -4,8 +4,6 @@ import { LeaderboardService } from './leaderboard.service'
 import { PrismaModule } from '@providers/prisma/prisma.module'
 import { MatchModule } from '@module/match/match.module'
 import { NotificationModule } from '@module/notification/notification.module'
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
-import { UserService } from '@module/user/user.service'
 import { GameModule } from '@module/game/game.module'
 
 @Module({
