@@ -27,8 +27,6 @@ export class MatchController {
         @Query('page', ParseIntPipe) page: number,
         @Req() req,
     ): Promise<MatchDto[]> {
-        if (login !== req.user.login)
-            throw new BadRequestException('You cannot add a friend for someone else')
         const matchHistory = await this.matchService.getPlayerMatchHistory(page, login)
         if (!matchHistory)
             throw new NotFoundException(`Match history for player ${login} not found`)
@@ -42,8 +40,6 @@ export class MatchController {
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false',
         @Req() req,
     ): Promise<MatchDto[]> {
-        if (login !== req.user.login)
-            throw new BadRequestException('You cannot add a friend for someone else')
         if (isWin === 'true') {
             const history = await this.matchService.getMatchHistoryByResult(page, login, true)
             if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
@@ -62,8 +58,6 @@ export class MatchController {
         @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
         @Req() req,
     ): Promise<MatchDto[]> {
-        if (login !== req.user.login)
-            throw new BadRequestException('You cannot add a friend for someone else')
         const history = await this.matchService.getMatchHistoryBySort(page, login, sort)
         if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
         return history
@@ -74,8 +68,6 @@ export class MatchController {
         @Param('login', ParseStringPipe) login: string,
         @Req() req,
     ): Promise<number> {
-        if (login !== req.user.login)
-            throw new BadRequestException('You cannot add a friend for someone else')
         return await this.matchService.getTotalPages(login)
     }
 
@@ -85,8 +77,6 @@ export class MatchController {
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false' | undefined,
         @Req() req,
     ): Promise<number> {
-        if (login !== req.user.login)
-            throw new BadRequestException('You cannot add a friend for someone else')
         if (isWin === 'false') return await this.matchService.getTotalDefeats(login)
         else if (isWin === 'true') return await this.matchService.getTotalVictories(login)
         else return await this.matchService.getTotalMatches(login)
@@ -97,8 +87,6 @@ export class MatchController {
         @Param('login', ParseStringPipe) login: string,
         @Req() req,
     ): Promise<number> {
-        if (login !== req.user.login)
-            throw new BadRequestException('You cannot add a friend for someone else')
         return await this.gameAnalyzer.calcWinRate(login)
     }
 }
