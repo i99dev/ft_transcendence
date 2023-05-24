@@ -1,7 +1,6 @@
 <template>
     <div
-        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-19 bg-violet-900 bg-opacity-70 py-6 px-10 rounded-lg shadow-lg border border-violet-700 space-y-4"
-    >
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-21 bg-violet-900 bg-opacity-70 py-6 px-10 rounded-lg shadow-lg border border-violet-700 space-y-4">
         <h2 v-if="!isLoading" class="text-2xl text-center text-white font-bold mb-4">
             Game on! Your competitor has arrived. are you ready?
         </h2>

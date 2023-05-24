@@ -49,6 +49,7 @@ export class UserService {
                 image: data?.image,
                 status: data?.status,
                 wr: data?.wr,
+                ladder: data?.ladder,
                 two_fac_auth: data?.two_fac_auth,
             },
         })
@@ -122,27 +123,22 @@ export class UserService {
         return user
     }
 
-    async SearchUserNames(name: string, page: number) {
-        try {
-            const users = await this.prisma.user.findMany({
-                where: {
-                    username: {
-                        contains: name,
-                        mode: 'insensitive',
-                    },
-                },
-                skip: (page - 1) * 20,
-                take: 20,
-            })
-            return users
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async SortUserByWinGap(): Promise<UserGetDto[]> {
         const users: UserGetDto[] = await this.prisma.user.findMany()
         const sortedUsers: UserGetDto[] = users.sort(this.repository.SortUserByWinLose)
         return sortedUsers
+    }
+
+    async updatePlayerXP(player: string, xp: number): Promise<void> {
+        await this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                xp: {
+                    increment: xp,
+                },
+            },
+        })
     }
 }

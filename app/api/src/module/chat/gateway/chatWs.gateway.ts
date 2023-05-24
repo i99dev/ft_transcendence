@@ -1,5 +1,4 @@
 import { Logger, UseGuards } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
 import {
     MessageBody,
     OnGatewayConnection,
@@ -32,6 +31,7 @@ import { BlockService } from '@module/block/block.service'
 import { ConfigService } from '@nestjs/config'
 import { WsGuard } from '../../../common/guards/ws.guard'
 import { DirectChatService } from '../directChat.service'
+import { ParseSocketStringPipe } from '../../../common/pipes/socketString.pipe';
 
 @WebSocketGateway({
     namespace: '/chat',
@@ -484,6 +484,19 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         )
 
         this.wss.to(payload.room_id).emit('delete-message', payload.message_id)
+    }
+
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Update-Token')
+    updateToken(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new ParseSocketStringPipe) token: string) {
+        if (token) {
+            client.request.headers.authorization = 'Bearer ' + token;
+        }
+        else
+            throw new WsException('No Refersh token provided')
+
     }
 
     async joinAllRooms(client: Socket, user: string) {

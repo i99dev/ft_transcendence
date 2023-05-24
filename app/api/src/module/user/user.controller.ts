@@ -27,12 +27,11 @@ import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 
 @ApiBearerAuth()
 @ApiTags('users')
-@Controller('users')
+@UseGuards(JwtAuthGuard)
 @Controller('/users')
 export class UserController {
     constructor(private readonly UserService: UserService) {}
 
-    // @UseGuards(JwtAuthGuard)
     @Get()
     @ApiOperation({
         operationId: 'getUsers',
@@ -48,7 +47,6 @@ export class UserController {
         return await this.UserService.SortMany(type)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/me')
     @ApiOperation({
         operationId: 'getMe',
@@ -66,7 +64,6 @@ export class UserController {
         return await this.UserService.getUser(req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/search')
     async SearchUser(
         @Query('search', QueryParseStringPipe) search: string,
@@ -117,13 +114,21 @@ export class UserController {
     async UpdateUser(
         @Param('name', ParseStringPipe) name: string,
         @Body(new ValidationPipe()) data: UserPatchDto,
+        @Req() req,
     ): Promise<UserGetDto> {
+        if (name !== req.user.login)
+            throw new BadRequestException('You cannot add a friend for someone else')
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
         return await this.UserService.updateUser(data, existingUser.login)
     }
 
     @Delete('/:name')
-    async DeleteUser(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
+    async DeleteUser(
+        @Param('name', ParseStringPipe) name: string,
+        @Req() req,
+    ): Promise<UserGetDto> {
+        if (name !== req.user.login)
+            throw new BadRequestException('You cannot add a friend for someone else')
         return await this.UserService.DeleteUser(name)
     }
 }

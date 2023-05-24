@@ -1,8 +1,7 @@
 import { NotificationService } from '@module/notification/notification.service'
-import { gameAnalyzer } from '@module/game/logic/gameAnalyzer'
 import { Injectable } from '@nestjs/common'
 import { AchievementDto } from './dto/achievement.dto'
-import { NotificationType } from '@prisma/client'
+import { Achievement, NotificationType } from '@prisma/client'
 import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable({})
@@ -20,6 +19,19 @@ export class AchievementService {
         })
         if (!user || !user.achievements) return null
         return user.achievements
+    }
+
+    async getAchievementType(achievement: string) {
+        try {
+            const achievementType = await this.prisma.achievement.findUnique({
+                where: {
+                    type: achievement,
+                },
+            })
+            return achievementType
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     findType(type: string): NotificationType {
@@ -53,5 +65,43 @@ export class AchievementService {
         }
 
         return { rank: null, isUp: null, id: -1 }
+    }
+
+    async addAchievement(player: string, ach: Achievement) {
+        try {
+            const done = await this.prisma.user.update({
+                where: {
+                    login: player,
+                },
+                data: {
+                    achievements: {
+                        connect: {
+                            id: ach.id,
+                        },
+                    },
+                },
+            })
+            return done
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async checkPlayerAchievements(player: string, ach: string) {
+        try {
+            const count = await this.prisma.user.count({
+                where: {
+                    login: player,
+                    achievements: {
+                        some: {
+                            type: ach,
+                        },
+                    },
+                },
+            })
+            return count
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

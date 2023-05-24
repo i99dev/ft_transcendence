@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common'
 import { ChatRoom, ChatUserStatus } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 import { ChatService } from './chat.service'
-import { skip } from 'rxjs'
 
 @Injectable()
 export class GroupChatService {

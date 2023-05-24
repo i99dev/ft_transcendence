@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="no-context-menu">
         <GameStatusBar
             v-if="showStatusBar"
             @ExitBtn="$emit('ExitBtn')"
@@ -7,9 +7,11 @@
             :cooldown12="pu1Cooldowns[1]"
             :cooldown21="pu2Cooldowns[0]"
             :cooldown22="pu2Cooldowns[1]"
+            @powerup="activatePowerUp($event)"
         />
-        <GameReadyModal v-if="showReadyModal" />
-        <canvas ref="canvasRef" style="width: 100%; height: 100%"></canvas>
+        <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
+        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd"></GameMobileControls>
+        <canvas ref="canvasRef" class=" fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2" style="width: 100%; height: 100%"></canvas>
     </div>
 </template>
 
@@ -20,13 +22,14 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
+
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, emitReady } =
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } =
     useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
@@ -46,16 +49,32 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false,
 }
 
+const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+const isMobile = ref(false)
+
 onMounted(() => {
-    window.addEventListener('popstate', handleArrows)
+    isMobile.value = mobileRegex.test(navigator.userAgent);
+    console.log('isMobile ', isMobile.value)
+    setupEvents()
 })
 
 onUnmounted(() => {
+    giveUp()
+    clearEvents()
+    reset()
+})
+
+const setupEvents = (): void => {
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp)
+    window.addEventListener('popstate', handleArrows)
+}
+
+const clearEvents = (): void => {
     document.removeEventListener('keydown', handleKeyDown)
     document.removeEventListener('keyup', handleKeyUp)
     window.removeEventListener('popstate', handleArrows)
-    reset()
-})
+}
 
 const handleArrows = (e: PopStateEvent): void => {
     giveUp()
@@ -96,12 +115,6 @@ function setup(mode: GameSelectDto): void {
     resetSocket()
     if (mode.gameMode != 'invite') emitStartGame(mode)
     setupSocketHandlers()
-    windowEvents()
-}
-
-const windowEvents = (): void => {
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('keyup', handleKeyUp)
 }
 
 watch(gameSetup, (newVal, oldVal) => {
@@ -140,7 +153,8 @@ const startPowerCooldown = (player: number, key: number): void => {
     }
 }
 
-const activatePowerUp = (key: string): void => {
+const activatePowerUp = (key: any): void => {
+    console.log('activatePowerup ', key)
     if (key == '1') {
         socket.value?.emit('Power-Up', 1)
         startPowerCooldown(gameSetup.value?.player, 0)
@@ -169,6 +183,22 @@ const handleKeyUp = (event: KeyboardEvent): void => {
     }
 }
 
+const handleTouchStart = (dir: string) => {
+    if(dir == 'up') {
+        keys.ArrowUp = true
+    } else if(dir == 'down') {
+        keys.ArrowDown = true
+    }
+}
+
+const handleTouchEnd = (dir: string) => {
+    if(dir == 'up') {
+        keys.ArrowUp = false
+    } else if(dir == 'down') {
+        keys.ArrowDown = false
+    }
+}
+
 const updatePaddleDirection = (): void => {
     if (keys.ArrowUp) {
         socket.value?.emit('move', 'up')
@@ -177,3 +207,12 @@ const updatePaddleDirection = (): void => {
     }
 }
 </script>
+
+
+
+<style>
+.no-context-menu {
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+</style>
