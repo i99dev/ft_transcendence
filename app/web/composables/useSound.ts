@@ -15,10 +15,17 @@ export const useSound = () => {
     const sound = useState<any | null>('sound', () => new Map([
         ['click', new Audio('/sounds/click.mp3')],
         ['play', new Audio('/sounds/ost1.mp3')],
+        ['login', new Audio('/sounds/ost.mp3')],
     ]))
     const play = (effect: string) => {
         if (effect === 'click')
             sound.value.get(effect).currentTime = 0
+        if (effect === 'login')
+        {
+            sound.value.get(effect).loop = true
+            sound.value.get(effect).volume = 0.2
+        }
+        console.log('effect', effect)
         sound.value.get(effect).play()
     }
     const pause = (effect: string) => {

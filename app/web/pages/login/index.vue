@@ -6,7 +6,7 @@
                     <LoginLogo class="text-4xl" />
                 </div>
                 <div class="mt-8 flex justify-center text-lg text-black">
-                    <LoginCyberPunkButton buttonName="Login" v-click-effect="loginWithIntra" />
+                    <LoginCyberPunkButton buttonName="Login" v-click-effect:login="loginWithIntra" />
                 </div>
             </div>
         </div>
