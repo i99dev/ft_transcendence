@@ -86,8 +86,10 @@ const reader = ref(undefined as FileReader | undefined)
 watch(
     () => props.show,
     () => {
-        if (props.name) chatName.value = props.name
-        if (props.image) chatImage.value = props.image
+        if (props.show) {
+          if (props.name) chatName.value = props.name
+          if (props.image) chatImage.value = props.image
+        }
     },
 )
 

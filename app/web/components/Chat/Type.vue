@@ -149,6 +149,7 @@ const chatPassword = ref('')
 watch(
     () => props.show,
     () => {
+      if (props.show)
         if (props?.type === 'PRIVATE') groupChatType.value = chatTypes[1]
     },
 )

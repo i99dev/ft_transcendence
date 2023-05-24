@@ -151,21 +151,21 @@
                     class="flex justify-center rounded-md px-2 py-2 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
-                        v-if="isAllowed()"
+                        v-if="isAdmin()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
                         @click="isAddUserOpened = true"
                     >
                         <UserPlusIcon class="w-6 h-6" />
                     </button>
                     <button
-                        v-if="isAllowed()"
+                        v-if="isAdmin()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
                         @click="isEditChatImageAndNameOpened = true"
                     >
                         <PencilSquareIcon class="w-6 h-6" />
                     </button>
                     <button
-                        v-if="isAllowed()"
+                        v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
                         @click="isEditChatTypeOpened = true"
                     >
@@ -406,13 +406,23 @@ const closeChatTypePopup = () => {
     isEditChatTypeOpened.value = false
 }
 
-const isAllowed = () => {
+const isAdmin = () => {
     if (participants.value)
         for (let i = 0; i < participants.value?.length; i++)
             if (
                 participants.value[i].user_login === user_info.value?.login &&
                 participants.value[i].role !== 'MEMBER'
             )
+                return true
+
+    return false
+}
+
+const isOwner = () => {
+    if (participants.value)
+        for (let i = 0; i < participants.value?.length; i++)
+            if (participants.value[i].user_login === user_info.value?.login &&
+                participants.value[i].role === 'OWNER')
                 return true
 
     return false
