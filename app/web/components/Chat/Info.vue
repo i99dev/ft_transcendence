@@ -421,8 +421,10 @@ const isAdmin = () => {
 const isOwner = () => {
     if (participants.value)
         for (let i = 0; i < participants.value?.length; i++)
-            if (participants.value[i].user_login === user_info.value?.login &&
-                participants.value[i].role === 'OWNER')
+            if (
+                participants.value[i].user_login === user_info.value?.login &&
+                participants.value[i].role === 'OWNER'
+            )
                 return true
 
     return false

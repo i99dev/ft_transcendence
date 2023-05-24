@@ -87,8 +87,8 @@ watch(
     () => props.show,
     () => {
         if (props.show) {
-          if (props.name) chatName.value = props.name
-          if (props.image) chatImage.value = props.image
+            if (props.name) chatName.value = props.name
+            if (props.image) chatImage.value = props.image
         }
     },
 )
