@@ -18,7 +18,7 @@ const { play } = useSound()
 const user = ref('')
 onMounted(() => {
     if (user_info.value) user.value = user_info.value?.username
-    play('login')
+    // play('login')
 })
 
 if (user_info.value) user.value = user_info.value?.username

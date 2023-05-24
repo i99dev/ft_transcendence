@@ -26,7 +26,8 @@ export const useSound = () => {
             sound.value.get(effect).volume = 0.2
         }
         console.log('effect', effect)
-        sound.value.get(effect).play()
+        if (sound.value.get(effect).paused)
+            sound.value.get(effect).play()
     }
     const pause = (effect: string) => {
         sound.value.get(effect).pause()
