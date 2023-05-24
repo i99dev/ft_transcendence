@@ -4,7 +4,7 @@
             <div
                 class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
             >
-                <div class="fixed inset-0 transition-opacity" @click="addFriendOpen = false">
+                <div class="fixed inset-0 transition-opacity" v-click-effect="()=> { addFriendOpen = false }">
                     <div class="absolute inset-0 bg-background_light opacity-50"></div>
                 </div>
                 <TransitionChild
@@ -32,14 +32,14 @@
                         </div>
                         <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                             <button
-                                @click="addNewFriend"
+                            v-click-effect="addNewFriend"
                                 type="button"
                                 class="w-full centered capitalize rounded-md shadow-sm px-4 py-2 bg-secondary text-base font-medium hover:bg-primary smooth-transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:ml-3 sm:w-auto sm:text-sm"
                             >
                                 add
                             </button>
                             <button
-                                @click="$emit('close')"
+                            v-click-effect="()=> $emit('close')"
                                 type="button"
                                 class="mt-3 w-full centered capitalize rounded-md shadow-sm px-4 py-2 bg-background_light text-base font-medium hover:bg-secondary smooth-transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:mt-0 sm:w-auto sm:text-sm"
                             >

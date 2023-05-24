@@ -38,7 +38,7 @@
                                     >
                                         <div class="border-b border-secondary mb-2 centered">
                                             <button
-                                                @click="goToUserProfile(participant.user.username)"
+                                            v-click-effect="()=> goToUserProfile(participant.user.username)"
                                                 class="p-2 text-white font-semibold flex justify-center items-center hover:bg-primary mb-2 rounded-xl smooth-transition"
                                             >
                                                 {{ participant.user.username }}
@@ -48,7 +48,7 @@
                                             v-for="option in adminOptions"
                                             :key="option.action"
                                             class="flex items-center justify-center p-2 w-full rounded-lg hover:bg-secondary text-white"
-                                            @click="setUser(option.action)"
+                                            v-click-effect="()=> setUser(option.action)"
                                         >
                                             {{ option.text }}
                                         </button>
@@ -96,7 +96,7 @@
                                         >
                                             <button
                                                 class="border rounded-full bg-background ease-in-out transition duration-200 m-2 relative"
-                                                @click="removeUser(user)"
+                                                v-click-effect="()=> removeUser(user)"
                                             >
                                                 <img
                                                     class="rounded-full w-8 h-8 object-cover"
@@ -119,7 +119,7 @@
                                             <button
                                                 class="flex-shrink-0 bg-secondary hover:bg-primary text-white py-1 px-2 rounded capitalize"
                                                 type="button"
-                                                @click="addUsers"
+                                                v-click-effect="addUsers"
                                             >
                                                 add
                                             </button>
@@ -138,13 +138,13 @@
                             'scale-125 text-primary': participantsType === 'NORMAL',
                             'opacity-70': participantsType !== 'NORMAL',
                         }"
-                        @click="switchParticipantsList()"
+                        v-click-effect="()=> switchParticipantsList()"
                     >
                         participants
                     </button>
                     <button
                         class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
-                        @click="switchParticipantsList('BAN')"
+                        v-click-effect="()=> switchParticipantsList('BAN')"
                         :class="{
                             'scale-125 text-primary': participantsType === 'BAN',
                             'opacity-70': participantsType !== 'BAN',
@@ -159,7 +159,7 @@
                     class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
-                        @click="openAdminOptionsPopup(participant)"
+                    v-click-effect="()=> openAdminOptionsPopup(participant)"
                         class="relative w-full -m-3 flex items-center rounded-lg p-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
                         <div
@@ -200,13 +200,13 @@
                     <button
                         v-if="CanAddUsers()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="isAddUserOpened = true"
+                        v-click-effect="()=> { isAddUserOpened = true }"
                     >
                         <UserPlusIcon class="w-6 h-6" />
                     </button>
                     <button
                         class="border rounded-full hover:bg-secondary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="exitChat"
+                        v-click-effect="exitChat"
                     >
                         <ArrowRightOnRectangleIcon class="w-6 h-6" />
                     </button>

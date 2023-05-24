@@ -22,7 +22,7 @@
         </TransitionRoot>
 
         <button
-            @click="handleChatSearch($event)"
+        @click="handleChatSearch($event)"
             class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mr-2 focus:outline-primary text-white"
             :class="{
                 'bg-background_light opacity-70': !groupChatSearching,
@@ -37,7 +37,7 @@
                 'bg-background_light opacity-70': chatType !== 'GROUP',
                 'bg-primary': chatType === 'GROUP',
             }"
-            @click="switchChatType('GROUP')"
+            v-click-effect="()=> switchChatType('GROUP')"
         >
             <UserGroupIcon class="h-6 w-6" />
         </button>
@@ -47,7 +47,7 @@
                 'bg-background_light opacity-70': chatType !== 'DM',
                 'bg-primary': chatType === 'DM',
             }"
-            @click="switchChatType('DM')"
+            v-click-effect="()=> switchChatType('DM')"
         >
             <UserIcon class="h-6 w-6" />
         </button>

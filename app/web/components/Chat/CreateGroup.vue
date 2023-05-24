@@ -41,7 +41,7 @@
                                                     style="display: none"
                                                 />
                                                 <button
-                                                    @click="() => fileInput.click()"
+                                                v-click-effect="()=> fileInput.click()"
                                                     type="button"
                                                     class="border-1 border-white smooth-transition hover:bg-primary rounded-full focus:outline-white"
                                                     :class="{ 'p-2': !chatImage }"
@@ -87,7 +87,7 @@
                                             <button
                                                 class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
-                                                @click="nextStage"
+                                                v-click-effect="nextStage"
                                             >
                                                 next
                                             </button>
@@ -100,7 +100,7 @@
                                             <button
                                                 class="border rounded-full bg-secondary ease-in-out transition duration-200 m-2 relative focus:outline-secondary"
                                                 type="button"
-                                                @click="removeUser(user)"
+                                                v-click-effect="()=> removeUser(user)"
                                             >
                                                 <img
                                                     class="rounded-full w-8 h-8 object-cover"
@@ -119,14 +119,14 @@
                                             <button
                                                 class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                                                 type="button"
-                                                @click="prevStage"
+                                                v-click-effect="prevStage"
                                             >
                                                 back
                                             </button>
                                             <button
                                                 class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
-                                                @click="nextStage"
+                                                v-click-effect="nextStage"
                                             >
                                                 next
                                             </button>
@@ -192,7 +192,7 @@
                                                                             </label>
                                                                             <div class="relative">
                                                                                 <div
-                                                                                    @click="
+                                                                                v-click-effect="
                                                                                         changeView
                                                                                     "
                                                                                     class="absolute right-0 text-white opacity-50 hover:opacity-100 flex items-center pr-3 h-full cursor-pointer"
@@ -244,14 +244,14 @@
                                             <button
                                                 class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                                                 type="button"
-                                                @click="prevStage"
+                                                v-click-effect="prevStage"
                                             >
                                                 back
                                             </button>
                                             <button
                                                 class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                                                 type="button"
-                                                @click="createGroupChat"
+                                                v-click-effect="createGroupChat"
                                             >
                                                 create
                                             </button>

@@ -3,7 +3,7 @@
         <div class="p-2 relative flex">
             <button
                 class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
-                @click="setCurrentChat(null)"
+                v-click-effect="()=> setCurrentChat(null)"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -39,8 +39,8 @@
             </button>
 
             <button
-                @click="
-                    chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened)
+            v-click-effect="
+                    ()=> { chatType === 'DM' ? goToUserProfile() : (isChatInfoOpened = !isChatInfoOpened) }
                 "
                 class="w-full flex items-center hover:bg-primary smooth-transition rounded-lg pl-2 focus:outline-secondary"
             >
@@ -63,7 +63,7 @@
                 <div class="centered" v-if="enableLoadMoreButton">
                     <button
                         class="bg-primary p-2 rounded-2xl my-2"
-                        @click="loadMoreMessages(messagesPage)"
+                        v-click-effect="()=> loadMoreMessages(messagesPage)"
                     >
                         Load more
                     </button>
@@ -124,7 +124,7 @@
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
                         class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
-                        @click="deleteMessage(message.id)"
+                        v-click-effect="()=> deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>
