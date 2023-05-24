@@ -24,7 +24,7 @@ export class MatchController {
     @Get('')
     async getPlayerMatchHistory(
         @Param('login', ParseStringPipe) login: string,
-        @Query('page', ParseIntPipe) page: number,
+        @Query('page') page: number,
         @Req() req,
     ): Promise<MatchDto[]> {
         const matchHistory = await this.matchService.getPlayerMatchHistory(page, login)
@@ -36,7 +36,7 @@ export class MatchController {
     @Get('result')
     async getMatchHistoryByResult(
         @Param('login', ParseStringPipe) login: string,
-        @Query('page', ParseIntPipe) page: number,
+        @Query('page') page: number,
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false',
         @Req() req,
     ): Promise<MatchDto[]> {
@@ -54,7 +54,7 @@ export class MatchController {
     @Get('score')
     async getMatchHistoryBySort(
         @Param('login', ParseStringPipe) login: string,
-        @Query('page', ParseIntPipe) page: number,
+        @Query('page') page: number,
         @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
         @Req() req,
     ): Promise<MatchDto[]> {
