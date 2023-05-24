@@ -15,7 +15,7 @@ const FRAMES_PER_SECOND = 60
 const FRAME_INTERVAL = 1000 / FRAMES_PER_SECOND
 
 @Injectable()
-export class DefaultService {
+export class GameWsService {
     private connected_users: ConnectedUser[] = []
     private classic_queue: string[] = []
     private custom_queue: string[] = []
@@ -75,7 +75,8 @@ export class DefaultService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        player.game.setLoser(player.id)
+        if (player && player.status == 'ingame')
+            player.game.setLoser(player.id)
     }
 
     /* 
@@ -123,9 +124,10 @@ export class DefaultService {
             opponent.socket.emit('Invite-Received', invite)
         } else if (opponent) {
             // Incase user it not online or not found
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: opponent.status })
-        } else {
-            userSocket.emit('Respond-Invite', { accepted: false, playerStatus: 'offline' })
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: opponent.status })
+        }
+        else {
+            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: 'offline' })
         }
     }
 
@@ -154,17 +156,14 @@ export class DefaultService {
             } else {
                 opponent.status = 'online'
                 user.status = 'online'
-                opponent.socket.emit('Respond-Invite', {
-                    status: 'declined',
-                    playerStatus: user.status,
-                })
+                opponent.socket.emit('Respond-Invite', { status: 'rejected', playerStatus: user.status })
             }
         } else user.status = 'online'
     }
 
     public playerReady(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player.status != 'ingame') return
+        if (player && player.status != 'ingame') return
         player.game.setPlayerReady(player.id)
     }
 
@@ -302,13 +301,11 @@ export class DefaultService {
                 game.updateGame()
                 this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             }
-            if (game.getPlayer1Score() >= 11 || game.getPlayer2Score() >= 11) {
+            if (game.checkWinner()) {
                 clearInterval(intervalId)
                 await this.endGame(
                     game,
-                    game.getPlayer1Score() >= 11
-                        ? game.getGameStatus().players[0]
-                        : game.getGameStatus().players[1],
+                    game.getWinner()
                 )
                 return
             }

@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common'
 import { AuthModule } from '../../../auth/auth.module'
-import { DefaultGateway } from './default.gateway'
-import { DefaultService } from './default.service'
+import { GameWsGateway } from './GameWs.gateway'
+import { GameWsService } from './GameWs.service'
 import { SocketService } from './socket.service'
 import { GameModule } from '../game.module'
 import { BlockModule } from '@module/block/block.module'
@@ -20,6 +20,6 @@ import { UserModule } from '@module/user/user.module'
         PrismaModule,
         UserModule,
     ],
-    providers: [DefaultGateway, DefaultService, SocketService, Array],
+    providers: [GameWsGateway, GameWsService, SocketService, Array],
 })
-export class DefaultModule {}
+export class GameWsModule { }
