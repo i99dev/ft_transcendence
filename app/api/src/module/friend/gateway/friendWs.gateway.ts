@@ -57,7 +57,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
                 ),
             )
         }, 1000)
-        // this.friendWsService.updateClientWithList(client, this.getID(client) as unknown as string)
+        this.friendWsService.updateClientWithList(client, this.getID(client) as unknown as string)
     }
 
     handleDisconnect(client: Socket) {
