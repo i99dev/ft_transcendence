@@ -158,6 +158,11 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, { role: ChatUserRole.OWNER })
     }
 
+    async countUsersInChatRoom(room_id: string) {
+        const count = await this.groupChatService.countUsersInGroupChat(room_id)
+        return count
+    }
+
     async joinGroupChat(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status !== ChatUserStatus.OUT)
@@ -165,11 +170,19 @@ export class ChatWsService {
         else if (chatUser && chatUser.status === ChatUserStatus.BAN)
             throw new WsException('User is banned from chat room')
 
-        await this.groupChatService.addUserToGroupChat(room_id, {
-            user_login: user_login,
-            role: ChatUserRole.MEMBER,
-            status: ChatUserStatus.NORMAL,
-        })
+        if ((await this.countUsersInChatRoom(room_id)) > 0) {
+            await this.groupChatService.addUserToGroupChat(room_id, {
+                user_login: user_login,
+                role: ChatUserRole.MEMBER,
+                status: ChatUserStatus.NORMAL,
+            })
+        } else {
+            await this.groupChatService.addUserToGroupChat(room_id, {
+                user_login: user_login,
+                role: ChatUserRole.OWNER,
+                status: ChatUserStatus.NORMAL,
+            })
+        }
         return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
@@ -197,7 +210,7 @@ export class ChatWsService {
 
     async leaveGroupChat(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.OWNER)
+        if (chatUser.role === ChatUserRole.OWNER && (await this.countUsersInChatRoom(room_id)) > 1)
             throw new WsException('Owner cannot leave chat room')
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
@@ -293,7 +306,15 @@ export class ChatWsService {
 
     async validateInvitation(room_id: string, user_login: string) {
         if (await this.validateUserInRoom(room_id, user_login)) {
-            this.chatService.updateUserStatus(user_login, room_id, 'NORMAL')
+            if ((await this.countUsersInChatRoom(room_id)) > 0) {
+                await this.chatService.updateUserStatus(user_login, room_id, 'NORMAL')
+            }
+            else {
+                await this.chatService.updateChatUser(user_login, room_id, {
+                    status: ChatUserStatus.NORMAL,
+                    role: ChatUserRole.OWNER,
+                })
+            }
             return true
         } else return false
     }
