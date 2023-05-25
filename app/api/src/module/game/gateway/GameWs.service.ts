@@ -140,11 +140,9 @@ export class GameWsService {
             if (response.accepted == true) {
                 opponent.socket.emit('Respond-Invite', { status: 'accepted', playerStatus: user.status })
                 user.powerUps = response.powerups
-                setTimeout(() => {
-                    this.createMultiGame(opponent, user, response.gameType)
-                    user.status = 'ingame'
-                    opponent.status = 'ingame'
-                }, 3000)
+                this.createMultiGame(opponent, user, response.gameType)
+                user.status = 'ingame'
+                opponent.status = 'ingame'
             }
             else {
                 opponent.status = 'online'
@@ -225,7 +223,8 @@ export class GameWsService {
         this.repo.updatePlayerStatus('INGAME', player.login)
         player.game = game
         player.socket.join(game.getGameID())
-        this.socketService.emitGameSetup(player.socket, null, game.getGameStatus())
+
+        this.initiateGame(game, player, null)
 
         this.startGame(game)
     }
@@ -271,9 +270,32 @@ export class GameWsService {
         this.repo.updatePlayerStatus('INGAME', player2.login)
         player1.status = 'ingame'
         player2.status = 'ingame'
-        this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
+        this.initiateGame(game, player1, player2)
         this.startGame(game)
     }
+
+    private initiateGame(game: PongGame, p1: ConnectedUser, p2: ConnectedUser) {
+        const player1Socket = p1.socket;
+        const player1Login = p1.login;
+        const player2Socket = p2 ? p2.socket : null
+        const player2Login = p2 ? p2.login : 'Computer'
+        const gameStatus = game.getGameStatus()
+        let i = 800;
+        const intervalId = setInterval(() => {
+            console.log("SENT")
+            if (game.isPlayersReady() || game.checkWinner() || i <= 0) {
+                clearInterval(intervalId)
+                return
+            }
+            if (!game.isPlayersReady()) {
+                this.socketService.emitGameSetup(player1Socket, null, gameStatus)
+            }
+            if (!game.isPlayersReady(player2Login))
+                this.socketService.emitGameSetup(null, player2Socket, gameStatus)
+            i--;
+        }, 1000 / 60)
+    }
+
 
     private startGame(game: PongGame) {
         this.game_result = new gameHistory(game.getGameStatus())
@@ -282,7 +304,7 @@ export class GameWsService {
         })
 
         const intervalId = setInterval(async () => {
-            if (game.isPlayersReady() || game.getGameStatus().players[1].username == 'Computer') {
+            if (game.isPlayersReady()) {
                 game.updateGame()
                 this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             }

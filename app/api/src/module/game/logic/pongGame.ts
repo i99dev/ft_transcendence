@@ -184,7 +184,6 @@ export class PongGame {
             if (player) return player.ready
         }
         const players = this.game_status.players
-        console.log ( players)
         return players[0].ready && players[1].ready
     }
 
