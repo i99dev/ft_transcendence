@@ -25,25 +25,25 @@ export class gameAnalyzer {
     ) {}
 
     // Data retrievals
-    async getLadderLevel(player: string): Promise<number> {
-        const user = await this.userService.getUser(player)
+    async getLadderLevel(login: string): Promise<number> {
+        const user = await this.userService.getUser(login)
         return user.ladder
     }
 
-    async getXP(player: string): Promise<number> {
-        const user = await this.userService.getUser(player)
+    async getXP(login: string): Promise<number> {
+        const user = await this.userService.getUser(login)
         return user.xp
     }
 
     // Rank calculations
-    async calcWinRate(player: string): Promise<number> {
-        const totalWins = await this.matchService.getTotalVictories(player)
-        const totalMatches = await this.matchService.getTotalMatches(player)
+    async calcWinRate(login: string): Promise<number> {
+        const totalWins = await this.matchService.getTotalVictories(login)
+        const totalMatches = await this.matchService.getTotalMatches(login)
         return totalWins / totalMatches
     }
 
-    async calcXP(player: string, IsWinner: boolean): Promise<number> {
-        const ladder = await this.getLadderLevel(player)
+    async calcXP(login: string, IsWinner: boolean): Promise<number> {
+        const ladder = await this.getLadderLevel(login)
         let xp = 0
         switch (ladder) {
             case ladderLevel.CapinBoy.Rank:
@@ -95,17 +95,17 @@ export class gameAnalyzer {
         return ladder
     }
 
-    async calcLadder(player: string): Promise<number> {
-        const ladder = await this.getLadderLevel(player)
-        const xp = await this.getXP(player)
-        const winningrate = await this.calcWinRate(player)
-        const totalWins = await this.matchService.getTotalVictories(player)
+    async calcLadder(login: string): Promise<number> {
+        const ladder = await this.getLadderLevel(login)
+        const xp = await this.getXP(login)
+        const winningrate = await this.calcWinRate(login)
+        const totalWins = await this.matchService.getTotalVictories(login)
         if (
             this.RankUp(ladder, xp, winningrate, totalWins) != ladder &&
             this.RankDown(ladder, winningrate) == ladder
         ) {
             await this.storeRankingAsNotification(
-                player,
+                login,
                 this.RankUp(ladder, xp, winningrate, totalWins),
                 true,
             )
@@ -114,7 +114,7 @@ export class gameAnalyzer {
             this.RankUp(ladder, xp, winningrate, totalWins) == ladder &&
             this.RankDown(ladder, winningrate) != ladder
         ) {
-            await this.storeRankingAsNotification(player, this.RankDown(ladder, winningrate), false)
+            await this.storeRankingAsNotification(login, this.RankDown(ladder, winningrate), false)
             return this.RankDown(ladder, winningrate)
         }
 
@@ -122,42 +122,42 @@ export class gameAnalyzer {
     }
 
     // Update Data
-    async updatePlayerXP(player: string, IsWinner: boolean): Promise<void> {
-        await this.userService.updatePlayerXP(player, await this.calcXP(player, IsWinner))
+    async updatePlayerXP(login: string, IsWinner: boolean): Promise<void> {
+        await this.userService.updatePlayerXP(login, await this.calcXP(login, IsWinner))
     }
 
-    async updatePlayerLadder(player: string): Promise<void> {
+    async updatePlayerLadder(login: string): Promise<void> {
         await this.userService.updateUser(
             {
-                ladder: await this.calcLadder(player),
+                ladder: await this.calcLadder(login),
             },
-            player,
+            login,
         )
     }
 
-    async updatePlayerAcheivments(player: string, achievement: string): Promise<void> {
+    async updatePlayerAcheivments(login: string, achievement: string): Promise<void> {
         const ach = await this.achievementService.getAchievementType(achievement)
 
         if (ach == null) return
-        await this.achievementService.addAchievement(player, ach)
+        await this.achievementService.addAchievement(login, ach)
     }
 
-    async updatePlayerWinningRate(player: string): Promise<void> {
-        const winRate = await this.calcWinRate(player)
+    async updatePlayerWinningRate(login: string): Promise<void> {
+        const winRate = await this.calcWinRate(login)
         await this.userService.updateUser(
             {
                 wr: winRate,
             },
-            player,
+            login,
         )
     }
 
-    async calcWinStreak(player: string, winNum: number): Promise<number> {
-        const matches = await this.matchService.getMatches(player)
+    async calcWinStreak(login: string, winNum: number): Promise<number> {
+        const matches = await this.matchService.getMatches(login)
         let winStreak = 0
         for (let i = 0; i < matches.length; i++) {
             for (let j = 0; j < matches[i].opponents.length; j++) {
-                if (matches[i].opponents[j].user.login == player) {
+                if (matches[i].opponents[j].user.login == login) {
                     if (matches[i].opponents[j].IsWinner) {
                         winStreak++
                     } else {
@@ -169,27 +169,27 @@ export class gameAnalyzer {
         return winStreak
     }
 
-    async checkIfAchievementExists(player: string, achievement: string): Promise<boolean> {
-        const count = await this.achievementService.checkPlayerAchievements(player, achievement)
+    async checkIfAchievementExists(login: string, achievement: string): Promise<boolean> {
+        const count = await this.achievementService.checkPlayerAchievements(login, achievement)
         if (count > 0) return true
         return false
     }
 
-    async grantAchievements(player: string): Promise<string[]> {
+    async grantAchievements(login: string): Promise<string[]> {
         const totalAcheivments = []
-        const totalWins = await this.matchService.getTotalVictories(player)
-        const ladder = await this.getLadderLevel(player)
-        if (!(await this.checkIfAchievementExists(player, 'First Blood')) && totalWins == 1)
+        const totalWins = await this.matchService.getTotalVictories(login)
+        const ladder = await this.getLadderLevel(login)
+        if (!(await this.checkIfAchievementExists(login, 'First Blood')) && totalWins == 1)
             totalAcheivments.push('First Blood')
         if (
-            !(await this.checkIfAchievementExists(player, 'Rookie no more')) &&
+            !(await this.checkIfAchievementExists(login, 'Rookie no more')) &&
             ladder == ladderLevel.CapinBoy.Rank &&
-            (await this.calcWinStreak(player, 2)) == 2
+            (await this.calcWinStreak(login, 2)) == 2
         )
             totalAcheivments.push('Rookie no more')
         if (
-            !(await this.checkIfAchievementExists(player, 'Serial Killer')) &&
-            (await this.calcWinStreak(player, 11)) == 11
+            !(await this.checkIfAchievementExists(login, 'Serial Killer')) &&
+            (await this.calcWinStreak(login, 11)) == 11
         )
             totalAcheivments.push('Serial Killer')
         return totalAcheivments

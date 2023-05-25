@@ -161,7 +161,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
-            ready: username == 'Computer' ? true : false
+            ready: username == 'Computer' ? true : false,
         }
     }
 
