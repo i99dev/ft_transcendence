@@ -146,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+import { stat } from 'fs';
 import { useFriends } from '../../composables/Friends/useFriends'
 import {
     UserPlusIcon,
@@ -179,6 +180,11 @@ const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBloc
 const user = await getUserbyUserName(props.username)
 const { play, pause, isPaused } = useSound()
 const muteSound = ref(!isPaused('login') as boolean)
+
+useListen('soundTrack', (status: string)=> {
+    if (status)
+        muteSound.value = false
+})
 
 function openChatModel() {
     if (chat_info.value?.chatModalOpen) {
