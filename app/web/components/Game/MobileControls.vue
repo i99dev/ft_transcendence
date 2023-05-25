@@ -37,9 +37,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import Vue3TouchEvents from 'vue3-touch-events'
 
-const showw = ref(false)
 let gameSetup = useState<SetupDto>('gameSetup')
 </script>
 

@@ -4,7 +4,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
         class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-violet-900 bg-opacity-5 py-2 px-6 rounded-b-lg shadow-lg border border-violet-700 flex items-center space-x-6"
     >
         <div class="flex flex-col items-center text-xl">
-            <div class="text-white uppercase">{{ players[0].username }}</div>
+            <div class="text-white uppercase">{{ players[0].login }}</div>
             <div class="text-white font-semibold text-2xl">{{ players[0].score }}</div>
         </div>
         <div class="flex space-x-4">
@@ -45,7 +45,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
             </div>
         </div>
         <div class="flex flex-col items-center text-xl">
-            <div class="text-white uppercase">{{ players[1].username }}</div>
+            <div class="text-white uppercase">{{ players[1].login }}</div>
             <div class="text-white font-semibold text-2xl">{{ players[1].score }}</div>
         </div>
     </div>
@@ -85,12 +85,12 @@ scoreAudio.value.volume = 0.2
 const players = computed(() => {
     return [
         {
-            username: gameSetup.value?.game?.players?.[0]?.username,
+            login: gameSetup.value?.game?.players?.[0]?.login,
             score: gameData.value?.players?.[0]?.score,
             powerUps: gameData.value?.players?.[0]?.powerUps,
         },
         {
-            username: gameSetup.value?.game?.players?.[1]?.username,
+            login: gameSetup.value?.game?.players?.[1]?.login,
             score: gameData.value?.players?.[1]?.score,
             powerUps: gameData.value?.players?.[1]?.powerUps,
         },

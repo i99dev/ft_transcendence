@@ -89,7 +89,7 @@ const handleArrows = (e: PopStateEvent): void => {
 }
 
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].username) {
+    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].login) {
         emit('GameOver', 'you won')
         const winSound = new Audio('/sounds/win.mp3')
         winSound.play()
