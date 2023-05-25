@@ -10,7 +10,7 @@ export class MatchService {
 
     async getLoginFromToken(authHeader: string): Promise<string> {
         const token = authHeader.split(' ')[1]
-        return await this.jwtService.decode(token)['login']
+        return await this.jwtService.decode(token)['username']
     }
 
     async getTotalPages(player: string): Promise<number> {
@@ -20,7 +20,7 @@ export class MatchService {
                     opponents: {
                         some: {
                             user: {
-                                login: player,
+                                username: player,
                             },
                         },
                     },
@@ -40,7 +40,7 @@ export class MatchService {
                     opponents: {
                         some: {
                             user: {
-                                login: player,
+                                username: player,
                             },
                         },
                     },
@@ -74,10 +74,10 @@ export class MatchService {
         if (!match) return null
         const winningMatch = []
         match.forEach(m => {
-            if (m.opponents[0].user.login === player && m.opponents[0].IsWinner === winning) {
+            if (m.opponents[0].user.username === player && m.opponents[0].IsWinner === winning) {
                 winningMatch.push(m)
             } else if (
-                m.opponents[1].user.login === player &&
+                m.opponents[1].user.username === player &&
                 m.opponents[1].IsWinner === winning
             ) {
                 winningMatch.push(m)
@@ -94,8 +94,8 @@ export class MatchService {
         const match = await this.getPlayerMatchHistory(page, player)
         if (!match) return null
         match.sort((a, b) => {
-            const userOpponentsA = a.opponents.filter(opponent => opponent.user.login === player)
-            const userOpponentsB = b.opponents.filter(opponent => opponent.user.login === player)
+            const userOpponentsA = a.opponents.filter(opponent => opponent.user.username === player)
+            const userOpponentsB = b.opponents.filter(opponent => opponent.user.username === player)
             const scoreA = userOpponentsA.length > 0 ? userOpponentsA[0].score : 0
             const scoreB = userOpponentsB.length > 0 ? userOpponentsB[0].score : 0
             if (sort === 'desc') {
@@ -121,7 +121,7 @@ export class MatchService {
                 opponents: {
                     some: {
                         user: {
-                            login: player,
+                            username: player,
                         },
                         IsWinner: true,
                     },
@@ -136,7 +136,7 @@ export class MatchService {
                 opponents: {
                     some: {
                         user: {
-                            login: player,
+                            username: player,
                         },
                         IsWinner: false,
                     },
@@ -151,7 +151,7 @@ export class MatchService {
                 opponents: {
                     some: {
                         user: {
-                            login: player,
+                            username: player,
                         },
                     },
                 },
@@ -165,7 +165,7 @@ export class MatchService {
                 opponents: {
                     some: {
                         user: {
-                            login: player,
+                            username: player,
                         },
                     },
                 },
@@ -189,7 +189,7 @@ export class MatchService {
                 opponents: {
                     some: {
                         user: {
-                            login: player,
+                            username: player,
                         },
                         IsWinner: true,
                     },
@@ -204,7 +204,7 @@ export class MatchService {
                 opponents: {
                     some: {
                         user: {
-                            login: player,
+                            username: player,
                         },
                         IsWinner: false,
                     },

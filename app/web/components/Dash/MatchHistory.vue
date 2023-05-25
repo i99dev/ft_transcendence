@@ -153,19 +153,19 @@ const isFilter = ref(new Map([
     ['desc', false],
 ]));
 
-const totalPagesURL = ref(`/match/${user.login}/totalPages`)
+const totalPagesURL = ref(`/match/${user.username}/totalPages`)
 
 onMounted(async () => {
-    const data: MatchHistoryDto[] = await useGameHistory(`/match/${user.login}?page=${currentPage.value}`) as MatchHistoryDto[]
+    const data: MatchHistoryDto[] = await useGameHistory(`/match/${user.username}?page=${currentPage.value}`) as MatchHistoryDto[]
     if (data && game_history) gameHistoryRef.value = data ? data : []
 })
 
 const getOpponent = (game: MatchHistoryDto) => {
-    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login !== user.login)
+    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.username !== user.username)
 }
 
 const getMe = (game: MatchHistoryDto) => {
-    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login === user.login)
+    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.username === user.username)
 }
 
 const handleDropdown = () => {
@@ -174,7 +174,7 @@ const handleDropdown = () => {
 
 // temprorary solution for same login bug
 const isSameLogin = (game: MatchHistoryDto) => {
-    return game.opponents[0].user.login === game.opponents[1].user.login ? true : false
+    return game.opponents[0].user.username === game.opponents[1].user.username ? true : false
 }
 
 const handlePagination = async (page: number) => {
@@ -186,22 +186,22 @@ const handleFilteration = async (filter: string) => {
     for (const key of isFilter.value?.keys()) isFilter.value?.set(key, false)
     let data
     if (filter == 'all')
-        data = await useGameHistory(`/match/${user.login}?page=${currentPage.value}`)
+        data = await useGameHistory(`/match/${user.username}?page=${currentPage.value}`)
     else if (filter == 'win')
         data = await useGameHistory(
-            `/match/${user.login}/result?page=${currentPage.value}&isWin=true`,
+            `/match/${user.username}/result?page=${currentPage.value}&isWin=true`,
         )
     else if (filter == 'lose')
         data = await useGameHistory(
-            `/match/${user.login}/result?page=${currentPage.value}&isWin=false`,
+            `/match/${user.username}/result?page=${currentPage.value}&isWin=false`,
         )
     else if (filter == 'asc')
         data = await useGameHistory(
-            `/match/${user.login}/score?page=${currentPage.value}&sort=asc`,
+            `/match/${user.username}/score?page=${currentPage.value}&sort=asc`,
         )
     else if (filter == 'desc')
         data = await useGameHistory(
-            `/match/${user.login}/score?page=${currentPage.value}&sort=desc`,
+            `/match/${user.username}/score?page=${currentPage.value}&sort=desc`,
         )
     if (data && game_history) gameHistoryRef.value = data ? data : []
     currentFilter.value = filter
