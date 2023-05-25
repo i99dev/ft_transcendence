@@ -72,7 +72,6 @@
                 <p>Please use the other tab.</p>
             </div>
         </div>
-        <GameInviteBox v-if="inviteModal.open" class="z-20" />
         <div
             v-show="showRotateOverlay"
             class="fixed inset-0 bg-gray-900 opacity-100 flex items-center justify-center text-white text-2xl z-30"
@@ -88,7 +87,6 @@ import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
 
 const route = useRoute()
 const { invite, inviteModal } = await useGameInvite()
-const emit = defineEmits(['showTabModal'])
 const exit = ref(false)
 const showSelector = ref(true)
 const showBoard = ref(false)

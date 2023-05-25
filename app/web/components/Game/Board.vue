@@ -126,16 +126,18 @@ function setup(mode: GameSelectDto): void {
 }
 
 watch(gameSetup, (newVal, oldVal) => {
-    if (newVal.game != oldVal.game) {
+    if (newVal !== oldVal) {
+        if(showReadyModal.value || Object.keys(gameSetup).length === 0)
+            return
         showReadyModal.value = true
         emit('ReadyGame')
         rescaleGameData(newVal.game)
         init_game(canvasRef as Ref<HTMLCanvasElement>)
     }
-    showStatusBar.value = true
 })
 
 watch(gameData, (newVal, oldVal) => {
+    showStatusBar.value = true
     if (newVal) {
         showReadyModal.value = false
         updatePaddleDirection()

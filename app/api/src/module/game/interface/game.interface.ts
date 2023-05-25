@@ -2,7 +2,7 @@ import { Socket } from 'socket.io'
 import { PongGame } from '../logic/pongGame'
 
 export interface ConnectedUser {
-    id: string
+    login: string
     socket: Socket
     status: 'ingame' | 'inqueue' | 'online' | 'busy' | 'offline'
     game?: PongGame
