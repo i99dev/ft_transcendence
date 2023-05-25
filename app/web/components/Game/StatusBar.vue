@@ -1,28 +1,47 @@
 import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
 <template>
     <div
-        class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-violet-900 bg-opacity-5 py-2 px-6 rounded-b-lg shadow-lg border border-violet-700 flex items-center space-x-6">
+        class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-violet-900 bg-opacity-5 py-2 px-6 rounded-b-lg shadow-lg border border-violet-700 flex items-center space-x-6"
+    >
         <div class="flex flex-col items-center text-xl">
             <div class="text-white uppercase">{{ players[0].username }}</div>
             <div class="text-white font-semibold text-2xl">{{ players[0].score }}</div>
         </div>
         <div class="flex space-x-4">
-            <div v-for="(powerUp, i) in players[0].powerUps" :key="i"
+            <div
+                v-for="(powerUp, i) in players[0].powerUps"
+                :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
-                @click="onPowerUpClick(0, i + 1)">
-                <img :src="`/imgs/${powerUp.type}.png`" :alt="`Icon ${i + 1}`" class="w-full h-full rounded-md" />
-                <div v-if="!powerUp.ready"
-                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
+                v-click-effect="()=> onPowerUpClick(0, i + 1)"
+            >
+                <img
+                    :src="`/imgs/${powerUp.type}.png`"
+                    :alt="`Icon ${i + 1}`"
+                    class="w-full h-full rounded-md"
+                />
+                <div
+                    v-if="!powerUp.ready"
+                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"
+                ></div>
             </div>
         </div>
         <div class="border-r border-white border-opacity-50 h-8 mx-4"></div>
         <div class="flex space-x-4">
-            <div v-for="(powerUp, i) in players[1].powerUps" :key="i"
+            <div
+                v-for="(powerUp, i) in players[1].powerUps"
+                :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
-                @click="onPowerUpClick(1, i + 1)">
-                <img :src="`/imgs/${powerUp.type}.png`" :alt="`Icon ${i + 1}`" class="w-full h-full rounded-md" />
-                <div v-if="!powerUp.ready"
-                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"></div>
+                v-click-effect="()=> onPowerUpClick(1, i + 1)"
+            >
+                <img
+                    :src="`/imgs/${powerUp.type}.png`"
+                    :alt="`Icon ${i + 1}`"
+                    class="w-full h-full rounded-md"
+                />
+                <div
+                    v-if="!powerUp.ready"
+                    class="absolute inset-0 bg-gray-500 opacity-50 transition-opacity duration-500 rounded-md"
+                ></div>
             </div>
         </div>
         <div class="flex flex-col items-center text-xl">
@@ -30,7 +49,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
             <div class="text-white font-semibold text-2xl">{{ players[1].score }}</div>
         </div>
     </div>
-    <button @click="$emit('ExitBtn')"
+    <button v-click-effect="()=> $emit('ExitBtn')"
         class="fixed top-14 left-1/2 mt-2 transform -translate-x-1/2 z-20 bg-transparent text-white text-xl px-2 py-1">
         <img src="/imgs/leave.png" alt="Leave Game" class="w-6 h-6" />
     </button>
@@ -78,13 +97,13 @@ const players = computed(() => {
     ]
 })
 
-onMounted(() => { })
+onMounted(() => {})
 
 const onPowerUpClick = (player: number, powerup: number) => {
-    if(gameSetup.value.player == player) {
-        emit('powerup', powerup.toString());
+    if (gameSetup.value.player == player) {
+        emit('powerup', powerup.toString())
     }
-};
+}
 
 watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
     if (newPlayer1.score !== 11 && newPlayer1.score !== oldPlayer1.score) {
@@ -94,5 +113,4 @@ watch(players, ([newPlayer1, newPlayer2], [oldPlayer1, oldPlayer2]) => {
         scoreAudio.value.play()
     }
 })
-
 </script>

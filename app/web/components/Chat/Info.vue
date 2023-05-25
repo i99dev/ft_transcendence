@@ -38,7 +38,7 @@
                                     >
                                         <div class="border-b border-secondary mb-2 centered">
                                             <button
-                                                @click="goToUserProfile(participant.user.username)"
+                                            v-click-effect="()=> goToUserProfile(participant.user.username)"
                                                 class="p-2 text-white font-semibold flex justify-center items-center hover:bg-primary mb-2 rounded-xl smooth-transition"
                                             >
                                                 {{ participant.user.username }}
@@ -48,7 +48,7 @@
                                             v-for="option in adminOptions"
                                             :key="option.action"
                                             class="flex items-center justify-center p-2 w-full rounded-lg hover:bg-secondary text-white"
-                                            @click="setUser(option.action)"
+                                            v-click-effect="()=> setUser(option.action)"
                                         >
                                             {{ option.text }}
                                         </button>
@@ -59,154 +59,117 @@
                     </Dialog>
                 </TransitionRoot>
 
-                <TransitionRoot appear :show="isAddUserOpened" as="template">
-                    <Dialog as="div" @close="closeAddUsersPopup" class="relative z-10">
-                        <TransitionChild
-                            as="template"
-                            enter="duration-300 ease-out"
-                            enter-from="opacity-0"
-                            enter-to="opacity-100"
-                            leave="duration-200 ease-in"
-                            leave-from="opacity-100"
-                            leave-to="opacity-0"
-                        >
-                            <div class="fixed inset-0 bg-background bg-opacity-25" />
-                        </TransitionChild>
+                <ChatImageAndName
+                    :show="isEditChatImageAndNameOpened"
+                    :submitButton="'update'"
+                    :name="currentChat?.name"
+                    :image="currentChat?.image"
+                    @chatData="updateChatInfo"
+                    @closePopup="closeChatImageAndNamePopup"
+                />
 
-                        <div class="fixed inset-0 overflow-y-auto">
-                            <div
-                                class="flex min-h-full items-center justify-center p-4 text-center"
-                            >
-                                <TransitionChild
-                                    as="template"
-                                    enter="duration-300 ease-out"
-                                    enter-from="opacity-0 scale-95"
-                                    enter-to="opacity-100 scale-100"
-                                    leave="duration-200 ease-in"
-                                    leave-from="opacity-100 scale-100"
-                                    leave-to="opacity-0 scale-95"
-                                >
-                                    <DialogPanel
-                                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all"
-                                    >
-                                        <div
-                                            v-for="user in users"
-                                            :key="user.username"
-                                            class="flex-row inline-flex flex-nowrap"
-                                        >
-                                            <button
-                                                class="border rounded-full bg-background ease-in-out transition duration-200 m-2 relative"
-                                                @click="removeUser(user)"
-                                            >
-                                                <img
-                                                    class="rounded-full w-8 h-8 object-cover"
-                                                    :src="user.image"
-                                                    :alt="user.username"
-                                                />
-                                                <div
-                                                    class="absolute -right-1 -bottom-1 rounded-full p-1 bg-white text-primary hover:bg-primary hover:text-white smooth-transition"
-                                                >
-                                                    <XMarkIcon class="h-2 w-2" aria-hidden="true" />
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <UserProfileList
-                                            @selectUser="selectUser"
-                                            :search="true"
-                                            :unwantedUsers="participants?.map(a => a.user)"
-                                        />
-                                        <div class="flex justify-end mt-2">
-                                            <button
-                                                class="flex-shrink-0 bg-secondary hover:bg-primary text-white py-1 px-2 rounded capitalize"
-                                                type="button"
-                                                @click="addUsers"
-                                            >
-                                                add
-                                            </button>
-                                        </div>
-                                    </DialogPanel>
-                                </TransitionChild>
-                            </div>
-                        </div>
-                    </Dialog>
-                </TransitionRoot>
+                <ChatUsers
+                    :show="isAddUserOpened"
+                    :submitButton="'add'"
+                    :participants="participants"
+                    @usersList="addUsers"
+                    @closePopup="closeAddUsersPopup"
+                />
+
+                <ChatType
+                    :show="isEditChatTypeOpened"
+                    :submitButton="'update'"
+                    :type="currentChat?.type"
+                    @chatType="updateChatInfo"
+                    @closePopup="closeChatTypePopup"
+                />
 
                 <div class="text-md font-semibold centered">
                     <button
                         class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
                         :class="{
                             'scale-125 text-primary': participantsType === 'NORMAL',
-                            'opacity-70': participantsType !== 'NORMAL',
+                            'opacity-70 hover:opacity-100': participantsType !== 'NORMAL',
                         }"
-                        @click="switchParticipantsList()"
+                        v-click-effect="()=> switchParticipantsList()"
                     >
                         participants
                     </button>
                     <button
                         class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
-                        @click="switchParticipantsList('BAN')"
+                        v-click-effect="()=> switchParticipantsList('BAN')"
                         :class="{
                             'scale-125 text-primary': participantsType === 'BAN',
-                            'opacity-70': participantsType !== 'BAN',
+                            'opacity-70 hover:opacity-100': participantsType !== 'BAN',
                         }"
                     >
                         banned
                     </button>
                 </div>
-                <div
+                <button
                     v-for="participant in participants"
                     :key="participant.user.username"
-                    class="relative w-full pl-3 z-10 -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    class="relative w-full pl-3 z-10 -my-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    v-click-effect="()=> openAdminOptionsPopup(participant)"
                 >
-                    <button
-                        @click="openAdminOptionsPopup(participant)"
-                        class="relative w-full -m-3 flex items-center rounded-lg p-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                    <div
+                        class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-background_light p-1 rounded-full"
                     >
-                        <div
-                            class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-background_light p-1 rounded-full"
-                        >
-                            <img
-                                :src="participant.user.image"
-                                :alt="participant.user.username"
-                                class="rounded-full w-10 h-10 object-cover"
-                            />
-                        </div>
-                        <div class="flex justify-between w-full">
-                            <div class="ml-4">
-                                <div
-                                    v-if="participant.user_login === user_info.login"
-                                    class="font-medium text-white capitalize"
-                                >
-                                    you
-                                </div>
-                                <div v-else class="font-medium text-white">
-                                    {{ participant.user.username }}
-                                </div>
-                            </div>
+                        <img
+                            :src="participant.user.image"
+                            :alt="participant.user.username"
+                            class="rounded-full w-10 h-10 object-cover"
+                        />
+                    </div>
+                    <div class="flex justify-between w-full">
+                        <div class="ml-4">
                             <div
-                                v-if="participant.role !== 'MEMBER'"
-                                class="text-white font-bold text-sm"
+                                v-if="participant.user_login === user_info.login"
+                                class="font-medium text-white capitalize"
                             >
-                                {{ participant.role }}
+                                you
+                            </div>
+                            <div v-else class="font-medium text-white">
+                                {{ participant.user.username }}
                             </div>
                         </div>
-                    </button>
-                </div>
+                        <div
+                            v-if="participant.role !== 'MEMBER'"
+                            class="text-white font-bold text-sm"
+                        >
+                            {{ participant.role }}
+                        </div>
+                    </div>
+                </button>
             </div>
             <div class="bg-background_light p-4">
                 <div
                     class="flex justify-center rounded-md px-2 py-2 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                 >
                     <button
-                        v-if="CanAddUsers()"
+                        v-if="isAdmin()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="isAddUserOpened = true"
+                        v-click-effect="()=> { isAddUserOpened = true }"
                     >
                         <UserPlusIcon class="w-6 h-6" />
                     </button>
                     <button
+                        v-if="isOwner()"
+                        class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
+                        v-click-effect="isEditChatImageAndNameOpened = true"
+                    >
+                        <PencilSquareIcon class="w-6 h-6" />
+                    </button>
+                    <button
+                        v-if="isOwner()"
+                        class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
+                        v-click-effect="isEditChatTypeOpened = true"
+                    >
+                        <KeyIcon class="w-6 h-6" />
+                    </button>
+                    <button
                         class="border rounded-full hover:bg-secondary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="exitChat"
+                        v-click-effect="exitChat"
                     >
                         <ArrowRightOnRectangleIcon class="w-6 h-6" />
                     </button>
@@ -218,8 +181,12 @@
 
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { UserPlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import {
+    UserPlusIcon,
+    PencilSquareIcon,
+    KeyIcon,
+    ArrowRightOnRectangleIcon,
+} from '@heroicons/vue/24/outline'
 import { ref, onMounted, watch } from 'vue'
 
 const { chatSocket } = useChatSocket()
@@ -250,11 +217,11 @@ const adminOptions = ref([
 ])
 const isAdminOptionsOpened = ref(false)
 const isAddUserOpened = ref(false)
+const isEditChatImageAndNameOpened = ref(false)
+const isEditChatTypeOpened = ref(false)
 const { user_info } = useUserInfo()
-const { currentChat } = useCurrentChat()
+const { currentChat, setCurrentChat } = useCurrentChat()
 const emit = defineEmits(['closeNavBar'])
-
-const users = ref([] as UserGetDto[])
 
 onMounted(() => {
     socketOn()
@@ -269,6 +236,9 @@ const socketOn = () => {
         setParticipantsType('BAN')
         setParticipants(payload)
     })
+    chatSocket.value?.on('group-chat-info', (payload: GroupChat & DirectChat) => {
+        setCurrentChat(payload)
+    })
 }
 
 const setAdminOptions = () => {
@@ -276,8 +246,7 @@ const setAdminOptions = () => {
         adminOptions.value = []
         return
     }
-    
-    
+
     if (participant.value.status === 'BAN') {
         adminOptions.value = []
         adminOptions.value[0] = {
@@ -337,13 +306,6 @@ const closeAdminOptionsPopup = () => {
     }, 200)
 }
 
-const closeAddUsersPopup = () => {
-    setTimeout(() => {
-        users.value = []
-    }, 200)
-    isAddUserOpened.value = false
-}
-
 const setUser = (action: string) => {
     if (action === 'upgrade' || action === 'downgrade' || action === 'owner') {
         chatSocket.value?.emit(
@@ -373,39 +335,91 @@ const exitChat = () => {
     )
 }
 
-const addUsers = () => {
-    for (let i = 0; i < users.value?.length; i++) {
+const addUsers = (newUsers: UserGetDto[]) => {
+    for (let i = 0; i < newUsers?.length; i++) {
         chatSocket.value?.emit(
             'user-group-chat',
             JSON.stringify({
                 room_id: currentChat.value?.chat_room_id,
-                user_login: users.value[i].login,
+                user_login: newUsers[i].login,
                 action: 'add',
             }),
         )
     }
-    closeAddUsersPopup()
+    isAddUserOpened.value = false
 }
 
-const selectUser = (user: UserGetDto) => {
-    if (
-        !users.value?.find(u => u.login === user.login) &&
-        user.login !== user_info.value?.login &&
-        !participants.value?.find(p => p.user_login === user.login)
-    )
-        users.value?.push(user)
+const updateChatInfo = async (payload: {
+    name: string
+    image: FormData
+    type: string
+    password: string
+}) => {
+    const chatData = {} as {
+        room_id: string
+        name: string
+        image: FormData
+        password: string
+        type: string
+    }
+
+    chatData.room_id = currentChat.value?.chat_room_id as string
+    if (payload?.name) chatData.name = payload.name
+    if (payload?.image && currentChat.value?.chat_room_id) {
+        const { data } = await useUplaod(currentChat.value?.chat_room_id, payload.image)
+        if (data?.value) chatData.image = data?.value?.file_url
+    }
+    if (payload?.type) chatData.type = payload.type
+    if (payload.type === 'PROTECTED') chatData.password = payload.password
+
+    chatSocket.value?.emit('update-group-chat', JSON.stringify(chatData))
+
+    closeChatImageAndNamePopup()
+    closeChatTypePopup()
 }
 
-const removeUser = (user: UserGetDto) => {
-    users.value = users.value?.filter(u => u.id !== user.id)
+// const updateChatType = () => {
+//     const chatData = {} as {
+//         room_id: string,
+//         name: string,
+//         image: string,
+//         password: string,
+//         type: string,
+//     }
+
+//     closeChatTypePopup()
+// }
+
+const closeChatImageAndNamePopup = () => {
+    isEditChatImageAndNameOpened.value = false
 }
 
-const CanAddUsers = () => {
+const closeAddUsersPopup = () => {
+    isAddUserOpened.value = false
+}
+
+const closeChatTypePopup = () => {
+    isEditChatTypeOpened.value = false
+}
+
+const isAdmin = () => {
     if (participants.value)
         for (let i = 0; i < participants.value?.length; i++)
             if (
                 participants.value[i].user_login === user_info.value?.login &&
                 participants.value[i].role !== 'MEMBER'
+            )
+                return true
+
+    return false
+}
+
+const isOwner = () => {
+    if (participants.value)
+        for (let i = 0; i < participants.value?.length; i++)
+            if (
+                participants.value[i].user_login === user_info.value?.login &&
+                participants.value[i].role === 'OWNER'
             )
                 return true
 
@@ -419,12 +433,9 @@ const goToUserProfile = (username: string) => {
     emit('closeNavBar')
 }
 const switchParticipantsList = (type: string = 'NORMAL') => {
-    if (type === 'NORMAL' && participantsType.value !== 'NORMAL')
-        updateParticipants()
-    else if (type === 'BAN' && participantsType.value !== 'BAN')
-        updateParticipants('BAN')
+    if (type === 'NORMAL' && participantsType.value !== 'NORMAL') updateParticipants()
+    else if (type === 'BAN' && participantsType.value !== 'BAN') updateParticipants('BAN')
 }
-
 </script>
 
 <style scoped>

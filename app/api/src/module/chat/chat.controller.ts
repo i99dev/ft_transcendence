@@ -31,7 +31,7 @@ export class ChatController {
         @Query('page') page: number,
         @Req() req,
     ) {
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         if (!type) return await this.chatService.getChatRooms(page)
         else if (type === 'GROUP')
             return await this.groupChatService.getGroupChats(req.user.login, page)
@@ -61,13 +61,13 @@ export class ChatController {
 
     @Get('/:room_id/messages')
     async getRoomMessages(
-        @Param('room_id', ParseStringPipe) room_id: string,
+        @Param('room_id', ParseUUIDPipe) room_id: string,
         @Req() req,
         @Query('page', PosNumberPipe) page: number,
         @Query('sort', QueryParseStringPipe) sort: string,
     ) {
         if (sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort, req.user.login)
         if (msgs == null) throw new NotFoundException('No Messages Found')
         return msgs
@@ -97,9 +97,9 @@ export class ChatController {
     async searchGroupChat(
         @Req() req,
         @Query('name', QueryParseStringPipe) search: string,
-        @Query('page', PosNumberPipe) page: number,
+        @Query('page') page: number,
     ) {
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         if (!search) return await this.groupChatService.getAllGroupChats(page)
         return await this.groupChatService.searchGroupChat(search, req.user.login, page)
     }

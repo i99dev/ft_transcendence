@@ -5,7 +5,7 @@
         <button
             v-for="(player, index) in players"
             :key="index"
-            @click="navigateTo(`/users/${player.username}`)"
+            v-click-effect="()=> navigateTo(`/users/${player.username}`)"
             class="w-full h-20 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-tertiary"
             :class="{
                 'bg-background': !(index % 2),
@@ -75,7 +75,7 @@ const getLB = async () => {
     if (data.value) {
         for (let i = 0; i < data.value?.length; i++) {
             playersArray.push({
-                rankNum: (3 * (currentPage.value - 1)) + (i + 1),
+                rankNum: 3 * (currentPage.value - 1) + (i + 1),
                 ...data.value[i],
                 TotalMatches: await getPlayerGameResult(data.value[i].login),
             })

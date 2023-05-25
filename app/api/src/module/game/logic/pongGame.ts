@@ -205,7 +205,7 @@ export class PongGame {
             player => player.username === playerID,
         )
         if (playerIndex !== -1) {
-            this.winner = this.game_status.players[playerIndex].username;
+            this.winner = this.game_status.players[playerIndex].username
         }
     }
 
@@ -216,7 +216,7 @@ export class PongGame {
 
         if (playerIndex !== -1) {
             const opponentIndex = playerIndex === 0 ? 1 : 0
-            this.winner = this.game_status.players[opponentIndex].username;
+            this.winner = this.game_status.players[opponentIndex].username
         }
     }
 

@@ -7,10 +7,7 @@ import { DirectChatService } from './directChat.service'
 
 @Injectable()
 export class ChatService {
-    constructor(
-        private prisma: PrismaService,
-        private directChatService: DirectChatService,
-    ) {}
+    constructor(private prisma: PrismaService, private directChatService: DirectChatService) {}
     private chatRooms: ChatRoom[]
 
     async getUser(login: string) {

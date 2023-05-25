@@ -4,7 +4,7 @@
             <div
                 class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
             >
-                <div class="fixed inset-0 transition-opacity" @click="addFriendOpen = false">
+                <div class="fixed inset-0 transition-opacity" v-click-effect="()=> { addFriendOpen = false }">
                     <div class="absolute inset-0 bg-background_light opacity-50"></div>
                 </div>
                 <TransitionChild
@@ -19,7 +19,7 @@
                     <div
                         class="inline-block align-bottom bg-background rounded-lg text-left text-white overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                     >
-                        <div class=" px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg leading-6 font-medium">Add Friend</h3>
                             <div class="mt-2">
                                 <input
@@ -32,14 +32,14 @@
                         </div>
                         <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                             <button
-                                @click="addNewFriend"
+                            v-click-effect="addNewFriend"
                                 type="button"
                                 class="w-full centered capitalize rounded-md shadow-sm px-4 py-2 bg-secondary text-base font-medium hover:bg-primary smooth-transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:ml-3 sm:w-auto sm:text-sm"
                             >
                                 add
                             </button>
                             <button
-                                @click="$emit('close')"
+                            v-click-effect="()=> $emit('close')"
                                 type="button"
                                 class="mt-3 w-full centered capitalize rounded-md shadow-sm px-4 py-2 bg-background_light text-base font-medium hover:bg-secondary smooth-transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:mt-0 sm:w-auto sm:text-sm"
                             >
