@@ -1,8 +1,8 @@
 <template>
     <MainPopup :show="props?.show" @closeMainPopup="closePopup()">
         <form class="chat-form" @submit.prevent="">
-            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-white">
-                Create Group
+            <DialogTitle v-if="props?.title" as="h3" class="text-lg font-medium leading-6 text-white">
+                {{ props?.title }}
             </DialogTitle>
             <div class="flex items-center border-b border-secondary py-2">
                 <div class="file-upload">
@@ -45,7 +45,7 @@
                     class="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
                     id="groupChatName"
                     type="text"
-                    placeholder="Enter group name"
+                    :placeholder="props?.name"
                     aria-label="Group Name"
                     v-model="chatName"
                     @keyup.enter="sendChatData"
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps(['show', 'submitButton', 'cancelButton', 'name', 'image'])
+const props = defineProps(['show', 'submitButton', 'cancelButton', 'name', 'image', 'title'])
 const emit = defineEmits(['chatData', 'closePopup', 'cancel'])
 
 const chatImage = ref(undefined as string | undefined)
@@ -87,7 +87,6 @@ watch(
     () => props.show,
     () => {
         if (props.show) {
-            if (props.name) chatName.value = props.name
             if (props.image) chatImage.value = props.image
         }
     },

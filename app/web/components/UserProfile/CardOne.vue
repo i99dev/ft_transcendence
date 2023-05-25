@@ -38,7 +38,7 @@
                                     </svg>
                                 </button>
 
-                                <UserProfileSetup v-if="isEdit" v-on:close="closeSetupProfile" />
+                                <UserProfileSetup :show="isEdit" :submit-button="'update'" @closePopup="closeSetupProfile" />
                             </div>
                         </div>
 
