@@ -25,25 +25,48 @@
         <div v-if="showSelector"
             class="fixed inset-0 z-10 overflow-y-auto flex h-screen w-full justify-center items-center">
             <div class="flex flex-col items-center">
-                <GameSelector v-if="showSelector" @gameSelected="startGame" ref="gameSelector" @leaveQueue="leaveQueue" />
+                <GameSelector
+                    v-if="showSelector"
+                    @gameSelected="startGame"
+                    ref="gameSelector"
+                    @leaveQueue="leaveQueue"
+                />
             </div>
         </div>
 
         <div>
-            <GameClosePopup v-if="exit" @closePopup="switchExistStatus(false)" @GiveUp="exitGame" summary="Exit Game"
+            <GameClosePopup
+                v-if="exit"
+                @closePopup="switchExistStatus(false)"
+                @GiveUp="exitGame"
+                summary="Exit Game"
                 detail="You will be considered a LOSER since you give up in middle of the game!!"
-                confirmation="Are you sure you want to exit the game?" />
+                confirmation="Are you sure you want to exit the game?"
+            />
             <div
-                class="container flex justify-center items-center flex-col m-0 p-0 min-h-screen min-w-screen relative h-screen">
+                class="container flex justify-center items-center flex-col m-0 p-0 min-h-screen min-w-screen relative h-screen"
+            >
                 <div class="relative w-full h-full">
-                    <GameBoard v-if="showBoard" @ReadyGame="setGameReady" @GameOver="gameOver($event)"
-                        @ExitBtn="switchExistStatus(true)" ref="gameBoard" />
+                    <GameBoard
+                        v-if="showBoard"
+                        @ReadyGame="setGameReady"
+                        @GameOver="gameOver($event)"
+                        @ExitBtn="switchExistStatus(true)"
+                        ref="gameBoard"
+                    />
                 </div>
             </div>
-            <GameResult v-if="gameResult" @vue-mounted="exit = false" :gameResultMessage="gameResultMessage"
-                @playAgain="playAgain" />
+            <GameResult
+                v-if="gameResult"
+                @vue-mounted="exit = false"
+                :gameResultMessage="gameResultMessage"
+                @playAgain="playAgain"
+            />
         </div>
-        <div v-if="showTab" class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+        <div
+            v-if="showTab"
+            class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center"
+        >
             <div class="bg-white p-6 rounded-md text-center">
                 <h2 class="text-xl font-semibold mb-4">You can't use the app on multiple tabs</h2>
                 <p>Please use the other tab.</p>
@@ -51,13 +74,12 @@
         </div>
         <GameInviteBox v-if="inviteModal.open" class="z-20" />
         <div
-        v-show="showRotateOverlay"
-        class="fixed inset-0 bg-gray-900 opacity-100 flex items-center justify-center text-white text-2xl z-30"
+            v-show="showRotateOverlay"
+            class="fixed inset-0 bg-gray-900 opacity-100 flex items-center justify-center text-white text-2xl z-30"
         >
-        Please rotate your phone to landscape.
-      </div>
+            Please rotate your phone to landscape.
+        </div>
     </div>
-
 </template>
 
 <script lang="ts" setup>
@@ -83,26 +105,26 @@ const showRotateOverlay = ref(false)
 loop('play')
 
 onMounted(() => {
-  checkOrientation();
-  window.addEventListener('orientationchange', checkOrientation);
-});
+    checkOrientation()
+    window.addEventListener('orientationchange', checkOrientation)
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('orientationchange', checkOrientation);
-});
+    window.removeEventListener('orientationchange', checkOrientation)
+})
 
 const checkOrientation = () => {
-  let isPortrait;
+    let isPortrait
 
-  if ('orientation' in window.screen) {
-    isPortrait = window.screen.orientation.type.startsWith('portrait');
-  } else if ('orientation' in window) {
-    isPortrait = window.orientation === 0 || window.orientation === 180;
-  } else {
-    isPortrait = window.innerHeight > window.innerWidth;
-  }
-  showRotateOverlay.value = isPortrait;
-};
+    if ('orientation' in window.screen) {
+        isPortrait = window.screen.orientation.type.startsWith('portrait')
+    } else if ('orientation' in window) {
+        isPortrait = window.orientation === 0 || window.orientation === 180
+    } else {
+        isPortrait = window.innerHeight > window.innerWidth
+    }
+    showRotateOverlay.value = isPortrait
+}
 
 onUnmounted(() => {
     pause('play')
@@ -169,20 +191,17 @@ watchEffect(() => {
             startGame({
                 gameType: invite.value.gameType,
                 gameMode: 'invite',
-                powerups: invite.value.powerups
+                powerups: invite.value.powerups,
             })
             inviteModal.value.gameInProgress = false
-
         }
     }
 })
-
 </script>
 
 <style>
 .no-context-menu {
-  user-select: none;
-  -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 </style>
-

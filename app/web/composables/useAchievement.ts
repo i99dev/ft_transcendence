@@ -20,15 +20,18 @@ export async function getNewAchievement(): Promise<any[] | null> {
     return data.value
 }
 
-export async function getNewRank(): Promise<{ rank: string; isUp: boolean, id: number } | null> {
+export async function getNewRank(): Promise<{ rank: string; isUp: boolean; id: number } | null> {
     const api = useRuntimeConfig().API_URL
-    const { data } = await useFetch<{ rank: string; isUp: boolean, id: number }>(`/achievement/newRank`, {
-        method: 'GET',
-        baseURL: api,
-        headers: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
+    const { data } = await useFetch<{ rank: string; isUp: boolean; id: number }>(
+        `/achievement/newRank`,
+        {
+            method: 'GET',
+            baseURL: api,
+            headers: {
+                Authorization: `Bearer ${useCookie('access_token').value}`,
+            },
         },
-    })
+    )
     return data.value
 }
 
@@ -54,13 +57,12 @@ export async function getPlayerWinRate(player: string): Promise<number | null> {
     return data.value
 }
 
-export async function getPlayerGameResult(
-    player: string,
-    isWin?: boolean,
-): Promise<number | null> {
+export async function getPlayerGameResult(player: string, isWin?: boolean): Promise<number | null> {
     const api = useRuntimeConfig().API_URL
     const { data } = await useFetch<number>(
-       isWin === undefined ? `/match/${player}/totalGames` : `/match/${player}/totalGames?isWin=${isWin}`,
+        isWin === undefined
+            ? `/match/${player}/totalGames`
+            : `/match/${player}/totalGames?isWin=${isWin}`,
         {
             method: 'GET',
             baseURL: api,

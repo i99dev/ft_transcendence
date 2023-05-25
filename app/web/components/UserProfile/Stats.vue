@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps({
     ladder: {
         type: Number,
@@ -68,7 +67,4 @@ const getLadderRank = (ladder: number) => {
             return 'Capin Boy'
     }
 }
-
-
 </script>
-

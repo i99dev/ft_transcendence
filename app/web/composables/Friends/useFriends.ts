@@ -16,10 +16,10 @@ export const useFriends = async () => {
     const friends_info = useState<any | null>('friends_info', () => {
         return {
             friendsModalOpen: false,
-            friends: data.value
+            friends: data.value,
         }
     })
-    
+
     const setupSocketHandlers = () => {
         friendSocket.value?.on('notification', payload => {
             if (!Array.isArray(payload)) {

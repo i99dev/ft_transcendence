@@ -8,9 +8,7 @@
                 <span class="">{{ props.notification?.content }}</span>
             </div>
             <div class="ml-auto">
-                <div
-                    v-if="props.notification?.type === 'FRIEND_REQUEST'"
-                >
+                <div v-if="props.notification?.type === 'FRIEND_REQUEST'">
                     <button
                         v-click-effect="accept"
                         class="bg-primary hover:scale-105 smooth-transition py-1 px-2 rounded-full mr-2 capitalize"

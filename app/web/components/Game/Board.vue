@@ -10,8 +10,17 @@
             @powerup="activatePowerUp($event)"
         />
         <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
-        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd"></GameMobileControls>
-        <canvas ref="canvasRef" class=" fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2" style="width: 100%; height: 100%"></canvas>
+        <GameMobileControls
+            v-if="isMobile"
+            class="z-19"
+            @touchStart="handleTouchStart"
+            @touchEnd="handleTouchEnd"
+        ></GameMobileControls>
+        <canvas
+            ref="canvasRef"
+            class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+            style="width: 100%; height: 100%"
+        ></canvas>
     </div>
 </template>
 
@@ -29,8 +38,7 @@ const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } =
-    useSocket()
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -49,11 +57,11 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false,
 }
 
-const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
 const isMobile = ref(false)
 
 onMounted(() => {
-    isMobile.value = mobileRegex.test(navigator.userAgent);
+    isMobile.value = mobileRegex.test(navigator.userAgent)
     console.log('isMobile ', isMobile.value)
     setupEvents()
 })
@@ -184,17 +192,17 @@ const handleKeyUp = (event: KeyboardEvent): void => {
 }
 
 const handleTouchStart = (dir: string) => {
-    if(dir == 'up') {
+    if (dir == 'up') {
         keys.ArrowUp = true
-    } else if(dir == 'down') {
+    } else if (dir == 'down') {
         keys.ArrowDown = true
     }
 }
 
 const handleTouchEnd = (dir: string) => {
-    if(dir == 'up') {
+    if (dir == 'up') {
         keys.ArrowUp = false
-    } else if(dir == 'down') {
+    } else if (dir == 'down') {
         keys.ArrowDown = false
     }
 }
@@ -208,11 +216,9 @@ const updatePaddleDirection = (): void => {
 }
 </script>
 
-
-
 <style>
 .no-context-menu {
-  user-select: none;
-  -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 </style>

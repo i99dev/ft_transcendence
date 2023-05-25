@@ -3,13 +3,15 @@
         <div
             class="flex flex-col mobile:flex-col items-center shadow bg-background space-y-4 sm:p-6 p-1 w-full rounded-2xl">
             <div class="flex sm:flex-row flex-col items-center">
-
                 <!--  avatar  -->
-                <UserProfileAvatar :isMe="isMe" :isProfile="isProfile" :Image="userData.image" :status="userData?.status" />
-
+                <UserProfileAvatar
+                    :isMe="isMe"
+                    :isProfile="isProfile"
+                    :Image="userData.image"
+                    :status="userData?.status"
+                />
 
                 <div class="flex sm:flex-col justify-center sm:p-6">
-
                     <!-- update username -->
                     <div class="flex flex-col justify-start w-full relative">
 
@@ -37,27 +39,31 @@
                                 </button>
 
                                 <UserProfileSetup v-if="isEdit" v-on:close="closeSetupProfile" />
-
                             </div>
                         </div>
 
                         <!---- rank dropdown -->
-                        <UserProfileStats :ladder="userData.ladder" :xp="userData.xp" :username="props.username" />
-
+                        <UserProfileStats
+                            :ladder="userData.ladder"
+                            :xp="userData.xp"
+                            :username="props.username"
+                        />
                     </div>
                 </div>
             </div>
 
             <!--- control buttons -->
-            <UserProfileControl :isProfile="props.isProfile" :isMe="isMe" :login="userData.login"
-                :username="props.username" />
-
+            <UserProfileControl
+                :isProfile="props.isProfile"
+                :isMe="isMe"
+                :login="userData.login"
+                :username="props.username"
+            />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-
 const { user_info } = useUserInfo()
 
 const props = defineProps({
@@ -98,6 +104,4 @@ const closeSetupProfile = () => {
 const editProfile = () => {
     isEdit.value = !isEdit.value
 }
-
-
 </script>

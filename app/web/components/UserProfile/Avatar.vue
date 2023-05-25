@@ -5,12 +5,15 @@
         <div v-if="props.isMe && !props.isProfile"
             class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50">
         </div>
-        <UserProfileStatus v-if="!isMe || isProfile" :status="props.status" class="absolute bottom-2 right-2 w-6 h-6" />
+        <UserProfileStatus
+            v-if="!isMe || isProfile"
+            :status="props.status"
+            class="absolute bottom-2 right-2 w-6 h-6"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
-
 const { user_info } = useUserInfo()
 
 const props = defineProps({
@@ -49,7 +52,4 @@ const defaultImages = [
     'https://i1.ae/img/icons/14.png',
     'https://i1.ae/img/icons/20.png',
 ]
-
-
 </script>
-

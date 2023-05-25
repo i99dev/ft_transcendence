@@ -22,4 +22,4 @@ import { UserModule } from '@module/user/user.module'
     ],
     providers: [GameWsGateway, GameWsService, SocketService, Array],
 })
-export class GameWsModule { }
+export class GameWsModule {}
