@@ -372,9 +372,8 @@ export class GameWsService {
                 await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
                 await this.unlockAchievement(game, game_status.players[i].username)
             }
-        }
-        else {
-            
+        } else {
+            await this.gameAnalyzer.paunishPlayer(game.leaver)
         }
         this.clearData(game)
     }
