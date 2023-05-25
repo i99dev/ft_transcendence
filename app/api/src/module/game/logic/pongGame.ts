@@ -56,6 +56,7 @@ export class PongGame {
     private game_id: string
     private gameType: string
     private winner: string
+    public leaver: string
     public events: EventEmitter
     public analyzePlayer = new Map<string, gameAnalyzer>()
     constructor(

@@ -126,6 +126,15 @@ export class gameAnalyzer {
         await this.userService.updatePlayerXP(login, await this.calcXP(login, IsWinner))
     }
 
+    async deductPlayerXP(login: string): Promise<number> {
+        const currentXP = (await this.userService.getUser(login)).xp
+        return (currentXP - (currentXP * 0.3))
+    }
+
+    async paunishPlayer(login: string): Promise<void> {
+        
+    }
+
     async updatePlayerLadder(login: string): Promise<void> {
         await this.userService.updateUser(
             {

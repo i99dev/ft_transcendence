@@ -75,7 +75,10 @@ export class GameWsService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player && player.status == 'ingame') player.game.setLoser(player.login)
+        if (player && player.status == 'ingame') {
+            player.game.setLoser(player.login)
+            player.game.leaver = player.login
+        }
     }
 
     /* 
@@ -352,21 +355,26 @@ export class GameWsService {
         this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
         // await this.gameAnalyzer.storeAchievementAsNotification('aaljaber', 'Rookie No More')
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
+        console.log('leaver', game.leaver)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
             this.clearData(game)
             return
         }
+        if (game.leaver == undefined) {
+            this.game_result?.addHistory()
 
-        this.game_result?.addHistory()
-
-        for (let i = 0; i < game_status.players.length; i++) {
-            await this.gameAnalyzer.updatePlayerXP(
-                game_status.players[i].username,
-                this.game_result.IsWinner(game_status.players[i]) ? true : false,
-            )
-            await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
-            await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
-            await this.unlockAchievement(game, game_status.players[i].username)
+            for (let i = 0; i < game_status.players.length; i++) {
+                await this.gameAnalyzer.updatePlayerXP(
+                    game_status.players[i].username,
+                    this.game_result.IsWinner(game_status.players[i]) ? true : false,
+                )
+                await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
+                await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
+                await this.unlockAchievement(game, game_status.players[i].username)
+            }
+        }
+        else {
+            
         }
         this.clearData(game)
     }
