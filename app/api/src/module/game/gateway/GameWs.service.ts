@@ -354,7 +354,6 @@ export class GameWsService {
         this.socketService.emitToGroup(game.getGameID(), 'Game-Over', { winner, game_status })
         // await this.gameAnalyzer.storeAchievementAsNotification('aaljaber', 'Rookie No More')
         // dont save history if the game is against computer (It causes a crash when trying to save the game)
-        console.log('leaver', game.leaver)
         if (this.isComputer(game_status.players[0]) || this.isComputer(game_status.players[1])) {
             this.clearData(game)
             return
@@ -372,8 +371,13 @@ export class GameWsService {
                 await this.unlockAchievement(game, game_status.players[i].login)
             }
         } else {
-            await this.gameAnalyzer.paunishPlayer(game.leaver)
-            console.log('punished')
+            const punished = game.leaver
+            await this.gameAnalyzer.paunishPlayer(punished)
+            await this.gameAnalyzer.compensatePlayer(
+                punished === game_status.players[0].login
+                    ? game_status.players[1].login
+                    : game_status.players[0].login,
+            )
         }
         this.clearData(game)
     }
