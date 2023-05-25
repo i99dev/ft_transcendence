@@ -144,7 +144,7 @@
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
                                                                             v-click-effect="() => 
                                                                                 remove(
-                                                                                    friend.username,
+                                                                                    friend.login,
                                                                                 )
                                                                             "
                                                                         >
