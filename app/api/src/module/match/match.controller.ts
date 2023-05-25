@@ -27,6 +27,7 @@ export class MatchController {
         @Query('page') page: number,
         @Req() req,
     ): Promise<MatchDto[]> {
+        if (!page || page < 1) page = 1
         const matchHistory = await this.matchService.getPlayerMatchHistory(page, login)
         if (!matchHistory)
             throw new NotFoundException(`Match history for player ${login} not found`)
@@ -41,6 +42,7 @@ export class MatchController {
         @Req() req,
     ): Promise<MatchDto[]> {
         if (isWin === 'true') {
+            if (!page || page < 1) page = 1
             const history = await this.matchService.getMatchHistoryByResult(page, login, true)
             if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
             return history
@@ -58,6 +60,7 @@ export class MatchController {
         @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
         @Req() req,
     ): Promise<MatchDto[]> {
+        if (!page || page < 1) page = 1
         const history = await this.matchService.getMatchHistoryBySort(page, login, sort)
         if (!history) throw new NotFoundException(`Match history for player ${login} not found`)
         return history

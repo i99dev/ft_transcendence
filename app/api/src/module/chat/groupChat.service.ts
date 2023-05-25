@@ -28,6 +28,24 @@ export class GroupChatService {
         }
     }
 
+    async countUsersInGroupChat(room_id: string) {
+        try {
+            const count = await this.prisma.chatUser.count({
+                where: {
+                    chat_room_id: room_id,
+                    NOT: {
+                        status: {
+                            in: ['OUT', 'BAN', 'INVITED'],
+                        },
+                    }
+                },
+            })
+            return count
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     async addUserToGroupChat(room_id: string, user: ChatUserDto) {
         try {
             const chat = await this.prisma.groupChat.update({

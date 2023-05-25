@@ -1,7 +1,7 @@
 import { UserGetDto } from './dto/user.dto'
 import { User } from '@prisma/client'
 import { PrismaService } from '../../providers/prisma/prisma.service'
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { UserRepository } from './repository/user.repository'
 import { Me } from '../../auth/interface/intra.interface'
 import { NotFoundException } from '@nestjs/common'
@@ -38,21 +38,28 @@ export class UserService {
         return user
     }
 
-    async updateUser(data, login: string): Promise<User> {
-        return await this.prisma.user.update({
-            where: { login: login },
-            data: {
-                first_name: data?.first_name,
-                last_name: data?.last_name,
-                email: data?.email,
-                username: data?.username,
-                image: data?.image,
-                status: data?.status,
-                wr: data?.wr,
-                ladder: data?.ladder,
-                two_fac_auth: data?.two_fac_auth,
-            },
-        })
+    async updateUser(data, login: string) {
+        try {
+            const updated = await this.prisma.user.update({
+                where: { login: login },
+                data: {
+                    first_name: data?.first_name,
+                    last_name: data?.last_name,
+                    email: data?.email,
+                    username: data?.username,
+                    image: data?.image,
+                    status: data?.status,
+                    wr: data?.wr,
+                    ladder: data?.ladder,
+                    two_fac_auth: data?.two_fac_auth,
+                },
+            })
+            if (!updated)
+                throw new NotFoundException(`user ${login} does not exist`)
+            return updated
+        } catch (error) {
+            throw new BadRequestException(`error updating user ${login}`)
+        }
     }
 
     async CreateUser(intraUser: Me) {
