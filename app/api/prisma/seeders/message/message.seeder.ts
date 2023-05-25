@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { Message, PrismaClient } from '@prisma/client'
-import { create } from 'domain'
 
 @Injectable()
 export class MessageSeeder {

@@ -6,9 +6,7 @@
         <div class="flex items-center justify-between">
             <div class="relative inline-block text-left">
                 <div>
-                    <button
-                        @click="handleDropdown"
-                        type="button"
+                    <button v-click-effect="handleDropdown" type="button"
                         class="group inline-flex justify-center text-sm font-medium text-white hover:bg-primary p-1 rounded-lg"
                         id="menu-button"
                         aria-expanded="false"
@@ -42,10 +40,8 @@
                     tabindex="-1"
                 >
                     <div class="py-1" role="none">
-                        <button
-                            @click="handleFilteration('all')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
+                        <button v-click-effect="()=> handleFilteration('all')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('all'),
                                 ' hover:bg-white': !isFilter.get('all'),
                             }"
@@ -56,10 +52,8 @@
                             Latest
                         </button>
 
-                        <button
-                            @click="handleFilteration('win')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
+                        <button v-click-effect="()=> handleFilteration('win')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('win'),
                                 'hover:bg-white': !isFilter.get('win'),
                             }"
@@ -70,10 +64,8 @@
                             Result: Victories only
                         </button>
 
-                        <button
-                            @click="handleFilteration('lose')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
+                        <button v-click-effect="()=> handleFilteration('lose')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('lose'),
                                 'hover:bg-white': !isFilter.get('lose'),
                             }"
@@ -84,10 +76,8 @@
                             Result: Defeats only
                         </button>
 
-                        <button
-                            @click="handleFilteration('asc')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
+                        <button v-click-effect="()=> handleFilteration('asc')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('asc'),
                                 'hover:bg-white': !isFilter.get('asc'),
                             }"
@@ -98,10 +88,8 @@
                             Score: Low to High
                         </button>
 
-                        <button
-                            @click="handleFilteration('desc')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
+                        <button v-click-effect="()=> handleFilteration('desc')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
                                 'font-medium focus:bg-white': isFilter.get('desc'),
                                 'hover:bg-white': !isFilter.get('desc'),
                             }"
@@ -133,12 +121,24 @@
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
                             <img
+                                v-if="user.login == user_info.login"
                                 :src="user_info.image"
                                 class="w-8 h-8 rounded-full object-cover"
                             />
+                            <img
+                                v-else
+                                :src="getMe(game)?.user.image"
+                                class="w-8 h-8 rounded-full object-cover"
+                            />
                             <!-- name and result -->
-                            <div class="text-xs m-2 capitalize font-bold">
+                            <div
+                                v-if="user.login == user_info.login"
+                                class="text-xs m-2 capitalize font-bold"
+                            >
                                 {{ user_info.username }}
+                            </div>
+                            <div v-else class="text-xs m-2 capitalize font-bold">
+                                {{ getMe(game)?.user.username }}
                             </div>
                         </div>
                         <!-- result -->
@@ -186,12 +186,12 @@ const props = defineProps({
 
 const user = await getUserbyUserName(props.username)
 
-const login = computed(() => user.login)
+const gameHistoryRef = ref([] as MatchHistoryDto[])
 
-const game_history = await useGameHistory(`/match-history/${login.value}?page=1`)
+const game_history = computed(() => gameHistoryRef.value)
 
 const games: any = computed(() => {
-    return game_history ? game_history.values : []
+    return game_history ? game_history.value : []
 })
 
 const showButton = ref(false)
@@ -200,28 +200,31 @@ const currentPage = ref(1)
 
 const currentFilter = ref('all')
 
-const isFilter = ref(new Map<string, boolean>())
+const isFilter = ref(
+    new Map([
+        ['all', true],
+        ['win', false],
+        ['lose', false],
+        ['asc', false],
+        ['desc', false],
+    ]),
+)
 
-const totalPagesURL = `/match-history/${login.value}/totalPages`
+const totalPagesURL = ref(`/match/${user.login}/totalPages`)
 
 onMounted(async () => {
-    isFilter.value?.set('all', true)
-    isFilter.value?.set('win', false)
-    isFilter.value?.set('lose', false)
-    isFilter.value?.set('asc', false)
-    isFilter.value?.set('desc', false)
-    currentPage.value = 1
-    currentFilter.value = 'all'
-    const data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
-    if (data && game_history) game_history.values = data
+    const data: MatchHistoryDto[] = (await useGameHistory(
+        `/match/${user.login}?page=${currentPage.value}`,
+    )) as MatchHistoryDto[]
+    if (data && game_history) gameHistoryRef.value = data ? data : []
 })
 
 const getOpponent = (game: MatchHistoryDto) => {
-    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login !== login.value)
+    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login !== user.login)
 }
 
 const getMe = (game: MatchHistoryDto) => {
-    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login === login.value)
+    return game.opponents.find((opponent: PlayerStatusDto) => opponent.user.login === user.login)
 }
 
 const handleDropdown = () => {
@@ -242,26 +245,23 @@ const handleFilteration = async (filter: string) => {
     for (const key of isFilter.value?.keys()) isFilter.value?.set(key, false)
     let data
     if (filter == 'all')
-        data = await useGameHistory(`/match-history/${login.value}?page=${currentPage.value}`)
+        data = await useGameHistory(`/match/${user.login}?page=${currentPage.value}`)
     else if (filter == 'win')
         data = await useGameHistory(
-            `/match-history/${login.value}/result?page=${currentPage.value}&isWin=true`,
+            `/match/${user.login}/result?page=${currentPage.value}&isWin=true`,
         )
     else if (filter == 'lose')
         data = await useGameHistory(
-            `/match-history/${login.value}/result?page=${currentPage.value}&isWin=false`,
+            `/match/${user.login}/result?page=${currentPage.value}&isWin=false`,
         )
     else if (filter == 'asc')
-        data = await useGameHistory(
-            `/match-history/${login.value}/score?page=${currentPage.value}&sort=asc`,
-        )
+        data = await useGameHistory(`/match/${user.login}/score?page=${currentPage.value}&sort=asc`)
     else if (filter == 'desc')
         data = await useGameHistory(
-            `/match-history/${login.value}/score?page=${currentPage.value}&sort=desc`,
+            `/match/${user.login}/score?page=${currentPage.value}&sort=desc`,
         )
-    if (data && game_history) game_history.values = data
+    if (data && game_history) gameHistoryRef.value = data ? data : []
     currentFilter.value = filter
     isFilter.value?.set(filter, true)
 }
-
 </script>

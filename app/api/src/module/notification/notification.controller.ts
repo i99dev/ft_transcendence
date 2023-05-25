@@ -6,20 +6,19 @@ import { NotificationService } from './notification.service'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
 
+@UseGuards(JwtAuthGuard)
 @Controller('/Notification')
 export class NotificationController {
     constructor(private readonly notificationService: NotificationService) {}
 
-    @UseGuards(JwtAuthGuard)
     @Get('/me')
     async getMyNotifications(@Req() req, @Query('page') page: number) {
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         const notif = await this.notificationService.getMyNotifications(req.user.login, page)
         if (!notif) return new NotFoundException('No notifications found')
         return notif
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/me/:type')
     async getMyNotificationsByType(@Req() req, @Param('type', ParseStringPipe) type: string) {
         const notif = await this.notificationService.getMyNotificationsByType(
@@ -30,7 +29,6 @@ export class NotificationController {
         return notif
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete('/:id')
     async deleteNotification(@Param('id', PosNumberPipe) id: string, @Req() req) {
         const idNumber = parseInt(id)

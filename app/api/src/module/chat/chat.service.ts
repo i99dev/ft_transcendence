@@ -1,16 +1,13 @@
-import { Status } from './../../auth/interface/intra.interface'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { ChatRoom, MessageType, ChatUserStatus, Prisma } from '@prisma/client'
 import { UpdateChatUserInterface } from './interface/chat.interface'
-import { ChatRepository } from './repository/chat.repository'
 import { ChatRoomDto } from './dto/chat.dto'
-import { number } from 'joi'
 import { DirectChatService } from './directChat.service'
 
 @Injectable()
 export class ChatService {
-    constructor(private prisma: PrismaService, private chatRepository: ChatRepository, private directChatService: DirectChatService) {}
+    constructor(private prisma: PrismaService, private directChatService: DirectChatService) {}
     private chatRooms: ChatRoom[]
 
     async getUser(login: string) {
@@ -298,8 +295,7 @@ export class ChatService {
                     },
                 })
                 return chatUser
-            }
-            else {
+            } else {
                 const chatUser = await this.directChatService.getDirectChatUser(room_id, user_login)
                 if (chatUser) return true
                 return false

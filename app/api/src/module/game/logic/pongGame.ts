@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
 import { EventEmitter } from 'events'
@@ -49,6 +50,7 @@ interface gameAnalyzer {
     Achievements: string[]
 }
 
+@Injectable()
 export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
@@ -203,7 +205,7 @@ export class PongGame {
             player => player.username === playerID,
         )
         if (playerIndex !== -1) {
-            this.winner = this.game_status.players[playerIndex].username;
+            this.winner = this.game_status.players[playerIndex].username
         }
     }
 
@@ -214,7 +216,7 @@ export class PongGame {
 
         if (playerIndex !== -1) {
             const opponentIndex = playerIndex === 0 ? 1 : 0
-            this.winner = this.game_status.players[opponentIndex].username;
+            this.winner = this.game_status.players[opponentIndex].username
         }
     }
 

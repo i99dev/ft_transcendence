@@ -1,7 +1,7 @@
 import { UserGetDto } from './dto/user.dto'
 import { User } from '@prisma/client'
 import { PrismaService } from '../../providers/prisma/prisma.service'
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { UserRepository } from './repository/user.repository'
 import { Me } from '../../auth/interface/intra.interface'
 import { NotFoundException } from '@nestjs/common'
@@ -38,20 +38,28 @@ export class UserService {
         return user
     }
 
-    async updateUser(data, login: string): Promise<User> {
-        return await this.prisma.user.update({
-            where: { login: login },
-            data: {
-                first_name: data?.first_name,
-                last_name: data?.last_name,
-                email: data?.email,
-                username: data?.username,
-                image: data?.image,
-                status: data?.status,
-                wr: data?.wr,
-                two_fac_auth: data?.two_fac_auth,
-            },
-        })
+    async updateUser(data, login: string) {
+        try {
+            const updated = await this.prisma.user.update({
+                where: { login: login },
+                data: {
+                    first_name: data?.first_name,
+                    last_name: data?.last_name,
+                    email: data?.email,
+                    username: data?.username,
+                    image: data?.image,
+                    status: data?.status,
+                    wr: data?.wr,
+                    ladder: data?.ladder,
+                    two_fac_auth: data?.two_fac_auth,
+                },
+            })
+            if (!updated)
+                throw new NotFoundException(`user ${login} does not exist`)
+            return updated
+        } catch (error) {
+            throw new BadRequestException(`error updating user ${login}`)
+        }
     }
 
     async CreateUser(intraUser: Me) {
@@ -122,27 +130,22 @@ export class UserService {
         return user
     }
 
-    async SearchUserNames(name: string, page: number) {
-        try {
-            const users = await this.prisma.user.findMany({
-                where: {
-                    username: {
-                        contains: name,
-                        mode: 'insensitive',
-                    },
-                },
-                skip: (page - 1) * 20,
-                take: 20,
-            })
-            return users
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     async SortUserByWinGap(): Promise<UserGetDto[]> {
         const users: UserGetDto[] = await this.prisma.user.findMany()
         const sortedUsers: UserGetDto[] = users.sort(this.repository.SortUserByWinLose)
         return sortedUsers
+    }
+
+    async updatePlayerXP(player: string, xp: number): Promise<void> {
+        await this.prisma.user.update({
+            where: {
+                login: player,
+            },
+            data: {
+                xp: {
+                    increment: xp,
+                },
+            },
+        })
     }
 }

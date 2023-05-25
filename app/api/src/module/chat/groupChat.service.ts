@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common'
 import { ChatRoom, ChatUserStatus } from '@prisma/client'
 import { UpdateChatDto } from './gateway/dto/chatWs.dto'
 import { ChatService } from './chat.service'
-import { skip } from 'rxjs'
 
 @Injectable()
 export class GroupChatService {
@@ -24,6 +23,24 @@ export class GroupChatService {
                 },
             })
             return chat
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async countUsersInGroupChat(room_id: string) {
+        try {
+            const count = await this.prisma.chatUser.count({
+                where: {
+                    chat_room_id: room_id,
+                    NOT: {
+                        status: {
+                            in: ['OUT', 'BAN', 'INVITED'],
+                        },
+                    }
+                },
+            })
+            return count
         } catch (error) {
             console.log(error)
         }
@@ -120,7 +137,7 @@ export class GroupChatService {
                 orderBy: {
                     chat_room: {
                         created_at: 'desc',
-                    }
+                    },
                 },
                 skip: (page - 1) * 20,
                 take: 20,
@@ -133,7 +150,7 @@ export class GroupChatService {
 
     async updateGroupChat(info: UpdateChatDto) {
         try {
-            await this.prisma.groupChat.update({
+            return await this.prisma.groupChat.update({
                 where: {
                     chat_room_id: info.room_id,
                 },

@@ -10,7 +10,6 @@ import { FriendModule } from '@module/friend/friend.module'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
 import { NotificationModule } from '@module/notification/notification.module'
 import { BlockModule } from '@module/block/block.module'
-import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Module({
     imports: [

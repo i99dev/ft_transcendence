@@ -1,22 +1,18 @@
-// prisma/seed.ts
 
 import { PrismaClient } from '@prisma/client'
-import { create } from 'domain'
 import { UserSeeder } from './seeders/user/user.seeder'
 import { FriendSeeder } from './seeders/friend/friend.seeder'
 import { PowerUpSeeder } from './seeders/power_up/power_up.seeder'
 import { AchievementSeeder } from './seeders/achievement/achievement.seeder'
-import { GroupChatSeeder } from './seeders/chat/chat.seeder'
-import { ChatUserSeeder } from './seeders/chat_user/chat_user.seeder'
+import { GroupChatSeeder } from './seeders/groupChat/groupChat.seeder'
+import { ChatUserSeeder } from './seeders/chatUser/chatUser.seeder'
 import { MessageSeeder } from './seeders/message/message.seeder'
-import { DirectChatSeeder } from './seeders/direct_chat/direct_chat.seeder'
+import { DirectChatSeeder } from './seeders/directChat/directChat.seeder'
 import { ChatRoomSeeder } from './seeders/chatRoom/chat_room.seeder'
-import { MatchHistorySeeder } from './seeders/match-history/match-history.seeder'
+import { MatchSeeder } from './seeders/match/match.seeder'
 import { NotificationSeeder } from './seeders/notification/notification.seeder'
 import { BlockSeeder } from './seeders/block/block.seed'
-// import { SeederService   } from './seeders/user/user.seeder.service';
 
-// initialize Prisma Client
 const prisma = new PrismaClient()
 
 async function main() {
@@ -44,7 +40,7 @@ async function main() {
     await new MessageSeeder().assignMessagesToChats()
     console.log({ users, powerUps, achievements, updateUsers, groupChats, directChats, chatRooms })
     // Create MatchHistory
-    const matchHistory = await new MatchHistorySeeder().seedMatchHistory()
+    const matchHistory = await new MatchSeeder().seedMatchHistory()
     const getAchievements = await new NotificationSeeder().seedNotifications()
     const getBlocks = await new BlockSeeder().seedBlock()
     console.log({

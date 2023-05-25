@@ -16,6 +16,7 @@ import { DirectChatService } from './directChat.service'
 import { ParseStringPipe } from '@common/pipes/string.pipe'
 import { PosNumberPipe } from '@common/pipes/posNumber.pipe'
 import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
+@UseGuards(JwtAuthGuard)
 @Controller('/chats')
 export class ChatController {
     constructor(
@@ -24,22 +25,25 @@ export class ChatController {
         private readonly directChatService: DirectChatService,
     ) {}
 
-    @UseGuards(JwtAuthGuard)
     @Get('')
-    async getChatRooms(@Query('type', QueryParseStringPipe) type: string, @Query('page') page: number, @Req() req) {
-        if (!page) page = 1
+    async getChatRooms(
+        @Query('type', QueryParseStringPipe) type: string,
+        @Query('page') page: number,
+        @Req() req,
+    ) {
+        if (!page || page < 1) page = 1
         if (!type) return await this.chatService.getChatRooms(page)
-        else if (type === 'GROUP') return await this.groupChatService.getGroupChats(req.user.login, page)
-        else if (type === 'DM') return await this.directChatService.getDirectChats(req.user.login, page)
+        else if (type === 'GROUP')
+            return await this.groupChatService.getGroupChats(req.user.login, page)
+        else if (type === 'DM')
+            return await this.directChatService.getDirectChats(req.user.login, page)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/:room_id')
     async getRoom(@Param('room_id', ParseUUIDPipe) room_id: string, @Req() req) {
         return await this.chatService.getChatRoom(room_id)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/:room_id/users')
     async getRoomUsers(
         @Param('room_id', ParseUUIDPipe) room_id: string,
@@ -55,53 +59,47 @@ export class ChatController {
                 : await this.groupChatService.getGroupChatUsers(room_id)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/:room_id/messages')
     async getRoomMessages(
-        @Param('room_id', ParseStringPipe) room_id: string,
+        @Param('room_id', ParseUUIDPipe) room_id: string,
         @Req() req,
         @Query('page', PosNumberPipe) page: number,
         @Query('sort', QueryParseStringPipe) sort: string,
     ) {
         if (sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         const msgs = await this.chatService.getChatRoomMessages(room_id, page, sort, req.user.login)
         if (msgs == null) throw new NotFoundException('No Messages Found')
         return msgs
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/:room_id/messages/me')
     async getRoomMessagesByUser(@Param('room_id', ParseUUIDPipe) room_id: string, @Req() req) {
         return await this.chatService.getChatUserMessagesInChatRoom(room_id, req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/groupChat/me')
     async getGroupChat(@Req() req) {
         return await this.groupChatService.getGroupChatForUser(req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/directChat/me')
     async getDirectChat(@Req() req) {
         return await this.directChatService.getDirectChatForUser(req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/directChat/user/:user_login')
     async getDirectChatWitDh(@Req() req, @Param('user_login', ParseStringPipe) user_login: string) {
         return await this.directChatService.getDirectChatbetweenUsers(req.user.login, user_login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/groupChat/search')
     async searchGroupChat(
         @Req() req,
         @Query('name', QueryParseStringPipe) search: string,
-        @Query('page', PosNumberPipe) page: number,
+        @Query('page') page: number,
     ) {
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         if (!search) return await this.groupChatService.getAllGroupChats(page)
         return await this.groupChatService.searchGroupChat(search, req.user.login, page)
     }

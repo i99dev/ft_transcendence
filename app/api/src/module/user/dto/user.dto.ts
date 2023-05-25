@@ -11,6 +11,7 @@ import {
     IsAscii,
     Length,
     IsEmail,
+    Max,
 } from 'class-validator'
 
 export class UserGetDto {
@@ -135,6 +136,13 @@ export class UserPatchDto {
     @IsNotEmpty()
     @IsOptional()
     wr?: number
+
+    @Min(0)
+    @Max(6)
+    @IsNumber()
+    @IsNotEmpty()
+    @IsOptional()
+    ladder?: number
 
     @IsBoolean()
     @IsOptional()
