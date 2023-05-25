@@ -75,8 +75,7 @@ export class GameWsService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player && player.status == 'ingame')
-            player.game.setLoser(player.login)
+        if (player && player.status == 'ingame') player.game.setLoser(player.login)
     }
 
     /* 
@@ -94,7 +93,8 @@ export class GameWsService {
     */
     public async matchPlayer(userSocket: Socket, gameInfo: GameSelectDto) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (this.classic_queue.includes(player.login) || this.custom_queue.includes(player.login)) return
+        if (this.classic_queue.includes(player.login) || this.custom_queue.includes(player.login))
+            return
         if (player.status != 'online') return
 
         player.status = 'inqueue'
@@ -150,8 +150,7 @@ export class GameWsService {
                 this.createMultiGame(opponent, user, response.gameType)
                 user.status = 'ingame'
                 opponent.status = 'ingame'
-            }
-            else {
+            } else {
                 opponent.status = 'online'
                 user.status = 'online'
                 opponent.socket.emit('Respond-Invite', {
@@ -288,14 +287,14 @@ export class GameWsService {
     }
 
     private initiateGame(game: PongGame, p1: ConnectedUser, p2: ConnectedUser) {
-        const player1Socket = p1.socket;
-        const player1Login = p1.login;
+        const player1Socket = p1.socket
+        const player1Login = p1.login
         const player2Socket = p2 ? p2.socket : null
         const player2Login = p2 ? p2.login : 'Computer'
         const gameStatus = game.getGameStatus()
-        let i = 800;
+        let i = 800
         const intervalId = setInterval(() => {
-            console.log("SENT")
+            console.log('SENT')
             if (game.isPlayersReady() || game.checkWinner() || i <= 0) {
                 clearInterval(intervalId)
                 return
@@ -305,10 +304,9 @@ export class GameWsService {
             }
             if (!game.isPlayersReady(player2Login))
                 this.socketService.emitGameSetup(null, player2Socket, gameStatus)
-            i--;
+            i--
         }, 1000 / 60)
     }
-
 
     private startGame(game: PongGame) {
         this.game_result = new gameHistory(

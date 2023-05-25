@@ -8,7 +8,7 @@
                 <li>
                     <button
                         class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="()=> selectGame('classic')"
+                        v-click-effect="() => selectGame('classic')"
                     >
                         Classic Pong
                     </button>
@@ -16,7 +16,7 @@
                 <li>
                     <button
                         class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="()=> selectGame('custom')"
+                        v-click-effect="() => selectGame('custom')"
                     >
                         Custom Pong
                     </button>
@@ -39,7 +39,7 @@
                     <button
                         :class="selectedMode === 'single' ? 'bg-green-500' : 'bg-blue-500'"
                         class="w-full py-2 px-4 rounded-md text-white bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="()=>selectMode('single')"
+                        v-click-effect="() => selectMode('single')"
                     >
                         Single Player
                     </button>
@@ -48,7 +48,7 @@
                     <button
                         :class="selectedMode === 'multi' ? 'bg-green-500' : 'bg-blue-500'"
                         class="w-full py-2 px-4 rounded-md text-white bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="()=>selectMode('multi')"
+                        v-click-effect="() => selectMode('multi')"
                     >
                         Find Opponent
                     </button>
@@ -84,7 +84,7 @@
             <div class="mt-4 flex space-x-4 justify-center">
                 <button
                     class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="()=>step = 1"
+                    v-click-effect="() => (step = 1)"
                 >
                     Back
                 </button>

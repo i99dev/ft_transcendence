@@ -1,25 +1,31 @@
 <template>
-        <!---- rank dropdown -->
-        <div class="mt-4 w-full">
-            <button v-click-effect="handleDropDown"
-                class="sm:text-xl p-2 flex justify-start items-start w-fit rounded-xl text-lg text-white hover:bg-primary smooth-transition focus:outline-none"
-                title="Your Rank">
-                {{ getLadderRank(props.ladder) }}
-            </button>
-            <div v-if="showstat"
-                class="absolute top-0 left-full py-2 w-40 bg-background_light border-2 rounded-lg shadow-lg z-10">
-                <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out">XP
-                    level: {{ props.xp }}</span>
-                <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out">Winning
-                    Rate: {{ (WinRate * 100).toFixed(2) }}%
-                </span>
-                <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out">Total
-                    Wins: {{ totalWins }}
-                </span>
-                <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out">Total
-                    Loses: {{ totaLoses }}</span>
-            </div>
+    <!---- rank dropdown -->
+    <div class="mt-4 w-full">
+        <button
+            v-click-effect="handleDropDown"
+            class="sm:text-xl p-2 flex justify-start items-start w-fit rounded-xl text-lg text-white hover:bg-primary smooth-transition focus:outline-none"
+            title="Your Rank"
+        >
+            {{ getLadderRank(props.ladder) }}
+        </button>
+        <div
+            v-if="showstat"
+            class="absolute top-0 left-full py-2 w-40 bg-background_light border-2 rounded-lg shadow-lg z-10"
+        >
+            <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
+                >XP level: {{ props.xp }}</span
+            >
+            <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
+                >Winning Rate: {{ (WinRate * 100).toFixed(2) }}%
+            </span>
+            <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
+                >Total Wins: {{ totalWins }}
+            </span>
+            <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
+                >Total Loses: {{ totaLoses }}</span
+            >
         </div>
+    </div>
 </template>
 
 <script setup lang="ts">

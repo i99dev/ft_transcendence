@@ -308,8 +308,7 @@ export class ChatWsService {
         if (await this.validateUserInRoom(room_id, user_login)) {
             if ((await this.countUsersInChatRoom(room_id)) > 0) {
                 await this.chatService.updateUserStatus(user_login, room_id, 'NORMAL')
-            }
-            else {
+            } else {
                 await this.chatService.updateChatUser(user_login, room_id, {
                     status: ChatUserStatus.NORMAL,
                     role: ChatUserRole.OWNER,

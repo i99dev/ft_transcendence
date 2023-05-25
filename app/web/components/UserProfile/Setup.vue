@@ -33,7 +33,11 @@
                                 <path d="M19 16v6"></path>
                                 <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
                             </svg>
-                            <img v-else :src="image" class="rounded-full w-16 aspect-square object-cover" />
+                            <img
+                                v-else
+                                :src="image"
+                                class="rounded-full w-16 aspect-square object-cover"
+                            />
                         </div>
                     </div>
 
@@ -50,13 +54,11 @@
                         />
                     </div>
                 </div>
-                <div
-                    class="centered my-5"
-                >
+                <div class="centered my-5">
                     <button
                         class="mx-4 flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                         type="button"
-                        @click="() => fileInput.click()"
+                        v-click-effect="() => fileInput.click()"
                     >
                         upload
                     </button>
@@ -76,11 +78,15 @@
                         </div>
                         <DisclosurePanel class="px-4 pt-4 pb-2 text-sm text-gray-500">
                             <div class="grid grid-cols-4 gap-4 p-4">
-                                <button v-for="(image, index) in defaultImages" :key="index" class="rounded-full hover:bg-background_light hover:border smooth-transition">
+                                <button
+                                    v-for="(image, index) in defaultImages"
+                                    :key="index"
+                                    class="rounded-full hover:bg-background_light hover:border smooth-transition"
+                                >
                                     <img
                                         class="w-full aspect-square items-center justify-center object-cover rounded-full hover:shadow-lg"
                                         :src="image"
-                                        @click="changeImage(image)"
+                                        v-click-effect="changeImage(image)"
                                         alt="icon"
                                     />
                                 </button>
@@ -92,7 +98,7 @@
                     <button
                         class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                         type="button"
-                        @click="submitProfile()"
+                        v-click-effect="submitProfile()"
                     >
                         {{ props.submitButton || 'done' }}
                     </button>
@@ -155,16 +161,15 @@ const submitProfile = async () => {
 
 const updateUsername = async () => {
     if (newUsername?.value) {
-        const {data} = await useUpdateUserInfo({username: newUsername?.value} as UserGetDto)
-        if (data.value)
-            setUserName(newUsername?.value)
+        const { data } = await useUpdateUserInfo({ username: newUsername?.value } as UserGetDto)
+        if (data.value) setUserName(newUsername?.value)
         else {
             toast.add({
-                    severity: 'error',
-                    summary: 'Opps!',
-                    detail: 'Username is used',
-                    life: 3000,
-                })
+                severity: 'error',
+                summary: 'Opps!',
+                detail: 'Username is used',
+                life: 3000,
+            })
             return false
         }
     }
@@ -174,15 +179,14 @@ const updateUsername = async () => {
 const uploadUserImage = async () => {
     if (formData.value) {
         const { data } = await useUplaod(user_info.value?.login, formData.value)
-        if (data.value)
-            image.value = data.value?.file_url
+        if (data.value) image.value = data.value?.file_url
         else {
             toast.add({
-                        severity: 'error',
-                        summary: 'Opps!',
-                        detail: 'Image not uploaded',
-                        life: 3000,
-                    })
+                severity: 'error',
+                summary: 'Opps!',
+                detail: 'Image not uploaded',
+                life: 3000,
+            })
             return false
         }
     }
@@ -191,16 +195,15 @@ const uploadUserImage = async () => {
 
 const updateUserImage = async () => {
     if (image.value !== user_info.value?.image) {
-        const { data } = await useUpdateUserInfo({image: image.value} as UserGetDto)
-        if (data.value)
-            setUserAvatar(image.value)
+        const { data } = await useUpdateUserInfo({ image: image.value } as UserGetDto)
+        if (data.value) setUserAvatar(image.value)
         else {
             toast.add({
-                        severity: 'error',
-                        summary: 'Opps!',
-                        detail: "Can't update the image!!",
-                        life: 3000,
-                    })
+                severity: 'error',
+                summary: 'Opps!',
+                detail: "Can't update the image!!",
+                life: 3000,
+            })
             return false
         }
     }

@@ -62,7 +62,6 @@ const isMobile = ref(false)
 
 onMounted(() => {
     isMobile.value = mobileRegex.test(navigator.userAgent)
-    console.log('isMobile ', isMobile.value)
     setupEvents()
 })
 
@@ -127,8 +126,7 @@ function setup(mode: GameSelectDto): void {
 
 watch(gameSetup, (newVal, oldVal) => {
     if (newVal !== oldVal) {
-        if(showReadyModal.value || Object.keys(gameSetup).length === 0)
-            return
+        if (showReadyModal.value || Object.keys(gameSetup).length === 0) return
         showReadyModal.value = true
         emit('ReadyGame')
         rescaleGameData(newVal.game)
@@ -164,7 +162,6 @@ const startPowerCooldown = (player: number, key: number): void => {
 }
 
 const activatePowerUp = (key: any): void => {
-    console.log('activatePowerup ', key)
     if (key == '1') {
         socket.value?.emit('Power-Up', 1)
         startPowerCooldown(gameSetup.value?.player, 0)

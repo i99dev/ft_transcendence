@@ -1,7 +1,11 @@
 <template>
     <MainPopup :show="props?.show" @closeMainPopup="closePopup()">
         <form class="chat-form" @submit.prevent="">
-            <DialogTitle v-if="props?.title" as="h3" class="text-lg font-medium leading-6 text-white">
+            <DialogTitle
+                v-if="props?.title"
+                as="h3"
+                class="text-lg font-medium leading-6 text-white"
+            >
                 {{ props?.title }}
             </DialogTitle>
             <div class="flex items-center border-b border-secondary py-2">
@@ -57,7 +61,7 @@
                     v-if="props.cancelButton"
                     class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                     type="button"
-                    v-click-effect="()=> closePopup('cancel')"
+                    v-click-effect="() => closePopup('cancel')"
                 >
                     {{ props.cancelButton || 'cancel' }}
                 </button>
