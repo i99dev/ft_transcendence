@@ -294,7 +294,6 @@ export class GameWsService {
         const gameStatus = game.getGameStatus()
         let i = 800
         const intervalId = setInterval(() => {
-            console.log('SENT')
             if (game.isPlayersReady() || game.checkWinner() || i <= 0) {
                 clearInterval(intervalId)
                 return

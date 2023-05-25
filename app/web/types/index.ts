@@ -65,7 +65,7 @@ declare global {
     }
 
     interface PlayerDto {
-        login: string
+        username: string
         score: number
         paddle: PaddleDto
         gameID?: string
