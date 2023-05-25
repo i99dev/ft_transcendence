@@ -110,7 +110,7 @@
                     v-for="participant in participants"
                     :key="participant.user.username"
                     class="relative w-full pl-3 z-10 -my-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                    @click="openAdminOptionsPopup(participant)"
+                    v-click-effect="()=> openAdminOptionsPopup(participant)"
                 >
                     <div
                         class="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12 bg-background_light p-1 rounded-full"
@@ -156,14 +156,14 @@
                     <button
                         v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="isEditChatImageAndNameOpened = true"
+                        v-click-effect="isEditChatImageAndNameOpened = true"
                     >
                         <PencilSquareIcon class="w-6 h-6" />
                     </button>
                     <button
                         v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="isEditChatTypeOpened = true"
+                        v-click-effect="isEditChatTypeOpened = true"
                     >
                         <KeyIcon class="w-6 h-6" />
                     </button>

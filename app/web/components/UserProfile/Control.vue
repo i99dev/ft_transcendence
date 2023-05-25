@@ -2,7 +2,7 @@
     <div v-if="props.isMe && !props.isProfile" class="flex flex-row space-x-6">
         <button
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
-            @click="openChatModel"
+            v-click-effect="openChatModel"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@
             </svg>
         </button>
         <button
-            @click="openFriendsModel"
+        v-click-effect="openFriendsModel"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg
@@ -45,7 +45,7 @@
             </div>
         </button>
         <button
-            @click="useLogout"
+        v-click-effect="useLogout"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg
@@ -61,7 +61,7 @@
             </svg>
         </button>
         <button
-            @click="updateTwoFacAuth"
+        v-click-effect="updateTwoFacAuth"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg
@@ -93,7 +93,7 @@
             </svg>
         </button>
         <button
-            @click="navigateTo('/help')"
+        v-click-effect="()=> navigateTo('/help')"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg xmlns="http://www.w3.org/2000/svg" class="fill-white w-8 h-8" viewBox="0 0 16 16">

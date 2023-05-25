@@ -22,7 +22,7 @@
         </TransitionRoot>
 
         <button
-        @click="handleChatSearch($event)"
+        v-click-effect="($event:any)=> handleChatSearch($event)"
             class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mr-2 focus:outline-primary text-white"
             :class="{
                 'bg-background_light opacity-70': !groupChatSearching,

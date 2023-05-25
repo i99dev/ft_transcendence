@@ -100,7 +100,7 @@
                                                                     <div class="py-1">
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            @click="
+                                                                            v-click-effect=" () =>
                                                                                 showInviteModal(
                                                                                     friend.login,
                                                                                 )
@@ -114,7 +114,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            @click="
+                                                                            v-click-effect="() => 
                                                                                 useDMUser(
                                                                                     friend.login,
                                                                                 )
@@ -128,7 +128,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            @click="
+                                                                            v-click-effect="() => 
                                                                                 viewProfile(
                                                                                     friend.username,
                                                                                 )
@@ -142,7 +142,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            @click="
+                                                                            v-click-effect="() => 
                                                                                 remove(
                                                                                     friend.username,
                                                                                 )
@@ -156,7 +156,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            @click="
+                                                                            v-click-effect=" ()=> {
                                                                                 isBlocked(friend)
                                                                                     ? removeUserFromBlockList(
                                                                                           friend,
@@ -164,7 +164,7 @@
                                                                                     : addUserToBlockList(
                                                                                           friend,
                                                                                       )
-                                                                            "
+                                                                            }"
                                                                         >
                                                                             <span
                                                                                 v-if="

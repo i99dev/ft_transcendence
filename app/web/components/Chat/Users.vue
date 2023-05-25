@@ -3,7 +3,7 @@
         <div v-for="user in users" :key="user.username" class="flex-row inline-flex flex-nowrap">
             <button
                 class="border rounded-full bg-background ease-in-out transition duration-200 m-2 relative"
-                @click="removeUser(user)"
+                v-click-effect="()=> removeUser(user)"
             >
                 <img
                     class="rounded-full w-8 h-8 object-cover"
@@ -23,14 +23,14 @@
                 v-if="props.cancelButton"
                 class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                 type="button"
-                @click="closePopup('cancel')"
+                v-click-effect="()=> closePopup('cancel')"
             >
                 {{ props.cancelButton || 'cancel' }}
             </button>
             <button
                 class="flex-shrink-0 bg-secondary hover:bg-primary text-white py-1 px-2 rounded capitalize"
                 type="button"
-                @click="sendUsersList"
+                v-click-effect="sendUsersList"
             >
                 {{ props.addButton || 'add' }}
             </button>
