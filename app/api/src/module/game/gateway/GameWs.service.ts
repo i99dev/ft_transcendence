@@ -33,8 +33,8 @@ export class GameWsService {
     /* 
         Adds a new user to connected_users array
     */
-    public addConnectedUser(userID: string, userSocket: Socket) {
-        const temp = this.connected_users.find(user => user.id == userID)
+    public addConnectedUser(userLogin: string, userSocket: Socket) {
+        const temp = this.connected_users.find(user => user.login == userLogin)
         if (temp) {
             setTimeout(() => {
                 userSocket.emit('Close-Tab')
@@ -44,11 +44,11 @@ export class GameWsService {
         }
 
         this.connected_users.push({
-            id: userID,
+            login: userLogin,
             socket: userSocket,
             status: 'online',
         })
-        this.repo.updatePlayerStatus('ONLINE', userID)
+        this.repo.updatePlayerStatus('ONLINE', userLogin)
     }
 
     /* 
@@ -61,21 +61,22 @@ export class GameWsService {
         if (index > -1) {
             const user = this.connected_users[index]
             if (user.status == 'inqueue') {
-                if (this.classic_queue.includes(user.id))
-                    this.classic_queue.splice(this.classic_queue.indexOf(user.id), 1)
-                if (this.custom_queue.includes(user.id))
-                    this.custom_queue.splice(this.custom_queue.indexOf(user.id), 1)
+                if (this.classic_queue.includes(user.login))
+                    this.classic_queue.splice(this.classic_queue.indexOf(user.login), 1)
+                if (this.custom_queue.includes(user.login))
+                    this.custom_queue.splice(this.custom_queue.indexOf(user.login), 1)
             } else if (user.status == 'ingame') {
-                user.game.setLoser(user.id)
+                user.game.setLoser(user.login)
             }
             this.connected_users.splice(index, 1)
-            this.repo.updatePlayerStatus('OFFLINE', user.id)
+            this.repo.updatePlayerStatus('OFFLINE', user.login)
         }
     }
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player && player.status == 'ingame') player.game.setLoser(player.id)
+        if (player && player.status == 'ingame')
+            player.game.setLoser(player.login)
     }
 
     /* 
@@ -85,7 +86,7 @@ export class GameWsService {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (player.game.getGameType() != 'custom') return
 
-        player.game.activatePowerUp(player.id, powerUp)
+        player.game.activatePowerUp(player.login, powerUp)
     }
 
     /* 
@@ -93,16 +94,16 @@ export class GameWsService {
     */
     public async matchPlayer(userSocket: Socket, gameInfo: GameSelectDto) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (this.classic_queue.includes(player.id) || this.custom_queue.includes(player.id)) return
+        if (this.classic_queue.includes(player.login) || this.custom_queue.includes(player.login)) return
         if (player.status != 'online') return
 
         player.status = 'inqueue'
-        this.repo.updatePlayerStatus('INQUEUE', player.id)
+        this.repo.updatePlayerStatus('INQUEUE', player.login)
         if (gameInfo.gameType == 'custom') {
             player.powerUps = gameInfo.powerups
         }
 
-        const opponent = await this.findOpponent(player.id, gameInfo.gameType)
+        const opponent = await this.findOpponent(player.login, gameInfo.gameType)
 
         if (opponent) {
             this.createMultiGame(player, opponent, gameInfo.gameType)
@@ -113,9 +114,9 @@ export class GameWsService {
 
     public sendInvite(userSocket: Socket, invite: InviteDto) {
         const user = this.connected_users.find(user => user.socket == userSocket)
-        const opponent = this.connected_users.find(user => user.id == invite.invitedId)
+        const opponent = this.connected_users.find(user => user.login == invite.invitedId)
         user.powerUps = invite.powerups
-        invite.inviterId = user.id
+        invite.inviterId = user.login
         if (opponent && opponent.status == 'online') {
             // If the invite was successfuly sent to the opponent
             user.status = 'busy'
@@ -132,7 +133,7 @@ export class GameWsService {
     /* Respond to the inviter with either Accept or Decline */
     public respondInvite(userSocket: Socket, response: InviteDto, error?: boolean) {
         const user = this.connected_users.find(user => user.socket == userSocket)
-        const opponent = this.connected_users.find(user => user.id == response.inviterId)
+        const opponent = this.connected_users.find(user => user.login == response.inviterId)
         if (error) {
             if (user.status == 'busy') user.status = 'online'
             if (opponent.status == 'busy') opponent.status = 'online'
@@ -146,12 +147,11 @@ export class GameWsService {
                     playerStatus: user.status,
                 })
                 user.powerUps = response.powerups
-                setTimeout(() => {
-                    this.createMultiGame(opponent, user, response.gameType)
-                    user.status = 'ingame'
-                    opponent.status = 'ingame'
-                }, 3000)
-            } else {
+                this.createMultiGame(opponent, user, response.gameType)
+                user.status = 'ingame'
+                opponent.status = 'ingame'
+            }
+            else {
                 opponent.status = 'online'
                 user.status = 'online'
                 opponent.socket.emit('Respond-Invite', {
@@ -165,7 +165,7 @@ export class GameWsService {
     public playerReady(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (player && player.status != 'ingame') return
-        player.game.setPlayerReady(player.id)
+        player.game.setPlayerReady(player.login)
     }
 
     /* 
@@ -174,8 +174,8 @@ export class GameWsService {
             * if there is no opponent -> add player to queue and return null
         TODO: add matchmaking algorithm to find opponent with similar skill level
     */
-    private async findOpponent(userID: string, gameType: string): Promise<ConnectedUser | null> {
-        // const userLadder = await this.gameAnalyzer.getLadderLevel(userID)
+    private async findOpponent(userLogin: string, gameType: string): Promise<ConnectedUser | null> {
+        // const userLadder = await this.gameAnalyzer.getLadderLevel(userLogin)
         // let opponent = ''
         if (gameType == 'classic') {
             if (this.classic_queue.length > 0) {
@@ -183,13 +183,13 @@ export class GameWsService {
                 // this.classic_queue.forEach(async (user: string) => {
                 //     const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
                 //     if (ladderLevel === userLadder) {
-                //         opponent = userID
+                //         opponent = userLogin
                 //         return
                 //     }
                 // })
-                return this.connected_users.find(user => user.id == opponent)
+                return this.connected_users.find(user => user.login == opponent)
             } else {
-                this.classic_queue.push(userID)
+                this.classic_queue.push(userLogin)
                 return null
             }
         } else if (gameType == 'custom') {
@@ -198,13 +198,13 @@ export class GameWsService {
                 // this.classic_queue.forEach(async (user: string) => {
                 //     const ladderLevel = await this.gameAnalyzer.getLadderLevel(user)
                 //     if (ladderLevel === userLadder) {
-                //         opponent = userID
+                //         opponent = userLogin
                 //         return
                 //     }
                 // })
-                return this.connected_users.find(user => user.id == opponent)
+                return this.connected_users.find(user => user.login == opponent)
             } else {
-                this.custom_queue.push(userID)
+                this.custom_queue.push(userLogin)
                 return null
             }
         }
@@ -218,20 +218,21 @@ export class GameWsService {
         let game
         if (gameInfo.gameType == 'custom') {
             game = new PongGame(
-                player.id,
+                player.login,
                 'Computer',
                 gameInfo.gameType,
                 gameInfo.powerups,
                 gameInfo.powerups,
             )
         } else {
-            game = new PongGame(player.id, 'Computer', gameInfo.gameType)
+            game = new PongGame(player.login, 'Computer', gameInfo.gameType)
         }
         player.status = 'ingame'
-        this.repo.updatePlayerStatus('INGAME', player.id)
+        this.repo.updatePlayerStatus('INGAME', player.login)
         player.game = game
         player.socket.join(game.getGameID())
-        this.socketService.emitGameSetup(player.socket, null, game.getGameStatus())
+
+        this.initiateGame(game, player, null)
 
         this.startGame(game)
     }
@@ -243,13 +244,13 @@ export class GameWsService {
         const player = this.connected_users.find(user => user.socket == userSocket)
         if (!player || player.status != 'inqueue') return
 
-        if (this.classic_queue.includes(player.id))
-            this.classic_queue.splice(this.classic_queue.indexOf(player.id), 1)
-        if (this.custom_queue.includes(player.id))
-            this.custom_queue.splice(this.custom_queue.indexOf(player.id), 1)
+        if (this.classic_queue.includes(player.login))
+            this.classic_queue.splice(this.classic_queue.indexOf(player.login), 1)
+        if (this.custom_queue.includes(player.login))
+            this.custom_queue.splice(this.custom_queue.indexOf(player.login), 1)
 
         player.status = 'online'
-        this.repo.updatePlayerStatus('ONLINE', player.id)
+        this.repo.updatePlayerStatus('ONLINE', player.login)
     }
 
     /* 
@@ -264,27 +265,50 @@ export class GameWsService {
         let game
         if (gameType == 'custom') {
             game = new PongGame(
-                player1.id,
-                player2.id,
+                player1.login,
+                player2.login,
                 gameType,
                 player1.powerUps,
                 player2.powerUps,
             )
         } else {
-            game = new PongGame(player1.id, player2.id, gameType)
+            game = new PongGame(player1.login, player2.login, gameType)
         }
 
         player1.game = game
         player2.game = game
         player1.socket.join(game.getGameID())
         player2.socket.join(game.getGameID())
-        this.repo.updatePlayerStatus('INGAME', player1.id)
-        this.repo.updatePlayerStatus('INGAME', player2.id)
+        this.repo.updatePlayerStatus('INGAME', player1.login)
+        this.repo.updatePlayerStatus('INGAME', player2.login)
         player1.status = 'ingame'
         player2.status = 'ingame'
-        this.socketService.emitGameSetup(player1.socket, player2.socket, game.getGameStatus())
+        this.initiateGame(game, player1, player2)
         this.startGame(game)
     }
+
+    private initiateGame(game: PongGame, p1: ConnectedUser, p2: ConnectedUser) {
+        const player1Socket = p1.socket;
+        const player1Login = p1.login;
+        const player2Socket = p2 ? p2.socket : null
+        const player2Login = p2 ? p2.login : 'Computer'
+        const gameStatus = game.getGameStatus()
+        let i = 800;
+        const intervalId = setInterval(() => {
+            console.log("SENT")
+            if (game.isPlayersReady() || game.checkWinner() || i <= 0) {
+                clearInterval(intervalId)
+                return
+            }
+            if (!game.isPlayersReady()) {
+                this.socketService.emitGameSetup(player1Socket, null, gameStatus)
+            }
+            if (!game.isPlayersReady(player2Login))
+                this.socketService.emitGameSetup(null, player2Socket, gameStatus)
+            i--;
+        }, 1000 / 60)
+    }
+
 
     private startGame(game: PongGame) {
         this.game_result = new gameHistory(
@@ -298,7 +322,7 @@ export class GameWsService {
         })
 
         const intervalId = setInterval(async () => {
-            if (game.isPlayersReady() || game.getGameStatus().players[1].username == 'Computer') {
+            if (game.isPlayersReady()) {
                 game.updateGame()
                 this.socketService.emitToGroup(game.getGameID(), 'Game-Data', game.getGameStatus())
             }
@@ -313,7 +337,7 @@ export class GameWsService {
     public movePaddle(socket: Socket, direction: string) {
         const player = this.connected_users.find(user => user.socket == socket)
         if (player.status == 'ingame') {
-            player.game.updatePaddlePosition(player.id, direction)
+            player.game.updatePaddlePosition(player.login, direction)
         }
     }
 
@@ -350,18 +374,18 @@ export class GameWsService {
     }
 
     private clearData(game: PongGame) {
-        const player1 = this.connected_users.find(user => user.id == game.getPlayer1ID())
+        const player1 = this.connected_users.find(user => user.login == game.getPlayer1ID())
         if (player1) {
             player1.game = null
             player1.status = 'online'
-            this.repo.updatePlayerStatus('ONLINE', player1.id)
+            this.repo.updatePlayerStatus('ONLINE', player1.login)
             player1.socket.leave(game.getGameID())
         }
-        const player2 = this.connected_users.find(user => user.id == game.getPlayer2ID())
+        const player2 = this.connected_users.find(user => user.login == game.getPlayer2ID())
         if (player2) {
             player2.game = null
             player2.status = 'online'
-            this.repo.updatePlayerStatus('ONLINE', player2.id)
+            this.repo.updatePlayerStatus('ONLINE', player2.login)
             player2.socket.leave(game.getGameID())
         }
         this.game_result = null

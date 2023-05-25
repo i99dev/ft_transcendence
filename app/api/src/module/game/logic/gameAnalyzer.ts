@@ -223,7 +223,7 @@ export class gameAnalyzer {
 
     announceAcheivment(users: ConnectedUser[], login: string, achievements: string[]): void {
         users.forEach(user => {
-            if (user.id == login) {
+            if (user.login == login) {
                 user.socket.emit('achievement', achievements)
             }
         })

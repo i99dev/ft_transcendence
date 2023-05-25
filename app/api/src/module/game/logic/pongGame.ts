@@ -92,15 +92,15 @@ export class PongGame {
     }
 
     private instanciateGame(
-        player1ID: string,
-        player2ID: string,
+        player1Login: string,
+        Player2Login: string,
         p1PowerUps?: string[],
         p2PowerUps?: string[],
     ): gameStatusDto {
         return {
             players: [
-                this.createPlayer(player1ID, 1, p1PowerUps),
-                this.createPlayer(player2ID, 2, p2PowerUps),
+                this.createPlayer(player1Login, 1, p1PowerUps),
+                this.createPlayer(Player2Login, 2, p2PowerUps),
             ],
             ball: {
                 x: 0.5,
@@ -161,7 +161,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
-            ready: false,
+            ready: username == 'Computer' ? true : false
         }
     }
 
