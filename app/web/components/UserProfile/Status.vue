@@ -1,5 +1,5 @@
 <template>
-    <div
+ <div
         class="border-2 border-white rounded-full"
         :class="{
             'bg-background': status === 'OFFLINE',
@@ -7,6 +7,7 @@
             'bg-secondary': status === 'INQUEUE',
             'bg-tertiary': status === 'INGAME',
         }"
+        v-tooltip="status"
     ></div>
 </template>
 
