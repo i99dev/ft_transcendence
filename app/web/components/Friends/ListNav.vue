@@ -152,7 +152,6 @@ import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 import { useFriends } from '../../composables/Friends/useFriends'
 import { useNotifications } from '../../composables/Notifications/useNotifications'
 import { ref, computed } from 'vue'
-import { userInfo } from 'os'
 
 const addFriendOpen = ref(false)
 const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } =
@@ -171,8 +170,6 @@ function add_new_friend() {
 function viewProfile(name: string) {
     navigateTo(`/users/${name}`)
 }
-
-function sendMsg(name: string) { }
 
 function remove(name: string) {
     removeFriend(name)
