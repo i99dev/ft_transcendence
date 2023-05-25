@@ -1,29 +1,9 @@
 <template>
     <div class="relative">
-        <img
-            v-if="isMe"
-            class="rounded-full border-2 h-32 w-32 object-cover"
-            :src="
-                user_info?.image || defaultImages[Math.floor(Math.random() * defaultImages.length)]
-            "
-            alt="logo"
-        />
-        <img
-            v-else
-            class="rounded-full border-2 h-32 w-32 object-cover"
-            :src="props.Image || defaultImages[Math.floor(Math.random() * defaultImages.length)]"
-            alt="logo"
-        />
-        <div
-            v-if="props.isMe && !props.isProfile"
-            @click="handleChangeImage"
-            class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50"
-        >
-            <img
-                class="absolute inset-0 w-full h-full object-cover rounded-full"
-                src="https://icon-library.com/images/change-an-icon/change-an-icon-14.jpg"
-                alt="hover image"
-            />
+        <img v-if="isMe" class="rounded-full border-2 h-32 w-32 object-cover" :src="user_info?.image || defaultImages[Math.floor(Math.random() * defaultImages.length)]" alt="logo" />
+        <img v-else class="rounded-full border-2 h-32 w-32 object-cover" :src="props.Image || defaultImages[Math.floor(Math.random() * defaultImages.length)]" alt="logo" />
+        <div v-if="props.isMe && !props.isProfile"
+            class="absolute inset-0 rounded-full bg-black opacity-0 transition-opacity duration-300 hover:opacity-50">
         </div>
         <UserProfileStatus
             v-if="!isMe || isProfile"
@@ -54,12 +34,6 @@ const props = defineProps({
         default: '',
     },
 })
-
-const updatePhoto = ref(false)
-
-const handleChangeImage = () => {
-    updatePhoto.value = !updatePhoto.value
-}
 
 const defaultImages = [
     'https://i1.ae/img/icons/1.png',

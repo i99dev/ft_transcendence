@@ -33,7 +33,7 @@
                     Didn't receive the code?
                     <button
                         class="text-primary underline underline-offset-8 hover:text-tertiary hover:cursor-pointer transition duration-200 ease-in-out ml-2"
-                        @click="resendCode"
+                        v-click-effect="resendCode"
                     >
                         Resend
                     </button>

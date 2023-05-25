@@ -2,7 +2,7 @@
     <div v-if="props.isMe && !props.isProfile" class="flex flex-row space-x-6">
         <button
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
-            @click="openChatModel"
+            v-click-effect="openChatModel"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@
             </svg>
         </button>
         <button
-            @click="openFriendsModel"
+        v-click-effect="openFriendsModel"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg
@@ -45,7 +45,7 @@
             </div>
         </button>
         <button
-            @click="useLogout"
+        v-click-effect="useLogout"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg
@@ -61,7 +61,7 @@
             </svg>
         </button>
         <button
-            @click="updateTwoFacAuth"
+        v-click-effect="updateTwoFacAuth"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg
@@ -93,7 +93,7 @@
             </svg>
         </button>
         <button
-            @click="navigateTo('/help')"
+        v-click-effect="()=> navigateTo('/help')"
             class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
         >
             <svg xmlns="http://www.w3.org/2000/svg" class="fill-white w-8 h-8" viewBox="0 0 16 16">
@@ -103,24 +103,38 @@
                 />
             </svg>
         </button>
+        <button v-if="muteSound" v-click-effect="handleMuteSound"
+            class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-volume-mute fill-white w-10 h-10" viewBox="0 0 16 16">
+                <path
+                    d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM6 5.04 4.312 6.39A.5.5 0 0 1 4 6.5H2v3h2a.5.5 0 0 1 .312.11L6 10.96V5.04zm7.854.606a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0z" />
+            </svg>
+        </button>
+        <button v-else v-click-effect="handleMuteSound"
+            class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-up fill-white w-10 h-10"
+                viewBox="0 0 16 16">
+                <path
+                    d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z" />
+                <path
+                    d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z" />
+                <path
+                    d="M10.025 8a4.486 4.486 0 0 1-1.318 3.182L8 10.475A3.489 3.489 0 0 0 9.025 8c0-.966-.392-1.841-1.025-2.475l.707-.707A4.486 4.486 0 0 1 10.025 8zM7 4a.5.5 0 0 0-.812-.39L3.825 5.5H1.5A.5.5 0 0 0 1 6v4a.5.5 0 0 0 .5.5h2.325l2.363 1.89A.5.5 0 0 0 7 12V4zM4.312 6.39 6 5.04v5.92L4.312 9.61A.5.5 0 0 0 4 9.5H2v-3h2a.5.5 0 0 0 .312-.11z" />
+            </svg>
+        </button>
     </div>
     <div v-else-if="!props.isMe" class="flex space-x-6">
-        <button
-            @click="useDMUser(props.login)"
-            class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
-        >
+        <button v-click-effect="() => useDMUser(props.login)"
+            class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2">
             <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
         </button>
-        <button
-            @click="addFriend(props.username)"
-            :title="'Add to friend list'"
-            class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
-        >
+        <button v-click-effect="() => addFriend(props.username)" :title="'Add to friend list'"
+            class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2">
             <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
             <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
         </button>
-        <button
-            @click="isBlocked(user) ? removeUserFromBlockList(user) : addUserToBlockList(user)"
+        <button v-click-effect="handleUserBlock"
             class="p-2 hover hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2 capitalize"
             :class="{
                 'bg-secondary': isBlocked(user),
@@ -132,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+import { stat } from 'fs';
 import { useFriends } from '../../composables/Friends/useFriends'
 import {
     UserPlusIcon,
@@ -163,12 +178,39 @@ const { chat_info, setChatModalOpen } = useChat()
 const { friends_info, setFriendsModalOpen, addFriend, notifications } = await useFriends()
 const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBlock()
 const user = await getUserbyUserName(props.username)
+const { play, pause, isPaused } = useSound()
+const muteSound = ref(!isPaused('login') as boolean)
+
+useListen('soundTrack', (status: string)=> {
+    if (status)
+        muteSound.value = false
+})
 
 function openChatModel() {
     if (chat_info.value?.chatModalOpen) {
         setChatModalOpen(false)
     } else {
         setChatModalOpen(true)
+    }
+}
+
+function handleMuteSound () {
+    muteSound.value = !muteSound.value
+    if (isPaused('login'))
+        play('login')
+    else if (!isPaused('login'))
+        pause('login')
+}
+
+function goToHelp() {
+    navigateTo('/help')
+}
+
+function handleUserBlock() {
+    if (isBlocked(user)) {
+        removeUserFromBlockList(user)
+    } else {
+        addUserToBlockList(user)
     }
 }
 

@@ -30,4 +30,5 @@ export default defineNuxtConfig({
         },
     },
     modules: ['@nuxtjs/tailwindcss'],
+    plugins: ['~/plugins/click-effect.client.ts'],
 })
