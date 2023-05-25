@@ -4,7 +4,7 @@
     >
         <div v-if="step === 1" key="step1">
             <h2 class="text-2xl text-center text-white font-bold mb-4">Select Game Type</h2>
-            <ul class="space-y-2">
+            <ul class="space-y-2 list-none">
                 <li>
                     <button
                         class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
@@ -34,7 +34,7 @@
 
         <div v-if="step === 2" key="step2">
             <h2 class="text-2xl text-center text-white font-bold mb-4">Select Game Mode</h2>
-            <ul class="space-y-2">
+            <ul class="space-y-2 list-none">
                 <li>
                     <button
                         :class="selectedMode === 'single' ? 'bg-green-500' : 'bg-blue-500'"
