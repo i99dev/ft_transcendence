@@ -58,7 +58,7 @@
                     <button
                         class="mx-4 flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                         type="button"
-                        v-click-effect="() => fileInput.click()"
+                        @click="() => fileInput.click()"
                     >
                         upload
                     </button>
@@ -81,12 +81,13 @@
                                 <button
                                     v-for="(image, index) in defaultImages"
                                     :key="index"
+                                    type="button"
                                     class="rounded-full hover:bg-background_light hover:border smooth-transition"
                                 >
                                     <img
                                         class="w-full aspect-square items-center justify-center object-cover rounded-full hover:shadow-lg"
                                         :src="image"
-                                        v-click-effect="changeImage(image)"
+                                        @click="changeImage(image)"
                                         alt="icon"
                                     />
                                 </button>
@@ -98,7 +99,7 @@
                     <button
                         class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                         type="button"
-                        v-click-effect="submitProfile()"
+                        @click="submitProfile()"
                     >
                         {{ props.submitButton || 'done' }}
                     </button>
