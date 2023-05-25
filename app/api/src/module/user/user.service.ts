@@ -39,6 +39,7 @@ export class UserService {
     }
 
     async updateUser(data, login: string) {
+        console.log(data, data.xp, login)
         try {
             const updated = await this.prisma.user.update({
                 where: { login: login },
@@ -52,10 +53,10 @@ export class UserService {
                     wr: data?.wr,
                     ladder: data?.ladder,
                     two_fac_auth: data?.two_fac_auth,
+                    xp: data?.xp,
                 },
             })
-            if (!updated)
-                throw new NotFoundException(`user ${login} does not exist`)
+            if (!updated) throw new NotFoundException(`user ${login} does not exist`)
             return updated
         } catch (error) {
             throw new BadRequestException(`error updating user ${login}`)

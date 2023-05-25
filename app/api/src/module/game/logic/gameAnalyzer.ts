@@ -1,7 +1,7 @@
 import { MatchService } from '@module/match/match.service'
 import { ConnectedUser } from '../interface/game.interface'
 import { NotificationService } from '@module/notification/notification.service'
-import { NotificationType } from '@prisma/client'
+import { NotificationType, PrismaClient } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { UserService } from '@module/user/user.service'
 import { AchievementService } from '@module/achievement/achievement.service'
@@ -24,6 +24,7 @@ export class gameAnalyzer {
         private achievementService: AchievementService,
     ) {}
 
+    private prisma = new PrismaClient()
     // Data retrievals
     async getLadderLevel(login: string): Promise<number> {
         const user = await this.userService.getUser(login)
@@ -128,12 +129,12 @@ export class gameAnalyzer {
 
     async deductPlayerXP(login: string): Promise<number> {
         const currentXP = (await this.userService.getUser(login)).xp
-        return currentXP - currentXP * 0.3
+        return Math.round(currentXP - currentXP * 0.2)
     }
 
     async increasePlayerXP(login: string): Promise<number> {
         const currentXP = (await this.userService.getUser(login)).xp
-        return currentXP + currentXP * 0.3
+        return Math.round(currentXP + currentXP * 0.2)
     }
 
     async paunishPlayer(login: string): Promise<void> {
