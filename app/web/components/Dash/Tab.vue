@@ -64,7 +64,7 @@ const tabs = computed(() => {
                 component: 'DashLeaderBoard',
             },
         ]
-    return [ 
+    return [
         {
             name: 'Match History',
             component: 'DashMatchHistory',

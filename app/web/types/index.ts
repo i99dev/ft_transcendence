@@ -1,4 +1,4 @@
-export { }
+export {}
 
 declare global {
     type UserStatus = 'OFFLINE' | 'ONLINE' | 'INGAME' | 'INQUEUE'
@@ -175,25 +175,25 @@ declare global {
     }
 
     interface InviteDto {
-        inviterId: string;
-        invitedId: string;
-        gameType: string;
-        powerups: string[];
-        accepted?: boolean;
+        inviterId: string
+        invitedId: string
+        gameType: string
+        powerups: string[]
+        accepted?: boolean
     }
 
     interface InviteModal {
-        type: string;
-        open: boolean;
-        gameType: string;
-        target: string;
-        gameInProgress: boolean;
-        rejected: boolean;
-        playerStatus: string;
+        type: string
+        open: boolean
+        gameType: string
+        target: string
+        gameInProgress: boolean
+        rejected: boolean
+        playerStatus: string
     }
 
     interface InviteResponseDto {
-        status: string;
-        playerStatus: string;
+        status: string
+        playerStatus: string
     }
 }

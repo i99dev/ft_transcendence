@@ -50,7 +50,10 @@
                 <div v-else class="text-xl py-1">{{ currentChat?.name }}</div>
             </button>
         </div>
-        <ChatInfo v-if="isChatInfoOpened && chatType === 'GROUP'" @closeNavBar="$emit('closeNavBar')" />
+        <ChatInfo
+            v-if="isChatInfoOpened && chatType === 'GROUP'"
+            @closeNavBar="$emit('closeNavBar')"
+        />
         <div
             v-else
             class="flex flex-col justify-between overflow-hidden w-full h-full"
@@ -259,8 +262,7 @@ const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
     const chatMessages = document.getElementById('chat-messages') as HTMLElement
     setTimeout(() => {
-        if (chatMessages)
-            chatMessages.scrollTop = chatMessages?.scrollHeight
+        if (chatMessages) chatMessages.scrollTop = chatMessages?.scrollHeight
     }, 100)
 }
 
