@@ -120,11 +120,11 @@ export class PongGame {
     }
 
     public getPlayer1ID(): string {
-        return this.game_status.players[0].username
+        return this.game_status.players[0].login
     }
 
     public getPlayer2ID(): string {
-        return this.game_status.players[1].username
+        return this.game_status.players[1].login
     }
 
     public getGameID(): string {
@@ -148,9 +148,9 @@ export class PongGame {
         return crypto.randomUUID()
     }
 
-    private createPlayer(username: string, side: number, pickedPowerUps: string[]): PlayerDto {
+    private createPlayer(login: string, side: number, pickedPowerUps: string[]): PlayerDto {
         return {
-            username,
+            login,
             score: 0,
             paddle: {
                 x: side == 1 ? PADDLE_WIDTH / 2 : 1 - PADDLE_WIDTH / 2,
@@ -162,7 +162,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
-            ready: username == 'Computer' ? true : false,
+            ready: login == 'Computer' ? true : false,
         }
     }
 
@@ -177,13 +177,13 @@ export class PongGame {
     }
 
     public setPlayerReady(playerLogin: string): void {
-        const player = this.game_status.players.find(player => player.username === playerLogin)
+        const player = this.game_status.players.find(player => player.login === playerLogin)
         if (player) player.ready = true
     }
 
     public isPlayersReady(playerLogin?: string): boolean {
         if (playerLogin) {
-            const player = this.game_status.players.find(player => player.username === playerLogin)
+            const player = this.game_status.players.find(player => player.login === playerLogin)
             if (player) return player.ready
         }
         const players = this.game_status.players
@@ -192,7 +192,7 @@ export class PongGame {
 
     // public setLoser(playerID: string): void {
     //     const playerIndex = this.game_status.players.findIndex(
-    //         player => player.username === playerID,
+    //         player => player.login === playerID,
     //     )
 
     //     if (playerIndex !== -1) {
@@ -203,21 +203,21 @@ export class PongGame {
 
     public setWinner(playerID: string): void {
         const playerIndex = this.game_status.players.findIndex(
-            player => player.username === playerID,
+            player => player.login === playerID,
         )
         if (playerIndex !== -1) {
-            this.winner = this.game_status.players[playerIndex].username
+            this.winner = this.game_status.players[playerIndex].login
         }
     }
 
     public setLoser(playerID: string): void {
         const playerIndex = this.game_status.players.findIndex(
-            player => player.username === playerID,
+            player => player.login === playerID,
         )
 
         if (playerIndex !== -1) {
             const opponentIndex = playerIndex === 0 ? 1 : 0
-            this.winner = this.game_status.players[opponentIndex].username
+            this.winner = this.game_status.players[opponentIndex].login
         }
     }
 
@@ -226,22 +226,22 @@ export class PongGame {
         const player1Score = this.game_status.players[0].score
         const player2Score = this.game_status.players[1].score
         if (player1Score === 11) {
-            this.winner = this.game_status.players[0].username
+            this.winner = this.game_status.players[0].login
             return true
         }
         if (player2Score === 11) {
-            this.winner = this.game_status.players[1].username
+            this.winner = this.game_status.players[1].login
             return true
         }
         return false
     }
 
     public getWinner(): PlayerDto {
-        return this.game_status.players.find(player => player.username === this.winner)
+        return this.game_status.players.find(player => player.login === this.winner)
     }
 
     public updateComputer(): void {
-        const computer = this.game_status.players.find(player => player.username === 'Computer')
+        const computer = this.game_status.players.find(player => player.login === 'Computer')
         const ball = this.game_status.ball
         const paddle = computer.paddle
         if (computer) {
@@ -312,7 +312,7 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the left paddle
         if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
-                this.analyzePlayer.get(players[0].username).BlockingShot += 1
+                this.analyzePlayer.get(players[0].login).BlockingShot += 1
                 this.reflectBall(ball, players[0].paddle)
                 this.handleHikenPowerUp(game, 0)
                 this.handleShinigamiPowerUp(game, 0)
@@ -327,7 +327,7 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the right paddle
         else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
-                this.analyzePlayer.get(players[1].username).BlockingShot += 1
+                this.analyzePlayer.get(players[1].login).BlockingShot += 1
                 this.reflectBall(ball, players[1].paddle)
                 this.handleHikenPowerUp(game, 1)
                 this.handleShinigamiPowerUp(game, 1)
@@ -343,28 +343,28 @@ export class PongGame {
 
     private grantBallWhispererAchievement(ball: BallDto, player: PlayerDto): void {
         if (ball.y > 1 && ball.y < 0) {
-            this.analyzePlayer.get(player.username).EdgeHit += 1
-            this.analyzePlayer.get(player.username).EdgeHit = 0
+            this.analyzePlayer.get(player.login).EdgeHit += 1
+            this.analyzePlayer.get(player.login).EdgeHit = 0
         }
         if (
-            this.analyzePlayer.get(player.username).EdgeHit > 3 &&
-            this.analyzePlayer.get(player.username).Achievements.indexOf('Ball Whisperer') === -1
+            this.analyzePlayer.get(player.login).EdgeHit > 3 &&
+            this.analyzePlayer.get(player.login).Achievements.indexOf('Ball Whisperer') === -1
         ) {
-            this.analyzePlayer.get(player.username).Achievements.push('Ball Whisperer')
+            this.analyzePlayer.get(player.login).Achievements.push('Ball Whisperer')
         }
     }
 
     // grant paddle sumaurai achievement if the player blocked 5 shots in a row
     private grantPaddleSamuraiAchievement(player: PlayerDto): void {
-        if (this.analyzePlayer.get(player.username).BlockingShot > 5) {
+        if (this.analyzePlayer.get(player.login).BlockingShot > 5) {
             if (
-                this.analyzePlayer.get(player.username).Achievements.indexOf('Paddle Samurai') ===
+                this.analyzePlayer.get(player.login).Achievements.indexOf('Paddle Samurai') ===
                 -1
             ) {
-                this.analyzePlayer.get(player.username).Achievements.push('Paddle Samurai')
+                this.analyzePlayer.get(player.login).Achievements.push('Paddle Samurai')
             }
         }
-        this.analyzePlayer.get(player.username).BlockingShot = 0
+        this.analyzePlayer.get(player.login).BlockingShot = 0
     }
 
     // reflect the ball based on the paddle hit point
@@ -395,7 +395,7 @@ export class PongGame {
 
     // update the paddle position of the player based on the direction
     public updatePaddlePosition(playerID: string, direction: string): void {
-        const player = this.game_status.players.find(player => player.username === playerID)
+        const player = this.game_status.players.find(player => player.login === playerID)
 
         if (direction === 'up') {
             player.paddle.y -= player.paddle.speed
@@ -440,7 +440,7 @@ export class PongGame {
     }
 
     public activatePowerUp(playerID: string, powerUpNo: number): void {
-        const player = this.game_status.players.find(player => player.username === playerID)
+        const player = this.game_status.players.find(player => player.login === playerID)
 
         // if any power up is active, don't activate another one
         if (player.powerUps.some(powerUp => powerUp.active)) return

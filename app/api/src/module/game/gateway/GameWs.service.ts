@@ -342,11 +342,11 @@ export class GameWsService {
         }
     }
 
-    public async unlockAchievement(game: PongGame, username: string) {
-        const postGameAchiev = await this.gameAnalyzer.grantAchievements(username)
-        const midGameAchiev = game.analyzePlayer.get(username).Achievements
+    public async unlockAchievement(game: PongGame, login: string) {
+        const postGameAchiev = await this.gameAnalyzer.grantAchievements(login)
+        const midGameAchiev = game.analyzePlayer.get(login).Achievements
         const achievements = [...postGameAchiev, ...midGameAchiev]
-        if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(username, achievements)
+        if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(login, achievements)
     }
 
     // end the game and emit the end game event
@@ -365,12 +365,12 @@ export class GameWsService {
 
             for (let i = 0; i < game_status.players.length; i++) {
                 await this.gameAnalyzer.updatePlayerXP(
-                    game_status.players[i].username,
+                    game_status.players[i].login,
                     this.game_result.IsWinner(game_status.players[i]) ? true : false,
                 )
-                await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
-                await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
-                await this.unlockAchievement(game, game_status.players[i].username)
+                await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].login)
+                await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].login)
+                await this.unlockAchievement(game, game_status.players[i].login)
             }
         } else {
             await this.gameAnalyzer.paunishPlayer(game.leaver)
@@ -397,7 +397,7 @@ export class GameWsService {
     }
 
     private isComputer(player: PlayerDto): boolean {
-        return player.username === 'Computer'
+        return player.login === 'Computer'
     }
 
     /* 

@@ -41,7 +41,7 @@ export function useSocket() {
         })
 
         socket.value?.on('Game-Over', payload => {
-            gameWinner.value = payload.winner.username
+            gameWinner.value = payload.winner.login
         })
     }
 
