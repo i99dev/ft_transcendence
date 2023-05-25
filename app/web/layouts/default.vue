@@ -12,6 +12,7 @@
             <FriendsListNav />
             <slot />
         </div>
+        <GameInviteBox v-if="inviteModal.open" class="z-20" />
     </div>
 </template>
 
@@ -21,6 +22,7 @@ const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketE
 const { data: me, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
 
+const { inviteModal } = await useGameInvite()
 if (me.value) {
     setInterval(() => {
         const exp = useCookie('expires_at').value as string

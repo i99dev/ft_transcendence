@@ -49,13 +49,11 @@
                     <p>"will be added later"</p>
                 </div>
             </div>
-            <GameInviteBox v-if="inviteModal.open" class="z-20" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-const { invite, inviteModal } = await useGameInvite()
 </script>
 
 <style>

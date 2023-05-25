@@ -50,7 +50,6 @@
                 </div>
             </Dialog>
         </TransitionRoot>
-        <GameInviteModal />
     </div>
 </template>
 
