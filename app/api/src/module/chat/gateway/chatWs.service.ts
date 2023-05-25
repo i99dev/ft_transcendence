@@ -108,6 +108,12 @@ export class ChatWsService {
         return false
     }
 
+    async isOwner(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.OWNER) return true
+        return false
+    }
+
     async handleAdminSetup(payload: SetUserDto, user_login: string) {
         if (payload.action === 'upgrade') await this.makeAdmin(payload.room_id, payload.user_login)
         else if (payload.action === 'downgrade')
@@ -293,8 +299,8 @@ export class ChatWsService {
     }
 
     async updateGroupChatRoom(room: UpdateChatDto, user_login: string) {
-        if (!this.canChangeAdmin(room.room_id, user_login))
-            throw new WsException('Request failed, not a admin')
+        if (!this.isOwner(room.room_id, user_login))
+            throw new WsException('Request failed, not the owner')
         const oldRoom = await this.groupChatService.getGroupChatRoom(room.room_id)
         if (
             oldRoom.type !== chatType.PROTECTED &&

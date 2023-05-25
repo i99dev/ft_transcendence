@@ -20,4 +20,4 @@ import { AchievementModule } from '@module/achievement/achievement.module'
     providers: [gameAnalyzer, PongGame, String, Array],
     exports: [gameAnalyzer],
 })
-export class GameModule { }
+export class GameModule {}
