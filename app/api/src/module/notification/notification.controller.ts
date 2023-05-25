@@ -13,7 +13,7 @@ export class NotificationController {
 
     @Get('/me')
     async getMyNotifications(@Req() req, @Query('page') page: number) {
-        if (!page) page = 1
+        if (!page || page < 1) page = 1
         const notif = await this.notificationService.getMyNotifications(req.user.login, page)
         if (!notif) return new NotFoundException('No notifications found')
         return notif

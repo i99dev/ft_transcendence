@@ -10,7 +10,8 @@ export class LeaderboardController {
     constructor(private readonly leaderboardService: LeaderboardService) {}
 
     @Get('')
-    async getLeaderboard(@Query('page', PosNumberPipe) page: number): Promise<UserGetDto[]> {
+    async getLeaderboard(@Query('page') page: number): Promise<UserGetDto[]> {
+        if (!page || page < 1) page = 1
         const ldr = await this.leaderboardService.getLeaderboard(page)
         if (!ldr) throw new NotFoundException('Leaderboard not found')
         return ldr
