@@ -9,6 +9,8 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 export function useGameRenderer() {
     const gameSetup = useState<SetupDto>('gameSetup')
     const gameData = useState<gameStatusDto>('gameData')
+    const isMobile = useState<boolean>('isMobile')
+
     let scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.WebGLRenderer
     let controls: OrbitControls
     let gameGroup: THREE.Group, paddle: THREE.Mesh, paddle2: THREE.Mesh, sphere: THREE.Mesh
@@ -240,7 +242,8 @@ export function useGameRenderer() {
     const init_game = async (canvasRef: Ref<HTMLCanvasElement>) => {
         initScene(canvasRef)
         initPostProcessing()
-        // enableOrbitControls()
+        if (!isMobile.value)
+            enableOrbitControls()
         await createGameObjects()
         addEventListener('resize', onWindowResize)
         originalPaddleHeight = gameSetup.value?.game.players[0].paddle.height
@@ -255,7 +258,8 @@ export function useGameRenderer() {
 
     const animate = () => {
         requestAnimationFrame(animate)
-        // controls.update()
+        if (!isMobile.value)
+            controls.update()
         // composer.render();
         renderer.render(scene, camera)
     }

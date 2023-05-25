@@ -45,7 +45,7 @@ const keys: { [key: string]: boolean } = {
 }
 
 const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-const isMobile = ref(false)
+const isMobile = useState<boolean>('isMobile', () => false)
 
 onMounted(() => {
     isMobile.value = mobileRegex.test(navigator.userAgent)
