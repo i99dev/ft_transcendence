@@ -222,8 +222,8 @@ export function useGameRenderer() {
                 gltf.scene.traverse(child => {
                     if (child instanceof THREE.Mesh) {
                         if (child.material instanceof THREE.MeshStandardMaterial) {
-                            child.material.roughness = 1;
-                            child.material.metalness = 1;
+                            child.material.roughness = 1
+                            child.material.metalness = 1
                         }
                     }
                 })

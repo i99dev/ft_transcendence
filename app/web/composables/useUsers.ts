@@ -28,12 +28,11 @@ export async function useUsersSearch(username: string): Promise<any> {
         },
         query: {
             search: username,
-        }
+        },
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }
 }
-
 
 export async function getUserInfo(player: string): Promise<any> {
     const { data, error: errorRef } = await useFetch<any>(`/users/${player}`, {

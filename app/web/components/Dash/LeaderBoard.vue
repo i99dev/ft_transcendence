@@ -75,7 +75,7 @@ const getLB = async () => {
     if (data.value) {
         for (let i = 0; i < data.value?.length; i++) {
             playersArray.push({
-                rankNum: (3 * (currentPage.value - 1)) + (i + 1),
+                rankNum: 3 * (currentPage.value - 1) + (i + 1),
                 ...data.value[i],
                 TotalMatches: await getPlayerGameResult(data.value[i].login),
             })
