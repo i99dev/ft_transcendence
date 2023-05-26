@@ -15,7 +15,6 @@ export class SocketService {
     }
 
     emitGameSetup(socket1: Socket, socket2: Socket, game: gameStatusDto): void {
-        
         if (socket1) socket1.emit('Game-Setup', { game, player: 0 })
         if (socket2) socket2.emit('Game-Setup', { game, player: 1 })
     }

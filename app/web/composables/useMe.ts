@@ -61,26 +61,16 @@ export const useUserInfo = () => {
     }
 }
 
-export async function useUpdateUserInfo(): Promise<any> {
-    const store = useUserInfo()
-    let resStatus = 0
-    const { login, image, username, two_fac_auth, status }: any = store.user_info.value
-    const { data, error: errorRef } = await useFetch(`users/${login}`, {
-        onResponseError: error => {
-            resStatus = error.response.status
-        },
+export async function useUpdateUserInfo(info: UserGetDto): Promise<any> {
+    const { user_info } = useUserInfo()
+    const { data, error: errorRef } = await useFetch(`users/${user_info.value.login}`, {
         method: 'PATCH',
-        body: {
-            username,
-            image,
-            two_fac_auth,
-            status,
-        },
+        body: info,
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error, resStatus }
+    return { data, error }
 }

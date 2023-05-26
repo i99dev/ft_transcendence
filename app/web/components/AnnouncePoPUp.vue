@@ -122,7 +122,9 @@ const getImagePath = (ImageName: string) => {
 }
 
 const getAnnounceTitle = (ann: any) => {
-    return ann.type == 'ACHIEVEMENT' ? ann.content : getLadderRank(ann.content)
+    if (ann.type ==  'PUNISHMENT' || ann.type == 'COMPENSATION')
+        return 'Attention !'
+    return (ann.type == 'ACHIEVEMENT' || ann.type ==  'PUNISHMENT' || ann.type == 'COMPENSATION') ? ann.content : getLadderRank(ann.content)
 }
 
 const getAnnounceContent = (ann: any) => {
@@ -133,7 +135,7 @@ const getAnnounceContent = (ann: any) => {
     else if (ann.type == 'RANK_DOWN')
         return `Sorry ! You just have ranked down to " ${getLadderRank(ann.content)} "  !`
     else if (ann.type == 'PUNISHMENT')
-        return `Attention ! You have been punished for leaving the match, 20% of your XP has been deducted, your new XP is " ${ann.content} " !`
+        return `Bad News ! You have been punished for leaving the match, 20% of your XP has been deducted, your new XP is " ${ann.content} " !`
     else if (ann.type == 'COMPENSATION')
         return `Good News! Compensation have been applied for the time you lost when the opponent left the match, your new XP is " ${ann.content} " !`
 

@@ -43,7 +43,7 @@
                                                 </label>
                                                 <div class="relative">
                                                     <div
-                                                    v-click-effect="changeView"
+                                                        v-click-effect="changeView"
                                                         class="absolute right-0 text-white opacity-50 hover:opacity-100 flex items-center pr-3 h-full cursor-pointer"
                                                     >
                                                         <svg
@@ -108,7 +108,7 @@
                     v-if="props.cancelButton"
                     class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                     type="button"
-                    v-click-effect="()=> closePopup('cancel')"
+                    v-click-effect="() => closePopup('cancel')"
                 >
                     {{ props.cancelButton || 'cancel' }}
                 </button>

@@ -6,7 +6,9 @@
         <div class="flex items-center justify-between">
             <div class="relative inline-block text-left">
                 <div>
-                    <button v-click-effect="handleDropdown" type="button"
+                    <button
+                        v-click-effect="handleDropdown"
+                        type="button"
                         class="group inline-flex justify-center text-sm font-medium text-white hover:bg-primary p-1 rounded-lg"
                         id="menu-button"
                         aria-expanded="false"
@@ -40,8 +42,10 @@
                     tabindex="-1"
                 >
                     <div class="py-1" role="none">
-                        <button v-click-effect="()=> handleFilteration('all')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
+                        <button
+                            v-click-effect="() => handleFilteration('all')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
+                            :class="{
                                 'font-medium focus:bg-white': isFilter.get('all'),
                                 ' hover:bg-white': !isFilter.get('all'),
                             }"
@@ -52,8 +56,10 @@
                             Latest
                         </button>
 
-                        <button v-click-effect="()=> handleFilteration('win')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
+                        <button
+                            v-click-effect="() => handleFilteration('win')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
+                            :class="{
                                 'font-medium focus:bg-white': isFilter.get('win'),
                                 'hover:bg-white': !isFilter.get('win'),
                             }"
@@ -64,8 +70,10 @@
                             Result: Victories only
                         </button>
 
-                        <button v-click-effect="()=> handleFilteration('lose')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
+                        <button
+                            v-click-effect="() => handleFilteration('lose')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
+                            :class="{
                                 'font-medium focus:bg-white': isFilter.get('lose'),
                                 'hover:bg-white': !isFilter.get('lose'),
                             }"
@@ -76,8 +84,10 @@
                             Result: Defeats only
                         </button>
 
-                        <button v-click-effect="()=> handleFilteration('asc')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
+                        <button
+                            v-click-effect="() => handleFilteration('asc')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
+                            :class="{
                                 'font-medium focus:bg-white': isFilter.get('asc'),
                                 'hover:bg-white': !isFilter.get('asc'),
                             }"
@@ -88,8 +98,10 @@
                             Score: Low to High
                         </button>
 
-                        <button v-click-effect="()=> handleFilteration('desc')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none" :class="{
+                        <button
+                            v-click-effect="() => handleFilteration('desc')"
+                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
+                            :class="{
                                 'font-medium focus:bg-white': isFilter.get('desc'),
                                 'hover:bg-white': !isFilter.get('desc'),
                             }"
