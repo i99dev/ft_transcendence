@@ -51,16 +51,12 @@
                     <p>"will be added later"</p>
                 </div>
             </div> -->
-            <div class="container mx-auto p-4 lg:p-12">
+            <div class="container mx-auto p-4 lg:p-3">
               <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 
-                <div v-for="index in num" class="overflow-hidden rounded-2xl shadow p-4 bg-background bg-opacity-200 lg:p-12">
+                <div v-for="index in num" class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-tertiary smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
                   <div class="flex items-center text-blue-500">
                     <p class="text-sm font-bold uppercase">Feature 1 & Feature 2</p>
-            
-                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
                   </div>
             
                   <h2 class="mt-4 text-3xl font-semibold text-slate-800">This is an Amazing Feature</h2>
@@ -84,6 +80,29 @@
 <script setup lang="ts">
 
 const num = ref(5)
+
+const announcement = computed(() => {
+  return [
+    {
+      title: 'Game Modes',
+      subtitle: 'There are two game modes available:',
+      image: 'image_url_1',
+      description: ['Custom:', 'Activates power-ups during the game', 'Classic:', 'Play the game without any power-ups.']
+    },
+    {
+      title: 'Players',
+      subtitle: 'In both game modes, you have two options for players:',
+      image: 'image_url_2',
+      description: ['Single Player (with Bot):', 'Play alone against a computer-controlled opponent.', 'Online Multiplayer:', 'Play against someone online.' ]
+    },
+    {
+      title: 'Controls',
+      subtitle: 'Use the following controls to play the game:',
+      image: 'image_url_2',
+      description: ['Arrow Buttons:', 'Move the player paddle left and right.', '1 and 2 Buttons::', 'Activate power-ups.' ]
+    },
+  ];
+});
 
 </script>
 
