@@ -45,14 +45,6 @@ let newCompensate = await getNewAnnouncement('COMPENSATION') as NotificationDto[
 
 let newRank = await getNewRank()
 
-console.log('PUNISHMENT', newPunish)
-
-console.log('COMPENSATION', newCompensate)
-
-console.log('RANK', newRank)
-
-console.log('ACHIEVEMENT', newAchievement)
-
 const announceState = ref([] as boolean[])
 
 const isAnnounce = ref(false)

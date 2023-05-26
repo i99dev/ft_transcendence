@@ -39,7 +39,6 @@ export class UserService {
     }
 
     async updateUser(data, login: string) {
-        console.log(data, data.xp, login)
         try {
             const updated = await this.prisma.user.update({
                 where: { login: login },

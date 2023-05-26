@@ -154,7 +154,6 @@ export class gameAnalyzer {
     }
 
     async compensatePlayer(login: string): Promise<void> {
-        // console.log('compensate', login)
         const newXP = await this.increasePlayerXP(login)
         await this.userService.updateUser(
             {
