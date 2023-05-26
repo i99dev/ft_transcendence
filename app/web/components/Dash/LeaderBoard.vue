@@ -4,35 +4,38 @@
 
         <button
             v-for="(player, index) in players"
+            :title="getLadderRank(player.ladder)"
             :key="index"
             v-click-effect="() => navigateTo(`/users/${player.username}`)"
-            class="w-full h-20 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-tertiary"
+            class="w-full h-12 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-tertiary"
             :class="{
                 'bg-background': !(index % 2),
                 'bg-background_light': index % 2,
             }"
         >
-            <div class="min-w-full text-left text-sm font-light text-white grid grid-cols-3">
-                <div class="centered justify-self-start">
+            <div class="min-w-full h-full text-left text-sm font-light text-white grid grid-cols-3 mobile:grid-cols-2 place-content-center">
+                <div class="centered lg:justify-start">
                     <div
-                        class="whitespace-nowrap font-medium p-1 m-2 w-8 aspect-square bg-tertiary rounded-xl text-center mr-4"
+                        class="whitespace-nowrap font-medium p-1 m-2 mr-4 h-8 aspect-square bg-tertiary rounded-xl text-center mobile:mr-2"
                     >
                         {{ player.rankNum }}
                     </div>
-                    <img :src="player.image" class="w-8 h-8 rounded-full object-cover" />
+                    <img :src="player.image" class="h-6 aspect-square rounded-full object-cover" />
                     <!-- name and result -->
-                    <div class="text-xs m-2 capitalize font-bold">
+                    <div class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20">
                         {{ player.username }}
                     </div>
                 </div>
-                <div class="whitespace-nowrap px-2 py-4 justify-self-center">
+                <div class="whitespace-nowrap centered mobile:hidden">
                     <span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
                 </div>
-                <div class="whitespace-nowrap px-1 py-4 align-middle uppercase justify-self-center">
-                    <span class="font-bold text-xl">
+                <div class="whitespace-nowrap mx-4 align-middle lowercase flex items-center justify-end">
+                    <span class="font-bold text-md mr-1">
                         {{ player.TotalMatches }}
                     </span>
-                    wins
+                    <span class="text-sm">
+                        wins
+                    </span>
                 </div>
             </div>
         </button>

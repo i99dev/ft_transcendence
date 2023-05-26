@@ -64,6 +64,14 @@ declare global {
         cooldown: number
     }
 
+    export interface AchievementDto {
+        id: number
+        type: 'Serial Killer' | 'Rookie no more' | 'First Blood' | 'No Sweat' | 'Paddle Samurai' | 'Table Ninja' | 'Ball Whisperer'
+        description: string
+        image: string
+        users: UserGetDto[]
+    }
+
     interface PlayerDto {
         username: string
         score: number

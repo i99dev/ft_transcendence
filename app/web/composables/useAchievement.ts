@@ -1,7 +1,7 @@
 export const useAchievement = () => {
-    const achievement = useState<any | null>('achievement', () => {})
+    const achievement = useState<AchievementDto | undefined>('achievement', () => undefined)
 
-    const setAchievement = (ach: any) => {
+    const setAchievement = (ach: AchievementDto) => {
         achievement.value = ach
     }
 

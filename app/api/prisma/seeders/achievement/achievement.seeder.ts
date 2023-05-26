@@ -14,7 +14,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'Serial Killer',
                     description: 'Winning 11 matches in a row',
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/Rogue3.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -23,7 +23,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'Rookie no more',
                     description: 'Winning two games in a row in the first level',
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/UI_Skill_Icon_Dash.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -32,7 +32,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'First Blood',
                     description: 'Winning  first game',
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/UI_Skill_Icon_Claw.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -41,7 +41,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'No Sweat',
                     description: 'Winning game without the opponent scoring any points',
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/Medium10.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -50,7 +50,7 @@ export class AchievementSeeder {
                 create: {
                     type: 'Paddle Samurai',
                     description: `Blocking a certain number of opponent's shots`,
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/Electromancer16.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -60,7 +60,7 @@ export class AchievementSeeder {
                     type: 'Table Ninja',
                     description:
                         'Hitting a certain number of shots that bounce off multiple edges of the table',
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/UI_Skill_Icon_Beam.png`,
                 },
             }),
             await this.prisma.achievement.upsert({
@@ -70,7 +70,7 @@ export class AchievementSeeder {
                     type: 'Ball Whisperer',
                     description:
                         'Hitting a certain number of shots that land just inside the edge of the table',
-                    image: `../../assets/devilfruit.png`,
+                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/Arcanist15.png`,
                 },
             }),
         ]
