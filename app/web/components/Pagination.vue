@@ -19,7 +19,7 @@
                     aria-label="Pagination"
                 >
                     <button
-                        v-click-effect="()=> handlePagination(currentPage - 1)"
+                        v-click-effect="() => handlePagination(currentPage - 1)"
                         type="button"
                         class="relative inline-flex items-center rounded-l-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
@@ -42,7 +42,7 @@
                         <button
                             v-for="pageNumber in isPage.keys()"
                             :key="pageNumber"
-                            v-click-effect="()=> handlePagination(pageNumber)"
+                            v-click-effect="() => handlePagination(pageNumber)"
                             type="button"
                             aria-current="page"
                             class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition"
@@ -58,7 +58,7 @@
                     </div>
 
                     <button
-                        v-click-effect="()=> handlePagination(currentPage + 1)"
+                        v-click-effect="() => handlePagination(currentPage + 1)"
                         type="button"
                         class="relative inline-flex items-center rounded-r-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >

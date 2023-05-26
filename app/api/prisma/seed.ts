@@ -1,4 +1,3 @@
-
 import { PrismaClient } from '@prisma/client'
 import { UserSeeder } from './seeders/user/user.seeder'
 import { FriendSeeder } from './seeders/friend/friend.seeder'

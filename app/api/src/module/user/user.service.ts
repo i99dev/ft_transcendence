@@ -54,8 +54,7 @@ export class UserService {
                     two_fac_auth: data?.two_fac_auth,
                 },
             })
-            if (!updated)
-                throw new NotFoundException(`user ${login} does not exist`)
+            if (!updated) throw new NotFoundException(`user ${login} does not exist`)
             return updated
         } catch (error) {
             throw new BadRequestException(`error updating user ${login}`)
