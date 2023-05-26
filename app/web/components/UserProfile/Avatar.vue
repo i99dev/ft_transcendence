@@ -1,5 +1,5 @@
 <template>
-    <div class="relative">
+    <div class="relative m-2">
         <img
             v-if="isMe"
             class="rounded-full border-2 h-32 w-32 object-cover"
