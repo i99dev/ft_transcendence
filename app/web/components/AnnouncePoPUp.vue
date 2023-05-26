@@ -39,15 +39,15 @@
 
 let newAchievement = await getNewAnnouncement('ACHIEVEMENT')
 
-// let newPaunish = await getNewAnnouncement('PUNISHMENT')
+let newPaunish = await getNewAnnouncement('PUNISHMENT')
 
-// let newCompensate = await getNewAnnouncement('COMPENSATION')
+let newCompensate = await getNewAnnouncement('COMPENSATION')
+
+console.log('PUNISHMENT', newPaunish)
+
+console.log('COMPENSATION', newCompensate)
 
 let newRank = await getNewRank()
-
-console.log(newAchievement)
-
-console.log(newRank)
 
 const announceState = ref([] as boolean[])
 

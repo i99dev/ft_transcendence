@@ -57,14 +57,15 @@ export class NotificationService {
         }
     }
 
-    async getMyNotificationsByType(user_login: string, type: NotificationType) {
+    async getMyNotificationsByType(user_login: string, type: string) {
         try {
             const notifications = await this.prisma.notification.findMany({
                 where: {
+                    type: this.getType(type),
                     user_login: user_login,
-                    type: type,
                 },
             })
+            console.log(notifications)
             return notifications
         } catch (error) {
             console.log(error)
@@ -87,6 +88,10 @@ export class NotificationService {
                 return NotificationType.RANK_UP
             case 'RANK_DOWN':
                 return NotificationType.RANK_DOWN
+            case 'COMPENSATION':
+                return NotificationType.COMPENSATION
+            case 'PUNISHMENT':
+                return NotificationType.PUNISHMENT
         }
     }
 

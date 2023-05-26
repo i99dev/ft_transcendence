@@ -1,13 +1,3 @@
-export const useAchievement = () => {
-    const achievement = useState<any | null>('achievement', () => {})
-
-    const setAchievement = (ach: any) => {
-        achievement.value = ach
-    }
-
-    return { achievement, setAchievement }
-}
-
 export async function getNewAnnouncement(type: string): Promise<any[] | null> {
     const api = useRuntimeConfig().API_URL
     const { data } = await useFetch<any[]>(`/Notification/me/${type}`, {
