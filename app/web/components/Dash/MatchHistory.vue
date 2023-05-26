@@ -1,121 +1,5 @@
 <template>
-    <div>
-        <!------
-			the dropdown button
-			----->
-        <div class="flex items-center justify-between">
-            <div class="relative inline-block text-left">
-                <div>
-                    <button
-                        v-click-effect="handleDropdown"
-                        type="button"
-                        class="group inline-flex justify-center text-sm font-medium text-white hover:bg-primary p-1 rounded-lg"
-                        id="menu-button"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                    >
-                        <svg
-                            class="h-5 w-5 flex-shrink-0 text-white group-hover:bg-primary mr-2"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                        Sort
-                    </button>
-                </div>
-
-                <!--
-				Dropdown menu, show/hide based on menu state.
-			  -->
-                <div
-                    v-if="showButton"
-                    class="absolute right-0 left-100 z-10 mt-1 w-40 rounded-md bg-background border-1 border-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none text-white"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="menu-button"
-                    tabindex="-1"
-                >
-                    <div class="py-1" role="none">
-                        <button
-                            v-click-effect="() => handleFilteration('all')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
-                                'font-medium focus:bg-white': isFilter.get('all'),
-                                ' hover:bg-white': !isFilter.get('all'),
-                            }"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="menu-item-1"
-                        >
-                            Latest
-                        </button>
-
-                        <button
-                            v-click-effect="() => handleFilteration('win')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
-                                'font-medium focus:bg-white': isFilter.get('win'),
-                                'hover:bg-white': !isFilter.get('win'),
-                            }"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="menu-item-1"
-                        >
-                            Result: Victories only
-                        </button>
-
-                        <button
-                            v-click-effect="() => handleFilteration('lose')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
-                                'font-medium focus:bg-white': isFilter.get('lose'),
-                                'hover:bg-white': !isFilter.get('lose'),
-                            }"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="menu-item-1"
-                        >
-                            Result: Defeats only
-                        </button>
-
-                        <button
-                            v-click-effect="() => handleFilteration('asc')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
-                                'font-medium focus:bg-white': isFilter.get('asc'),
-                                'hover:bg-white': !isFilter.get('asc'),
-                            }"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="menu-item-1"
-                        >
-                            Score: Low to High
-                        </button>
-
-                        <button
-                            v-click-effect="() => handleFilteration('desc')"
-                            class="w-full text-left block px-4 py-2 text-sm focus:outline-none"
-                            :class="{
-                                'font-medium focus:bg-white': isFilter.get('desc'),
-                                'hover:bg-white': !isFilter.get('desc'),
-                            }"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="menu-item-1"
-                        >
-                            Score: High to Low
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="relative">
         <!----
 		the match history component
 		-->
@@ -175,13 +59,102 @@
             </div>
         </div>
 
+
+        <MainPopover
+            :styles="'-left-24 bottom-full bg-background_light w-48'"
+            class="text-white m-2 centered absolute my-4"
+        >
+            <template #button>
+                <button
+                    v-click-effect="handleDropdown"
+                    class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none"
+                >
+                    <ChevronUpIcon class="w-4 h-4"/>
+                </button>
+            </template>
+            <div
+                class="m-2"
+            >
+                <button
+                    v-click-effect="() => handleFilteration('all')"
+                    class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
+                    :class="{
+                        'font-medium focus:bg-tertiary': isFilter.get('all'),
+                        ' hover:bg-primary': !isFilter.get('all'),
+                    }"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="menu-item-1"
+                >
+                    latest
+                </button>
+
+                <button
+                    v-click-effect="() => handleFilteration('asc')"
+                    class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
+                    :class="{
+                        'font-medium focus:bg-tertiary': isFilter.get('asc'),
+                        'hover:bg-primary': !isFilter.get('asc'),
+                    }"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="menu-item-1"
+                >
+                    score: low to high
+                </button>
+    
+                <button
+                    v-click-effect="() => handleFilteration('desc')"
+                    class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
+                    :class="{
+                        'font-medium focus:bg-tertiary': isFilter.get('desc'),
+                        'hover:bg-primary': !isFilter.get('desc'),
+                    }"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="menu-item-1"
+                >
+                    score: high to low
+                </button>
+    
+                <button
+                    v-click-effect="() => handleFilteration('win')"
+                    class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
+                    :class="{
+                        'font-medium focus:bg-tertiary': isFilter.get('win'),
+                        'hover:bg-primary': !isFilter.get('win'),
+                    }"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="menu-item-1"
+                >
+                    result: victories only
+                </button>
+    
+                <button
+                    v-click-effect="() => handleFilteration('lose')"
+                    class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
+                    :class="{
+                        'font-medium focus:bg-tertiary': isFilter.get('lose'),
+                        'hover:bg-primary': !isFilter.get('lose'),
+                    }"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="menu-item-1"
+                >
+                    result: defeats only
+                </button>
+            </div>
+        </MainPopover>
+
+
         <!---- the pagination part -->
         <Pagination @page="handlePagination" :url="totalPagesURL" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { ChevronUpIcon } from '@heroicons/vue/20/solid'
 
 const { user_info } = useUserInfo()
 

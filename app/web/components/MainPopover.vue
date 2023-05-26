@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-sm px-4">
+  <div class="w-full px-4">
     <Popover class="relative">
       <PopoverButton class="outline-none">
         <slot name="button"></slot>
