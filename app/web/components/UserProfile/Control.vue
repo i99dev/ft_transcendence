@@ -153,11 +153,8 @@
         >
             <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
         </button>
-        <button
-            v-click-effect="() => addFriend(props.username)"
-            :title="'Add to friend list'"
-            class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
-        >
+        <button v-click-effect="() => addFriend(props.login)" :title="'Add to friend list'"
+            class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2">
             <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
             <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
         </button>
@@ -249,6 +246,8 @@ function openFriendsModel() {
 
 const updateTwoFacAuth = async () => {
     setUserTwoFacAuth(!user_info.value?.two_fac_auth)
-    await useUpdateUserInfo()
+    await useUpdateUserInfo({
+        two_fac_auth: !user_info.value?.two_fac_auth
+    } as UserGetDto)
 }
 </script>

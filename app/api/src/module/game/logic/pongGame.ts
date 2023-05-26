@@ -175,14 +175,14 @@ export class PongGame {
         return powerUps
     }
 
-    public setPlayerReady(playerID: string): void {
-        const player = this.game_status.players.find(player => player.username === playerID)
+    public setPlayerReady(playerLogin: string): void {
+        const player = this.game_status.players.find(player => player.username === playerLogin)
         if (player) player.ready = true
     }
 
-    public isPlayersReady(playerID?: string): boolean {
-        if (playerID) {
-            const player = this.game_status.players.find(player => player.username === playerID)
+    public isPlayersReady(playerLogin?: string): boolean {
+        if (playerLogin) {
+            const player = this.game_status.players.find(player => player.username === playerLogin)
             if (player) return player.ready
         }
         const players = this.game_status.players

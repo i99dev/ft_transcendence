@@ -25,7 +25,6 @@ export class MatchController {
     async getPlayerMatchHistory(
         @Param('login', ParseStringPipe) login: string,
         @Query('page') page: number,
-        @Req() req,
     ): Promise<MatchDto[]> {
         if (!page || page < 1) page = 1
         const matchHistory = await this.matchService.getPlayerMatchHistory(page, login)
@@ -39,7 +38,6 @@ export class MatchController {
         @Param('login', ParseStringPipe) login: string,
         @Query('page') page: number,
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false',
-        @Req() req,
     ): Promise<MatchDto[]> {
         if (isWin === 'true') {
             if (!page || page < 1) page = 1
@@ -58,7 +56,6 @@ export class MatchController {
         @Param('login', ParseStringPipe) login: string,
         @Query('page') page: number,
         @Query('sort', QueryParseStringPipe) sort: 'asc' | 'desc',
-        @Req() req,
     ): Promise<MatchDto[]> {
         if (!page || page < 1) page = 1
         const history = await this.matchService.getMatchHistoryBySort(page, login, sort)
@@ -67,10 +64,7 @@ export class MatchController {
     }
 
     @Get('totalPages')
-    async getTotalPages(
-        @Param('login', ParseStringPipe) login: string,
-        @Req() req,
-    ): Promise<number> {
+    async getTotalPages(@Param('login', ParseStringPipe) login: string): Promise<number> {
         return await this.matchService.getTotalPages(login)
     }
 
@@ -78,7 +72,6 @@ export class MatchController {
     async getTotal(
         @Param('login', ParseStringPipe) login: string,
         @Query('isWin', QueryParseStringPipe) isWin: 'true' | 'false' | undefined,
-        @Req() req,
     ): Promise<number> {
         if (isWin === 'false') return await this.matchService.getTotalDefeats(login)
         else if (isWin === 'true') return await this.matchService.getTotalVictories(login)
@@ -86,10 +79,7 @@ export class MatchController {
     }
 
     @Get('winningrate')
-    async getWinningRate(
-        @Param('login', ParseStringPipe) login: string,
-        @Req() req,
-    ): Promise<number> {
+    async getWinningRate(@Param('login', ParseStringPipe) login: string): Promise<number> {
         return await this.gameAnalyzer.calcWinRate(login)
     }
 }

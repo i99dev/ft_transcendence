@@ -51,11 +51,13 @@ function handleDropDown() {
     showstat.value = !showstat.value
 }
 
-const WinRate = (await getPlayerWinRate(props.username)) as number
+const user = await getUserbyUserName(props.username)
 
-const totaLoses = await getPlayerGameResult(props.username, false)
+const WinRate = (await getPlayerWinRate(user.login)) as number
 
-const totalWins = await getPlayerGameResult(props.username, true)
+const totaLoses = await getPlayerGameResult(user.login, false)
+
+const totalWins = await getPlayerGameResult(user.login, true)
 
 const getLadderRank = (ladder: number) => {
     switch (ladder) {

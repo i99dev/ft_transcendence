@@ -57,7 +57,7 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
                 ),
             )
         }, 1000)
-        // this.friendWsService.updateClientWithList(client, this.getID(client) as unknown as string)
+        this.friendWsService.updateClientWithList(client, this.getID(client) as unknown as string)
     }
 
     handleDisconnect(client: Socket) {
@@ -172,13 +172,6 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
             ))
         )
             return this.socketError(`This user is unreachable`), []
-        if (
-            !(await this.friendWsService.checkIfFriend(
-                this.getID(client) as string,
-                payload.friend_login,
-            ))
-        )
-            return this.socketError('not friends already'), []
         if (
             !(await this.friendWsService.deleteFriend(
                 this.getID(client) as string,
