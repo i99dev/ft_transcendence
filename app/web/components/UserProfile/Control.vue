@@ -169,14 +169,15 @@
 </template>
 
 <script setup lang="ts">
-import { stat } from 'fs'
 import { useFriends } from '../../composables/Friends/useFriends'
 import {
     UserPlusIcon,
     UserMinusIcon,
     ChatBubbleOvalLeftEllipsisIcon,
 } from '@heroicons/vue/24/outline'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
 const props = defineProps({
     username: {
         type: String,
@@ -243,8 +244,24 @@ function openFriendsModel() {
 }
 
 const updateTwoFacAuth = async () => {
-    setUserTwoFacAuth(!user_info.value?.two_fac_auth)
-    await useUpdateUserInfo({
+    const {data} = await useUpdateUserInfo({
         two_fac_auth: !user_info.value?.two_fac_auth} as UserGetDto)
+        
+    if (data.value) {
+        toast.add({
+            severity: 'success',
+            summary: '2FA',
+            detail: `2FA has ${user_info.value?.two_fac_auth ? 'disabled' : 'enabled'} successfully`,
+            life: 3000,
+        })
+        setUserTwoFacAuth(!user_info.value?.two_fac_auth)
+    }
+    else 
+        toast.add({
+                severity: 'error',
+                summary: '2FA',
+                detail: 'Failure in updating 2FA',
+                life: 3000,
+            })
 }
 </script>
