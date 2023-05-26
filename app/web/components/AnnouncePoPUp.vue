@@ -1,38 +1,29 @@
 <template>
-    <div v-if="isAnnounce">
-        <div v-for="(ann, index) in announcement" :key="index">
-            <div v-if="checkAnnounceAchiev(index)"
-            >
-                <MainPopup :show="isAnnounce" @closeMainPopup="isAnnounce = false">
-                    <div class="centered flex-col p-10 text-white">
-                        <div
-                            class="w-56 aspect-square rounded-full p-2 border border-tertiary hover:scale-105 smooth-transition"
-                        >
-                            <img class="rounded-full object-cover"
-                                :src=getImagePath(ann.type)
-                            />
-                            <!-- src="https://gamefresco1.s3.amazonaws.com/2022/11/Electromancer16.png" -->
-                        </div>
-                        <span
-                            class="mt-8 text-2xl font-semibold leading-none tracking-tighter lg:text-3xl"
-                        >
-                            {{ getAnnounceTitle(ann) }}
-                            <!-- Serial Killer -->
-                        </span>
-                        <span class="mt-3 text-base leading-relaxed text-center opacity-80">
-                            {{ getAnnounceContent(ann) }}
-                            <!-- j kas fakslj dfalskdf jasdlf ajsd -->
-                        </span>
-                        <button 
-                            v-click-effect="() => closeAcievPopUp(index)"
-                            class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none">
-                            {{ getButtonName(ann) }}
-                            <!-- Yay!! -->
-                        </button>
-                    </div>
-                </MainPopup>
+    <div v-for="(ann, index) in announcement" :key="index">
+        <MainPopup :show="isAnnounce && checkAnnounceAchiev(index)" @closeMainPopup="closeAcievPopUp(index)">
+            <div class="centered flex-col p-10 text-white">
+                <div
+                    class=" rounded-full p-2 border border-white hover:scale-105 smooth-transition"
+                >
+                    <img class="rounded-full w-56 aspect-square object-cover"
+                        :src=getImagePath(ann.type)
+                    />
+                </div>
+                <span
+                    class="mt-8 text-2xl font-semibold leading-none tracking-tighter lg:text-3xl"
+                >
+                    {{ getAnnounceTitle(ann) }}
+                </span>
+                <span class="mt-3 text-base leading-relaxed text-center opacity-80">
+                    {{ getAnnounceContent(ann) }}
+                </span>
+                <button 
+                    v-click-effect="() => closeAcievPopUp(index)"
+                    class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none">
+                    {{ getButtonName(ann) }}
+                </button>
             </div>
-        </div>
+        </MainPopup>
     </div>
 </template>
 
