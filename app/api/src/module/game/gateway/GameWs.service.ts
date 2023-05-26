@@ -21,6 +21,7 @@ export class GameWsService {
     private custom_queue: string[] = []
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
+    private emitDeuce = false
 
     constructor(
         private socketService: SocketService,
@@ -320,6 +321,9 @@ export class GameWsService {
         game.events.on('play-sound', (sound: string) => {
             this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
         })
+        game.events.on('Game-Deuce', () => {
+            this.socketService.emitToGroup(game.getGameID(), 'Game-Deuce', game.getGameStatus())
+        })
 
         const intervalId = setInterval(async () => {
             if (game.isPlayersReady()) {
@@ -331,8 +335,6 @@ export class GameWsService {
                 await this.endGame(game, game.getWinner())
                 return
             }
-            if (game.isDeuce)
-                this.socketService.emitToGroup(game.getGameID(), 'Game-Deuce', game.getGameStatus())
         }, FRAME_INTERVAL)
     }
 

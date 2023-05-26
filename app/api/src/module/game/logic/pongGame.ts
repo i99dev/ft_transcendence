@@ -229,6 +229,7 @@ export class PongGame {
         if (player1Score === 10 && player2Score === 10) this.isDeuce = true
         if (this.isDeuce) {
             // console.log('deuce !!!!!!!!!!!!!!!')
+            this.events.emit('Game-Deuce')
             if (player1Score - player2Score === 2 || player2Score - player1Score === 2) {
                 this.winner =
                     player1Score > player2Score
