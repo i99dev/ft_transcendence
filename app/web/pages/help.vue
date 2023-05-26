@@ -42,8 +42,6 @@
 
 <script setup lang="ts">
 
-const num = ref(5)
-
 const announcement = computed(() => {
     return [
         {
@@ -81,21 +79,3 @@ const announcement = computed(() => {
 
 </script>
 
-
-<style>
-h1 {
-    @apply text-3xl font-bold mb-8;
-}
-
-h2 {
-    @apply text-xl font-bold mb-2;
-}
-
-ul {
-    @apply list-disc pl-6;
-}
-
-li {
-    @apply mb-2 text-center;
-}
-</style>
