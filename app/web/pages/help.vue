@@ -11,7 +11,7 @@
                 </div>
             </div>
             <h1 class="text-2xl font-bold mb-20 mt-20 text-white">The Ping Pong Game</h1>
-            <div class="text-white">
+            <!-- <div class="text-white">
                 <div class="mb-8">
                     <h2 class="text-xl font-bold mb-2">Game Modes</h2>
                     <p>There are two game modes available:</p>
@@ -50,12 +50,43 @@
                     <h2 class="text-xl font-bold mb-2">Acheivements and Awards</h2>
                     <p>"will be added later"</p>
                 </div>
+            </div> -->
+            <div class="container mx-auto p-4 lg:p-12">
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                
+                <div v-for="index in num" class="overflow-hidden rounded-2xl shadow p-4 bg-background bg-opacity-200 lg:p-12">
+                  <div class="flex items-center text-blue-500">
+                    <p class="text-sm font-bold uppercase">Feature 1 & Feature 2</p>
+            
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+            
+                  <h2 class="mt-4 text-3xl font-semibold text-slate-800">This is an Amazing Feature</h2>
+            
+                  <p class="mt-4 text-lg text-slate-600">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            
+                  <div class="mt-12 flex transform items-center justify-center transition-transform duration-150 ease-in-out hover:scale-125">
+            
+                    <img src="../assets/devilfruit.png" />
+            
+                  </div>
+                </div>
+            
+              </div>
             </div>
         </div>
     </div>
+    <!-- component -->
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+const num = ref(5)
+
+</script>
+
 
 <style>
 h1 {
