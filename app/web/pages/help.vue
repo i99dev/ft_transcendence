@@ -3,7 +3,9 @@
         <div class="min-h-screen text-center justify-center overflow-hidden py-20">
             <div class="flex flex-col items-center">
                 <div class="w-1 h-2 centered animate-bounce">
-                    <h1 class="text-primary mt-20 w-fit text-9xl whitespace-nowrap font-[CyberGlitch]">
+                    <h1
+                        class="text-primary mt-20 w-fit text-9xl whitespace-nowrap font-[CyberGlitch]"
+                    >
                         {{ useRuntimeConfig().GAME_NAME }}
                     </h1>
                 </div>
@@ -53,8 +55,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <style>
 h1 {

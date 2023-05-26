@@ -37,7 +37,7 @@ export class GroupChatService {
                         status: {
                             in: ['OUT', 'BAN', 'INVITED'],
                         },
-                    }
+                    },
                 },
             })
             return count

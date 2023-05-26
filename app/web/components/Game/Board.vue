@@ -150,7 +150,6 @@ const startPowerCooldown = (player: number, key: number): void => {
 }
 
 const activatePowerUp = (key: any): void => {
-    console.log('activatePowerup ', key)
     if (key == '1') {
         socket.value?.emit('Power-Up', 1)
         startPowerCooldown(gameSetup.value?.player, 0)

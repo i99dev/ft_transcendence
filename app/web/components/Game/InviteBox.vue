@@ -64,7 +64,7 @@
                                 <button
                                     :class="mode === 'classic' ? 'bg-green-500' : 'bg-blue-500'"
                                     class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    v-click-effect="()=> selectMode('classic')"
+                                    v-click-effect="() => selectMode('classic')"
                                 >
                                     Classic Pong
                                 </button>
@@ -73,7 +73,7 @@
                                 <button
                                     :class="mode === 'custom' ? 'bg-green-500' : 'bg-blue-500'"
                                     class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    v-click-effect="()=> selectMode('custom')"
+                                    v-click-effect="() => selectMode('custom')"
                                 >
                                     Custom Pong
                                 </button>
@@ -118,7 +118,11 @@
                 >
                     <button
                         class="py-2 px-4 rounded-md text-white bg-red-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-red-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="()=> {inviteModal.open = false}"
+                        v-click-effect="
+                            () => {
+                                inviteModal.open = false
+                            }
+                        "
                     >
                         Close
                     </button>

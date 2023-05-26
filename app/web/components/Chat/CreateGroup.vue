@@ -3,6 +3,7 @@
         <ChatImageAndName
             :show="props.isOpened && stage === 1"
             :submitButton="'next'"
+            :title="'Create Group Chat'"
             @chatData="setImageAndName"
             @closePopup="closePopup"
         />
