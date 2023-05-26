@@ -43,9 +43,9 @@ let newPaunish = await getNewAnnouncement('PUNISHMENT')
 
 let newCompensate = await getNewAnnouncement('COMPENSATION')
 
-console.log('PUNISHMENT', newPaunish)
+// console.log('PUNISHMENT', newPaunish)
 
-console.log('COMPENSATION', newCompensate)
+// console.log('COMPENSATION', newCompensate)
 
 let newRank = await getNewRank()
 
@@ -102,14 +102,22 @@ const announcement = computed(() => {
 })
 
 onMounted(async () => {
-    if (newAchievement && newAchievement.length > 0) {
+    // if (newAchievement && newAchievement.length > 0) {
+    //     isAnnounce.value = true
+    //     announceState.value = new Array(newAchievement.length).fill(true)
+    //     if (newRank && newRank.rank != null) announceState.value?.push(true)
+    // } else if (newRank && newRank.rank != null) {
+    //     isAnnounce.value = true
+    //     announceState.value = new Array(1).fill(true)
+    // }
+    const totalSize = (newAchievement ? newAchievement.length : 0) + (newRank && newRank.rank != null ? 1 : 0) /*+ (newPaunish ? 1 : 0) + (newCompensate ? 1 : 0)*/
+    if (totalSize > 0) {
         isAnnounce.value = true
-        announceState.value = new Array(newAchievement.length).fill(true)
-        if (newRank && newRank.rank != null) announceState.value?.push(true)
-    } else if (newRank && newRank.rank != null) {
-        isAnnounce.value = true
-        announceState.value = new Array(1).fill(true)
+        announceState.value = new Array(totalSize).fill(true)
     }
+
+
+    // else if (
 })
 
 const getImagePath = (ImageName: string) => {
