@@ -205,7 +205,7 @@ const { play, pause, isPaused } = useSound()
 const muteSound = ref(!isPaused('login') as boolean)
 
 useListen('soundTrack', (status: string) => {
-    if (status) muteSound.value = false
+    if (status) muteSound.value = true
 })
 
 function openChatModel() {
