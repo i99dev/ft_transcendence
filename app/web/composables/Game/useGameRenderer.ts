@@ -354,6 +354,10 @@ export function useGameRenderer() {
     }
 
     const updateBall = (ball: BallDto): void => {
+        if(!sphere || !ball) {
+            console.error('sphere or ball is not defined')
+            return
+        }
         sphere.position.x = ball.x
         sphere.position.y = ball.y
         updateBallColor(sphere, ball.color)
@@ -466,6 +470,7 @@ export function useGameRenderer() {
         updatePlayer,
         updateBall,
         rescaleGameData,
+        resetCamera,
         reset,
     }
 }
