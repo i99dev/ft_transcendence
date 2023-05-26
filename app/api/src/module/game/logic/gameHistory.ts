@@ -23,7 +23,7 @@ export class gameHistory {
     public IsWinner(player: PlayerDto): boolean {
         let isWinner = false
         this.game.players.forEach(pl => {
-            if (pl.username !== player.username) {
+            if (pl.login !== player.login) {
                 if (pl.score > player.score) {
                     isWinner = false
                 } else {
@@ -57,7 +57,7 @@ export class gameHistory {
                     connect: { gameID: player.gameID },
                 },
                 user: {
-                    connect: { login: player.username },
+                    connect: { login: player.login },
                 },
                 score: player.score,
                 IsWinner: this.IsWinner(player),

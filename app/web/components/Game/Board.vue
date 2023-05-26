@@ -25,7 +25,7 @@ const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } = useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isDeuce } = useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -75,7 +75,7 @@ const handleArrows = (e: PopStateEvent): void => {
 }
 
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].username) {
+    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].login) {
         emit('GameOver', 'you won')
         const winSound = new Audio('/sounds/win.mp3')
         winSound.play()

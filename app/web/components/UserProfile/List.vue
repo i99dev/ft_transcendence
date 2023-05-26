@@ -9,29 +9,34 @@
                 type="text"
                 placeholder="Search"
             />
-            <svg
-                class="absolute right-3 z-10 cursor-pointer stroke-2 stroke-white"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            <div
+                v-if="!searchedUsers"
+                class="absolute right-3 z-10 flex space-x-2"
             >
-                <path
-                    d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
-                    stroke="#4B5563"
-                    stroke-width="1.66667"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                />
-                <path
-                    d="M21 21L15 15"
-                    stroke="#4B5563"
-                    stroke-width="1.66667"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                />
-            </svg>
+                <div v-if="props?.focusNowEabled && !focused" class="text-white opacity-25 capitalize">
+                    ctrl + k
+                </div>
+                <svg
+                    class="w-6 h-6 fill-none stroke-2 stroke-white"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
+                        stroke="#4B5563"
+                        stroke-width="1.66667"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M21 21L15 15"
+                        stroke="#4B5563"
+                        stroke-width="1.66667"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </div>
         </div>
         <div id="users-list" class="overflow-y-scroll h-auto" style="max-height: 70vh">
             <div>
@@ -47,7 +52,7 @@
                             (user.username === user_info.username && props.isMe === true)
                         "
                         type="button"
-                        v-click-effect="() => handleUserSelection(user)"
+                        @click="handleUserSelection(user)"
                         class="p-2 border smooth-transition border-white rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                         :class="{
                             'bg-background cursor-default': isUserDimmed(user.username),
@@ -70,19 +75,43 @@ import { onMounted, ref, watch } from 'vue'
 
 const { user_info } = useUserInfo()
 const searchedUsers = ref('')
+const users = ref()
+const focused = ref(false)
 
-const props = defineProps(['isMe', 'search', 'unwantedUsers', 'reset'])
-const emit = defineEmits(['selectUser'])
+const props = defineProps(['isMe', 'search', 'unwantedUsers', 'reset', 'noFocus', 'clear', 'focusNow', 'focusNowEabled'])
+const emit = defineEmits(['selectUser', 'lostFocus'])
 
 watch(searchedUsers, async val => {
     if (!val) setUsersList([])
 })
-const users = ref()
+watch(()=>props.clear, val => {
+    if (val) {
+        searchedUsers.value = ''
+        document.getElementById('search-input')?.blur()
+    }
+})
+watch(()=>props.focusNow, val => {
+    if (val) {
+        document.getElementById('search-input')?.focus()
+        focused.value = true
+    }
+})
 
 onMounted(() => {
     setTimeout(() => {
-        if (props.search) document.getElementById('search-input')?.focus()
+        if (props?.search && !props?.noFocus) {
+            document.getElementById('search-input')?.focus()
+            focused.value = true
+        }
     }, 1000)
+
+    const searchInput = document.getElementById('search-input')
+    if (searchInput) {
+
+        searchInput.addEventListener('blur', () => {
+            focused.value = false
+        })
+    }
 })
 
 const getFilteredUsers = async () => {
@@ -103,9 +132,11 @@ const handleUserSelection = (user: UserGetDto) => {
     if (props.reset) searchedUsers.value = ''
     emit('selectUser', user)
 }
+
 </script>
 
 <style scoped>
+
 #users-list {
     scroll-behavior: smooth;
     -ms-overflow-style: none; /* IE and Edge */
