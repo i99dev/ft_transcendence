@@ -10,8 +10,8 @@
             <span class="p-2 rounded-full border border-tertiary smooth-transition text-white">
                 <img :src="acheivement.image" alt="Achievement Image" class="rounded-full" />
             </span>
-            <p class="text-xl font-medium text-white mt-3 whitespace-nowrap">{{ acheivement.type }}</p>
-            <p class="mt-2 text-sm text-white overflow-hidden">{{ acheivement.description }}</p>
+            <p class="text-xl font-medium mt-3 whitespace-nowrap">{{ acheivement.type }}</p>
+            <p class="mt-2 text-sm overflow-hidden opacity-70">{{ acheivement.description }}</p>
         </div>
     </div>
 </template>

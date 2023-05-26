@@ -33,6 +33,39 @@
             </div>
         </div>
     </div>
+
+    <div v-if="isAnnounce">
+        <div v-for="(ann, index) in announcement" :key="index">
+            <div v-if="checkAnnounceAchiev(index)"
+                class="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+            >
+                <MainPopup :show="isAnnounce" @closeMainPopup="isAnnounce = false">
+                    <div class="centered flex-col p-10 text-white">
+                        <div
+                            class="w-56 aspect-square rounded-full p-2 border border-tertiary hover:scale-105 smooth-transition"
+                        >
+                            <img class="rounded-full"
+                                :src=getImagePath(ann.type)
+                            />
+                        </div>
+                        <span
+                            class="mt-8 text-2xl font-semibold leading-none tracking-tighter lg:text-3xl"
+                        >
+                            {{ getAnnounceTitle(ann) }}
+                        </span>
+                        <span class="mt-3 text-base leading-relaxed text-center opacity-80">
+                            {{ getAnnounceContent(ann) }}
+                        </span>
+                        <button 
+                            v-click-effect="() => closeAcievPopUp(index)"
+                            class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none">
+                            {{ getButtonName(ann) }}
+                        </button>
+                    </div>
+                </MainPopup>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -47,7 +80,7 @@ let newRank = await getNewRank()
 
 const announceState = ref([] as boolean[])
 
-const isAnnounce = ref(false)
+const isAnnounce = ref(true)
 
 const closeAcievPopUp = async (index: number) => {
     if (announcement && announcement.value && index < announcement.value?.length) {
