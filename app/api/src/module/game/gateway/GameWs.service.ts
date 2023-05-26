@@ -331,6 +331,8 @@ export class GameWsService {
                 await this.endGame(game, game.getWinner())
                 return
             }
+            if (game.isDeuce)
+                this.socketService.emitToGroup(game.getGameID(), 'Game-Deuce', game.getGameStatus())
         }, FRAME_INTERVAL)
     }
 
