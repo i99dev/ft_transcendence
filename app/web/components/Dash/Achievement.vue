@@ -1,19 +1,17 @@
 <template>
-    <div>
+    <div
+        class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3  group text-white"
+    >
         <div
-            class="grid grid-cols-1 md:grid-cols-3 group text-white shadow-xl shadow-secondary border"
+            v-for="(acheivement, index) in acheivements"
+            :key="index"
+            class="p-10 m-4 flex flex-col items-center text-center group border border-tertiary rounded-xl shadow-xl shadow-secondary smooth-transition hover:scale-105 "
         >
-            <div
-                v-for="(acheivement, index) in acheivements"
-                :key="index"
-                class="p-10 flex flex-col items-center text-center group border-r"
-            >
-                <span class="p-5 rounded-full smooth-transition text-white">
-                    <img src="../../assets/devilfruit.png" alt="Achievement Image" />
-                </span>
-                <p class="text-xl font-medium text-white mt-3">{{ acheivement.type }}</p>
-                <p class="mt-2 text-sm text-white">{{ acheivement.description }}</p>
-            </div>
+            <span class="p-2 rounded-full border border-tertiary smooth-transition text-white">
+                <img :src="acheivement.image" alt="Achievement Image" class="rounded-full" />
+            </span>
+            <p class="text-xl font-medium text-white mt-3 whitespace-nowrap">{{ acheivement.type }}</p>
+            <p class="mt-2 text-sm text-white overflow-hidden">{{ acheivement.description }}</p>
         </div>
     </div>
 </template>

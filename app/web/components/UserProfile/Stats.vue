@@ -1,17 +1,19 @@
 <template>
     <!---- rank dropdown -->
     <div class="mt-4 w-full">
-        <button
-            v-click-effect="handleDropDown"
-            class="sm:text-xl p-2 flex justify-start items-start w-fit rounded-xl text-lg text-white hover:bg-primary smooth-transition focus:outline-none"
-            title="Your Rank"
+        <MainPopover
+            :styles="'-left-9 md:-left-6 bg-background_light w-40'"
+            class="text-white flex justify-start mobile:justify-center"
         >
-            {{ getLadderRank(props.ladder) }}
-        </button>
-        <div
-            v-if="showstat"
-            class="absolute top-0 left-full py-2 w-40 bg-background_light border-2 rounded-lg shadow-lg z-10"
-        >
+            <template #button>
+                <button
+                    v-click-effect="handleDropDown"
+                    class="sm:text-xl text-center p-2 w-fit rounded-xl text-lg text-white hover:bg-primary smooth-transition focus:outline-none"
+                    :title="`${user_info?.username === props.username ? 'Your' : props.username} Rank`"
+                >
+                    {{ getLadderRank(props.ladder) }}
+                </button>
+            </template>
             <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
                 >XP level: {{ props.xp }}</span
             >
@@ -24,7 +26,7 @@
             <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
                 >Total Loses: {{ totaLoses }}</span
             >
-        </div>
+        </MainPopover>
     </div>
 </template>
 
@@ -46,6 +48,8 @@ const props = defineProps({
 
 // Handle player stat drop down
 const showstat = ref(false)
+
+const { user_info } = useUserInfo()
 
 function handleDropDown() {
     showstat.value = !showstat.value

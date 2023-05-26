@@ -144,13 +144,9 @@
                             />
                             <!-- name and result -->
                             <div
-                                v-if="user.login == user_info.login"
-                                class="text-xs m-2 capitalize font-bold"
+                                class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20"
                             >
-                                {{ user_info.username }}
-                            </div>
-                            <div v-else class="text-xs m-2 capitalize font-bold">
-                                {{ getMe(game)?.user.username }}
+                                {{ user.login === user_info.login ? user_info.username : getMe(game)?.user.username }}
                             </div>
                         </div>
                         <!-- result -->
@@ -161,7 +157,7 @@
                         </div>
                         <div class="centered justify-self-end">
                             <!-- name and result -->
-                            <div class="text-xs m-2 capitalize font-bold">
+                            <div class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20 text-end">
                                 {{ getOpponent(game)?.user.username }}
                             </div>
                             <img
