@@ -75,7 +75,10 @@ export class GameWsService {
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
-        if (player && player.status == 'ingame') player.game.setLoser(player.login)
+        if (player && player.status == 'ingame') {
+            player.game.setLoser(player.login)
+            player.game.leaver = player.login
+        }
     }
 
     /* 
@@ -317,6 +320,9 @@ export class GameWsService {
         game.events.on('play-sound', (sound: string) => {
             this.socketService.emitToGroup(game.getGameID(), 'play-sound', sound)
         })
+        game.events.on('Game-Deuce', () => {
+            this.socketService.emitToGroup(game.getGameID(), 'Game-Deuce', game.getGameStatus())
+        })
 
         const intervalId = setInterval(async () => {
             if (game.isPlayersReady()) {
@@ -338,11 +344,11 @@ export class GameWsService {
         }
     }
 
-    public async unlockAchievement(game: PongGame, username: string) {
-        const postGameAchiev = await this.gameAnalyzer.grantAchievements(username)
-        const midGameAchiev = game.analyzePlayer.get(username).Achievements
+    public async unlockAchievement(game: PongGame, login: string) {
+        const postGameAchiev = await this.gameAnalyzer.grantAchievements(login)
+        const midGameAchiev = game.analyzePlayer.get(login).Achievements
         const achievements = [...postGameAchiev, ...midGameAchiev]
-        if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(username, achievements)
+        if (achievements.length > 0) this.gameAnalyzer.assignAcheivments(login, achievements)
     }
 
     // end the game and emit the end game event
@@ -355,17 +361,26 @@ export class GameWsService {
             this.clearData(game)
             return
         }
+        if (game.leaver == undefined) {
+            this.game_result?.addHistory()
 
-        this.game_result?.addHistory()
-
-        for (let i = 0; i < game_status.players.length; i++) {
-            await this.gameAnalyzer.updatePlayerXP(
-                game_status.players[i].username,
-                this.game_result.IsWinner(game_status.players[i]) ? true : false,
+            for (let i = 0; i < game_status.players.length; i++) {
+                await this.gameAnalyzer.updatePlayerXP(
+                    game_status.players[i].login,
+                    this.game_result.IsWinner(game_status.players[i]) ? true : false,
+                )
+                await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].login)
+                await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].login)
+                await this.unlockAchievement(game, game_status.players[i].login)
+            }
+        } else {
+            const punished = game.leaver
+            await this.gameAnalyzer.paunishPlayer(punished)
+            await this.gameAnalyzer.compensatePlayer(
+                punished === game_status.players[0].login
+                    ? game_status.players[1].login
+                    : game_status.players[0].login,
             )
-            await this.gameAnalyzer.updatePlayerLadder(game_status.players[i].username)
-            await this.gameAnalyzer.updatePlayerWinningRate(game_status.players[i].username)
-            await this.unlockAchievement(game, game_status.players[i].username)
         }
         this.clearData(game)
     }
@@ -389,7 +404,7 @@ export class GameWsService {
     }
 
     private isComputer(player: PlayerDto): boolean {
-        return player.username === 'Computer'
+        return player.login === 'Computer'
     }
 
     /* 

@@ -25,8 +25,8 @@
                         <DashTab :username="props.username" />
                     </div>
                 </div>
-                <!-- Acheivement popup -->
-                <AchievPoPUp />
+                <!-- Announcement popup -->
+                <AnnouncePoPUp />
             </div>
         </div>
     </div>
@@ -39,7 +39,4 @@ const IsProfile = ref(false)
 
 const props = defineProps(['username'])
 
-const handleUserSearch = (username: string) => {
-    navigateTo(`/users/${username}`)
-}
 </script>

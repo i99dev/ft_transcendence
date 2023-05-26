@@ -34,7 +34,7 @@
                         {{ player.TotalMatches }}
                     </span>
                     <span class="text-sm">
-                        wins
+                        matches
                     </span>
                 </div>
             </div>
