@@ -175,7 +175,8 @@ export class GameWsService {
     }
 
     private respond(inviter: ConnectedUser, invited: ConnectedUser, invite: InviteDto, responseStatus: any, event: string) {
-        inviter.socket.emit(event, { status: responseStatus, playerStatus: invited.status, target: inviter.login })
+
+        inviter.socket.emit(event, { status: responseStatus, playerStatus: invited ? invited.status : 'offline', target: inviter.login })
         inviter.pendingInvite = null
         if (invited) {
             invited.socket.emit(event, { status: responseStatus, playerStatus: invited.status, target: invited.login })
