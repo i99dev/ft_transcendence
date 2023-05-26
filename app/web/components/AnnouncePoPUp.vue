@@ -97,7 +97,7 @@ const announcement = computed(() => {
                 id: compensate.id,
             });
         });
-
+    value.reverse()
     return value
 })
 
