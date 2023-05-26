@@ -60,6 +60,11 @@ export function useGameRenderer() {
         // bloomPass.setSize(width, height);
     }
 
+    const resetCamera = () => {
+        camera.position.set(0, 0, 15)
+        camera.lookAt(0, 0, 0)
+    }
+
     const initPostProcessing = () => {
         composer = new EffectComposer(renderer)
 
