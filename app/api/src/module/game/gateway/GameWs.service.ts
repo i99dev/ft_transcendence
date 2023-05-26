@@ -21,7 +21,6 @@ export class GameWsService {
     private custom_queue: string[] = []
     private game_result: gameHistory | null = null
     private repo: GameRepository = new GameRepository()
-    private emitDeuce = false
 
     constructor(
         private socketService: SocketService,
