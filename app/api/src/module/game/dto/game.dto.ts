@@ -37,7 +37,7 @@ export class PlayerDto {
     @IsString()
     @IsNotEmpty()
     @Length(1, 30)
-    username: string
+    login: string
 
     @Min(0)
     @IsNumber()

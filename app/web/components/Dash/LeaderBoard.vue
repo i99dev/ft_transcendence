@@ -32,7 +32,7 @@
                     <span class="font-bold text-xl">
                         {{ player.TotalMatches }}
                     </span>
-                    wins
+                    matches
                 </div>
             </div>
         </button>

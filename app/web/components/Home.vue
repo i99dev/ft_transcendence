@@ -29,8 +29,8 @@
                     </div>
                     <div class="w-full sm:w-1/4 rounded-b sm:rounded-b-none shadow bg-white"></div>
                 </div>
-                <!-- Acheivement popup -->
-                <AchievPoPUp />
+                <!-- Announcement popup -->
+                <AnnouncePoPUp />
             </div>
         </div>
     </div>
@@ -43,7 +43,4 @@ const IsProfile = ref(false)
 
 const props = defineProps(['username'])
 
-const handleUserSearch = (username: string) => {
-    navigateTo(`/users/${username}`)
-}
 </script>

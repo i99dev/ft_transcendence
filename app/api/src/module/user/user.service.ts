@@ -52,6 +52,7 @@ export class UserService {
                     wr: data?.wr,
                     ladder: data?.ladder,
                     two_fac_auth: data?.two_fac_auth,
+                    xp: data?.xp,
                 },
             })
             if (!updated) throw new NotFoundException(`user ${login} does not exist`)
