@@ -1,8 +1,8 @@
 <template>
     <div>
-        <!-- Acheivement popup -->
-        <div v-if="showAciev">
-            <div v-for="(achv, index) in achievements" :key="index">
+        <!-- Announcement popup -->
+        <div v-if="isAnnounce">
+            <div v-for="(ann, index) in announcement" :key="index">
                 <div v-if="checkAnnounceAchiev(index)"
                     class="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
                     <div
@@ -11,18 +11,18 @@
                             <div class="grid grid-cols-1">
                                 <div class="mt-4 mr-auto mb-4 ml-auto bg-white max-w-lg">
                                     <div class="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
-                                        <img class="rounded-full" :src=getImagePath(achv.type) />
+                                        <img class="rounded-full" :src=getImagePath(ann.type) />
                                         <p
                                             class="mt-8 text-2xl font-semibold leading-none text-gray tracking-tighter lg:text-3xl">
-                                            {{ getAnnounceTitle(achv) }}
+                                            {{ getAnnounceTitle(ann) }}
                                         </p>
                                         <p class="mt-3 text-base leading-relaxed text-center text-gray-600">
-                                            {{ getAnnounceContent(achv) }}
+                                            {{ getAnnounceContent(ann) }}
                                         </p>
                                         <div class="w-full mt-6">
                                             <a v-click-effect="() => closeAcievPopUp(index)"
                                                 class="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-indigo-600 rounded-xl transition duration-500 ease-in-out transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                {{ getButtonName(achv) }} </a>
+                                                {{ getButtonName(ann) }} </a>
                                         </div>
                                     </div>
                                 </div>
@@ -37,46 +37,54 @@
 
 <script setup lang="ts">
 
-let newAchievement = await getNewAchievement()
+let newAchievement = await getNewAnnouncement('ACHIEVEMENT')
+
+// let newPaunish = await getNewAnnouncement('PUNISHMENT')
+
+// let newCompensate = await getNewAnnouncement('COMPENSATION')
 
 let newRank = await getNewRank()
 
-const announceAchiev = ref([] as boolean[])
+console.log(newAchievement)
 
-const showAciev = ref(false)
+console.log(newRank)
+
+const announceState = ref([] as boolean[])
+
+const isAnnounce = ref(false)
 
 const closeAcievPopUp = async (index: number) => {
-    if (achievements && achievements.value && index < achievements.value?.length) {
-        announceAchiev.value[index] = false
+    if (announcement && announcement.value && index < announcement.value?.length) {
+        announceState.value[index] = false
         return
     }
-    showAciev.value = false
+    isAnnounce.value = false
 }
 
 const checkAnnounceAchiev = (index: number) => {
     if (
-        !announceAchiev.value[index] &&
-        achievements.value != undefined &&
-        achievements.value[index].type == 'ACHIEVEMENT'
+        !announceState.value[index] &&
+        announcement.value != undefined &&
+        announcement.value[index].type == 'ACHIEVEMENT'
     )
-        deleteNewNotif(achievements.value[index].id)
+        deleteNewNotif(announcement.value[index].id)
     else if (
-        !announceAchiev.value[index] &&
-        achievements.value != undefined &&
-        achievements.value[index].type == 'RANK_UP'
+        !announceState.value[index] &&
+        announcement.value != undefined &&
+        announcement.value[index].type == 'RANK_UP'
     )
-        deleteNewNotif(achievements.value[index].id)
+        deleteNewNotif(announcement.value[index].id)
     else if (
-        !announceAchiev.value[index] &&
-        achievements.value != undefined &&
-        achievements.value[index].type == 'RANK_DOWN'
+        !announceState.value[index] &&
+        announcement.value != undefined &&
+        announcement.value[index].type == 'RANK_DOWN'
     ) {
-        deleteNewNotif(achievements.value[index].id)
+        deleteNewNotif(announcement.value[index].id)
     }
-    return announceAchiev.value[index]
+    return announceState.value[index]
 }
 
-const achievements = computed(() => {
+const announcement = computed(() => {
     const value = newAchievement?.map(achievement => {
         return {
             content: achievement.content,
@@ -94,15 +102,13 @@ const achievements = computed(() => {
 })
 
 onMounted(async () => {
-    newAchievement = await getNewAchievement()
-    newRank = await getNewRank()
     if (newAchievement && newAchievement.length > 0) {
-        showAciev.value = true
-        announceAchiev.value = new Array(newAchievement.length).fill(true)
-        if (newRank && newRank.rank != null) announceAchiev.value?.push(true)
+        isAnnounce.value = true
+        announceState.value = new Array(newAchievement.length).fill(true)
+        if (newRank && newRank.rank != null) announceState.value?.push(true)
     } else if (newRank && newRank.rank != null) {
-        showAciev.value = true
-        announceAchiev.value = new Array(1).fill(true)
+        isAnnounce.value = true
+        announceState.value = new Array(1).fill(true)
     }
 })
 
@@ -110,22 +116,22 @@ const getImagePath = (ImageName: string) => {
     return `/announce/${ImageName}.gif`
 }
 
-const getAnnounceTitle = (achv: any) => {
-    return achv.type == 'ACHIEVEMENT' ? achv.content : getLadderRank(achv.content)
+const getAnnounceTitle = (ann: any) => {
+    return ann.type == 'ACHIEVEMENT' ? ann.content : getLadderRank(ann.content)
 }
 
-const getAnnounceContent = (achv: any) => {
-    if (achv.type == 'ACHIEVEMENT')
-        return `Congratulations ! You just have unlocked " ${achv.content} " Achievement !`
-    else if (achv.type == 'RANK_UP')
-        return `Congratulations ! You just have ranked up to " ${getLadderRank(achv.content)} " !`
-    else if (achv.type == 'RANK_DOWN')
-        return `Sorry ! You just have ranked down to " ${getLadderRank(achv.content)} "  !`
+const getAnnounceContent = (ann: any) => {
+    if (ann.type == 'ACHIEVEMENT')
+        return `Congratulations ! You just have unlocked " ${ann.content} " Achievement !`
+    else if (ann.type == 'RANK_UP')
+        return `Congratulations ! You just have ranked up to " ${getLadderRank(ann.content)} " !`
+    else if (ann.type == 'RANK_DOWN')
+        return `Sorry ! You just have ranked down to " ${getLadderRank(ann.content)} "  !`
 
 }
 
-const getButtonName = (achv: any) => {
-    return achv.type == 'RANK_DOWN' ? 'OOPS !' : 'YAY !'
+const getButtonName = (ann: any) => {
+    return ann.type == 'RANK_DOWN' ? 'OOPS !' : 'YAY !'
 }
 
 const getLadderRank = (ladder: string) => {

@@ -138,22 +138,36 @@ export class gameAnalyzer {
     }
 
     async paunishPlayer(login: string): Promise<void> {
+        const newXP = await this.deductPlayerXP(login)
         await this.userService.updateUser(
             {
-                xp: await this.deductPlayerXP(login),
+                xp: newXP,
             },
             login,
         )
+        await this.notificationService.createNotification({
+            user_login: login,
+            content: newXP.toString(),
+            type: NotificationType.PUNISHMENT,
+            target: 'test',
+        })
     }
 
     async compensatePlayer(login: string): Promise<void> {
-        console.log('compensate', login)
+        // console.log('compensate', login)
+        const newXP = await this.increasePlayerXP(login)
         await this.userService.updateUser(
             {
-                xp: await this.increasePlayerXP(login),
+                xp: newXP,
             },
             login,
         )
+        await this.notificationService.createNotification({
+            user_login: login,
+            content: newXP.toString(),
+            type: NotificationType.COMPENSATION,
+            target: 'test',
+        })
     }
 
     async updatePlayerLadder(login: string): Promise<void> {
