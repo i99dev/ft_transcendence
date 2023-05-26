@@ -1,4 +1,5 @@
 import {
+    IsArray,
     IsAscii,
     IsBoolean,
     IsEnum,
@@ -99,6 +100,7 @@ export class GameSelectDto {
     @IsEnum(gameMode)
     gameMode: gameMode
 
+    @IsArray()
     powerups: string[]
 
     @IsString()

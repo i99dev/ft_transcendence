@@ -63,7 +63,7 @@ export class ChatController {
     async getRoomMessages(
         @Param('room_id', ParseUUIDPipe) room_id: string,
         @Req() req,
-        @Query('page', PosNumberPipe) page: number,
+        @Query('page') page: number,
         @Query('sort', QueryParseStringPipe) sort: string,
     ) {
         if (sort !== 'asc' && sort !== 'desc') throw new BadRequestException('Invalid sort type')
