@@ -27,7 +27,6 @@ const showReadyModal = ref(false)
 const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
 const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isDeuce } = useSocket()
 
-// console.log('Deeuucceee', isDeuce.value)
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })

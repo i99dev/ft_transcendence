@@ -195,5 +195,6 @@ declare global {
     interface InviteResponseDto {
         status: string
         playerStatus: string
+        target: string
     }
 }

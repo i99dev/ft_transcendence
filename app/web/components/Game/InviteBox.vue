@@ -196,14 +196,12 @@ const acceptInvite = () => {
     invite.value.powerups = selectedPowerups.value
     accept()
     inviteModal.value.type = ''
-    navigateTo('/play')
 }
 
 const declineInvite = () => {
     invite.value.powerups = selectedPowerups.value
     decline()
     inviteModal.value.type = ''
-    reset()
 }
 
 const sendInvite = () => {
