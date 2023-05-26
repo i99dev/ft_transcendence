@@ -101,6 +101,7 @@ function destroy(): void {
 }
 
 function giveUp(): void {
+    if(!gameSetup.value?.game) return
     socket.value?.emit('Give-Up', gameSetup.value?.game.players[gameSetup.value?.player])
     destroy()
 }
