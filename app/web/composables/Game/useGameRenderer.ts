@@ -215,6 +215,9 @@ export function useGameRenderer() {
         controls.enableDamping = true
         controls.dampingFactor = 0.1
         controls.screenSpacePanning = false
+        controls.maxZoom = 1.5
+        controls.minZoom = 0.5
+        controls.enablePan = false
     }
 
     const loadLogo = () => {
@@ -290,7 +293,7 @@ export function useGameRenderer() {
 
     const updatePlayer = (players: PlayerDto[]): void => {
         if (!paddle || !paddle2) {
-            console.error('paddle1 or paddle2 is not defined')
+            console.log('paddle1 or paddle2 is not defined')
             return
         }
         for (let i = 0; i < players.length; i++) {
@@ -355,7 +358,7 @@ export function useGameRenderer() {
 
     const updateBall = (ball: BallDto): void => {
         if(!sphere || !ball) {
-            console.error('sphere or ball is not defined')
+            console.log('sphere or ball is not defined')
             return
         }
         sphere.position.x = ball.x
