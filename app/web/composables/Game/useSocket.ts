@@ -11,6 +11,9 @@ export function useSocket() {
     const gameSetup = useState<SetupDto>('gameSetup', () => {
         return {} as SetupDto
     })
+    const isDeuce = useState<boolean>('isDeuce', () => {
+        return false
+    })
 
     const resetSocket = () => {
         socket.value?.off
@@ -41,7 +44,10 @@ export function useSocket() {
         })
 
         socket.value?.on('Game-Over', payload => {
-            gameWinner.value = payload.winner.username
+            gameWinner.value = payload.winner.login
+        })
+        socket.value?.on('Game-Deuce', () => {
+            isDeuce.value = true
         })
     }
 
@@ -53,6 +59,7 @@ export function useSocket() {
         emitLeaveQueue,
         resetSocket,
         emitReady,
+        isDeuce
     }
 }
 

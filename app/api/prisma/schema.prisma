@@ -180,4 +180,6 @@ enum NotificationType {
     CHAT_INVITE
 	RANK_UP
 	RANK_DOWN
+    PUNISHMENT
+    COMPENSATION
 }

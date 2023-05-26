@@ -12,26 +12,21 @@
                     :status="userData?.status"
                 />
 
-                <div class="flex sm:flex-col justify-center sm:p-6">
+                <div class="flex sm:flex-col justify-center">
                     <!-- update username -->
                     <div class="flex flex-col justify-start w-full relative">
                         <div class="centered w-full">
                             <div
-                                v-if="isMe"
-                                class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap"
+                                title="Username"
+                                class="text-lg w-32 sm:text-3xl sm:w-48 text-white mx-2 overflow-hidden inline-block text-ellipsis p-2 whitespace-nowrap text-start bg-background_light hover:bg-secondary smooth-transition rounded-xl"
                             >
-                                {{ user_info?.username }}
-                            </div>
-                            <div
-                                v-else
-                                class="sm:text-3xl text-lg text-white capitalize pr-2 w-fit h-8 overflow-hidden flex items-center justify-start p-2 whitespace-nowrap"
-                            >
-                                {{ userData?.username }}
+                                {{ isMe ? user_info?.username : userData?.username }}
                             </div>
 
                             <!-- edit icon  -->
                             <div class="mx-2">
                                 <button
+                                    title="Edit profile"
                                     class="flex justify-center hover:bg-primary rounded-full p-2 w-12 h-12 smooth-transition"
                                     v-click-effect="editProfile"
                                     v-if="isMe && !isProfile"
@@ -67,13 +62,15 @@
                 </div>
             </div>
 
-            <!--- control buttons -->
-            <UserProfileControl
-                :isProfile="props.isProfile"
-                :isMe="isMe"
-                :login="userData.login"
-                :username="props.username"
-            />
+            <div>
+                <!--- control buttons -->
+                <UserProfileControl
+                    :isProfile="props.isProfile"
+                    :isMe="isMe"
+                    :login="userData.login"
+                    :username="props.username"
+                />
+            </div>
         </div>
     </div>
 </template>

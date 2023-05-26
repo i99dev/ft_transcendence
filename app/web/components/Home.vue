@@ -6,7 +6,7 @@
             class="flex min-h-screen justify-center overflow-hidden py-5 mobile:p-2"
         >
             <div class="flex flex-col w-full space-y-6 items-center">
-                <div class="flex flex-row justify-center md:w-1/2 w-3/4">
+                <div class="centered lg:w-1/2 w-3/4">
                     <UserProfileCardOne
                         class="w-full"
                         :username="props.username"
@@ -20,17 +20,13 @@
                     Play
                 </button>
 
-                <div class="flex flex-wrap sm:flex-no-wrap items-center justify-between w-full">
-                    <div
-                        class="w-full sm:w-1/4 rounded-t sm:rounded-l sm:rounded-t-none shadow bg-white"
-                    ></div>
-                    <div class="w-full sm:w-1/2">
+                <div class="flex flex-wrap sm:flex-no-wrap items-center justify-center iterms-center w-full">
+                    <div class="w-full sm:w-3/4 lg:w-1/2">
                         <DashTab :username="props.username" />
                     </div>
-                    <div class="w-full sm:w-1/4 rounded-b sm:rounded-b-none shadow bg-white"></div>
                 </div>
-                <!-- Acheivement popup -->
-                <AchievPoPUp />
+                <!-- Announcement popup -->
+                <AnnouncePoPUp />
             </div>
         </div>
     </div>
@@ -43,7 +39,4 @@ const IsProfile = ref(false)
 
 const props = defineProps(['username'])
 
-const handleUserSearch = (username: string) => {
-    navigateTo(`/users/${username}`)
-}
 </script>

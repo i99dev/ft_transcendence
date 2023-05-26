@@ -2,7 +2,7 @@
     <div
         class="w-full items-center bg-background border-1 border-white px-4 py-3 sm:px-6 rounded m-2 shadow-sm p-2"
     >
-        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-white">
                     Showing
@@ -38,23 +38,11 @@
                         </svg>
                     </button>
 
-                    <div>
-                        <button
-                            v-for="pageNumber in isPage.keys()"
-                            :key="pageNumber"
-                            v-click-effect="() => handlePagination(pageNumber)"
-                            type="button"
+                    <div
                             aria-current="page"
-                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition"
-                            :class="{
-                                'z-10 hover:bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white':
-                                    isPage.get(pageNumber),
-                                ' text-white ring-1 ring-inset ring-secondary hover:bg-primary focus:outline-offset-0':
-                                    !isPage.get(pageNumber),
-                            }"
-                        >
-                            {{ pageNumber }}
-                        </button>
+                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition z-10 bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >
+                            {{ currentPage }}
                     </div>
 
                     <button

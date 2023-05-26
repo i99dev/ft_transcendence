@@ -1,14 +1,15 @@
 <template>
     <div class="flex flex-col w-full items-center">
         <div
-            class="w-full items-center pb-2 border-b border-secondary flex sm:space-x-0 space-x-6 justify-center"
+            class="w-full items-center pb-2 flex mobile:space-x-4 sm:space-x-6 lg:space-x-10 justify-center"
         >
-            <div v-for="tab in tabs" :key="tab.name" class="flex flex-col">
+            <button v-for="tab in tabs" :key="tab.name" class="flex flex-col">
                 <div
                     v-click-effect="() => setActiveTab(tab)"
-                    class="py-2 px-12 ease-in duration-150 rounded hidden md:flex cursor-pointer text-white"
+                    class="py-2 ease-in duration-150 rounded md:flex text-white whitespace-nowrap"
                 >
                     <div
+                        class="smooth-transition text-white"
                         :class="{
                             'border-b-2 p-2 border-secondary text-lg': isActive(tab),
                             'opacity-50 hover:opacity-100 text-md': !isActive(tab),
@@ -17,7 +18,7 @@
                         {{ tab.name }}
                     </div>
                 </div>
-            </div>
+            </button>
         </div>
 
         <div class="w-full px-3">
