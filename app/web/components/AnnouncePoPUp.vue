@@ -102,7 +102,7 @@ const announcement = computed(() => {
 })
 
 onMounted(async () => {
-    const totalSize = (newAchievement ? newAchievement.length : 0) + (newRank && newRank.rank != null ? 1 : 0) + (newPunish.length > 0 ? 1 : 0) + (newCompensate.length > 0 ? 1 : 0)
+    const totalSize = (newAchievement ? newAchievement.length : 0) + (newRank && newRank.rank != null ? 1 : 0) + (newPunish.length > 0 ? newPunish.length : 0) + (newCompensate.length > 0 ? newPunish.length : 0)
     if (totalSize > 0) {
         isAnnounce.value = true
         announceState.value = new Array(totalSize).fill(true)
