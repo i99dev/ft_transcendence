@@ -65,7 +65,6 @@ export class NotificationService {
                     user_login: user_login,
                 },
             })
-            console.log(notifications)
             return notifications
         } catch (error) {
             console.log(error)

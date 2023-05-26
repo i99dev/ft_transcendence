@@ -162,11 +162,11 @@ declare global {
     interface NotificationDto {
         id: number
         created_at: Date
-        user_login: string
+        user_login?: string
         content: string
         type: NotificationType
-        target: string
-        user: UserGetDto
+        target?: string
+        user?: UserGetDto
     }
 
     interface FetchError<T> extends Error {

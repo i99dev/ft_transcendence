@@ -1,4 +1,4 @@
-export async function getNewAnnouncement(type: string): Promise<any[] | null> {
+export async function getNewAnnouncement(type: string): Promise<NotificationDto[] | null> {
     const api = useRuntimeConfig().API_URL
     const { data } = await useFetch<any[]>(`/Notification/me/${type}`, {
         method: 'GET',

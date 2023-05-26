@@ -37,17 +37,21 @@
 
 <script setup lang="ts">
 
-let newAchievement = await getNewAnnouncement('ACHIEVEMENT')
+let newAchievement = await getNewAnnouncement('ACHIEVEMENT') as NotificationDto[]
 
-let newPaunish = await getNewAnnouncement('PUNISHMENT')
+let newPunish = await getNewAnnouncement('PUNISHMENT') as NotificationDto[]
 
-let newCompensate = await getNewAnnouncement('COMPENSATION')
-
-// console.log('PUNISHMENT', newPaunish)
-
-// console.log('COMPENSATION', newCompensate)
+let newCompensate = await getNewAnnouncement('COMPENSATION') as NotificationDto[]
 
 let newRank = await getNewRank()
+
+console.log('PUNISHMENT', newPunish)
+
+console.log('COMPENSATION', newCompensate)
+
+console.log('RANK', newRank)
+
+console.log('ACHIEVEMENT', newAchievement)
 
 const announceState = ref([] as boolean[])
 
@@ -64,23 +68,10 @@ const closeAcievPopUp = async (index: number) => {
 const checkAnnounceAchiev = (index: number) => {
     if (
         !announceState.value[index] &&
-        announcement.value != undefined &&
-        announcement.value[index].type == 'ACHIEVEMENT'
-    )
+        announcement.value != undefined
+        )
         deleteNewNotif(announcement.value[index].id)
-    else if (
-        !announceState.value[index] &&
-        announcement.value != undefined &&
-        announcement.value[index].type == 'RANK_UP'
-    )
-        deleteNewNotif(announcement.value[index].id)
-    else if (
-        !announceState.value[index] &&
-        announcement.value != undefined &&
-        announcement.value[index].type == 'RANK_DOWN'
-    ) {
-        deleteNewNotif(announcement.value[index].id)
-    }
+
     return announceState.value[index]
 }
 
@@ -92,32 +83,38 @@ const announcement = computed(() => {
             id: achievement.id,
         }
     })
-    if (newRank)
+    if (newRank && newRank.rank != null)
         value?.push({
             content: newRank.rank,
             type: newRank.isUp ? 'RANK_DOWN' : 'RANK_UP',
             id: newRank.id,
         })
+    if (newPunish && newPunish.length > 0 )
+        newPunish.forEach((punish) => {
+            value.push({
+                content: punish.content,
+                type: 'PUNISHMENT',
+                id: punish.id,
+            });
+        });
+    if (newCompensate && newCompensate.length > 0)
+        newCompensate.forEach((compensate) => {
+            value.push({
+                content: compensate.content,
+                type: 'COMPENSATION',
+                id: compensate.id,
+            });
+        });
+
     return value
 })
 
 onMounted(async () => {
-    // if (newAchievement && newAchievement.length > 0) {
-    //     isAnnounce.value = true
-    //     announceState.value = new Array(newAchievement.length).fill(true)
-    //     if (newRank && newRank.rank != null) announceState.value?.push(true)
-    // } else if (newRank && newRank.rank != null) {
-    //     isAnnounce.value = true
-    //     announceState.value = new Array(1).fill(true)
-    // }
-    const totalSize = (newAchievement ? newAchievement.length : 0) + (newRank && newRank.rank != null ? 1 : 0) /*+ (newPaunish ? 1 : 0) + (newCompensate ? 1 : 0)*/
+    const totalSize = (newAchievement ? newAchievement.length : 0) + (newRank && newRank.rank != null ? 1 : 0) + (newPunish.length > 0 ? 1 : 0) + (newCompensate.length > 0 ? 1 : 0)
     if (totalSize > 0) {
         isAnnounce.value = true
         announceState.value = new Array(totalSize).fill(true)
     }
-
-
-    // else if (
 })
 
 const getImagePath = (ImageName: string) => {
@@ -135,11 +132,15 @@ const getAnnounceContent = (ann: any) => {
         return `Congratulations ! You just have ranked up to " ${getLadderRank(ann.content)} " !`
     else if (ann.type == 'RANK_DOWN')
         return `Sorry ! You just have ranked down to " ${getLadderRank(ann.content)} "  !`
+    else if (ann.type == 'PUNISHMENT')
+        return `Attention ! You have been punished for leaving the match, 20% of your XP has been deducted, your new XP is " ${ann.content} " !`
+    else if (ann.type == 'COMPENSATION')
+        return `Good News! Compensation have been applied for the time you lost when the opponent left the match, your new XP is " ${ann.content} " !`
 
 }
 
 const getButtonName = (ann: any) => {
-    return ann.type == 'RANK_DOWN' ? 'OOPS !' : 'YAY !'
+    return (ann.type == 'RANK_DOWN' || ann.type == 'PUNISHMENT') ? 'OOPS !' : 'YAY !'
 }
 
 const getLadderRank = (ladder: string) => {
