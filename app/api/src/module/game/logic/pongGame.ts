@@ -59,6 +59,7 @@ export class PongGame {
     public leaver: string
     public events: EventEmitter
     public analyzePlayer = new Map<string, gameAnalyzer>()
+    public isDeuce = false
     constructor(
         player1Login: string,
         Player2Login: string,
@@ -201,18 +202,18 @@ export class PongGame {
     //     }
     // }
 
-    public setWinner(playerID: string): void {
+    public setWinner(playerLogin: string): void {
         const playerIndex = this.game_status.players.findIndex(
-            player => player.login === playerID,
+            player => player.login === playerLogin,
         )
         if (playerIndex !== -1) {
             this.winner = this.game_status.players[playerIndex].login
         }
     }
 
-    public setLoser(playerID: string): void {
+    public setLoser(playerLogin: string): void {
         const playerIndex = this.game_status.players.findIndex(
-            player => player.login === playerID,
+            player => player.login === playerLogin,
         )
 
         if (playerIndex !== -1) {
@@ -225,13 +226,25 @@ export class PongGame {
         if (this.winner) return true
         const player1Score = this.game_status.players[0].score
         const player2Score = this.game_status.players[1].score
-        if (player1Score === 11) {
-            this.winner = this.game_status.players[0].login
-            return true
-        }
-        if (player2Score === 11) {
-            this.winner = this.game_status.players[1].login
-            return true
+        if (player1Score === 10 && player2Score === 10) this.isDeuce = true
+        if (this.isDeuce) {
+            // console.log('deuce !!!!!!!!!!!!!!!')
+            if (player1Score - player2Score === 2 || player2Score - player1Score === 2) {
+                this.winner =
+                    player1Score > player2Score
+                        ? this.game_status.players[0].login
+                        : this.game_status.players[1].login
+                return true
+            }
+        } else {
+            if (player1Score === 11) {
+                this.winner = this.game_status.players[0].login
+                return true
+            }
+            if (player2Score === 11) {
+                this.winner = this.game_status.players[1].login
+                return true
+            }
         }
         return false
     }
@@ -358,8 +371,7 @@ export class PongGame {
     private grantPaddleSamuraiAchievement(player: PlayerDto): void {
         if (this.analyzePlayer.get(player.login).BlockingShot > 5) {
             if (
-                this.analyzePlayer.get(player.login).Achievements.indexOf('Paddle Samurai') ===
-                -1
+                this.analyzePlayer.get(player.login).Achievements.indexOf('Paddle Samurai') === -1
             ) {
                 this.analyzePlayer.get(player.login).Achievements.push('Paddle Samurai')
             }
