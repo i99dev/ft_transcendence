@@ -136,16 +136,11 @@ onBeforeUnmount(() => {
 })
 
 const checkOrientation = () => {
-    let isPortrait
-
     if ('orientation' in window.screen) {
-        isPortrait = window.screen.orientation.type.startsWith('portrait')
+        showRotateOverlay.value = window.screen.orientation.type.startsWith('portrait')
     } else if ('orientation' in window) {
-        isPortrait = window.orientation === 0 || window.orientation === 180
-    } else {
-        isPortrait = window.innerHeight > window.innerWidth
-    }
-    showRotateOverlay.value = isPortrait
+        showRotateOverlay.value = window.orientation === 0 || window.orientation === 180
+    } 
 }
 
 onUnmounted(() => {
