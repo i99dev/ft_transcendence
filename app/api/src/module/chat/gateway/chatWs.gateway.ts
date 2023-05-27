@@ -165,6 +165,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (await this.chatWsService.isUserBanned(payload.room_id, client.handshake.auth.login))
             return this.socketError('User is banned')
 
+        if ((await this.chatWsService.countUsersInChatRoom(payload.room_id)) >= 200)
+            throw new WsException('Chat room is full')
+
         if (
             await this.chatWsService.validateInvitation(
                 payload.room_id,
@@ -307,6 +310,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return this.socketError('User cannot change owner'), []
 
         if (payload.action === 'add') {
+            if ((await this.chatWsService.countUsersInChatRoom(payload.room_id)) >= 200)
+                throw new WsException('Chat room is full')
             const chatUsers = await this.chatWsService.addUser(payload.room_id, payload.user_login)
             const clientSocket = this.getSocket(payload.user_login)
             if (clientSocket) clientSocket.join(payload.room_id)
