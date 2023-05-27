@@ -1,6 +1,6 @@
 <template>
-    <div class="centered h-screen w-full">
-        <div>Almost there</div>
+    <div>
+        <Loading class="w-screen h-screen centered" />
     </div>
 </template>
 
