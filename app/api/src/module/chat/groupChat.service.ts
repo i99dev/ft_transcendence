@@ -20,7 +20,6 @@ export class GroupChatService {
                     chat_room_id: room_id,
                 },
             })
-            delete chat.password
             return chat
         } catch (error) {
             console.log(error)
