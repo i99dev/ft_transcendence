@@ -66,21 +66,19 @@ export class GameWsService {
                 if (this.custom_queue.includes(user.login))
                     this.custom_queue.splice(this.custom_queue.indexOf(user.login), 1)
             } else if (user.status == 'ingame') {
-                user.game.setLoser(user.login)
+                this.giveUp(user.socket)
             }
-            else if(user.status == 'busy' && user.pendingInvite)
-            {
-                if(user.pendingInvite.invitedId == user.login)
-                {
+            else if (user.status == 'busy' && user.pendingInvite) {
+                if (user.pendingInvite.invitedId == user.login) {
                     const inviter = this.connected_users.find(u => u.login == user.pendingInvite.inviterId)
-                    this.respondInvite(inviter.socket, user.pendingInvite, true)                    
+                    this.respondInvite(inviter.socket, user.pendingInvite, true)
                 }
             }
             this.connected_users.splice(index, 1)
             this.repo.updatePlayerStatus('OFFLINE', user.login)
         }
     }
-    
+
 
 
     public giveUp(userSocket: Socket) {
@@ -159,9 +157,9 @@ export class GameWsService {
             if (invite.accepted == true) {
                 this.respond(inviter, invited, invite, 'accepted', "Respond-Invite")
                 invited.powerUps = invite.powerups
-                this.createMultiGame(inviter, invited, invite.gameType)
                 invited.status = 'ingame'
                 inviter.status = 'ingame'
+                this.createMultiGame(inviter, invited, invite.gameType)
             } else {
                 console.log('rejected')
                 invited.status = 'online'
