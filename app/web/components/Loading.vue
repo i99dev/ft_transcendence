@@ -9,7 +9,6 @@
 
 <script setup>
 const props = defineProps(['size'])
-console.log(props?.size)
 </script>
 
 <style scoped>
