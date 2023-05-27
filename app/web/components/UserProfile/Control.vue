@@ -148,8 +148,8 @@
                 <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                v-click-effect="() => addFriend(props.username)"
-                :title="`Add '${props.username}' to friends`"
+                v-click-effect="() => addFriend(props.login)"
+                :title="`Add '${props.login}' to friends`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
                 <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
