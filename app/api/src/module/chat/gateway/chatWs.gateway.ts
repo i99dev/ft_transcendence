@@ -354,6 +354,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             if (clientSocket) {
                 clientSocket.join(payload.room_id)
                 const room = await this.groupChatService.getGroupChatRoom(payload.room_id)
+                delete room.password
                 clientSocket.emit('add-message', {
                     content: `you got invited to ${room.name}`,
                     type: MessageType.SPECIAL,
