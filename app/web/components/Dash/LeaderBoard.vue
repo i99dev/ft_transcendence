@@ -13,7 +13,9 @@
                 'bg-background_light': index % 2,
             }"
         >
-            <div class="min-w-full h-full text-left text-sm font-light text-white grid grid-cols-3 mobile:grid-cols-2 place-content-center">
+            <div
+                class="min-w-full h-full text-left text-sm font-light text-white grid grid-cols-3 mobile:grid-cols-2 place-content-center"
+            >
                 <div class="centered lg:justify-start">
                     <div
                         class="whitespace-nowrap font-medium p-1 m-2 mr-4 h-8 aspect-square bg-tertiary rounded-xl text-center mobile:mr-2"
@@ -22,20 +24,22 @@
                     </div>
                     <img :src="player.image" class="h-6 aspect-square rounded-full object-cover" />
                     <!-- name and result -->
-                    <div class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20">
+                    <div
+                        class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20"
+                    >
                         {{ player.username }}
                     </div>
                 </div>
                 <div class="whitespace-nowrap centered mobile:hidden">
                     <span class="mr-8 align-middle">{{ getLadderRank(player.ladder) }}</span>
                 </div>
-                <div class="whitespace-nowrap mx-4 align-middle lowercase flex items-center justify-end">
+                <div
+                    class="whitespace-nowrap mx-4 align-middle lowercase flex items-center justify-end"
+                >
                     <span class="font-bold text-md mr-1">
                         {{ player.TotalMatches }}
                     </span>
-                    <span class="text-sm">
-                        matches
-                    </span>
+                    <span class="text-sm"> matches </span>
                 </div>
             </div>
         </button>

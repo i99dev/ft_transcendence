@@ -48,8 +48,7 @@ export class FriendWsService {
             try {
                 const friends = await this.friendService.getFriends(id)
                 client.emit('friends-list', friends)
-            } catch (error) {
-            }
+            } catch (error) {}
         }, 2000)
 
         client.on('disconnect', async () => {

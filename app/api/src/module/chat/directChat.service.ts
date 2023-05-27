@@ -69,7 +69,7 @@ export class DirectChatService {
         }
     }
 
-    async getDirectChats(user: string, page: number) {
+    async getDirectChats(user: string, page: number = 1) {
         try {
             const directChats = await this.prisma.directChat.findMany({
                 where: {
@@ -96,7 +96,7 @@ export class DirectChatService {
         }
     }
 
-    async getDirectChatForUser(user_login: string) {
+    async getDirectChatForUser(user_login: string, page: number = 1) {
         try {
             const chatRooms = await this.prisma.directChat.findMany({
                 where: {
@@ -125,6 +125,8 @@ export class DirectChatService {
                         },
                     },
                 },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             const sortedChat = await this.chatRepository.sort(chatRooms)
             return sortedChat
@@ -133,7 +135,7 @@ export class DirectChatService {
         }
     }
 
-    async getDirectChatbetweenUsers(user_login1: string, user_login2) {
+    async getDirectChatbetweenUsers(user_login1: string, user_login2, page: number = 1) {
         try {
             const chatRooms = await this.prisma.directChat.findMany({
                 where: {
@@ -164,6 +166,11 @@ export class DirectChatService {
                         },
                     },
                 },
+                orderBy: {
+                    id: 'desc',
+                },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             const sortedChat = await this.chatRepository.sort(chatRooms)
             return sortedChat

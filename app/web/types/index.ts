@@ -66,7 +66,14 @@ declare global {
 
     export interface AchievementDto {
         id: number
-        type: 'Serial Killer' | 'Rookie no more' | 'First Blood' | 'No Sweat' | 'Paddle Samurai' | 'Table Ninja' | 'Ball Whisperer'
+        type:
+            | 'Serial Killer'
+            | 'Rookie no more'
+            | 'First Blood'
+            | 'No Sweat'
+            | 'Paddle Samurai'
+            | 'Table Ninja'
+            | 'Ball Whisperer'
         description: string
         image: string
         users: UserGetDto[]

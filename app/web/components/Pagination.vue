@@ -39,10 +39,10 @@
                     </button>
 
                     <div
-                            aria-current="page"
-                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition z-10 bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        aria-current="page"
+                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition z-10 bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
-                            {{ currentPage }}
+                        {{ currentPage }}
                     </div>
 
                     <button

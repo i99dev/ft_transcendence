@@ -28,7 +28,7 @@ export class GameWsService {
         private prisma: PrismaService,
         private userService: UserService,
         private matchService: MatchService,
-    ) { }
+    ) {}
 
     /* 
         Adds a new user to connected_users array
@@ -67,10 +67,11 @@ export class GameWsService {
                     this.custom_queue.splice(this.custom_queue.indexOf(user.login), 1)
             } else if (user.status == 'ingame') {
                 this.giveUp(user.socket)
-            }
-            else if (user.status == 'busy' && user.pendingInvite) {
+            } else if (user.status == 'busy' && user.pendingInvite) {
                 if (user.pendingInvite.invitedId == user.login) {
-                    const inviter = this.connected_users.find(u => u.login == user.pendingInvite.inviterId)
+                    const inviter = this.connected_users.find(
+                        u => u.login == user.pendingInvite.inviterId,
+                    )
                     this.respondInvite(inviter.socket, user.pendingInvite, true)
                 }
             }
@@ -78,8 +79,6 @@ export class GameWsService {
             this.repo.updatePlayerStatus('OFFLINE', user.login)
         }
     }
-
-
 
     public giveUp(userSocket: Socket) {
         const player = this.connected_users.find(user => user.socket == userSocket)
@@ -136,9 +135,9 @@ export class GameWsService {
             invited.socket.emit('Invite-Received', invite)
         } else if (invited) {
             // Incase user it not online or not found
-            this.respond(inviter, invited, invite, 'rejected', "Respond-Invite")
+            this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
         } else {
-            this.respond(inviter, invited, invite, 'rejected', "Respond-Invite")
+            this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
         }
     }
 
@@ -146,16 +145,20 @@ export class GameWsService {
     public respondInvite(userSocket: Socket, invite: InviteDto, error?: boolean) {
         const inviter = this.connected_users.find(user => user.login == invite.inviterId)
         const invited = this.connected_users.find(user => user.login == invite.invitedId)
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         if (error) {
             if (invited.status == 'busy') invited.status = 'online'
             if (inviter.status == 'busy') inviter.status = 'online'
-            this.respond(inviter, invited, invite, 'error', "Respond-Invite")
+            this.respond(inviter, invited, invite, 'error', 'Respond-Invite')
             return
         }
-        if (inviter && inviter.pendingInvite && inviter.pendingInvite.invitedId == invite.invitedId) {
+        if (
+            inviter &&
+            inviter.pendingInvite &&
+            inviter.pendingInvite.invitedId == invite.invitedId
+        ) {
             if (invite.accepted == true) {
-                this.respond(inviter, invited, invite, 'accepted', "Respond-Invite")
+                this.respond(inviter, invited, invite, 'accepted', 'Respond-Invite')
                 invited.powerUps = invite.powerups
                 invited.status = 'ingame'
                 inviter.status = 'ingame'
@@ -163,24 +166,36 @@ export class GameWsService {
             } else {
                 console.log('rejected')
                 invited.status = 'online'
-                this.respond(inviter, invited, invite, 'rejected', "Respond-Invite")
+                this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
                 inviter.status = 'online'
             }
         } else {
             invited.status = 'online'
-            this.respond(inviter, invited, invite, 'rejected', "Respond-Invite")
+            this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
         }
     }
 
-    private respond(inviter: ConnectedUser, invited: ConnectedUser, invite: InviteDto, responseStatus: any, event: string) {
-
-        inviter.socket.emit(event, { status: responseStatus, playerStatus: invited ? invited.status : 'offline', target: inviter.login })
+    private respond(
+        inviter: ConnectedUser,
+        invited: ConnectedUser,
+        invite: InviteDto,
+        responseStatus: any,
+        event: string,
+    ) {
+        inviter.socket.emit(event, {
+            status: responseStatus,
+            playerStatus: invited ? invited.status : 'offline',
+            target: inviter.login,
+        })
         inviter.pendingInvite = null
         if (invited) {
-            invited.socket.emit(event, { status: responseStatus, playerStatus: invited.status, target: invited.login })
+            invited.socket.emit(event, {
+                status: responseStatus,
+                playerStatus: invited.status,
+                target: invited.login,
+            })
             invited.pendingInvite = null
         }
-
     }
 
     public playerReady(userSocket: Socket) {

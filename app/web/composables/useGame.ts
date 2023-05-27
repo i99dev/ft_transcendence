@@ -75,11 +75,10 @@ export async function useGameInvite() {
             inviteModal.value.gameInProgress = true
             await navigateTo('/play')
         } else if (response.status == 'rejected') {
-            if(response.target == user_info.value?.login) {
-            inviteModal.value.rejected = true
-            inviteModal.value.playerStatus = response.playerStatus
-            }
-            else inviteModal.value.open = false
+            if (response.target == user_info.value?.login) {
+                inviteModal.value.rejected = true
+                inviteModal.value.playerStatus = response.playerStatus
+            } else inviteModal.value.open = false
         } else {
             inviteModal.value.open = false
         }
