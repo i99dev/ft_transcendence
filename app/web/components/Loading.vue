@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="half-circle-spinner w-32 aspect-square">
+    <div class="half-circle-spinner aspect-square" :class="props?.size || 'w-16'">
         <div class="circle circle-1"></div>
         <div class="circle circle-2"></div>
     </div>
@@ -8,7 +8,8 @@
 </template>
 
 <script setup>
-
+const props = defineProps(['size'])
+console.log(props?.size)
 </script>
 
 <style scoped>

@@ -11,7 +11,7 @@
         </div>
         <!-- loading -->
         <div v-else>
-            <Loading class="w-screen h-screen centered" />
+            <Loading class="w-screen h-screen centered" size="w-32"/>
         </div>
     </div>
 </template>
