@@ -2,37 +2,41 @@
     <div>
         <Toast />
         <div class="centered flex-col h-screen w-full">
-            <div class="centered flex-col" style="max-width: 80vw">
+            <div class="centered flex-col border border-tertiary shadow-xl shadow-tertiary p-5 rounded-2xl" style="max-width: 80vw">
                 <h1
-                    class="text-white text-xl md:text-2xl lg:text-3xl text-center capitalize p-2 mb-1"
+                    class="text-white text-xl md:text-2xl lg:text-3xl text-center capitalize p-2 mb-8"
                 >
                     Hi
-                    <span class="capitalize m-2 text-white p-2 rounded-xl bg-primary">{{
+                    <div class="capitalize m-2 text-white p-2 rounded-xl bg-primary inline-block cursor-default smooth-transition hover:scale-110">{{
                         useRoute().query.login
-                    }}</span>
+                    }}</div>
                 </h1>
-                <h1 class="text-primary text-xl md:text-2xl lg:text-3xl text-center p-2 mb-1">
+                <h1 class="text-white text-md md:text-2xl lg:text-3xl text-center p-2 mb-1 w-full">
                     Please enter the {{ useRoute().query.code_length }}-digits verification code we
                     sent via {{ useRoute().query.type }}
                 </h1>
+                <LoginOTPInput @submitCode="submitCode" class="my-4"/>
                 <h3
                     v-if="timer"
-                    class="text-white text-md md:text-lg lg:text-xl text-center normal-case mb-5 p-2"
+                    title="expires in"
+                    class="text-white text-md md:text-lg text-center mt-8 p-2 animate-pulse bg whitespace-nowrap"
                 >
-                    code will expire in {{ Math.trunc(timer / 60) }} :
-                    {{ timer % 60 > 0 ? timer % 60 : 0 }}
+                    <div class="">
+                        {{ Math.trunc(timer / 60) }} :
+                        {{ timer % 60 > 0 ? timer % 60 : 0 }}
+                    </div>
                 </h3>
                 <h3
                     v-else
-                    class="text-white text-md md:text-lg lg:text-xl text-center normal-case mb-5 p-2"
+                    title="expired"
+                    class="text-white text-md md:text-lg text-center mt-8 p-2 bg whitespace-nowrap opacity-70"
                 >
                     code is expired
                 </h3>
-                <LoginOTPInput @submitCode="submitCode" />
-                <h2 class="text-white text-md md:text-lg lg:text-xl text-center capitalize m-5 p-2">
+                <h2 class="text-white text-md md:text-lg lg:text-xl text-center capitalize p-2">
                     Didn't receive the code?
                     <button
-                        class="text-primary underline underline-offset-8 hover:text-tertiary hover:cursor-pointer transition duration-200 ease-in-out ml-2"
+                        class="bg-secondary hover:bg-primary smooth-transition rounded-xl p-2 m-2"
                         v-click-effect="resendCode"
                     >
                         Resend
