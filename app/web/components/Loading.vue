@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div class="half-circle-spinner aspect-square" :class="props?.size || 'w-16'">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
+    <div>
+        <div class="half-circle-spinner aspect-square" :class="props?.size || 'w-16'">
+            <div class="circle circle-1"></div>
+            <div class="circle circle-2"></div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -33,12 +33,12 @@ console.log(props?.size)
 }
 
 .circle.circle-1 {
-    border-top-color: #E93CAC;
+    border-top-color: #e93cac;
     animation: half-circle-spinner-animation 1s infinite;
 }
 
 .circle.circle-2 {
-    border-bottom-color: #59CBE8;
+    border-bottom-color: #59cbe8;
     animation: half-circle-spinner-animation 1s infinite alternate;
 }
 

@@ -63,7 +63,7 @@ onUnmounted(() => {
 
 const sendUsersList = () => {
     emit('usersList', users.value)
-    reset() 
+    reset()
 }
 
 const selectUser = (user: UserGetDto) => {
