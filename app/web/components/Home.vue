@@ -20,7 +20,9 @@
                     Play
                 </button>
 
-                <div class="flex flex-wrap sm:flex-no-wrap items-center justify-center iterms-center w-full">
+                <div
+                    class="flex flex-wrap sm:flex-no-wrap items-center justify-center iterms-center w-full"
+                >
                     <div class="w-full sm:w-3/4 lg:w-1/2">
                         <DashTab :username="props.username" />
                     </div>
@@ -38,5 +40,4 @@ import { ref } from 'vue'
 const IsProfile = ref(false)
 
 const props = defineProps(['username'])
-
 </script>

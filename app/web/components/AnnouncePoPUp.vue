@@ -1,25 +1,26 @@
 <template>
     <div v-for="(ann, index) in announcement" :key="index">
-        <MainPopup :show="isAnnounce && checkAnnounceAchiev(index)" @closeMainPopup="closeAcievPopUp(index)">
+        <MainPopup
+            :show="isAnnounce && checkAnnounceAchiev(index)"
+            @closeMainPopup="closeAcievPopUp(index)"
+        >
             <div class="centered flex-col p-10 text-white">
-                <div
-                    class=" rounded-full p-2 border border-white hover:scale-105 smooth-transition"
-                >
-                    <img class="rounded-full w-56 aspect-square object-cover"
-                        :src=getImagePath(ann.type)
+                <div class="rounded-full p-2 border border-white hover:scale-105 smooth-transition">
+                    <img
+                        class="rounded-full w-56 aspect-square object-cover"
+                        :src="getImagePath(ann.type)"
                     />
                 </div>
-                <span
-                    class="mt-8 text-2xl font-semibold leading-none tracking-tighter lg:text-3xl"
-                >
+                <span class="mt-8 text-2xl font-semibold leading-none tracking-tighter lg:text-3xl">
                     {{ getAnnounceTitle(ann) }}
                 </span>
                 <span class="mt-3 text-base leading-relaxed text-center opacity-80">
                     {{ getAnnounceContent(ann) }}
                 </span>
-                <button 
+                <button
                     v-click-effect="() => closeAcievPopUp(index)"
-                    class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none">
+                    class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none"
+                >
                     {{ getButtonName(ann) }}
                 </button>
             </div>
@@ -28,12 +29,11 @@
 </template>
 
 <script setup lang="ts">
+let newAchievement = (await getNewAnnouncement('ACHIEVEMENT')) as NotificationDto[]
 
-let newAchievement = await getNewAnnouncement('ACHIEVEMENT') as NotificationDto[]
+let newPunish = (await getNewAnnouncement('PUNISHMENT')) as NotificationDto[]
 
-let newPunish = await getNewAnnouncement('PUNISHMENT') as NotificationDto[]
-
-let newCompensate = await getNewAnnouncement('COMPENSATION') as NotificationDto[]
+let newCompensate = (await getNewAnnouncement('COMPENSATION')) as NotificationDto[]
 
 let newRank = await getNewRank()
 
@@ -50,10 +50,7 @@ const closeAcievPopUp = async (index: number) => {
 }
 
 const checkAnnounceAchiev = (index: number) => {
-    if (
-        !announceState.value[index] &&
-        announcement.value != undefined
-        )
+    if (!announceState.value[index] && announcement.value != undefined)
         deleteNewNotif(announcement.value[index].id)
 
     return announceState.value[index]
@@ -73,28 +70,32 @@ const announcement = computed(() => {
             type: newRank.isUp ? 'RANK_DOWN' : 'RANK_UP',
             id: newRank.id,
         })
-    if (newPunish && newPunish.length > 0 )
-        newPunish.forEach((punish) => {
+    if (newPunish && newPunish.length > 0)
+        newPunish.forEach(punish => {
             value.push({
                 content: punish.content,
                 type: 'PUNISHMENT',
                 id: punish.id,
-            });
-        });
+            })
+        })
     if (newCompensate && newCompensate.length > 0)
-        newCompensate.forEach((compensate) => {
+        newCompensate.forEach(compensate => {
             value.push({
                 content: compensate.content,
                 type: 'COMPENSATION',
                 id: compensate.id,
-            });
-        });
+            })
+        })
     value.reverse()
     return value
 })
 
 onMounted(async () => {
-    const totalSize = (newAchievement ? newAchievement.length : 0) + (newRank && newRank.rank != null ? 1 : 0) + (newPunish.length > 0 ? newPunish.length : 0) + (newCompensate.length > 0 ? newCompensate.length : 0)
+    const totalSize =
+        (newAchievement ? newAchievement.length : 0) +
+        (newRank && newRank.rank != null ? 1 : 0) +
+        (newPunish.length > 0 ? newPunish.length : 0) +
+        (newCompensate.length > 0 ? newCompensate.length : 0)
     if (totalSize > 0) {
         isAnnounce.value = true
         announceState.value = new Array(totalSize).fill(true)
@@ -106,9 +107,10 @@ const getImagePath = (ImageName: string) => {
 }
 
 const getAnnounceTitle = (ann: any) => {
-    if (ann.type ==  'PUNISHMENT' || ann.type == 'COMPENSATION')
-        return 'Attention !'
-    return (ann.type == 'ACHIEVEMENT' || ann.type ==  'PUNISHMENT' || ann.type == 'COMPENSATION') ? ann.content : getLadderRank(ann.content)
+    if (ann.type == 'PUNISHMENT' || ann.type == 'COMPENSATION') return 'Attention !'
+    return ann.type == 'ACHIEVEMENT' || ann.type == 'PUNISHMENT' || ann.type == 'COMPENSATION'
+        ? ann.content
+        : getLadderRank(ann.content)
 }
 
 const getAnnounceContent = (ann: any) => {
@@ -122,11 +124,10 @@ const getAnnounceContent = (ann: any) => {
         return `Bad News ! You have been punished for leaving the match, 20% of your XP has been deducted, your new XP is " ${ann.content} " !`
     else if (ann.type == 'COMPENSATION')
         return `Good News! Compensation have been applied for the time you lost when the opponent left the match, your new XP is " ${ann.content} " !`
-
 }
 
 const getButtonName = (ann: any) => {
-    return (ann.type == 'RANK_DOWN' || ann.type == 'PUNISHMENT') ? 'OOPS !' : 'YAY !'
+    return ann.type == 'RANK_DOWN' || ann.type == 'PUNISHMENT' ? 'OOPS !' : 'YAY !'
 }
 
 const getLadderRank = (ladder: string) => {

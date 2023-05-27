@@ -170,7 +170,7 @@ export class GroupChatService {
         }
     }
 
-    async getGroupChatForUser(user_login: string) {
+    async getGroupChatForUser(user_login: string, page: number = 1) {
         try {
             const chat = await this.prisma.groupChat.findMany({
                 where: {
@@ -200,6 +200,11 @@ export class GroupChatService {
                         },
                     },
                 },
+                orderBy: {
+                    id: 'desc',
+                },
+                skip: (page - 1) * 20,
+                take: 20,
             })
             const sortedChat = this.chatRepository.sort(chat)
             for (const group of sortedChat) {

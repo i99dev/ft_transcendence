@@ -1,11 +1,9 @@
 <template>
-    <div
-        class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3  group text-white"
-    >
+    <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 group text-white">
         <div
             v-for="(acheivement, index) in acheivements"
             :key="index"
-            class="p-10 m-4 flex flex-col items-center text-center group border border-tertiary rounded-xl shadow-xl shadow-secondary smooth-transition hover:scale-105 "
+            class="p-10 m-4 flex flex-col items-center text-center group border border-tertiary rounded-xl shadow-xl shadow-secondary smooth-transition hover:scale-105"
         >
             <span class="p-2 rounded-full border border-tertiary smooth-transition text-white">
                 <img :src="acheivement.image" alt="Achievement Image" class="rounded-full" />

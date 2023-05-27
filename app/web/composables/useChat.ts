@@ -24,7 +24,7 @@ export const useChat = () => {
     return { chat_info, setChatModalOpen, send_message }
 }
 
-export async function useDirectChats(): Promise<any> {
+export async function useDirectChats(page: number = 1): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -34,6 +34,9 @@ export async function useDirectChats(): Promise<any> {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        query: {
+            page: page,
         },
         server: false,
     })
@@ -58,7 +61,7 @@ export async function useDirectChatWith(user_login: string): Promise<any> {
     return { data, error, refresh, pending }
 }
 
-export async function useGroupChats(): Promise<any> {
+export async function useGroupChats(page: number = 1): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -68,6 +71,9 @@ export async function useGroupChats(): Promise<any> {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        query: {
+            page: page,
         },
         server: false,
     })
@@ -142,14 +148,20 @@ export const useChatType = () => {
 
     const setChatType = async (type: ChatRoomType | null) => {
         const { setChats } = useChats()
-        const { data } =
-            type === 'DM'
-                ? await useDirectChats()
-                : type === 'GROUP'
-                ? await useGroupChats()
-                : { data: { value: undefined } }
-        if (data.value) setChats(data.value)
-        else setChats([])
+        let chats = [] as any
+        let page = 1
+        while (true) {
+            const { data } =
+                type === 'DM'
+                    ? await useDirectChats(page)
+                    : type === 'GROUP'
+                    ? await useGroupChats(page)
+                    : { data: { value: undefined } }
+            if (data.value && chats) chats = chats?.concat(data.value)
+            if (!data.value || data.value?.length < 20) break
+            page++
+        }
+        setChats(chats)
 
         chatType.value = type
     }

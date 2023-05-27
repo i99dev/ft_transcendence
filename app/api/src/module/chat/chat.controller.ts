@@ -79,13 +79,15 @@ export class ChatController {
     }
 
     @Get('/groupChat/me')
-    async getGroupChat(@Req() req) {
-        return await this.groupChatService.getGroupChatForUser(req.user.login)
+    async getGroupChat(@Req() req, @Query('page') page: number = 1) {
+        if (page < 1 || page > 100000) page = 1
+        return await this.groupChatService.getGroupChatForUser(req.user.login, page)
     }
 
     @Get('/directChat/me')
-    async getDirectChat(@Req() req) {
-        return await this.directChatService.getDirectChatForUser(req.user.login)
+    async getDirectChat(@Req() req, @Query('page') page: number = 1) {
+        if (page < 1 || page > 100000) page = 1
+        return await this.directChatService.getDirectChatForUser(req.user.login, page)
     }
 
     @Get('/directChat/user/:user_login')
@@ -97,9 +99,9 @@ export class ChatController {
     async searchGroupChat(
         @Req() req,
         @Query('name', QueryParseStringPipe) search: string,
-        @Query('page') page: number,
+        @Query('page') page: number = 1,
     ) {
-        if (!page || page < 1) page = 1
+        if (page < 1 || page > 100000) page = 1
         if (!search) return await this.groupChatService.getAllGroupChats(page)
         return await this.groupChatService.searchGroupChat(search, req.user.login, page)
     }

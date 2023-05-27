@@ -250,8 +250,7 @@ export function useGameRenderer() {
     const init_game = async (canvasRef: Ref<HTMLCanvasElement>) => {
         initScene(canvasRef)
         initPostProcessing()
-        if (!isMobile.value)
-            enableOrbitControls()
+        if (!isMobile.value) enableOrbitControls()
         await createGameObjects()
         addEventListener('resize', onWindowResize)
         originalPaddleHeight = gameSetup.value?.game.players[0].paddle.height
@@ -266,8 +265,7 @@ export function useGameRenderer() {
 
     const animate = () => {
         requestAnimationFrame(animate)
-        if (!isMobile.value)
-            controls.update()
+        if (!isMobile.value) controls.update()
         // composer.render();
         renderer.render(scene, camera)
     }
@@ -357,7 +355,7 @@ export function useGameRenderer() {
     }
 
     const updateBall = (ball: BallDto): void => {
-        if(!sphere || !ball) {
+        if (!sphere || !ball) {
             console.log('sphere or ball is not defined')
             return
         }
