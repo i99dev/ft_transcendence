@@ -9,6 +9,8 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 export function useGameRenderer() {
     const gameSetup = useState<SetupDto>('gameSetup')
     const gameData = useState<gameStatusDto>('gameData')
+    const isMobile = useState<boolean>('isMobile')
+
     let scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.WebGLRenderer
     let controls: OrbitControls
     let gameGroup: THREE.Group, paddle: THREE.Mesh, paddle2: THREE.Mesh, sphere: THREE.Mesh
@@ -56,6 +58,11 @@ export function useGameRenderer() {
         renderer.setSize(width, height)
         composer.setSize(width, height)
         // bloomPass.setSize(width, height);
+    }
+
+    const resetCamera = () => {
+        camera.position.set(0, 0, 15)
+        camera.lookAt(0, 0, 0)
     }
 
     const initPostProcessing = () => {
@@ -208,6 +215,9 @@ export function useGameRenderer() {
         controls.enableDamping = true
         controls.dampingFactor = 0.1
         controls.screenSpacePanning = false
+        controls.maxZoom = 1.5
+        controls.minZoom = 0.5
+        controls.enablePan = false
     }
 
     const loadLogo = () => {
@@ -240,7 +250,8 @@ export function useGameRenderer() {
     const init_game = async (canvasRef: Ref<HTMLCanvasElement>) => {
         initScene(canvasRef)
         initPostProcessing()
-        // enableOrbitControls()
+        if (!isMobile.value)
+            enableOrbitControls()
         await createGameObjects()
         addEventListener('resize', onWindowResize)
         originalPaddleHeight = gameSetup.value?.game.players[0].paddle.height
@@ -255,7 +266,8 @@ export function useGameRenderer() {
 
     const animate = () => {
         requestAnimationFrame(animate)
-        // controls.update()
+        if (!isMobile.value)
+            controls.update()
         // composer.render();
         renderer.render(scene, camera)
     }
@@ -281,7 +293,7 @@ export function useGameRenderer() {
 
     const updatePlayer = (players: PlayerDto[]): void => {
         if (!paddle || !paddle2) {
-            console.error('paddle1 or paddle2 is not defined')
+            console.log('paddle1 or paddle2 is not defined')
             return
         }
         for (let i = 0; i < players.length; i++) {
@@ -345,6 +357,10 @@ export function useGameRenderer() {
     }
 
     const updateBall = (ball: BallDto): void => {
+        if(!sphere || !ball) {
+            console.log('sphere or ball is not defined')
+            return
+        }
         sphere.position.x = ball.x
         sphere.position.y = ball.y
         updateBallColor(sphere, ball.color)
@@ -457,6 +473,7 @@ export function useGameRenderer() {
         updatePlayer,
         updateBall,
         rescaleGameData,
+        resetCamera,
         reset,
     }
 }

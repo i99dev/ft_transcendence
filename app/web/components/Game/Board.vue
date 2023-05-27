@@ -24,9 +24,8 @@ const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
 const showReadyModal = ref(false)
 
-const { init_game, updatePlayer, updateBall, rescaleGameData, reset } = useGameRenderer()
+const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } = useGameRenderer()
 const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isDeuce } = useSocket()
-
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -46,7 +45,7 @@ const keys: { [key: string]: boolean } = {
 }
 
 const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-const isMobile = ref(false)
+const isMobile = useState<boolean>('isMobile', () => false)
 
 onMounted(() => {
     isMobile.value = mobileRegex.test(navigator.userAgent)
@@ -102,6 +101,7 @@ function destroy(): void {
 }
 
 function giveUp(): void {
+    if(!gameSetup.value?.game) return
     socket.value?.emit('Give-Up', gameSetup.value?.game.players[gameSetup.value?.player])
     destroy()
 }
@@ -130,7 +130,7 @@ watch(gameData, (newVal, oldVal) => {
         updatePaddleDirection()
         rescaleGameData(newVal)
         updatePlayer(gameData.value?.players)
-        updateBall(gameData.value?.ball)
+        updateBall(gameData.value?.ball) 
     }
 })
 
@@ -164,11 +164,13 @@ const handleKeyDown = (event: KeyboardEvent): void => {
     if (keys.hasOwnProperty(event.key)) {
         event.preventDefault()
     }
-
     if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
         keys[event.key] = true
     } else if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
         activatePowerUp(event.key)
+    }
+    else if (event.code == 'Space') {
+        resetCamera()
     }
 }
 
