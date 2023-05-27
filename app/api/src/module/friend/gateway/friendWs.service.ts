@@ -45,7 +45,11 @@ export class FriendWsService {
 
     async updateClientWithList(client: any, id: string) {
         const interval = setInterval(async () => {
-            client.emit('friends-list', await this.friendService.getFriends(id))
+            try {
+                const friends = await this.friendService.getFriends(id)
+                client.emit('friends-list', friends)
+            } catch (error) {
+            }
         }, 2000)
 
         client.on('disconnect', async () => {
