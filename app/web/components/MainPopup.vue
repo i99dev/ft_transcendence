@@ -1,5 +1,5 @@
 <template>
-    <TransitionRoot appear :show="props?.show" as="template">
+    <TransitionRoot appear :show="props?.show || false" as="template">
         <Dialog as="div" @close="$emit('closeMainPopup')" class="relative z-10">
             <TransitionChild
                 as="template"
