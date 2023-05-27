@@ -127,6 +127,7 @@ const sendChatData = () => {
         name: chatName.value,
         image: formData.value,
     })
+    reset()
 }
 
 const closePopup = (action: 'chatData' | 'closePopup' | 'cancel' = 'closePopup') => {
