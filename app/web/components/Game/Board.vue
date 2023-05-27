@@ -45,6 +45,8 @@ const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isD
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
 
+const isMobile = useState<boolean>('isMobile')
+
 const playSound = (sound: string): void => {
     const random = Math.floor(Math.random() * 2) + 1
     const audio = new Audio(`/sounds/${sound}-${random}.mp3`)
@@ -59,11 +61,8 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false,
 }
 
-const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-const isMobile = useState<boolean>('isMobile', () => false)
 
 onMounted(() => {
-    isMobile.value = mobileRegex.test(navigator.userAgent)
     setupEvents()
 })
 
