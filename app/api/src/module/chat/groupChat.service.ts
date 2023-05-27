@@ -11,9 +11,7 @@ export class GroupChatService {
     constructor(
         private prisma: PrismaService,
         private chatRepository: ChatRepository,
-        private chatService: ChatService,
     ) {}
-    private chatRooms: ChatRoom[]
 
     async getGroupChatRoom(room_id: string) {
         try {
@@ -22,6 +20,7 @@ export class GroupChatService {
                     chat_room_id: room_id,
                 },
             })
+            delete chat.password
             return chat
         } catch (error) {
             console.log(error)
@@ -67,6 +66,7 @@ export class GroupChatService {
                     },
                 },
             })
+            delete chat.password
             return chat
         } catch (error) {
             console.log(error)
@@ -142,6 +142,9 @@ export class GroupChatService {
                 skip: (page - 1) * 20,
                 take: 20,
             })
+            for (const group of groupChats) {
+                delete group.password
+            }
             return groupChats
         } catch (error) {
             console.log(error)
@@ -150,7 +153,7 @@ export class GroupChatService {
 
     async updateGroupChat(info: UpdateChatDto) {
         try {
-            return await this.prisma.groupChat.update({
+            const group = await this.prisma.groupChat.update({
                 where: {
                     chat_room_id: info.room_id,
                 },
@@ -161,6 +164,8 @@ export class GroupChatService {
                     name: info?.name,
                 },
             })
+            delete group.password
+            return group
         } catch (error) {
             console.log(error)
         }
@@ -198,6 +203,9 @@ export class GroupChatService {
                 },
             })
             const sortedChat = this.chatRepository.sort(chat)
+            for (const group of sortedChat) {
+                delete group.password
+            }
             return sortedChat
         } catch (error) {
             console.log(error)
@@ -231,6 +239,9 @@ export class GroupChatService {
                 skip: (page - 1) * 20,
                 take: 20,
             })
+            for (const group of chat) {
+                delete group.password
+            }
             return chat
         } catch (error) {
             console.log(error)
@@ -260,6 +271,9 @@ export class GroupChatService {
                     },
                 },
             })
+            for (const group of chat) {
+                delete group.password
+            }
             return chat
         } catch (error) {
             console.log(error)
