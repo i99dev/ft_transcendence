@@ -149,10 +149,7 @@
                 </div>
             </div>
             <div
-                class="w-full h-24 centered p-2"
-                :class="{
-                    'mb-12': enableLoadMoreButton,
-                }"
+                class="w-full h-36 flex justify-center items-start p-2"
             >
                 <form @submit.prevent="sendMessage" class="w-full flex justify-center">
                     <input
