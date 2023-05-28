@@ -109,7 +109,7 @@ const gameResult = ref(false)
 const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
-const { emitLeaveQueue, resetSocket, setupSocketHandlers } = useSocket()
+const { emitLeaveQueue } = useSocket()
 const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
 const showRotateOverlay = ref(false)
@@ -148,6 +148,21 @@ const startGame = (mode: GameSelectDto): void => {
     }, 700)
     gameResult.value = false
 }
+
+watchEffect(() => {
+    if (route.path === '/play') {
+        if (inviteModal.value.gameInProgress) {
+            showSelector.value = false
+            showBoard.value = true
+            startGame({
+                gameType: invite.value.gameType,
+                gameMode: 'invite',
+                powerups: invite.value.powerups,
+            })
+            inviteModal.value.gameInProgress = false
+        }
+    }
+})
 
 const playAgain = (): void => {
     showSelector.value = true
@@ -190,21 +205,6 @@ function handleMuteSound() {
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
-
-watchEffect(() => {
-    if (route.path === '/play') {
-        if (inviteModal.value.gameInProgress) {
-            showSelector.value = false
-            showBoard.value = true
-            startGame({
-                gameType: invite.value.gameType,
-                gameMode: 'invite',
-                powerups: invite.value.powerups,
-            })
-            inviteModal.value.gameInProgress = false
-        }
-    }
-})
 </script>
 
 <style>

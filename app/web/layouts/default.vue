@@ -6,7 +6,7 @@
             <Header />
             <ChatNavBar />
             <FriendsListNav />
-            <GameInviteBox v-if="inviteModal.open" class="z-20" />
+            <GameInviteBox v-if="inviteModal.open" class="z-21" />
             <GameDublicateWarningModal v-if="showDublicateModal" class="z-20" />
             <slot />
         </div>
