@@ -9,19 +9,21 @@
                     </h1>
                 </div>
             </div>
-            <h1 class="text-2xl font-bold mb-20 shadow-xl shadow-secondary mt-20 text-white">The Pong Game</h1>
+            <h1 class="text-2xl font-bold mb-10 mt-20 text-white translate-y-2">
+                The Pong Game
+            </h1>
             <div class="container mx-auto p-4 lg:p-3">
                 <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
 
-                    <div v-for="ann in announcement" :key="ann.title"
+                    <div v-for="info in gameInfo" :key="info.title"
                         class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-primary_light smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
                         <div class="flex items-center text-blue-500">
-                            <p class="text-sm font-bold uppercase">{{ ann.title }}</p>
+                            <p class="text-sm font-bold uppercase">{{ info.title }}</p>
                         </div>
 
-                        <h2 class="mt-4 text-3xl font-semibold text-violet-500 "> {{ ann.subtitle }} </h2>
+                        <h2 class="mt-4 text-3xl font-semibold text-violet-500 "> {{ info.subtitle }} </h2>
 
-                        <div v-for="des in ann.description">
+                        <div v-for="des in info.description">
 
                             <p class="mt-4 text-lg text-slate-300">{{ des }}
                             </p>
@@ -29,7 +31,13 @@
                         </div>
                         <div
                             class="mt-12 flex col-auto transform items-center justify-center transition-transform duration-150 ease-in-out hover:scale-125">
-                            <div v-if="ann.title == 'Controls'" class="flex flex-col items-center">
+                            <div v-if="info.title == 'Achievements'" class="grid grid-cols-3 mb-10 gap-4">
+                                <div v-for="achv in achievements" class="mt-3 mb-10 rounded-full border border-tertiary_dark overflow-hidden">
+                                    <img :src="achv.image" class="w-full h-full object-cover">
+                                    <span class="absolute bg-tertiary_dark text-white text-xs px-1 rounded-bl rounded-tr">{{ achv.type }}</span>
+                                </div>
+                            </div>
+                            <div v-if="info.title == 'Controls'" class="flex flex-col items-center">
                                 <svg style="color: blueviolet" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
                                     fill="currentColor" class="bi bi-arrow-up-square-fill mb-2" viewBox="0 0 16 16">
                                     <path
@@ -57,7 +65,11 @@
 
 <script setup lang="ts">
 
-const announcement = computed(() => {
+const achievements = await getAllAchievements()
+
+console.log('achvs', achievements)
+
+const gameInfo = computed(() => {
     return [
         {
             title: 'Game Modes',
