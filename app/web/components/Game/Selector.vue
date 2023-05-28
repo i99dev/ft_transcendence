@@ -1,30 +1,27 @@
 <template>
     <div
-        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-secondary shadow-primary shadow-sm bg-opacity-5 py-6 px-10 rounded-lg border border-tertiary border-opacity-70 space-y-4"
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-secondary shadow-primary shadow-md bg-opacity-5 py-6 px-10 rounded-lg border border-tertiary border-opacity-70 space-y-4"
     >
         <div v-if="step === 1" key="step1">
             <h2 class="text-2xl text-center text-white font-bold mb-4">Select Game Type</h2>
-            <ul class="space-y-2 list-none">
-                <li>
+            <div class="space-y-2">
                     <button
-                        class="w-full py-2 px-4 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        class="w-full py-2 px-2 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out hover:scale-105 active:scale-95"
                         v-click-effect="() => selectGame('classic')"
                     >
                         Classic Pong
                     </button>
-                </li>
-                <li>
+
                     <button
-                        class="w-full py-2 px-4 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        class="w-full py-2 px-2 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
                         v-click-effect="() => selectGame('custom')"
                     >
                         Custom Pong
                     </button>
-                </li>
-            </ul>
+                </div>
             <div class="flex justify-center mt-4">
                 <button
-                    class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                    class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
                     v-click-effect:unplay="goHome"
                 >
                     Home

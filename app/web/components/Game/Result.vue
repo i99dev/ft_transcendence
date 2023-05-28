@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="result-background fixed inset-0 backdrop-blur-sm text-9xl text-white z-1"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto transition-all duration-700 ease-in">
+        <div class="result-background fixed inset-0 backdrop-blur-sm text-9xl text-white"></div>
+        <div class="fixed inset-0 overflow-y-auto transition-all duration-700 ease-in">
             <div
-                class="min-h-full flex justify-center items-center text-center flex-col p-4 sm:items-center sm:p-0"
+                class="min-h-full flex space-y- justify-center items-center text-center flex-col p-4 sm:items-center sm:p-0"
             >
                 <h1 class="game-result uppercase text-white animate-bounce text-[10vw]">
                     {{ gameResultMessage }}

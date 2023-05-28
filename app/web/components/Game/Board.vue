@@ -16,7 +16,7 @@
             @touchStart="handleTouchStart"
             @touchEnd="handleTouchEnd"
         />
-        <GameAnnouncments />
+        <GameAnnouncments class="z-20" />
         <canvas
             ref="canvasRef"
             class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"

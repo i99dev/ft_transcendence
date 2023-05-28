@@ -84,6 +84,7 @@
                 @vue-mounted="exit = false"
                 :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain"
+                class="z-20"
             />
         </div>
         <div
