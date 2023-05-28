@@ -119,15 +119,22 @@
 </template>
 
 <script setup lang="ts">
+import { useDublicateModal } from '~~/composables/Game/useSocket';
+
 const step = ref(1)
 const selectedGame = ref('' as string)
 const selectedMode = ref('' as string)
 const loadingMsg = ref('' as string)
 const selectedPowerups = ref<string[]>([])
+const { showDublicateModal, isClientConnected } = useDublicateModal()
 
 const emit = defineEmits(['gameSelected', 'leaveQueue'])
 
 const selectGame = (game: string) => {
+    if(!isClientConnected()) {
+        showDublicateModal.value = true
+        return
+    }
     selectedGame.value = game
     step.value = 2
 }

@@ -7,6 +7,7 @@
             <ChatNavBar />
             <FriendsListNav />
             <GameInviteBox v-if="inviteModal.open" class="z-20" />
+            <GameDublicateWarningModal v-if="showDublicateModal" class="z-20" />
             <slot />
         </div>
         <!-- loading -->
@@ -17,13 +18,14 @@
 </template>
 
 <script lang="ts" setup>
+import { useDublicateModal } from '@/composables/Game/useSocket';
 const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
     useSockets()
 const { setUserInfo } = useUserInfo()
-const me = ref(undefined)
 const { inviteModal } = await useGameInvite()
+const { showDublicateModal } = useDublicateModal()
+const me = ref(undefined)
 const isMobile = useState<boolean>('isMobile', () => false)
-
 const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
 
 onMounted(async () => {

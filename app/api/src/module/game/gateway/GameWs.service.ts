@@ -36,11 +36,8 @@ export class GameWsService {
     public addConnectedUser(userLogin: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.login == userLogin)
         if (temp) {
-            setTimeout(() => {
-                userSocket.emit('Close-Tab')
                 userSocket.disconnect(true)
                 return
-            }, 1000)
         }
         else {
             this.connected_users.push({
@@ -146,7 +143,6 @@ export class GameWsService {
     public respondInvite(userSocket: Socket, invite: InviteDto, error?: boolean) {
         const inviter = this.connected_users.find(user => user.login == invite.inviterId)
         const invited = this.connected_users.find(user => user.login == invite.invitedId)
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         if (error) {
             if (invited.status == 'busy') invited.status = 'online'
             if (inviter.status == 'busy') inviter.status = 'online'
@@ -165,7 +161,6 @@ export class GameWsService {
                 inviter.status = 'ingame'
                 this.createMultiGame(inviter, invited, invite.gameType)
             } else {
-                console.log('rejected')
                 invited.status = 'online'
                 this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
                 inviter.status = 'online'

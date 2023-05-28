@@ -156,13 +156,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useFriends } from '@/composables/Friends/useFriends'
-
+import { useDublicateModal } from '@/composables/Game/useSocket'
 const mode = ref('' as string)
 const selectedPowerups = ref<string[]>([])
 const isLoading = ref(false)
 const { invite, inviteModal, send, accept, decline, reset } = await useGameInvite()
 const { chat_info } = useChat()
 const { friends_info } = await useFriends()
+const { showDublicateModal, isClientConnected } = useDublicateModal()
 
 const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu']
 
@@ -202,6 +203,12 @@ const declineInvite = () => {
 }
 
 const sendInvite = () => {
+
+    if(!isClientConnected())
+    {
+        showDublicateModal.value = true
+        return
+    }
     isLoading.value = true
     send({
         inviterId: '',

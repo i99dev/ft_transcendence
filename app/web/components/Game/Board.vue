@@ -69,6 +69,7 @@ onUnmounted(() => {
     giveUp()
     clearEvents()
     reset()
+    gameWinner.value = ''
 })
 
 const setupEvents = (): void => {
@@ -102,10 +103,10 @@ const emitGameOver = (winner: string): void => {
     showStatusBar.value = false
 }
 
-watch(gameWinner, (newVal, oldVal) => {
-    if (newVal) {
-        emitGameOver(newVal)
-    }
+watchEffect(() => {
+        if(gameWinner.value) {
+            emitGameOver(gameWinner.value)
+        }
 })
 
 function destroy(): void {

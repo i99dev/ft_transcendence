@@ -4,7 +4,7 @@ export function useSocket() {
     const { gameSocket } = useGameSocket()
     const socket = ref(gameSocket.value as Socket | undefined)
 
-    const gameWinner = ref('')
+    const gameWinner = useState<string>('gameWinner', () => '')
     const gameData = useState<gameStatusDto>('gameData', () => {
         return {} as gameStatusDto
     })
@@ -17,7 +17,7 @@ export function useSocket() {
 
     const resetSocket = () => {
         socket.value?.off
-        gameWinner.value = ''
+        // gameWinner.value = ''
         // gameData.value = {} as gameStatusDto
         // gameSetup.value = {} as SetupDto
     }
@@ -66,15 +66,14 @@ export function useSocket() {
     }
 }
 
-export function useTabEvent() {
-    const showTab = ref(false)
+export function useDublicateModal() {
+    const showDublicateModal = useState<boolean>("showDublicateModal", () => false)
     const { gameSocket } = useGameSocket()
+    const isClientConnected = () => {
+        return gameSocket.value?.connected
+    }
 
-    gameSocket.value?.on('Close-Tab', () => {
-        showTab.value = true
-    })
-    useGameSocket()
-    return { showTab }
+    return { showDublicateModal, isClientConnected }
 }
 
 export function useSound(playSoundCallback: (sound: string) => void) {
