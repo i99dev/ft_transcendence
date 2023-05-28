@@ -35,7 +35,7 @@ import { MatchModule } from '@module/match/match.module'
                     service: 'gmail',
                     auth: {
                         user: configService.getOrThrow<string>('email.user'),
-                        pass: configService.getOrThrow<string>('email.password'),
+                        pass: configService.getOrThrow<string>('email.app_password'),
                     },
                 },
                 defaults: {
