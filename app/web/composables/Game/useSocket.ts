@@ -12,7 +12,7 @@ export function useSocket() {
         return {} as SetupDto
     })
     const isDeuce = useState<boolean>('isDeuce', () => {
-        return false
+        return false 
     })
 
     const resetSocket = () => {
@@ -48,6 +48,9 @@ export function useSocket() {
         })
         socket.value?.on('Game-Deuce', () => {
             isDeuce.value = true
+            setTimeout(() => {
+                isDeuce.value = false
+            }, 3000)
         })
     }
 

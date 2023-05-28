@@ -30,8 +30,8 @@
         </div>
 
         <div>
-            <GameClosePopup v-if="exit" @closePopup="switchExistStatus(false)" @GiveUp="exitGame" summary="Exit Game"
-                detail="You will be considered a LOSER since you give up in middle of the game!!"
+            <GameClosePopup v-if="exit" @closePopup="switchExistStatus(false)" @GiveUp="exitGame"
+                detail="You will be considerd a leaver!"
                 confirmation="Are you sure you want to exit the game?" />
             <div
                 class="container flex justify-center items-center flex-col m-0 p-0 min-h-screen min-w-screen relative h-screen">

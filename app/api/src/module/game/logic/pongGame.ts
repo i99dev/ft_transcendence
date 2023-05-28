@@ -38,6 +38,7 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
 const PADDLE_SPEED = 0.0175
+const BALL_RADIUS = 0.03
 const REFLECT_ANGLE = 80
 const BALL_XSPEED = 0.017
 const BALL_YSPEED = 0.0
@@ -109,7 +110,7 @@ export class PongGame {
                 y: 0.5,
                 dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
                 dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
-                radius: 0.015,
+                radius: BALL_RADIUS,
                 color: 'white',
             },
             time: 120,
