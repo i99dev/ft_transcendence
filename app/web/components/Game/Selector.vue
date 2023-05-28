@@ -1,6 +1,6 @@
 <template>
     <div
-        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-secondary shadow-primary shadow-md bg-opacity-5 py-6 px-10 rounded-lg border border-tertiary border-opacity-70 space-y-4"
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-secondary shadow-primary shadow-sm bg-opacity-5 py-6 px-10 rounded-lg border border-tertiary border-opacity-70 space-y-4"
     >
         <div v-if="step === 1" key="step1">
             <h2 class="text-2xl text-center text-white font-bold mb-4">Select Game Type</h2>
