@@ -82,7 +82,7 @@
                 <button
                     v-for="chat in chats"
                     :key="chat?.id"
-                    v-click-effect="() => setCurrentChat(chat)"
+                    @click="() => setCurrentChat(chat)"
                     class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
