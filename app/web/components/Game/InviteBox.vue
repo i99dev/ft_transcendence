@@ -203,9 +203,7 @@ const declineInvite = () => {
 }
 
 const sendInvite = () => {
-
-    if(!isClientConnected())
-    {
+    if (!isClientConnected()) {
         showDublicateModal.value = true
         return
     }

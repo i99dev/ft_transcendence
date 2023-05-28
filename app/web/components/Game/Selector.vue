@@ -5,20 +5,20 @@
         <div v-if="step === 1" key="step1">
             <h2 class="text-2xl text-center text-white font-bold mb-4">Select Game Type</h2>
             <div class="space-y-2">
-                    <button
-                        class="w-full py-2 px-2 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectGame('classic')"
-                    >
-                        Classic Pong
-                    </button>
+                <button
+                    class="w-full py-2 px-2 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                    v-click-effect="() => selectGame('classic')"
+                >
+                    Classic Pong
+                </button>
 
-                    <button
-                        class="w-full py-2 px-2 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectGame('custom')"
-                    >
-                        Custom Pong
-                    </button>
-                </div>
+                <button
+                    class="w-full py-2 px-2 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
+                    v-click-effect="() => selectGame('custom')"
+                >
+                    Custom Pong
+                </button>
+            </div>
             <div class="flex justify-center mt-4">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
@@ -119,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDublicateModal } from '~~/composables/Game/useSocket';
+import { useDublicateModal } from '~~/composables/Game/useSocket'
 
 const step = ref(1)
 const selectedGame = ref('' as string)
@@ -131,7 +131,7 @@ const { showDublicateModal, isClientConnected } = useDublicateModal()
 const emit = defineEmits(['gameSelected', 'leaveQueue'])
 
 const selectGame = (game: string) => {
-    if(!isClientConnected()) {
+    if (!isClientConnected()) {
         showDublicateModal.value = true
         return
     }

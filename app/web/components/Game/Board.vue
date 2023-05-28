@@ -104,9 +104,9 @@ const emitGameOver = (winner: string): void => {
 }
 
 watchEffect(() => {
-        if(gameWinner.value) {
-            emitGameOver(gameWinner.value)
-        }
+    if (gameWinner.value) {
+        emitGameOver(gameWinner.value)
+    }
 })
 
 function destroy(): void {

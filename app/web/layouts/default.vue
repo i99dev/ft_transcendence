@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useDublicateModal } from '@/composables/Game/useSocket';
+import { useDublicateModal } from '@/composables/Game/useSocket'
 const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
     useSockets()
 const { setUserInfo } = useUserInfo()
