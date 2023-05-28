@@ -67,7 +67,7 @@
             <template #button>
                 <button
                     v-click-effect="handleDropdown"
-                    class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none"
+                    class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none bg-background_light"
                 >
                     <ChevronUpIcon class="w-4 h-4"/>
                 </button>
