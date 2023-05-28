@@ -99,7 +99,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.setupSpecialMessage(
             this.getID(client),
             chatRoom.room_id,
-            `${client.handshake.auth.login} created a group chat`,
+            `${(await this.userService.getUser(client.handshake.auth.login)).username} created a group chat`,
         )
         client.emit('new-group-list', {
             content: await this.groupChatService.getGroupChatForUser(client.handshake.auth.login),
@@ -139,7 +139,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.setupSpecialMessage(
             this.getID(client),
             room_id,
-            `${client.handshake.auth.login} created a direct chat`,
+            `${(await this.userService.getUser(client.handshake.auth.login)).username} created a direct chat`,
         )
         this.wss.emit('new-direct-list', {
             content: await this.directChatService.getDirectChatForUser(target_id),
@@ -177,7 +177,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return await this.setupSpecialMessage(
                 this.getID(client),
                 payload.room_id,
-                `${client.handshake.auth.login} joined`,
+                `${(await this.userService.getUser(client.handshake.auth.login)).username} joined`,
             )
 
         if (await this.chatWsService.validatePassword(payload.room_id, payload.password))
@@ -188,7 +188,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.setupSpecialMessage(
             this.getID(client),
             payload.room_id,
-            `${client.handshake.auth.login} joined`,
+            `${(await this.userService.getUser(client.handshake.auth.login)).username} joined`,
         )
         client.emit('new-group-list', {
             content: await this.groupChatService.getGroupChatForUser(client.handshake.auth.login),
@@ -225,7 +225,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.setupSpecialMessage(
             this.getID(client),
             payload.room_id,
-            `${client.handshake.auth.login} left`,
+            `${(await this.userService.getUser(client.handshake.auth.login)).username} left`,
         )
         client.leave(payload.room_id)
     }
@@ -251,7 +251,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.setupSpecialMessage(
             this.getID(client),
             payload.room_id,
-            `${client.handshake.auth.login} updated group chat info`,
+            `${(await this.userService.getUser(client.handshake.auth.login)).username} updated group chat info`,
         )
     }
 
@@ -322,7 +322,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.setupSpecialMessage(
                 this.getID(client),
                 payload.room_id,
-                `${client.handshake.auth.login} added ${payload.user_login}`,
+                `${(await this.userService.getUser(client.handshake.auth.login)).username} added ${payload.user_login}`,
             )
 
             if (clientSocket) {
@@ -346,7 +346,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
             await this.setupSpecialMessage(
                 this.getID(client),
                 payload.room_id,
-                `${client.handshake.auth.login} kicked ${payload.user_login}`,
+                `${(await this.userService.getUser(client.handshake.auth.login)).username} kicked ${payload.user_login}`,
             )
             if (clientSocket) clientSocket.leave(payload.room_id)
         } else if (payload.action === 'invite') {
