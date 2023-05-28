@@ -8,12 +8,12 @@
                     </h1>
                 </div>
             </div>
-            <h1 class="text-2xl font-bold mb-20 shadow-xl shadow-secondary mt-20 text-white">The Ping Pong Game</h1>
+            <h1 class="text-2xl font-bold mb-20 shadow-xl shadow-secondary mt-20 text-white">The Pong Game</h1>
             <div class="container mx-auto p-4 lg:p-3">
                 <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
 
                     <div v-for="ann in announcement" :key="ann.title"
-                        class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-tertiary smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
+                        class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-primary_light smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
                         <div class="flex items-center text-blue-500">
                             <p class="text-sm font-bold uppercase">{{ ann.title }}</p>
                         </div>
