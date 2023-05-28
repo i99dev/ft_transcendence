@@ -5,11 +5,10 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-white">
-                    Showing
                     <span class="font-medium"> {{ currentPage }}</span>
                     of
                     <span class="font-medium"> {{ pageNumber }} </span>
-                    results
+                    pages
                 </p>
             </div>
 
