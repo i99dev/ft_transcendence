@@ -17,24 +17,30 @@
 
                     <div v-for="info in gameInfo" :key="info.title"
                         class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-primary_light smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
-                        <div class="flex items-center text-blue-500">
+                        <div class="flex items-center text-tertiary">
                             <p class="text-sm font-bold uppercase">{{ info.title }}</p>
                         </div>
 
-                        <h2 class="mt-4 text-3xl font-semibold text-violet-500 "> {{ info.subtitle }} </h2>
+                        <h2 class="mt-4 text-3xl font-semibold text-secondary_light "> {{ info.subtitle }} </h2>
 
-                        <div v-for="des in info.description">
-
-                            <p class="mt-4 text-lg text-slate-300">{{ des }}
-                            </p>
-
+                        <div v-if="info.title === 'Achievements'">
+                            <template v-for="description in info.description">
+                                <p class="mt-4 text-lg" :class="getClassForDescription(description, info)">
+                                    {{ description }}
+                                </p>
+                            </template>
                         </div>
+                        <div v-else v-for="des in info.description">
+                            <p class="mt-4 text-lg text-white">{{ des }} </p>
+                        </div>
+
                         <div
                             class="mt-12 flex col-auto transform items-center justify-center transition-transform duration-150 ease-in-out hover:scale-125">
-                            <div v-if="info.title == 'Achievements'" class="grid grid-cols-3 mb-10 gap-4">
-                                <div v-for="achv in achievements" class="mt-3 mb-10 rounded-full border border-tertiary_dark overflow-hidden">
+                            <div v-if="info.title == 'Achievements'" class="grid grid-cols-3 mb-5 gap-4">
+                                <div v-for="achv in achievements" class="mt-3 mb-10 rounded-full border overflow-hidden"
+                                    :class="getAchvType(achv.type, false)">
                                     <img :src="achv.image" class="w-full h-full object-cover">
-                                    <span class="absolute bg-tertiary_dark text-white text-xs px-1 rounded-bl rounded-tr">{{ achv.type }}</span>
+                                    <span class="absolute text-white text-xs px-1 rounded-bl rounded-tr" :class="getAchvType(achv.type, true)"> {{ achv.type }} </span>
                                 </div>
                             </div>
                             <div v-if="info.title == 'Controls'" class="flex flex-col items-center">
@@ -97,12 +103,29 @@ const gameInfo = computed(() => {
         },
         {
             title: 'Achievements',
-            subtitle: 'There are two types of Achievments you can get:',
+            subtitle: 'Two types of Achievments are available:',
             image: '../assets/devilfruit.png',
-            description: ['Mid-game achievements: The one you can get during the game.', 'Post-Game achievements: The one you can get after the game.']
+            description: ['Mid-game achievements:', 'The one you can get during the game.', 'Post-Game achievements:', ' The one you can get after the game.']
         },
     ];
 });
+
+const getClassForDescription = (description: any, info: any) => {
+    if (description === info.description[0]) {
+        return 'text-primary_light';
+    } else if (description === info.description[2]) {
+        return 'text-accent_light';
+    } else {
+        return 'text-white';
+    }
+}
+
+const getAchvType = (type: string, isText: boolean) => {
+    if (type === 'Serial Killer' || type === 'Rookie no more' || type === 'First Blood')
+        return isText ? 'bg-accent_dark' : 'border-accent_dark'
+    else
+        return isText? 'bg-primary_dark' : 'border-primary_dark'
+}
 
 </script>
 
