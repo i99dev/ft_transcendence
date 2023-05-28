@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-background_light text-white rounded-lg mt-2">
-        <div class="p-2 relative flex">
+    <div class="bg-background_light text-white rounded-lg h-full">
+        <div class="p-2 relative flex h-16">
             <button
                 class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
                 v-click-effect="() => setCurrentChat(null)"
@@ -60,8 +60,7 @@
         />
         <div
             v-else
-            class="flex flex-col justify-between overflow-hidden w-full h-full"
-            style="height: 90vh"
+            class="flex flex-col justify-between overflow-hidden w-full h-9/10"
         >
             <div
                 id="chat-messages"
@@ -149,8 +148,13 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full h-28 centered mb-8">
-                <form @submit.prevent="sendMessage" class="w-full flex justify-center my-4">
+            <div
+                class="w-full h-24 centered p-2"
+                :class="{
+                    'mb-12': enableLoadMoreButton,
+                }"
+            >
+                <form @submit.prevent="sendMessage" class="w-full flex justify-center">
                     <input
                         id="message-input"
                         v-model="newMessage"

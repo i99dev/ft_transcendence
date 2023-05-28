@@ -2,11 +2,11 @@
     <div>
         <SideBar :show="open">
             <div
-                class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border"
+                class="flex h-screen flex-col bg-background shadow-xl rounded-2xl border overflow-hidden"
             >
-                <div class="pt-2">
-                    <div class="flex items-start justify-between">
-                        <div class="ml-3 flex items-center">
+                <div class="pt-2 mb-2 h-16">
+                    <div class="flex items-center justify-between">
+                        <div class="ml-3">
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
@@ -24,11 +24,13 @@
                         <ChatOptions />
                     </div>
                 </div>
-                <ChatList v-if="chatView" @showInvite="showInviteModal" />
-                <ChatContent
-                    v-else
-                    @closeNavBar="setChatModalOpen(false)"
-                />
+                <div class="h-full">
+                    <ChatList v-if="chatView" @showInvite="showInviteModal" />
+                    <ChatContent
+                        v-else
+                        @closeNavBar="setChatModalOpen(false)"
+                    />
+                </div>
             </div>
         </SideBar>
     </div>
