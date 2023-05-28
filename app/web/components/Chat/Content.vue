@@ -238,7 +238,9 @@ onMounted(async () => {
     //scroll to bottom
     scrollToLastMessage()
 
-    document.getElementById('message-input')?.focus()
+    setTimeout(() => {
+        document.getElementById('message-input')?.focus()
+    }, 200)
 
     socketOn()
 
