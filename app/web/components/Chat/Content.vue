@@ -130,7 +130,7 @@
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
                         class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
-                        v-click-effect="() => deleteMessage(message.id)"
+                        @click="() => deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>
