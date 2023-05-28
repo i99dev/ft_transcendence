@@ -301,7 +301,6 @@ const deleteMessage = (message_id: number) => {
 
 const goToUserProfile = () => {
     navigateTo(`/users/${currentChat.value?.users[0]?.username}`)
-    emit('closeNavBar')
 }
 </script>
 
