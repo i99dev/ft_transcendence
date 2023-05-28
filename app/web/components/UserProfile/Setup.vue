@@ -89,7 +89,7 @@
                                         :src="image"
                                         v-click-effect="
                                             () => {
-                                                changeImage(image)
+                                                useDefaultImage(image)
                                             }
                                         "
                                         alt="icon"
@@ -139,7 +139,15 @@ const reader = ref(new FileReader())
 
 const fileInput = ref()
 
+const reset = () => {
+    newUsername.value = ''
+    image.value = user_info.value?.image.slice()
+    formData.value = undefined
+    reader.value = new FileReader()
+}
+
 const closePopup = () => {
+    reset()
     emit('closePopup')
 }
 
@@ -157,15 +165,17 @@ const uploadeImage = async () => {
     }
 }
 
-const changeImage = (userImage: string) => {
+const useDefaultImage = (userImage: string) => {
     image.value = userImage
+    formData.value = undefined
+    reader.value = new FileReader()
 }
 
 const submitProfile = async () => {
     await updateUsername()
     await uploadUserImage()
     await updateUserImage()
-    emit('closePopup')
+    closePopup()
 }
 
 const updateUsername = async () => {
