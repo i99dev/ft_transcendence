@@ -8,7 +8,7 @@
             >
                 <button
                     class="absolute top-0 left-0 text-white m-2 p-2 rounded-full hover:bg-secondary smooth-transition"
-                    @click="navigateTo('/login')"
+                    v-click-effecf="()=> navigateTo('/login')"
                 >
                     <ArrowSmallLeftIcon class="w-8 aspect-square"/>
                 </button>
