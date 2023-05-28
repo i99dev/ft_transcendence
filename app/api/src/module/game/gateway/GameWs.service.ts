@@ -28,7 +28,7 @@ export class GameWsService {
         private prisma: PrismaService,
         private userService: UserService,
         private matchService: MatchService,
-    ) {}
+    ) { }
 
     /* 
         Adds a new user to connected_users array
@@ -42,13 +42,14 @@ export class GameWsService {
                 return
             }, 1000)
         }
-
-        this.connected_users.push({
-            login: userLogin,
-            socket: userSocket,
-            status: 'online',
-        })
-        this.repo.updatePlayerStatus('ONLINE', userLogin)
+        else {
+            this.connected_users.push({
+                login: userLogin,
+                socket: userSocket,
+                status: 'online',
+            })
+            this.repo.updatePlayerStatus('ONLINE', userLogin)
+        }
     }
 
     /* 
