@@ -41,7 +41,7 @@ const PADDLE_HEIGHT = 0.2
 const PADDLE_SPEED = 0.0175
 const BALL_RADIUS = 0.03
 const REFLECT_ANGLE = 80
-const BALL_XSPEED = 0.017
+const BALL_XSPEED = 0.0155
 const BALL_YSPEED = 0.0
 const COMPUTER_SPEED = 0.0075
 
@@ -295,7 +295,7 @@ export class PongGame {
 
     // move the ball to the next position
     private moveBall(ball: BallDto): void {
-        if(ball.dx > BALL_RADIUS) ball.dx = BALL_RADIUS - 0.001
+        if (ball.dx > BALL_RADIUS) ball.dx = BALL_RADIUS - 0.001
         ball.x += ball.dx
         ball.y += ball.dy
     }
@@ -386,11 +386,9 @@ export class PongGame {
 
     // reflect the ball based on the paddle hit point
     private reflectBall(ball: BallDto, paddle: PaddleDto): void {
-        console.log("BallSPeed before Hit", ball.dx)
         ball.dx *= -1
-        if(this.gameType == 'classic')
-            ball.dx += ball.dx * 0.007
-        console.log("BallSPeed after Hit", ball.dx)
+        if (this.gameType == 'classic')
+            ball.dx += ball.dx * 0.005
         const relativePos = ball.y - paddle.y
         const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
         const angle = paddleHitPoint * REFLECT_ANGLE
@@ -432,7 +430,7 @@ export class PongGame {
 
     // ! POWER UPS ! //
     private handleShinigamiPowerUp(game: gameStatusDto, playerIndex: number): void {
-        if(this.gameType == 'classic') return
+        if (this.gameType == 'classic') return
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
 
@@ -443,7 +441,7 @@ export class PongGame {
     }
 
     private handleHikenPowerUp(game: gameStatusDto, playerIndex: number): void {
-        if(this.gameType == 'classic') return
+        if (this.gameType == 'classic') return
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Hiken')
 
