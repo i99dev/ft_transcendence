@@ -1,48 +1,53 @@
 <template>
     <div>
-        <Toast />
-        <!-- loading -->
-        <div v-if="pending">Loading...</div>
-        <!-- error -->
-        <div v-if="error">Error: {{ error.message }}</div>
         <!-- success -->
         <div v-if="me">
+            <Toast />
             <Header />
             <ChatNavBar />
             <FriendsListNav />
+            <GameInviteBox v-if="inviteModal.open" class="z-20" />
             <slot />
         </div>
-        <GameInviteBox v-if="inviteModal.open" class="z-20" />
+        <!-- loading -->
+        <div v-else>
+            <Loading class="w-screen h-screen centered" size="w-32" />
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
     useSockets()
-const { data: me, error, pending, refresh, execute } = await useMe()
 const { setUserInfo } = useUserInfo()
-
+const me = ref(undefined)
 const { inviteModal } = await useGameInvite()
-if (me.value) {
-    setInterval(() => {
-        const exp = useCookie('expires_at').value as string
-        if (exp === undefined) return
-        const expires_at = parseInt(exp) * 1000
 
-        if (Date.now() + 60 * 1000 > expires_at) refreshAccessToken()
-    }, 10 * 1000)
-}
+onMounted(async () => {
+    const { data, error } = await useMe()
+    me.value = data.value
 
-if (me.value) await setUserInfo(me.value)
-else if (error?.status === 401) {
-    disconnectSockets()
-    navigateTo('/login')
-}
-connectSockets()
+    if (me.value) {
+        setInterval(() => {
+            const exp = useCookie('expires_at').value as string
+            if (exp === undefined) return
+            const expires_at = parseInt(exp) * 1000
 
-const { setBlockList } = useBlock()
-const { data: myblockList } = await useBlockList()
-if (myblockList.value) setBlockList(myblockList.value)
+            if (Date.now() + 60 * 1000 > expires_at) refreshAccessToken()
+        }, 10 * 1000)
+    }
+
+    if (me.value) await setUserInfo(me.value)
+    else if (error?.status === 401) {
+        disconnectSockets()
+        navigateTo('/login')
+    }
+    connectSockets()
+
+    const { setBlockList } = useBlock()
+    const { data: myblockList } = await useBlockList()
+    if (myblockList.value) setBlockList(myblockList.value)
+})
 
 handleSocketDisconnection()
 logSocketExceptions()

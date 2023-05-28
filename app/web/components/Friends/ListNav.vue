@@ -29,7 +29,7 @@
                                 leave-from="translate-x-0"
                                 leave-to="translate-x-full"
                             >
-                                <DialogPanel class="pointer-events-auto w-screen max-w-md">
+                                <DialogPanel class="pointer-events-auto w-screen max-w-md z-10">
                                     <div
                                         class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border"
                                     >
@@ -160,10 +160,11 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            v-click-effect="() => 
-                                                                                remove(
-                                                                                    friend.login,
-                                                                                )
+                                                                            v-click-effect="
+                                                                                () =>
+                                                                                    remove(
+                                                                                        friend.login,
+                                                                                    )
                                                                             "
                                                                         >
                                                                             <span

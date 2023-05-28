@@ -39,7 +39,7 @@ export class TwoFacAuthService {
                 two_fac_auth: true,
                 type: twoFacAuthConstants.type,
                 code_length: twoFacAuthConstants.length,
-                period: twoFacAuthConstants.period,
+                expired_at: Date.now() + twoFacAuthConstants.period * 1000,
             }
         else throw new InternalServerErrorException('2FA Email failed to send')
     }

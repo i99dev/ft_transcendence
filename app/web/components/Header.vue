@@ -1,5 +1,8 @@
 <template>
-    <header v-if="useRoute().path !== '/play'" class="relative flex flex-col top-0 w-full h-10vh mb-10 z-10">
+    <header
+        v-if="useRoute().path !== '/play'"
+        class="relative flex flex-col top-0 w-full h-10vh mb-10 z-10"
+    >
         <button
             v-click-effect:login="handleHomeNav"
             class="justify-self-center self-center w-32 h-1/3 mt-5"
@@ -23,14 +26,13 @@
 </template>
 
 <script setup lang="ts">
-
 const clear = ref(false)
 const focusNow = ref(false)
 
 onMounted(() => {
     document.addEventListener('keydown', e => {
         if (e.key === 'k' && e.ctrlKey) {
-            e.preventDefault();
+            e.preventDefault()
             focusSearch()
         }
     })
@@ -55,5 +57,4 @@ const focusSearch = () => {
         focusNow.value = false
     }, 100)
 }
-
 </script>

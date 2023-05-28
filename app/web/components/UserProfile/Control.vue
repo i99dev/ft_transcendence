@@ -1,6 +1,9 @@
 <template>
     <div class="m-2 lg:m-0">
-        <div v-if="props.isMe && !props.isProfile" class="grid grid-cols-4 lg:grid-cols-6 gap-1 lg:gap-2">
+        <div
+            v-if="props.isMe && !props.isProfile"
+            class="grid grid-cols-4 lg:grid-cols-6 gap-1 lg:gap-2"
+        >
             <button
                 v-click-effect="openChatModel"
                 title="Chat"
@@ -99,8 +102,14 @@
                 title="Help"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" class="fill-white w-8 h-8" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="fill-white w-8 h-8"
+                    viewBox="0 0 16 16"
+                >
+                    <path
+                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                    />
                     <path
                         d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"
                     />
@@ -148,8 +157,8 @@
                 <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                v-click-effect="() => addFriend(props.username)"
-                :title="`Add '${props.username}' to friends`"
+                v-click-effect="() => addFriend(props.login)"
+                :title="`Add '${props.login}' to friends`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
                 <UserPlusIcon v-if="true" class="h-8 w-8" aria-hidden="true" />
@@ -169,14 +178,15 @@
 </template>
 
 <script setup lang="ts">
-import { stat } from 'fs'
 import { useFriends } from '../../composables/Friends/useFriends'
 import {
     UserPlusIcon,
     UserMinusIcon,
     ChatBubbleOvalLeftEllipsisIcon,
 } from '@heroicons/vue/24/outline'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
 const props = defineProps({
     username: {
         type: String,
@@ -243,8 +253,26 @@ function openFriendsModel() {
 }
 
 const updateTwoFacAuth = async () => {
-    setUserTwoFacAuth(!user_info.value?.two_fac_auth)
-    await useUpdateUserInfo({
-        two_fac_auth: !user_info.value?.two_fac_auth} as UserGetDto)
+    const { data } = await useUpdateUserInfo({
+        two_fac_auth: !user_info.value?.two_fac_auth,
+    } as UserGetDto)
+
+    if (data.value) {
+        toast.add({
+            severity: 'success',
+            summary: '2FA',
+            detail: `2FA has ${
+                user_info.value?.two_fac_auth ? 'disabled' : 'enabled'
+            } successfully`,
+            life: 3000,
+        })
+        setUserTwoFacAuth(!user_info.value?.two_fac_auth)
+    } else
+        toast.add({
+            severity: 'error',
+            summary: '2FA',
+            detail: 'Failure in updating 2FA',
+            life: 3000,
+        })
 }
 </script>

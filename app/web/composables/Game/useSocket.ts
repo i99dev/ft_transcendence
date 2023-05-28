@@ -59,7 +59,7 @@ export function useSocket() {
         emitLeaveQueue,
         resetSocket,
         emitReady,
-        isDeuce
+        isDeuce,
     }
 }
 

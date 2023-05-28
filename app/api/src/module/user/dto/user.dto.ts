@@ -29,7 +29,7 @@ export class UserGetDto {
     @IsString()
     @IsNotEmpty()
     @Length(1, 30)
-    @Matches(/^([a-z_]{1,8})$/g)
+    @Matches(/^([a-z_A-Z]{1,8})$/g)
     username: string
 
     @IsAscii()
@@ -105,7 +105,7 @@ export class UserPatchDto {
     @IsOptional()
     @IsNotEmpty()
     @Length(1, 30)
-    @Matches(/^([a-z_]{1,8})$/g)
+    @Matches(/^([a-z_A-Z]{1,8})$/g)
     username?: string
 
     @IsAscii()
