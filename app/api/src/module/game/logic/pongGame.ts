@@ -387,8 +387,7 @@ export class PongGame {
     // reflect the ball based on the paddle hit point
     private reflectBall(ball: BallDto, paddle: PaddleDto): void {
         ball.dx *= -1
-        if (this.gameType == 'classic')
-            ball.dx += ball.dx * 0.005
+        if (this.gameType == 'classic') ball.dx += ball.dx * 0.005
         const relativePos = ball.y - paddle.y
         const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
         const angle = paddleHitPoint * REFLECT_ANGLE
