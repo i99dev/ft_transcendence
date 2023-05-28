@@ -63,8 +63,7 @@
                 v-if="exit"
                 @closePopup="switchExistStatus(false)"
                 @GiveUp="exitGame"
-                summary="Exit Game"
-                detail="You will be considered a LOSER since you give up in middle of the game!!"
+                detail="You will be considerd a leaver!"
                 confirmation="Are you sure you want to exit the game?"
             />
             <div
@@ -85,6 +84,7 @@
                 @vue-mounted="exit = false"
                 :gameResultMessage="gameResultMessage"
                 @playAgain="playAgain"
+                class="z-20"
             />
         </div>
         <div
@@ -123,29 +123,29 @@ const { showTab } = useTabEvent()
 const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
 const showRotateOverlay = ref(false)
+const isMobile = useState('isMobile')
 
 loop('play')
 
 onMounted(() => {
     checkOrientation()
+    window.addEventListener('resize', checkOrientation)
     window.addEventListener('orientationchange', checkOrientation)
 })
 
 onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkOrientation)
     window.removeEventListener('orientationchange', checkOrientation)
 })
 
 const checkOrientation = () => {
-    let isPortrait
-
-    if ('orientation' in window.screen) {
-        isPortrait = window.screen.orientation.type.startsWith('portrait')
-    } else if ('orientation' in window) {
-        isPortrait = window.orientation === 0 || window.orientation === 180
-    } else {
-        isPortrait = window.innerHeight > window.innerWidth
+    if (isMobile.value) {
+        if (window.innerHeight > window.innerWidth) {
+            showRotateOverlay.value = true
+        } else {
+            showRotateOverlay.value = false
+        }
     }
-    showRotateOverlay.value = isPortrait
 }
 
 onUnmounted(() => {

@@ -15,8 +15,8 @@
             class="z-19"
             @touchStart="handleTouchStart"
             @touchEnd="handleTouchEnd"
-        >
-        </GameMobileControls>
+        />
+        <GameAnnouncments class="z-20" />
         <canvas
             ref="canvasRef"
             class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
@@ -45,6 +45,8 @@ const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isD
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
 
+const isMobile = useState<boolean>('isMobile')
+
 const playSound = (sound: string): void => {
     const random = Math.floor(Math.random() * 2) + 1
     const audio = new Audio(`/sounds/${sound}-${random}.mp3`)
@@ -59,11 +61,7 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false,
 }
 
-const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-const isMobile = useState<boolean>('isMobile', () => false)
-
 onMounted(() => {
-    isMobile.value = mobileRegex.test(navigator.userAgent)
     setupEvents()
 })
 

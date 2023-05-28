@@ -48,6 +48,9 @@ export function useSocket() {
         })
         socket.value?.on('Game-Deuce', () => {
             isDeuce.value = true
+            setTimeout(() => {
+                isDeuce.value = false
+            }, 3000)
         })
     }
 
