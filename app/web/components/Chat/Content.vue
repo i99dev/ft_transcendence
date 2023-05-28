@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-background_light text-white rounded-lg mt-2">
-        <div class="p-2 relative flex">
+    <div class="bg-background_light text-white rounded-lg h-full">
+        <div class="p-2 relative flex h-16">
             <button
                 class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
                 v-click-effect="() => setCurrentChat(null)"
@@ -58,11 +58,7 @@
             v-if="isChatInfoOpened && chatType === 'GROUP'"
             @closeNavBar="$emit('closeNavBar')"
         />
-        <div
-            v-else
-            class="flex flex-col justify-between overflow-hidden w-full h-full"
-            style="height: 90vh"
-        >
+        <div v-else class="flex flex-col justify-between overflow-hidden w-full h-9/10">
             <div
                 id="chat-messages"
                 class="bg-background overflow-y-scroll box-content flex flex-col h-full"
@@ -131,7 +127,7 @@
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
                         class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
-                        v-click-effect="() => deleteMessage(message.id)"
+                        @click="() => deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -149,8 +145,8 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full h-28 centered mb-8">
-                <form @submit.prevent="sendMessage" class="w-full flex justify-center my-4">
+            <div class="w-full h-36 flex justify-center items-start p-2">
+                <form @submit.prevent="sendMessage" class="w-full flex justify-center">
                     <input
                         id="message-input"
                         v-model="newMessage"
@@ -234,7 +230,9 @@ onMounted(async () => {
     //scroll to bottom
     scrollToLastMessage()
 
-    document.getElementById('message-input')?.focus()
+    setTimeout(() => {
+        document.getElementById('message-input')?.focus()
+    }, 200)
 
     socketOn()
 
@@ -303,7 +301,6 @@ const deleteMessage = (message_id: number) => {
 
 const goToUserProfile = () => {
     navigateTo(`/users/${currentChat.value?.users[0]?.username}`)
-    emit('closeNavBar')
 }
 </script>
 

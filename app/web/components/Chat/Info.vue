@@ -424,7 +424,6 @@ const goToUserProfile = (username: string) => {
     isAdminOptionsOpened.value = false
     isAddUserOpened.value = false
     navigateTo(`/users/${username}`)
-    emit('closeNavBar')
 }
 
 const switchParticipantsList = (type: string = 'NORMAL') => {

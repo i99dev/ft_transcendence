@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row mb-2">
+    <div class="centered">
         <TransitionRoot
             :show="groupChatSearching"
             enter="transition-opacity duration-500 ease-in-out"
