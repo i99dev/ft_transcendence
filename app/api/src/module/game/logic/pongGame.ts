@@ -3,6 +3,7 @@ import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
 import { PowerUp } from '../interface/game.interface'
 import { EventEmitter } from 'events'
 import { Player } from '@prisma/client'
+import { BlockList } from 'net'
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -108,7 +109,7 @@ export class PongGame {
             ball: {
                 x: 0.5,
                 y: 0.5,
-                dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
+                dx: BALL_XSPEED,
                 dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
                 radius: BALL_RADIUS,
                 color: 'white',
@@ -294,6 +295,7 @@ export class PongGame {
 
     // move the ball to the next position
     private moveBall(ball: BallDto): void {
+        if(ball.dx > BALL_RADIUS) ball.dx = BALL_RADIUS - 0.001
         ball.x += ball.dx
         ball.y += ball.dy
     }
@@ -384,7 +386,11 @@ export class PongGame {
 
     // reflect the ball based on the paddle hit point
     private reflectBall(ball: BallDto, paddle: PaddleDto): void {
+        console.log("BallSPeed before Hit", ball.dx)
         ball.dx *= -1
+        if(this.gameType == 'classic')
+            ball.dx += ball.dx * 0.007
+        console.log("BallSPeed after Hit", ball.dx)
         const relativePos = ball.y - paddle.y
         const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
         const angle = paddleHitPoint * REFLECT_ANGLE
@@ -426,6 +432,7 @@ export class PongGame {
 
     // ! POWER UPS ! //
     private handleShinigamiPowerUp(game: gameStatusDto, playerIndex: number): void {
+        if(this.gameType == 'classic') return
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
 
@@ -436,6 +443,7 @@ export class PongGame {
     }
 
     private handleHikenPowerUp(game: gameStatusDto, playerIndex: number): void {
+        if(this.gameType == 'classic') return
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Hiken')
 

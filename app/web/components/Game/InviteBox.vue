@@ -131,7 +131,7 @@
                             (mode === 'custom' && selectedPowerups.length != 2) ||
                             inviteModal.rejected
                         "
-                        class="py-2 px-4 border-2 border-white rounded-md text-white bg-tertiary bg-opacity-80 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        class="py-2 px-4 border-1 border-white rounded-md text-white bg-tertiary bg-opacity-80 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
                         v-click-effect="sendInvite"
                     >
                         Send Invite
