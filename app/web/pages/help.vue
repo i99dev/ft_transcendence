@@ -16,7 +16,7 @@
                 <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
 
                     <div v-for="info in gameInfo" :key="info.title"
-                        class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-primary_light smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
+                        class="mt-4 mb-4 overflow-hidden rounded-2xl shadow-xl shadow-secondary border border-tertiary smooth-transition hover:scale-105 p-4 bg-background bg-opacity-200 lg:p-12">
                         <div class="flex items-center text-tertiary">
                             <p class="text-sm font-bold uppercase">{{ info.title }}</p>
                         </div>
@@ -80,31 +80,26 @@ const gameInfo = computed(() => {
         {
             title: 'Game Modes',
             subtitle: 'There are two game modes available:',
-            image: '../assets/devilfruit.png',
             description: ['Custom: Activates power-ups during the game.', 'Classic: Play the game without any power-ups.']
         },
         {
             title: 'Players',
             subtitle: 'In both game modes, you have two options for players:',
-            image: '../assets/devilfruit.png',
             description: ['Single Player (with Bot): Play alone against a computer-controlled opponent.', 'Online Multiplayer: Play against someone online.']
         },
         {
             title: 'Controls',
             subtitle: 'Use the following controls to play the game:',
-            image: '../assets/devilfruit.png',
             description: ['Arrow Buttons: Move the player paddle left and right.', '1 and 2 Buttons: Activate power-ups.']
         },
         {
             title: 'Rank System',
             subtitle: 'There are six Ranks in this game:',
-            image: '../assets/devilfruit.png',
             description: []
         },
         {
             title: 'Achievements',
             subtitle: 'Two types of Achievments are available:',
-            image: '../assets/devilfruit.png',
             description: ['Mid-game achievements:', 'The one you can get during the game.', 'Post-Game achievements:', ' The one you can get after the game.']
         },
     ];
