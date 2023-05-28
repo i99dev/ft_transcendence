@@ -138,7 +138,7 @@ const emit = defineEmits(['chatType', 'closePopup', 'cancel'])
 const chatTypes = [
     {
         type: 'PUBLIC',
-    }, 
+    },
     {
         type: 'PRIVATE',
     },
