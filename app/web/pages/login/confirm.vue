@@ -10,7 +10,7 @@
                     class="absolute top-0 left-0 text-white m-2 p-2 rounded-full hover:bg-secondary smooth-transition"
                     @click="navigateTo('/login')"
                 >
-                    <ArrowSmallLeftIcon class="w-8 aspect-square"/>
+                    <ArrowSmallLeftIcon class="w-8 aspect-square" />
                 </button>
                 <h1
                     class="text-white text-xl md:text-2xl lg:text-3xl text-center capitalize p-2 mb-8"
@@ -79,7 +79,7 @@ onMounted(() => {
 let timerId: any
 const timerCountdown = () => {
     if (useRoute().query.expired_at) {
-        timer.value = Math.trunc((useRoute().query.expired_at as any - Date.now()) / 1000)
+        timer.value = Math.trunc(((useRoute().query.expired_at as any) - Date.now()) / 1000)
         timerId = setInterval(() => {
             if (timer.value > 0) timer.value -= 1
             else window.clearInterval(timerId)
@@ -120,15 +120,15 @@ const resendCode = async () => {
         })
         window.clearInterval(timerId)
         navigateTo({
-              path: '/login/confirm',
-              query: {
-                  login: data.value?.login,
-                  two_fac_auth: data.value?.two_fac_auth,
-                  type: data.value?.type,
-                  code_length: data.value?.code_length,
-                  expired_at: data.value?.expired_at,
-              },
-          })
+            path: '/login/confirm',
+            query: {
+                login: data.value?.login,
+                two_fac_auth: data.value?.two_fac_auth,
+                type: data.value?.type,
+                code_length: data.value?.code_length,
+                expired_at: data.value?.expired_at,
+            },
+        })
         useRoute().query.expired_at = data.value?.expired_at
         timerCountdown()
     } else

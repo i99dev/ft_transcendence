@@ -10,15 +10,10 @@
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                v-click-effect="
-                                    () => setChatModalOpen(false)
-                                "
+                                v-click-effect="() => setChatModalOpen(false)"
                             >
                                 <span class="sr-only">Close panel</span>
-                                <XMarkIcon
-                                    class="h-6 w-6"
-                                    aria-hidden="true"
-                                />
+                                <XMarkIcon class="h-6 w-6" aria-hidden="true" />
                             </button>
                         </div>
                         <ChatOptions />
@@ -26,10 +21,7 @@
                 </div>
                 <div class="h-full">
                     <ChatList v-if="chatView" @showInvite="showInviteModal" />
-                    <ChatContent
-                        v-else
-                        @closeNavBar="setChatModalOpen(false)"
-                    />
+                    <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                 </div>
             </div>
         </SideBar>

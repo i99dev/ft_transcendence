@@ -1,24 +1,17 @@
 <template>
     <div>
         <SideBar :show="open">
-            <div
-                class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border"
-            >
+            <div class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border">
                 <div class="pt-2">
                     <div class="flex items-start justify-between mb-2">
                         <div class="ml-3 flex items-center">
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                v-click-effect="
-                                    () => setFriendsModalOpen(false)
-                                "
+                                v-click-effect="() => setFriendsModalOpen(false)"
                             >
                                 <span class="sr-only">Close panel</span>
-                                <XMarkIcon
-                                    class="h-6 w-6"
-                                    aria-hidden="true"
-                                />
+                                <XMarkIcon class="h-6 w-6" aria-hidden="true" />
                             </button>
                         </div>
                         <button
@@ -29,15 +22,10 @@
                         </button>
                     </div>
                 </div>
-                <div
-                    class="border-y border-white h-full overflow-hidden text-white"
-                >
+                <div class="border-y border-white h-full overflow-hidden text-white">
                     <div id="friend-list" class="overflow-y-scroll h-70vh">
                         <!-- friend list -->
-                        <div
-                            class="flex flex-col"
-                            x-descriptions="Tab component"
-                        >
+                        <div class="flex flex-col" x-descriptions="Tab component">
                             <!-- Friend element -->
                             <div
                                 v-for="friend in friends_list"
@@ -46,12 +34,7 @@
                             >
                                 <button
                                     class="centered w-fit group"
-                                    v-click-effect="
-                                        () =>
-                                            navigateTo(
-                                                `/users/${friend.username}`,
-                                            )
-                                    "
+                                    v-click-effect="() => navigateTo(`/users/${friend.username}`)"
                                 >
                                     <div class="relative">
                                         <img
@@ -87,60 +70,36 @@
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
                                                     v-click-effect="
-                                                        () =>
-                                                            showInviteModal(
-                                                                friend.login,
-                                                            )
+                                                        () => showInviteModal(friend.login)
                                                     "
                                                 >
-                                                    <span
-                                                        class="flex items-center"
-                                                    >
+                                                    <span class="flex items-center">
                                                         Invite to Game
                                                     </span>
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    v-click-effect="
-                                                        () =>
-                                                            useDMUser(
-                                                                friend.login,
-                                                            )
-                                                    "
+                                                    v-click-effect="() => useDMUser(friend.login)"
                                                 >
-                                                    <span
-                                                        class="flex items-center"
-                                                    >
+                                                    <span class="flex items-center">
                                                         Send MSG
                                                     </span>
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
                                                     v-click-effect="
-                                                        () =>
-                                                            viewProfile(
-                                                                friend.username,
-                                                            )
+                                                        () => viewProfile(friend.username)
                                                     "
                                                 >
-                                                    <span
-                                                        class="flex items-center"
-                                                    >
+                                                    <span class="flex items-center">
                                                         View Profile
                                                     </span>
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    v-click-effect="
-                                                        () =>
-                                                            remove(
-                                                                friend.login,
-                                                            )
-                                                    "
+                                                    v-click-effect="() => remove(friend.login)"
                                                 >
-                                                    <span
-                                                        class="flex items-center"
-                                                    >
+                                                    <span class="flex items-center">
                                                         Unfriend
                                                     </span>
                                                 </MenuItem>
@@ -148,32 +107,19 @@
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
                                                     v-click-effect="
                                                         () => {
-                                                            isBlocked(
-                                                                friend,
-                                                            )
-                                                                ? removeUserFromBlockList(
-                                                                        friend,
-                                                                    )
-                                                                : addUserToBlockList(
-                                                                        friend,
-                                                                    )
+                                                            isBlocked(friend)
+                                                                ? removeUserFromBlockList(friend)
+                                                                : addUserToBlockList(friend)
                                                         }
                                                     "
                                                 >
                                                     <span
-                                                        v-if="
-                                                            !isBlocked(
-                                                                friend,
-                                                            )
-                                                        "
+                                                        v-if="!isBlocked(friend)"
                                                         class="flex items-center"
                                                     >
                                                         Block
                                                     </span>
-                                                    <span
-                                                        v-else
-                                                        class="flex items-center"
-                                                    >
+                                                    <span v-else class="flex items-center">
                                                         Unblock
                                                     </span>
                                                 </MenuItem>
@@ -185,10 +131,7 @@
                         </div>
                     </div>
                     <div class="border-t-1 h-20vh">
-                        <div
-                            v-for="(notification, index) in notifications"
-                            :key="notification.id"
-                        >
+                        <div v-for="(notification, index) in notifications" :key="notification.id">
                             <FriendsNotification
                                 :notification="notification"
                                 @close="removeNotification(index)"
@@ -203,12 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-} from '@headlessui/vue'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 import { useFriends } from '../../composables/Friends/useFriends'

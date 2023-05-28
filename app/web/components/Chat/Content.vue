@@ -58,10 +58,7 @@
             v-if="isChatInfoOpened && chatType === 'GROUP'"
             @closeNavBar="$emit('closeNavBar')"
         />
-        <div
-            v-else
-            class="flex flex-col justify-between overflow-hidden w-full h-9/10"
-        >
+        <div v-else class="flex flex-col justify-between overflow-hidden w-full h-9/10">
             <div
                 id="chat-messages"
                 class="bg-background overflow-y-scroll box-content flex flex-col h-full"
@@ -148,9 +145,7 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="w-full h-36 flex justify-center items-start p-2"
-            >
+            <div class="w-full h-36 flex justify-center items-start p-2">
                 <form @submit.prevent="sendMessage" class="w-full flex justify-center">
                     <input
                         id="message-input"
