@@ -1,27 +1,13 @@
 <template>
     <div class="no-context-menu">
-        <GameStatusBar
-            v-if="showStatusBar"
-            @ExitBtn="$emit('ExitBtn')"
-            :cooldown11="pu1Cooldowns[0]"
-            :cooldown12="pu1Cooldowns[1]"
-            :cooldown21="pu2Cooldowns[0]"
-            :cooldown22="pu2Cooldowns[1]"
-            @powerup="activatePowerUp($event)"
-        />
+        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="pu1Cooldowns[0]"
+            :cooldown12="pu1Cooldowns[1]" :cooldown21="pu2Cooldowns[0]" :cooldown22="pu2Cooldowns[1]"
+            @powerup="activatePowerUp($event)" />
         <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
-        <GameMobileControls
-            v-if="isMobile"
-            class="z-19"
-            @touchStart="handleTouchStart"
-            @touchEnd="handleTouchEnd"
-        />
+        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd" />
         <GameAnnouncments class="z-20" />
-        <canvas
-            ref="canvasRef"
-            class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
-            style="width: 100%; height: 100%"
-        ></canvas>
+        <canvas ref="canvasRef" class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+            style="width: 100%; height: 100%"></canvas>
     </div>
 </template>
 
@@ -32,7 +18,6 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
-
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
@@ -40,7 +25,7 @@ const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } =
     useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isDeuce } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner, isDeuce } = useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -62,6 +47,7 @@ const keys: { [key: string]: boolean } = {
 }
 
 onMounted(() => {
+    checkWinner()
     setupEvents()
 })
 
@@ -69,8 +55,16 @@ onUnmounted(() => {
     giveUp()
     clearEvents()
     reset()
-    gameWinner.value = ''
 })
+
+const checkWinner = () =>
+{
+    if(gameWinner.value)
+    {
+        emitGameOver(gameWinner.value)
+        gameWinner.value = ''
+    }
+}
 
 const setupEvents = (): void => {
     document.addEventListener('keydown', handleKeyDown)
@@ -89,7 +83,7 @@ const handleArrows = (e: PopStateEvent): void => {
 }
 
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].login) {
+    if (winner == gameSetup.value?.game?.players[gameSetup.value?.player].login) {
         emit('GameOver', 'you won')
         const winSound = new Audio('/sounds/win.mp3')
         winSound.play()
@@ -106,6 +100,7 @@ const emitGameOver = (winner: string): void => {
 watchEffect(() => {
     if (gameWinner.value) {
         emitGameOver(gameWinner.value)
+        gameWinner.value = ''
     }
 })
 
@@ -117,13 +112,14 @@ function destroy(): void {
 function giveUp(): void {
     if (!gameSetup.value?.game) return
     socket.value?.emit('Give-Up', gameSetup.value?.game.players[gameSetup.value?.player])
+    setTimeout(() => {
+        gameWinner.value = ''
+    }, 500)
     destroy()
 }
 
 function setup(mode: GameSelectDto): void {
-    resetSocket()
     if (mode.gameMode != 'invite') emitStartGame(mode)
-    setupSocketHandlers()
 }
 
 watch(gameSetup, (newVal, oldVal) => {

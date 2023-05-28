@@ -109,12 +109,11 @@ const gameResult = ref(false)
 const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
-const { emitLeaveQueue } = useSocket()
+const { emitLeaveQueue, resetSocket, setupSocketHandlers } = useSocket()
 const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
 const showRotateOverlay = ref(false)
 const isMobile = useState('isMobile')
-
 loop('play')
 
 onMounted(() => {
@@ -146,7 +145,7 @@ const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
     setTimeout(() => {
         gameBoard.value?.setup(mode)
-    }, 1000)
+    }, 700)
     gameResult.value = false
 }
 

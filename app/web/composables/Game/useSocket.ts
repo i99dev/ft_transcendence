@@ -35,6 +35,10 @@ export function useSocket() {
     }
 
     const setupSocketHandlers = () => {
+        socket.value?.on('Game-Over', payload => {
+            gameWinner.value = payload.winner.login
+        })
+
         socket.value?.on('Game-Setup', (data: SetupDto) => {
             gameSetup.value = data
         })
@@ -43,9 +47,6 @@ export function useSocket() {
             gameData.value = data
         })
 
-        socket.value?.on('Game-Over', payload => {
-            gameWinner.value = payload.winner.login
-        })
         socket.value?.on('Game-Deuce', () => {
             isDeuce.value = true
             setTimeout(() => {
