@@ -128,16 +128,18 @@ loop('play')
 
 onMounted(() => {
     checkOrientation()
+    window.addEventListener('resize', checkOrientation)
     window.addEventListener('orientationchange', checkOrientation)
 })
 
 onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkOrientation)
     window.removeEventListener('orientationchange', checkOrientation)
 })
 
 const checkOrientation = () => {
     if (isMobile.value) {
-        if (window.screen.height > window.screen.width) {
+        if (window.innerHeight > window.innerWidth) {
             showRotateOverlay.value = true
         } else {
             showRotateOverlay.value = false
