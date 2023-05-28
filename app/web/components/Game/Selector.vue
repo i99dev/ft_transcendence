@@ -1,20 +1,23 @@
 <template>
     <div
-        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-secondary shadow-primary shadow-sm bg-opacity-5 py-6 px-10 rounded-lg shadow-lg border border-tertiary border-opacity-70 space-y-4">
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-secondary shadow-primary shadow-sm bg-opacity-5 py-6 px-10 rounded-lg shadow-lg border border-tertiary border-opacity-70 space-y-4"
+    >
         <div v-if="step === 1" key="step1">
             <h2 class="text-2xl text-center text-white font-bold mb-4">Select Game Type</h2>
             <ul class="space-y-2 list-none">
                 <li>
                     <button
-                        class="w-full py-2 px-4 rounded-md text-white bg-tertiary  bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectGame('classic')">
+                        class="w-full py-2 px-4 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        v-click-effect="() => selectGame('classic')"
+                    >
                         Classic Pong
                     </button>
                 </li>
                 <li>
                     <button
                         class="w-full py-2 px-4 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectGame('custom')">
+                        v-click-effect="() => selectGame('custom')"
+                    >
                         Custom Pong
                     </button>
                 </li>
@@ -22,7 +25,8 @@
             <div class="flex justify-center mt-4">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect:unplay="goHome">
+                    v-click-effect:unplay="goHome"
+                >
                     Home
                 </button>
             </div>
@@ -37,7 +41,9 @@
                         :class="[
                             selectedMode === 'single' ? 'bg-opacity-100' : 'bg-opacity-75',
                             selectedGame === 'classic' ? 'bg-tertiary' : 'bg-primary',
-                        ]" v-click-effect="() => selectMode('single')">
+                        ]"
+                        v-click-effect="() => selectMode('single')"
+                    >
                         Single Player
                     </button>
                 </li>
@@ -47,7 +53,9 @@
                         :class="[
                             selectedMode === 'multi' ? 'bg-opacity-100' : 'bg-opacity-75',
                             selectedGame === 'classic' ? 'bg-tertiary' : 'bg-primary',
-                        ]" v-click-effect="() => selectMode('multi')">
+                        ]"
+                        v-click-effect="() => selectMode('multi')"
+                    >
                         Find Opponent
                     </button>
                 </li>
@@ -59,9 +67,19 @@
                 </h3>
 
                 <div class="grid grid-cols-2 gap-2 text-white">
-                    <div v-for="(powerup, index) in powerups" :key="index" class="flex items-center">
-                        <input type="checkbox" :id="powerup" :value="powerup" v-model="selectedPowerups"
-                            @change="checkPowerupLimit" class="form-checkbox text-blue-500" />
+                    <div
+                        v-for="(powerup, index) in powerups"
+                        :key="index"
+                        class="flex items-center"
+                    >
+                        <input
+                            type="checkbox"
+                            :id="powerup"
+                            :value="powerup"
+                            v-model="selectedPowerups"
+                            @change="checkPowerupLimit"
+                            class="form-checkbox text-blue-500"
+                        />
                         <label :for="powerup" class="ml-2">{{ powerup }}</label>
                     </div>
                 </div>
@@ -70,14 +88,18 @@
             <div class="mt-4 flex space-x-4 justify-center">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="() => (step = 1)">
+                    v-click-effect="() => (step = 1)"
+                >
                     Back
                 </button>
-                <button :disabled="!selectedMode || (selectedGame === 'custom' && selectedPowerups.length != 2)
+                <button
+                    :disabled="
+                        !selectedMode || (selectedGame === 'custom' && selectedPowerups.length != 2)
                     "
                     class="py-2 px-4 border-1 border-white rounded-md text-white bg-opacity-75 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
                     :class="[selectedGame === 'classic' ? 'bg-primary' : 'bg-tertiary']"
-                    v-click-effect="emitGameSelected">
+                    v-click-effect="emitGameSelected"
+                >
                     Start Game
                 </button>
             </div>
@@ -87,9 +109,11 @@
             <div class="loading-container flex flex-col items-center justify-center">
                 <Loading />
                 <p class="loading-text mt-2 text-lg font-bold text-white">{{ loadingMsg }}</p>
-                <button v-if="selectedMode == 'multi'"
+                <button
+                    v-if="selectedMode == 'multi'"
                     class="py-2 px-4 mt-4 rounded-md text-white bg-accent_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-whitetransition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="leaveQueue">
+                    v-click-effect="leaveQueue"
+                >
                     Leave Queue
                 </button>
             </div>

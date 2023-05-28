@@ -30,8 +30,6 @@ onMounted(async () => {
     const { data, error } = await useMe()
     me.value = data.value
     isMobile.value = mobileRegex.test(navigator.userAgent)
-    console.log('navigator.userAgent', navigator.userAgent)
-    console.log('isMobile', isMobile.value)
 
     if (me.value) {
         setInterval(() => {
@@ -53,7 +51,6 @@ onMounted(async () => {
     const { setBlockList } = useBlock()
     const { data: myblockList } = await useBlockList()
     if (myblockList.value) setBlockList(myblockList.value)
-
 })
 
 handleSocketDisconnection()

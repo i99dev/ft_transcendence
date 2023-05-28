@@ -12,7 +12,7 @@ export function useSocket() {
         return {} as SetupDto
     })
     const isDeuce = useState<boolean>('isDeuce', () => {
-        return false 
+        return false
     })
 
     const resetSocket = () => {

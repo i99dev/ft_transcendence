@@ -71,9 +71,14 @@ export function useGameRenderer() {
         const renderPass = new RenderPass(scene, camera)
         composer.addPass(renderPass)
 
-        bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.7, 0.05, 0.1);
+        bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.7,
+            0.05,
+            0.1,
+        )
 
-        composer.addPass(bloomPass);
+        composer.addPass(bloomPass)
     }
 
     const initScene = (canvasRef: Ref<HTMLCanvasElement>) => {
@@ -119,8 +124,8 @@ export function useGameRenderer() {
             paddleHeight,
             paddleDepth,
             paddlePosition,
-            0x59CBE8,
-            0x7EDFE8,
+            0x59cbe8,
+            0x7edfe8,
             1,
         )
         paddle2 = createPaddle(
@@ -128,13 +133,13 @@ export function useGameRenderer() {
             paddle2Height,
             paddleDepth,
             paddle2Position,
-            0x59CBE8,
-            0x7EDFE8,
+            0x59cbe8,
+            0x7edfe8,
             0.5,
         )
 
-        addPointLightToObject(paddle, new THREE.Vector3(0, 0, 1), 0x7EDFE8, 4, 2)
-        addPointLightToObject(paddle2, new THREE.Vector3(0, 0, 1), 0x7EDFE8, 4, 2)
+        addPointLightToObject(paddle, new THREE.Vector3(0, 0, 1), 0x7edfe8, 4, 2)
+        addPointLightToObject(paddle2, new THREE.Vector3(0, 0, 1), 0x7edfe8, 4, 2)
         paddle.layers.enable(1)
         paddle2.layers.enable(1)
         gameGroup.add(paddle)
@@ -163,12 +168,12 @@ export function useGameRenderer() {
         })
         const frame = new THREE.Mesh(frameGeometry, frameMaterial)
         // frame.layers.enable(1)
-        addPointLight(0, 11, 0, 0xE93CAC, 5, 10)
-        addPointLight(0, -11, 0, 0xE93CAC, 5, 10)
-        addPointLight(2, 11, 0, 0xE93CAC, 5, 10)
-        addPointLight(2, -11, 0, 0xE93CAC, 5, 10)
-        addPointLight(-2, 11, 0, 0xE93CAC, 5, 10)
-        addPointLight(-2, -11, 0, 0xE93CAC, 5, 10)
+        addPointLight(0, 11, 0, 0xe93cac, 5, 10)
+        addPointLight(0, -11, 0, 0xe93cac, 5, 10)
+        addPointLight(2, 11, 0, 0xe93cac, 5, 10)
+        addPointLight(2, -11, 0, 0xe93cac, 5, 10)
+        addPointLight(-2, 11, 0, 0xe93cac, 5, 10)
+        addPointLight(-2, -11, 0, 0xe93cac, 5, 10)
         // addPointLight(5, 11, 0, 0xE93CAC, 5, 10)
         // addPointLight(5, -11, 0, 0xE93CAC, 5, 10)
         // addPointLight(0, 11, 0, 0xE93CAC, 5, 10)
@@ -281,7 +286,7 @@ export function useGameRenderer() {
     const animate = () => {
         requestAnimationFrame(animate)
         if (!isMobile.value) controls.update()
-        composer.render();
+        composer.render()
         // renderer.render(scene, camera)
     }
 
@@ -337,21 +342,19 @@ export function useGameRenderer() {
         let newLightColor: number
 
         if (player == 0) {
-            newColor = 0x59CBE8
-            newLightColor = 0x59CBE8
-        }
-        else {
-            newColor = 0x59CBE8
-            newLightColor = 0x59CBE8
+            newColor = 0x59cbe8
+            newLightColor = 0x59cbe8
+        } else {
+            newColor = 0x59cbe8
+            newLightColor = 0x59cbe8
         }
 
         if (color == 'orange') {
-            console.log("COLORCHANGED ORANGE")
             newColor = 0xffa500
             newLightColor = 0xffa500
         } else if (color == 'cyan') {
-            newColor = 0xC0C0C0
-            newLightColor = 0xC0C0C0
+            newColor = 0xc0c0c0
+            newLightColor = 0xc0c0c0
         }
 
         if (paddle.material instanceof THREE.MeshBasicMaterial) {
@@ -408,13 +411,13 @@ export function useGameRenderer() {
         emissive: number,
         emissiveIntensity: number,
     ): THREE.Mesh {
-        const paddleGeometry = new THREE.BoxGeometry(width, height, depth);
+        const paddleGeometry = new THREE.BoxGeometry(width, height, depth)
         const paddleMaterial = new THREE.MeshBasicMaterial({
             color: color,
-        });
-        const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial);
-        paddle.position.copy(position);
-        return paddle;
+        })
+        const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial)
+        paddle.position.copy(position)
+        return paddle
     }
 
     function addPointLightToObject(

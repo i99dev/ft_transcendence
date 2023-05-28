@@ -1,13 +1,27 @@
 <template>
     <div class="no-context-menu">
-        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="pu1Cooldowns[0]"
-            :cooldown12="pu1Cooldowns[1]" :cooldown21="pu2Cooldowns[0]" :cooldown22="pu2Cooldowns[1]"
-            @powerup="activatePowerUp($event)" />
+        <GameStatusBar
+            v-if="showStatusBar"
+            @ExitBtn="$emit('ExitBtn')"
+            :cooldown11="pu1Cooldowns[0]"
+            :cooldown12="pu1Cooldowns[1]"
+            :cooldown21="pu2Cooldowns[0]"
+            :cooldown22="pu2Cooldowns[1]"
+            @powerup="activatePowerUp($event)"
+        />
         <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
-        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd"/>
-            <GameAnnouncments/>
-                <canvas ref="canvasRef" class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
-                    style="width: 100%; height: 100%"></canvas>
+        <GameMobileControls
+            v-if="isMobile"
+            class="z-19"
+            @touchStart="handleTouchStart"
+            @touchEnd="handleTouchEnd"
+        />
+        <GameAnnouncments />
+        <canvas
+            ref="canvasRef"
+            class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+            style="width: 100%; height: 100%"
+        ></canvas>
     </div>
 </template>
 
@@ -46,7 +60,6 @@ const keys: { [key: string]: boolean } = {
     ArrowUp: false,
     ArrowDown: false,
 }
-
 
 onMounted(() => {
     setupEvents()
