@@ -9,11 +9,11 @@
                 type="text"
                 placeholder="Search"
             />
-            <div
-                v-if="!searchedUsers"
-                class="absolute right-3 z-10 flex space-x-2"
-            >
-                <div v-if="props?.focusNowEabled && !focused" class="text-white opacity-25 capitalize">
+            <div v-if="!searchedUsers" class="absolute right-3 z-10 flex space-x-2">
+                <div
+                    v-if="props?.focusNowEabled && !focused"
+                    class="text-white opacity-25 capitalize"
+                >
                     ctrl + k
                 </div>
                 <svg
@@ -78,24 +78,39 @@ const searchedUsers = ref('')
 const users = ref()
 const focused = ref(false)
 
-const props = defineProps(['isMe', 'search', 'unwantedUsers', 'reset', 'noFocus', 'clear', 'focusNow', 'focusNowEabled'])
+const props = defineProps([
+    'isMe',
+    'search',
+    'unwantedUsers',
+    'reset',
+    'noFocus',
+    'clear',
+    'focusNow',
+    'focusNowEabled',
+])
 const emit = defineEmits(['selectUser', 'lostFocus'])
 
 watch(searchedUsers, async val => {
     if (!val) setUsersList([])
 })
-watch(()=>props.clear, val => {
-    if (val) {
-        searchedUsers.value = ''
-        document.getElementById('search-input')?.blur()
-    }
-})
-watch(()=>props.focusNow, val => {
-    if (val) {
-        document.getElementById('search-input')?.focus()
-        focused.value = true
-    }
-})
+watch(
+    () => props.clear,
+    val => {
+        if (val) {
+            searchedUsers.value = ''
+            document.getElementById('search-input')?.blur()
+        }
+    },
+)
+watch(
+    () => props.focusNow,
+    val => {
+        if (val) {
+            document.getElementById('search-input')?.focus()
+            focused.value = true
+        }
+    },
+)
 
 onMounted(() => {
     setTimeout(() => {
@@ -107,7 +122,6 @@ onMounted(() => {
 
     const searchInput = document.getElementById('search-input')
     if (searchInput) {
-
         searchInput.addEventListener('blur', () => {
             focused.value = false
         })
@@ -132,11 +146,9 @@ const handleUserSelection = (user: UserGetDto) => {
     if (props.reset) searchedUsers.value = ''
     emit('selectUser', user)
 }
-
 </script>
 
 <style scoped>
-
 #users-list {
     scroll-behavior: smooth;
     -ms-overflow-style: none; /* IE and Edge */

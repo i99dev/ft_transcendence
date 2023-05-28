@@ -87,7 +87,11 @@
                                     <img
                                         class="w-full aspect-square items-center justify-center object-cover rounded-full hover:shadow-lg"
                                         :src="image"
-                                        v-click-effect="()=>{changeImage(image)}"
+                                        v-click-effect="
+                                            () => {
+                                                useDefaultImage(image)
+                                            }
+                                        "
                                         alt="icon"
                                     />
                                 </button>
@@ -99,7 +103,11 @@
                     <button
                         class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                         type="button"
-                        v-click-effect="()=> {submitProfile()}"
+                        v-click-effect="
+                            () => {
+                                submitProfile()
+                            }
+                        "
                     >
                         {{ props.submitButton || 'done' }}
                     </button>
@@ -131,7 +139,15 @@ const reader = ref(new FileReader())
 
 const fileInput = ref()
 
+const reset = () => {
+    newUsername.value = ''
+    image.value = user_info.value?.image.slice()
+    formData.value = undefined
+    reader.value = new FileReader()
+}
+
 const closePopup = () => {
+    reset()
     emit('closePopup')
 }
 
@@ -149,15 +165,17 @@ const uploadeImage = async () => {
     }
 }
 
-const changeImage = (userImage: string) => {
+const useDefaultImage = (userImage: string) => {
     image.value = userImage
+    formData.value = undefined
+    reader.value = new FileReader()
 }
 
 const submitProfile = async () => {
     await updateUsername()
     await uploadUserImage()
     await updateUserImage()
-    emit('closePopup')
+    closePopup()
 }
 
 const updateUsername = async () => {

@@ -16,7 +16,7 @@ export class CreateGroupChatDto {
     @IsAscii()
     @IsString()
     @IsNotEmpty()
-    @Length(1, 50)
+    @Length(1, 30)
     name: string
 
     @IsString()

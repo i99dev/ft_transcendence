@@ -21,7 +21,7 @@ export class TwoFacAuthDto {
     two_fac_auth: boolean
     type: string
     code_length: number
-    period: number
+    expired_at: number
 }
 
 export class AuthPostDto {

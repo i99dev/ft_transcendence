@@ -66,7 +66,14 @@ export class GameWsService {
                 if (this.custom_queue.includes(user.login))
                     this.custom_queue.splice(this.custom_queue.indexOf(user.login), 1)
             } else if (user.status == 'ingame') {
-                user.game.setLoser(user.login)
+                this.giveUp(user.socket)
+            } else if (user.status == 'busy' && user.pendingInvite) {
+                if (user.pendingInvite.invitedId == user.login) {
+                    const inviter = this.connected_users.find(
+                        u => u.login == user.pendingInvite.inviterId,
+                    )
+                    this.respondInvite(inviter.socket, user.pendingInvite, true)
+                }
             }
             this.connected_users.splice(index, 1)
             this.repo.updatePlayerStatus('OFFLINE', user.login)
@@ -116,52 +123,79 @@ export class GameWsService {
     }
 
     public sendInvite(userSocket: Socket, invite: InviteDto) {
-        const user = this.connected_users.find(user => user.socket == userSocket)
-        const opponent = this.connected_users.find(user => user.login == invite.invitedId)
-        user.powerUps = invite.powerups
-        invite.inviterId = user.login
-        if (opponent && opponent.status == 'online') {
+        const inviter = this.connected_users.find(user => user.login == invite.inviterId)
+        const invited = this.connected_users.find(user => user.login == invite.invitedId)
+        inviter.powerUps = invite.powerups
+        if (invited && invited.status == 'online') {
             // If the invite was successfuly sent to the opponent
-            user.status = 'busy'
-            opponent.status = 'busy'
-            opponent.socket.emit('Invite-Received', invite)
-        } else if (opponent) {
+            inviter.status = 'busy'
+            invited.status = 'busy'
+            inviter.pendingInvite = invite
+            invited.pendingInvite = invite
+            invited.socket.emit('Invite-Received', invite)
+        } else if (invited) {
             // Incase user it not online or not found
-            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: opponent.status })
+            this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
         } else {
-            userSocket.emit('Respond-Invite', { status: 'rejected', playerStatus: 'offline' })
+            this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
         }
     }
 
     /* Respond to the inviter with either Accept or Decline */
-    public respondInvite(userSocket: Socket, response: InviteDto, error?: boolean) {
-        const user = this.connected_users.find(user => user.socket == userSocket)
-        const opponent = this.connected_users.find(user => user.login == response.inviterId)
+    public respondInvite(userSocket: Socket, invite: InviteDto, error?: boolean) {
+        const inviter = this.connected_users.find(user => user.login == invite.inviterId)
+        const invited = this.connected_users.find(user => user.login == invite.invitedId)
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         if (error) {
-            if (user.status == 'busy') user.status = 'online'
-            if (opponent.status == 'busy') opponent.status = 'online'
-            userSocket.emit('Respond-Invite', { status: 'error', playerStatus: opponent.status })
+            if (invited.status == 'busy') invited.status = 'online'
+            if (inviter.status == 'busy') inviter.status = 'online'
+            this.respond(inviter, invited, invite, 'error', 'Respond-Invite')
             return
         }
-        if (opponent) {
-            if (response.accepted == true) {
-                opponent.socket.emit('Respond-Invite', {
-                    status: 'accepted',
-                    playerStatus: user.status,
-                })
-                user.powerUps = response.powerups
-                this.createMultiGame(opponent, user, response.gameType)
-                user.status = 'ingame'
-                opponent.status = 'ingame'
+        if (
+            inviter &&
+            inviter.pendingInvite &&
+            inviter.pendingInvite.invitedId == invite.invitedId
+        ) {
+            if (invite.accepted == true) {
+                this.respond(inviter, invited, invite, 'accepted', 'Respond-Invite')
+                invited.powerUps = invite.powerups
+                invited.status = 'ingame'
+                inviter.status = 'ingame'
+                this.createMultiGame(inviter, invited, invite.gameType)
             } else {
-                opponent.status = 'online'
-                user.status = 'online'
-                opponent.socket.emit('Respond-Invite', {
-                    status: 'rejected',
-                    playerStatus: user.status,
-                })
+                console.log('rejected')
+                invited.status = 'online'
+                this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
+                inviter.status = 'online'
             }
-        } else user.status = 'online'
+        } else {
+            invited.status = 'online'
+            this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
+        }
+    }
+
+    private respond(
+        inviter: ConnectedUser,
+        invited: ConnectedUser,
+        invite: InviteDto,
+        responseStatus: any,
+        event: string,
+    ) {
+        inviter.socket.emit(event, {
+            status: responseStatus,
+            playerStatus: invited ? invited.status : 'offline',
+            target: inviter.login,
+        })
+        inviter.pendingInvite = null
+        if (invited) {
+            invited.socket.emit(event, {
+                status: responseStatus,
+                playerStatus: invited.status,
+                target: invited.login,
+            })
+            invited.pendingInvite = null
+        }
     }
 
     public playerReady(userSocket: Socket) {

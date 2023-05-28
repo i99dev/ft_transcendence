@@ -158,12 +158,11 @@ onUnmounted(() => {
 })
 
 const reset = () => {
-    groupChatType.value = undefined
+    groupChatType.value = chatTypes[0]
     chatPassword.value = ''
 }
 
 const sendChatType = () => {
-    closePopup()
     emit('chatType', {
         type:
             groupChatType.value?.type === 'PRIVATE'
@@ -173,6 +172,7 @@ const sendChatType = () => {
                 : 'PUBLIC',
         password: chatPassword.value,
     })
+    closePopup()
 }
 
 const changeView = () => {

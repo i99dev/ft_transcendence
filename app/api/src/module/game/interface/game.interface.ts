@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io'
 import { PongGame } from '../logic/pongGame'
+import { InviteDto } from '../dto/game.dto'
 
 export interface ConnectedUser {
     login: string
@@ -7,6 +8,7 @@ export interface ConnectedUser {
     status: 'ingame' | 'inqueue' | 'online' | 'busy' | 'offline'
     game?: PongGame
     powerUps?: string[]
+    pendingInvite?: InviteDto
 }
 
 export interface PowerUp {

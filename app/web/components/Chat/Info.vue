@@ -162,14 +162,14 @@
                     <button
                         v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        v-click-effect="()=>isEditChatImageAndNameOpened = true"
+                        v-click-effect="() => (isEditChatImageAndNameOpened = true)"
                     >
                         <PencilSquareIcon class="w-6 h-6" />
                     </button>
                     <button
                         v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        v-click-effect="()=>isEditChatTypeOpened = true"
+                        v-click-effect="() => (isEditChatTypeOpened = true)"
                     >
                         <KeyIcon class="w-6 h-6" />
                     </button>
@@ -431,7 +431,6 @@ const switchParticipantsList = (type: string = 'NORMAL') => {
     if (type === 'NORMAL' && participantsType.value !== 'NORMAL') updateParticipants()
     else if (type === 'BAN' && participantsType.value !== 'BAN') updateParticipants('BAN')
 }
-
 </script>
 
 <style scoped>

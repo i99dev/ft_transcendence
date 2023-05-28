@@ -186,12 +186,16 @@ export class gameAnalyzer {
 
     async updatePlayerWinningRate(login: string): Promise<void> {
         const winRate = await this.calcWinRate(login)
-        await this.userService.updateUser(
-            {
-                wr: winRate,
-            },
-            login,
-        )
+        try {
+            await this.userService.updateUser(
+                {
+                    wr: winRate,
+                },
+                login,
+            )
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     async calcWinStreak(login: string, winNum: number): Promise<number> {

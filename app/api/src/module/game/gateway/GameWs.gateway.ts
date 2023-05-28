@@ -75,10 +75,7 @@ export class GameWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @UseGuards(WsGuard)
     @SubscribeMessage('Power-Up')
-    PowerupStart(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() powerUp: 1 | 2,
-    ) {
+    PowerupStart(@ConnectedSocket() client: Socket, @MessageBody() powerUp: 1 | 2) {
         this.gameService.activatePowerUp(client, powerUp)
     }
 
