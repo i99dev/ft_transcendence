@@ -35,15 +35,26 @@
                         </div>
 
                         <div
-                            class="mt-12 flex col-auto transform items-center justify-center transition-transform duration-150 ease-in-out hover:scale-125">
+                            class="mt-20 flex col-auto transform items-center justify-center transition-transform duration-150 ease-in-out hover:scale-125">
+
                             <div v-if="info.title == 'Achievements'" class="grid grid-cols-3 mb-5 gap-4">
                                 <div v-for="achv in achievements" class="mt-3 mb-10 rounded-full border overflow-hidden"
                                     :class="getAchvType(achv.type, false)">
                                     <img :src="achv.image" class="w-full h-full object-cover">
-                                    <span class="absolute text-white text-xs px-1 rounded-bl rounded-tr" :class="getAchvType(achv.type, true)"> {{ achv.type }} </span>
+                                    <span class="absolute text-white text-xs px-1 rounded-bl rounded-tr"
+                                        :class="getAchvType(achv.type, true)"> {{ achv.type }} </span>
                                 </div>
                             </div>
-                            <div v-if="info.title == 'Controls'" class="flex flex-col items-center">
+
+                            <div v-if="info.title == 'Rank System'" class="flex justify-center mt-10">
+                                <div v-for="(rectangle, index) in rectangles" :key="index"
+                                    class="relative w-25 h-[100px] mr-20">
+                                    <div class="absolute bottom-0 left-0 w-8 bg-white shadow-xl shadow-tertiary_dark"
+                                        :style="{ height: rectangle.height + '%' }"></div>
+                                </div>
+                            </div>
+
+                            <div v-if="info.title == 'Controls'" class="flex flex-col items-center shadow-xl shadow-secondary_dark">
                                 <svg style="color: blueviolet" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
                                     fill="currentColor" class="bi bi-arrow-up-square-fill mb-2" viewBox="0 0 16 16">
                                     <path
@@ -117,10 +128,19 @@ const getClassForDescription = (description: any, info: any) => {
 
 const getAchvType = (type: string, isText: boolean) => {
     if (type === 'Serial Killer' || type === 'Rookie no more' || type === 'First Blood')
-        return isText ? 'bg-accent_dark' : 'border-accent_dark'
+        return isText ? 'bg-accent_dark' : 'border-accent_dark shadow-xl shadow-accent_dark'
     else
-        return isText? 'bg-primary_dark' : 'border-primary_dark'
+        return isText ? 'bg-primary_dark' : 'border-primary_dark shadow-xl shadow-primary_dark'
 }
+
+const rectangles = [
+    { height: 40 },
+    { height: 60 },
+    { height: 80 },
+    { height: 100 },
+    { height: 120 },
+    { height: 140 }
+]
 
 </script>
 
