@@ -28,7 +28,7 @@ export class GameWsService {
         private prisma: PrismaService,
         private userService: UserService,
         private matchService: MatchService,
-    ) { }
+    ) {}
 
     /* 
         Adds a new user to connected_users array
@@ -36,10 +36,9 @@ export class GameWsService {
     public addConnectedUser(userLogin: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.login == userLogin)
         if (temp) {
-                userSocket.disconnect(true)
-                return
-        }
-        else {
+            userSocket.disconnect(true)
+            return
+        } else {
             this.connected_users.push({
                 login: userLogin,
                 socket: userSocket,
@@ -149,10 +148,7 @@ export class GameWsService {
             this.respond(inviter, invited, invite, 'error', 'Respond-Invite')
             return
         }
-        if (
-            inviter?.pendingInvite &&
-            inviter?.pendingInvite.invitedId == invite.invitedId
-        ) {
+        if (inviter?.pendingInvite && inviter?.pendingInvite.invitedId == invite.invitedId) {
             if (invite.accepted == true) {
                 this.respond(inviter, invited, invite, 'accepted', 'Respond-Invite')
                 invited.powerUps = invite.powerups
