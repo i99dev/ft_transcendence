@@ -8,7 +8,7 @@
             >
                 <button
                     class="absolute top-0 left-0 text-white m-2 p-2 rounded-full hover:bg-secondary smooth-transition"
-                    @click="()=> navigateTo('/login')"
+                    v-click-effect="() => navigateTo('/login')"
                 >
                     <ArrowSmallLeftIcon class="w-8 aspect-square" />
                 </button>
@@ -48,7 +48,7 @@
                     Didn't receive the code?
                     <button
                         class="bg-secondary hover:bg-primary smooth-transition rounded-xl p-2 m-2"
-                        @click="resendCode"
+                        v-click-effect="resendCode"
                     >
                         Resend
                     </button>

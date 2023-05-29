@@ -10,14 +10,14 @@
             <div class="ml-auto">
                 <div v-if="props.notification?.type === 'FRIEND_REQUEST'">
                     <button
-                        @click="accept"
+                    v-click-effect="accept"
                         class="bg-primary hover:scale-105 smooth-transition py-1 px-2 rounded-full m-2 capitalize"
                     >
                         accept
                     </button>
                     <button
                         v-if="props.notification?.type === 'FRIEND_REQUEST'"
-                        @click="decline"
+                        v-click-effect="decline"
                         class="bg-secondary hover:scale-105 smooth-transition py-1 px-2 rounded-full m-2 capitalize"
                     >
                         decline
@@ -25,7 +25,7 @@
                 </div>
                 <button
                     v-if="props.notification?.type === 'FRIEND_REQUEST_ACCEPTED'"
-                    @click="close"
+                    v-click-effect="close"
                     class="text-white hover:bg-primary rounded-full p-1 mr-1 smooth-transition focus:ring-2 focus:ring-primary"
                 >
                     <span class="sr-only">Close notification</span>

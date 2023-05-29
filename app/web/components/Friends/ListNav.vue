@@ -8,14 +8,14 @@
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                @click=" setFriendsModalOpen(false)"
+                                v-click-effect=" setFriendsModalOpen(false)"
                             >
                                 <span class="sr-only">Close panel</span>
                                 <XMarkIcon class="h-6 w-6" aria-hidden="true" />
                             </button>
                         </div>
                         <button
-                            @click="add_new_friend"
+                        v-click-effect="add_new_friend"
                             class="p-2 m-1 mr-4 rounded relative bg-secondary hover:bg-primary smooth-transition self-end text-white"
                         >
                             Add friend
@@ -34,7 +34,7 @@
                             >
                                 <button
                                     class="centered w-fit group"
-                                    @click=" navigateTo(`/users/${friend.username}`)"
+                                    v-click-effect="() => navigateTo(`/users/${friend.username}`)"
                                 >
                                     <div class="relative">
                                         <img
@@ -69,7 +69,7 @@
                                             <div class="py-1">
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" showInviteModal(friend.login)"
+                                                    v-click-effect="() => showInviteModal(friend.login)"
                                                 >
                                                     <span class="flex items-center">
                                                         Invite to Game
@@ -77,7 +77,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" useDMUser(friend.login)"
+                                                    v-click-effect="() => useDMUser(friend.login)"
                                                 >
                                                     <span class="flex items-center">
                                                         Send MSG
@@ -85,7 +85,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" viewProfile(friend.username)"
+                                                    v-click-effect="() => viewProfile(friend.username)"
                                                 >
                                                     <span class="flex items-center">
                                                         View Profile
@@ -93,7 +93,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" remove(friend.login)"
+                                                    v-click-effect="() => remove(friend.login)"
                                                 >
                                                     <span class="flex items-center">
                                                         Unfriend
@@ -101,7 +101,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click="
+                                                    v-click-effect="
                                                         () => {
                                                             isBlocked(friend)
                                                                 ? removeUserFromBlockList(friend)

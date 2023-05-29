@@ -5,7 +5,7 @@
             class="grid grid-cols-4 lg:grid-cols-6 gap-1 lg:gap-2"
         >
             <button
-                @click="openChatModel"
+            v-click-effect="openChatModel"
                 title="Chat"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square col-span-2 place-self-end lg:col-span-1 lg:place-self-start"
             >
@@ -22,7 +22,7 @@
                 </svg>
             </button>
             <button
-                @click="openFriendsModel"
+            @click="openFriendsModel"
                 title="Friends"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square col-span-2 lg:col-span-1"
             >
@@ -48,7 +48,7 @@
                 </div>
             </button>
             <button
-                @click="useLogout"
+            v-click-effect="useLogout"
                 title="Logout"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -65,7 +65,7 @@
                 </svg>
             </button>
             <button
-                @click="updateTwoFacAuth"
+            v-click-effect="updateTwoFacAuth"
                 :title="user_info.two_fac_auth ? 'Disable 2FA' : 'Enable 2FA'"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -98,7 +98,7 @@
                 </svg>
             </button>
             <button
-                @click=" navigateTo('/help')"
+            v-click-effect="() => navigateTo('/help')"
                 title="Help"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -116,7 +116,7 @@
                 </svg>
             </button>
             <button
-                @click="handleMuteSound"
+            v-click-effect="handleMuteSound"
                 :title="muteSound ? 'Mute' : 'Unmute'"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -150,14 +150,14 @@
         </div>
         <div v-else-if="!props.isMe" class="flex space-x-6">
             <button
-                @click="handleDMUser"
+            v-click-effect="handleDMUser"
                 :title="`DM '${props.username}'`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
                 <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                @click="handleAddFriend"
+            v-click-effect="handleAddFriend"
                 :title="`Add '${props.login}' to friends`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
@@ -165,7 +165,7 @@
                 <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                @click="handleUserBlock"
+            v-click-effect="handleUserBlock"
                 class="p-2 hover hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2 capitalize"
                 :class="{
                     'bg-secondary': isBlocked(user),

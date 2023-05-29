@@ -71,7 +71,7 @@
         >
             <template #button>
                 <button
-                    @click="handleDropdown"
+                v-click-effect="handleDropdown"
                     class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none bg-background_light"
                 >
                     <ChevronUpIcon class="w-4 h-4" />
@@ -79,7 +79,7 @@
             </template>
             <div class="m-2">
                 <button
-                    @click=" handleFilteration('all')"
+                v-click-effect="() => handleFilteration('all')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('all'),
@@ -93,7 +93,7 @@
                 </button>
 
                 <button
-                    @click=" handleFilteration('asc')"
+                v-click-effect="() => handleFilteration('asc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('asc'),
@@ -107,7 +107,7 @@
                 </button>
 
                 <button
-                    @click=" handleFilteration('desc')"
+                v-click-effect="() => handleFilteration('desc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('desc'),
@@ -121,7 +121,7 @@
                 </button>
 
                 <button
-                    @click=" handleFilteration('win')"
+                v-click-effect="() => handleFilteration('win')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('win'),
@@ -135,7 +135,7 @@
                 </button>
 
                 <button
-                    @click=" handleFilteration('lose')"
+                v-click-effect="() => handleFilteration('lose')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('lose'),

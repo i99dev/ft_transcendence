@@ -4,7 +4,7 @@
         class="relative flex flex-col top-0 w-full h-10vh mb-10 z-10"
     >
         <button
-            @click="handleHomeNav"
+        v-click-effect="handleHomeNav"
             class="justify-self-center self-center w-32 h-1/3 mt-5"
         >
             <LoginLogo :horizontal="true" class="text-2xl" />

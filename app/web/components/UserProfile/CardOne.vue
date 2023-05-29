@@ -28,7 +28,7 @@
                                 <button
                                     title="Edit profile"
                                     class="flex justify-center hover:bg-primary rounded-full p-2 w-12 h-12 smooth-transition"
-                                    @click="editProfile"
+                                    v-click-effect="editProfile"
                                     v-if="isMe && !isProfile"
                                 >
                                     <svg

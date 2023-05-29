@@ -5,7 +5,7 @@
         >
             <button v-for="tab in tabs" :key="tab.name" class="flex flex-col">
                 <div
-                    @click=" setActiveTab(tab)"
+                v-click-effect="() => setActiveTab(tab)"
                     class="py-2 ease-in duration-150 rounded md:flex text-white whitespace-nowrap"
                 >
                     <div

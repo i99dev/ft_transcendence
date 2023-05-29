@@ -7,7 +7,7 @@
         >
             <template #button>
                 <button
-                    @click="handleDropDown"
+                v-click-effect="handleDropDown"
                     class="sm:text-xl text-center p-2 w-fit rounded-xl text-lg text-white hover:bg-primary smooth-transition focus:outline-none"
                     :title="`${
                         user_info?.username === props.username ? 'Your' : props.username
