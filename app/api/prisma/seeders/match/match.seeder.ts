@@ -60,7 +60,7 @@ export class MatchSeeder {
 
     public async seedMatchHistory(): Promise<void> {
         let gameid = '5a48398f-30ae-489f-b22a-4fc20e0b7620'
-        await this.createMatch(gameid, new Date('2023-05-12T06:30:15.000Z'))
+        await this.createMatch(gameid, new Date('2021-05-12T06:30:15.000Z'))
         await this.assignOponents(gameid, [
             { username: 'AJ', score: 11, isWinner: true, gameId: gameid },
             { username: 'OA', score: 4, isWinner: false, gameId: gameid },
