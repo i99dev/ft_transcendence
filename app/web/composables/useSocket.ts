@@ -77,7 +77,6 @@ export const useFriendSocket = () => {
 }
 
 export const useSockets = () => {
-    const toast = useToast()
     const { chatSocket, connectChatSocket, disconnectChatSocket, reconnectChatSocket } =
         useChatSocket()
     const { gameSocket, connectGameSocket, disconnectGameSocket, reconnectGameSocket } =
@@ -89,7 +88,6 @@ export const useSockets = () => {
         connectChatSocket()
         connectGameSocket()
         connectFriendSocket()
-        logSocketExceptions()
     }
 
     const disconnectSockets = () => {
@@ -111,6 +109,7 @@ export const useSockets = () => {
     }
 
     const logSocketExceptions = () => {
+        const toast = useToast()
         chatSocket.value?.on('exception', err => {
             toast.add({
                 severity: 'error',
@@ -149,6 +148,8 @@ export const useSockets = () => {
         })
     }
 
+    
+
     return {
         connectSockets,
         handleSocketDisconnection,
@@ -156,5 +157,18 @@ export const useSockets = () => {
         reconnectSockets,
         logSocketExceptions,
         updateSocketsToken,
+        areSocketsConnected,
     }
+}
+
+export const areSocketsConnected = () : boolean | undefined => {
+    const { chatSocket } = useChatSocket()
+    const { gameSocket } = useGameSocket()
+    const { friendSocket } = useFriendSocket()
+
+    return (
+        chatSocket.value?.connected &&
+        gameSocket.value?.connected &&
+        friendSocket.value?.connected
+    )
 }

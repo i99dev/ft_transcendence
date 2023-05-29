@@ -55,6 +55,8 @@ onMounted(async () => {
     if (myblockList.value) setBlockList(myblockList.value)
 
     handleSocketDisconnection()
+    if (areSocketsConnected())
+        logSocketExceptions()
 
 })
 </script>
