@@ -114,7 +114,7 @@ const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
 const showRotateOverlay = ref(false)
 const isMobile = useState('isMobile')
-loop('play')
+// loop('play')
 
 onMounted(() => {
     checkOrientation()

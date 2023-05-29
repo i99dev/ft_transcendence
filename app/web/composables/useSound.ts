@@ -23,7 +23,7 @@ export const useSound = () => {
     )
     const play = (effect: string) => {
         if (effect === 'click') sound.value.get(effect).currentTime = 0
-        if (effect === 'login') {
+        if (effect === 'login' || effect === 'play') {
             sound.value.get(effect).loop = true
             sound.value.get(effect).volume = 0.2
         }
