@@ -144,15 +144,14 @@ export class GameWsService {
         const inviter = this.connected_users.find(user => user.login == invite.inviterId)
         const invited = this.connected_users.find(user => user.login == invite.invitedId)
         if (error) {
-            if (invited.status == 'busy') invited.status = 'online'
-            if (inviter.status == 'busy') inviter.status = 'online'
+            if (invited?.status == 'busy') invited.status = 'online'
+            if (inviter?.status == 'busy') inviter.status = 'online'
             this.respond(inviter, invited, invite, 'error', 'Respond-Invite')
             return
         }
         if (
-            inviter &&
-            inviter.pendingInvite &&
-            inviter.pendingInvite.invitedId == invite.invitedId
+            inviter?.pendingInvite &&
+            inviter?.pendingInvite.invitedId == invite.invitedId
         ) {
             if (invite.accepted == true) {
                 this.respond(inviter, invited, invite, 'accepted', 'Respond-Invite')

@@ -145,7 +145,7 @@ const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
     setTimeout(() => {
         gameBoard.value?.setup(mode)
-    }, 700)
+    }, 1000)
     gameResult.value = false
 }
 
