@@ -37,10 +37,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+const { logSocketExceptions } =
+    useSockets()
 
 const { user_info } = useUserInfo()
 
 const IsProfile = ref(false)
 
 const props = defineProps(['username'])
+
+logSocketExceptions()
 </script>
