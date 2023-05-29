@@ -104,4 +104,13 @@ export class AchievementService {
             console.log(error)
         }
     }
+
+    async getAllAchievements(): Promise<AchievementDto[]> {
+        try {
+            const ach = await this.prisma.achievement.findMany()
+            return ach
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

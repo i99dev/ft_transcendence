@@ -278,7 +278,7 @@ export const useChatView = () => {
 }
 
 export const useDMUser = async (user_login: string) => {
-    const toasst = useToast()
+    const toast = useToast()
     const openDM = (chat: GroupChat & DirectChat) => {
         const { setChatModalOpen } = useChat()
         const { setChatView } = useChatView()

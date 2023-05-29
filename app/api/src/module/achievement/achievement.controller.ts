@@ -26,4 +26,9 @@ export class AchievementController {
     async getNewRank(@Req() req): Promise<{ rank: string; isUp: boolean }> {
         return await this.achievementService.getNewRank(req.user.login)
     }
+
+    @Get('')
+    async getAllAchievements(): Promise<AchievementDto[]> {
+        return await this.achievementService.getAllAchievements()
+    }
 }

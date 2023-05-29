@@ -14,7 +14,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
                 v-for="(powerUp, i) in playersData[0].powerUps"
                 :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
-                v-click-effect="() => onPowerUpClick(0, i + 1)"
+                @click=" onPowerUpClick(0, i + 1)"
             >
                 <img
                     :src="`/imgs/${powerUp.type}.png`"
@@ -33,7 +33,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
                 v-for="(powerUp, i) in playersData[1].powerUps"
                 :key="i"
                 class="bg-white w-12 h-12 rounded-md border-2 border-violet-400 flex items-center justify-center relative"
-                v-click-effect="() => onPowerUpClick(1, i + 1)"
+                @click=" onPowerUpClick(1, i + 1)"
             >
                 <img
                     :src="`/imgs/${powerUp.type}.png`"
@@ -54,7 +54,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
         </div>
     </div>
     <button
-        v-click-effect="() => $emit('ExitBtn')"
+        @click=" $emit('ExitBtn')"
         class="fixed top-14 left-1/2 mt-2 transform -translate-x-1/2 z-20 bg-transparent text-white text-xl px-2 py-1"
     >
         <img src="/imgs/leave.png" alt="Leave Game" class="w-6 h-6" />
