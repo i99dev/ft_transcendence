@@ -6,7 +6,7 @@
             v-for="(player, index) in players"
             :title="getLadderRank(player.ladder)"
             :key="index"
-            @click=" navigateTo(`/users/${player.username}`)"
+            @click="navigateTo(`/users/${player.username}`)"
             class="w-full h-12 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-tertiary"
             :class="{
                 'bg-background': !(index % 2),
