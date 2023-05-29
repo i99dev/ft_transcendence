@@ -37,13 +37,13 @@
                             inviteModal.gameType === 'custom' && selectedPowerups.length != 2
                         "
                         class="py-2 px-4 border-1 border-white rounded-md text-white bg-primary bg-opacity-75 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="acceptInvite"
+                        @click="acceptInvite"
                     >
                         Accept
                     </button>
                     <button
                         class="py-2 px-4 border-1 border-white rounded-md text-white bg-background bg-opacity-75 hover:bg-opacity-100 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="declineInvite"
+                        @click="declineInvite"
                     >
                         Decline
                     </button>
@@ -64,7 +64,7 @@
                                 <button
                                     :class="mode === 'classic' ? 'bg-opacity-100' : 'bg-opacity-75'"
                                     class="w-full py-2 px-4 rounded-md text-white bg-primary hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    v-click-effect="() => selectMode('classic')"
+                                    @click="() => selectMode('classic')"
                                 >
                                     Classic Pong
                                 </button>
@@ -73,7 +73,7 @@
                                 <button
                                     :class="mode === 'custom' ? 'bg-opacity-100' : 'bg-opacity-75'"
                                     class="w-full py-2 px-4 rounded-md text-white bg-primary hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    v-click-effect="() => selectMode('custom')"
+                                    @click="() => selectMode('custom')"
                                 >
                                     Custom Pong
                                 </button>
@@ -118,7 +118,7 @@
                 >
                     <button
                         class="py-2 px-4 rounded-md text-white bg-background bg-opacity-75 hover:bg-opacity-100 border-1 border-whiute transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="
+                        @click="
                             () => {
                                 inviteModal.open = false
                             }
@@ -132,7 +132,7 @@
                             inviteModal.rejected
                         "
                         class="py-2 px-4 border-1 border-white rounded-md text-white bg-tertiary bg-opacity-80 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="sendInvite"
+                        @click="sendInvite"
                     >
                         Send Invite
                     </button>
