@@ -1,0 +1,138 @@
+version: '3'
+
+services:
+    # frontend (Nuxtjs)
+    web:
+        container_name: ft_transcendence_web
+
+        build: ./app/web
+
+        environment:
+            - NODE_ENV=${NODE_ENV}
+            - CLIENT_ID=${CLIENT_ID}
+            - CLIENT_SECRET=${CLIENT_SECRET}
+            - REDIRECT_URI=${REDIRECT_URI}
+            - API_URL=${API_URL}
+            - GAME_NAME=${GAME_NAME}
+            - IP=${IP}
+            - PROTOCOL=${PROTOCOL}
+
+        volumes:
+            - ./app/web:/usr/src/app
+
+        command:
+            [
+                'sh',
+                '-c',
+                'yarn install && yarn run build && npx pm2 start yarn --name "ft_transcendence"
+                --interpreter bash --no-daemon -- start',
+            ]
+
+        networks:
+            - proxy_frontend_net
+
+        ports:
+            - 24678:24678
+
+        depends_on:
+            - api
+
+        restart: on-failure
+
+    # backend (Nestjs)
+    api:
+        container_name: ft_transcendence_api
+        tty: true
+        build: ./app/api
+
+        volumes:
+            - ./app/api:/usr/src/app
+
+        command:
+            [
+                'sh',
+                '-c',
+                'yarn && npx prisma db push --force-reset && yarn run build && npx pm2 start yarn
+                --name "ft_transcendence" --interpreter bash --no-daemon -- start',
+            ]
+
+        environment:
+            - NODE_ENV=${NODE_ENV}
+            - CLIENT_ID=${CLIENT_ID}
+            - CLIENT_SECRET=${CLIENT_SECRET}
+            - REDIRECT_URI=${REDIRECT_URI}
+            - DATABASE_URL=${DATABASE_URL}
+            - ACCESS_TOKEN_EXPIRES_IN=${ACCESS_TOKEN_EXPIRES_IN}
+            - REFRESH_TOKEN_EXPIRES_IN=${REFRESH_TOKEN_EXPIRES_IN}
+            - JWT_SECRET=${JWT_SECRET}
+            - PORT=${PORT}
+            - EMAIL_USER=${EMAIL_USER}
+            - EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
+            - IP=${IP}
+            - PROTOCOL=${PROTOCOL}
+
+        networks:
+            - proxy_backend_net
+            - backend_db_net
+
+        ports:
+            - 5555:5555
+            - 8000:8000
+
+        depends_on:
+            - db
+
+        restart: on-failure
+
+    # Database (Postgres)
+    db:
+        container_name: ft_transcendence_db
+
+        image: postgres:12
+
+        environment:
+            - NODE_ENV=${NODE_ENV}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DB=${POSTGRES_DB}
+
+        volumes:
+            - db-data:/var/lib/postgresql/data
+
+        networks:
+            - backend_db_net
+
+        restart: unless-stopped
+
+    # reverse proxy (nginx)
+    nginx:
+        container_name: ft_transcendence_nginx
+
+        image: nginx:latest
+
+        environment:
+            - NODE_ENV=${NODE_ENV}
+
+        ports:
+            - 80:80
+
+        volumes:
+            - ./config/default.conf:/etc/nginx/conf.d/default.conf
+
+        networks:
+            - proxy_frontend_net
+            - proxy_backend_net
+
+        depends_on:
+            - api
+            - web
+
+        restart: on-failure
+
+networks:
+    proxy_frontend_net:
+    proxy_backend_net:
+    backend_db_net:
+
+volumes:
+    db-data:

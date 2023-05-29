@@ -18,6 +18,7 @@ import { TwoFacAuthService } from './twoFacAuth.service'
 import { UserService } from '../module/user/user.service'
 import { JwtAuthGuard } from '../common/guards/jwt.guard'
 import { twoFacAuthConstants } from '../common/constants/setting'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 
 @Controller('auth')
 export class AuthController {
@@ -35,20 +36,20 @@ export class AuthController {
         tags: ['auth'],
     })
     @Post('login')
-    async GetAuth(
-        @Req() req,
-        @Res({ passthrough: true }) res,
-    ): Promise<TokenDto | TwoFacAuthDto | string> {
+    async GetAuth(@Req() req, @Res() res): Promise<TokenDto | TwoFacAuthDto | string> {
         const { httpStatus, user } = await this.authService.getOrCreateUserAccountOnDb(req.user)
 
         // 2FA
         if (httpStatus === HttpStatus.OK && user.two_fac_auth)
-            return await this.twoFacAuthService.handle2FA(user)
+            return res.status(HttpStatus.OK).json(await this.twoFacAuthService.handle2FA(user))
 
-        const { accessToken, refreshToken } = this.authService.getUserTokens(user)
-        res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
-
-        return res.status(httpStatus).json(new TokenDto(accessToken))
+        try {
+            const { accessToken, refreshToken } = this.authService.getUserTokens(user)
+            res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
+            return res.status(httpStatus).json(new TokenDto(accessToken))
+        } catch (error) {
+            throw new NotFoundException('No Token Found')
+        }
     }
 
     @Get('logout')
@@ -66,24 +67,25 @@ export class AuthController {
         const user = await this.authService.getUserByToken(req.cookies['refresh_token'])
         if (!user) throw new NotFoundException('User not found')
 
-        const { accessToken, refreshToken } = this.authService.getUserTokens(user)
-        res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
+        try {
+            const { accessToken, refreshToken } = this.authService.getUserTokens(user)
+            res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
 
-        return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
+            return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
+        } catch (error) {
+            throw new NotFoundException('No Token Found')
+        }
     }
 
     @Get('2fa/resend/:login')
     async resendVerificationCode(
-        @Param('login') login: string,
+        @Param('login', ParseStringPipe) login: string,
     ): Promise<TwoFacAuthDto | string> {
         const user = await this.userService.getUser(login)
         if (!user) throw new NotFoundException('User not found')
 
-        console.log('user if found')
-
         const secret = await this.twoFacAuthService.getUser(login)
         if (!secret) throw new NotFoundException('No 2FA requested for this user')
-        console.log('2fa exist')
 
         if (this.twoFacAuthService.getIsAllowedToSend(user.login) === false)
             throw new BadRequestException(
@@ -95,7 +97,7 @@ export class AuthController {
 
     @Post('2fa/confirm/:login')
     async confirm2FA(
-        @Param('login') login: string,
+        @Param('login', ParseStringPipe) login: string,
         @Req() req,
         @Res() res,
     ): Promise<TokenDto | string> {
@@ -110,9 +112,13 @@ export class AuthController {
 
         const isValid = this.twoFacAuthService.verify2FA(login, code)
         if (isValid) {
-            const { accessToken, refreshToken } = this.authService.getUserTokens(user)
-            res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
-            return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
+            try {
+                const { accessToken, refreshToken } = this.authService.getUserTokens(user)
+                res.cookie('refresh_token', refreshToken, this.authService.getRefreshTokenObj())
+                return res.status(HttpStatus.OK).json(new TokenDto(accessToken))
+            } catch (error) {
+                throw new NotFoundException('No Token Found')
+            }
         } else throw new NotFoundException('Invalid code')
     }
 }

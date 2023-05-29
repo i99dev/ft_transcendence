@@ -1,24 +1,32 @@
 <template>
-    <div>
-        <main class="grid min-h-full place-items-center bg-white py-24 px-6 sm:py-32 lg:px-8">
-            <div class="text-center">
-                <h1 class="mt-6 text-3xl font-bold tracking-tight text-blue-900 sm:text-9xl">
-                    404
+    <div style="height: 90vh" class="centered">
+        <div class="bg-background_light centered mobile:flex-col p-10 w-1/2 rounded-2xl relative">
+            <img
+                src="https://media.tenor.com/mpRJETAa-WwAAAAC/chopper-tony-chopper.gif"
+                class="w-1/3 w-n mobile:h-1/3 aspect-square object-cover rounded-full"
+            />
+            <div class="centered flex-col text-center text-white w-2/3 mobile:h-2/3">
+                <h1 class="mt-6 font-bold tracking-tight text-tertiary lg:text-9xl text-5xl">
+                    {{ error.statusCode }}
                 </h1>
-                <div class="mt-10 flex items-center justify-center gap-x-6">
-                    <img src="https://media.tenor.com/yyi93c8CMJkAAAAC/one-piece-chopper.gif">
-                </div>
-                <p class="mt-6 text-base leading-7 text-gray-600">
-                    Sorry, we couldn’t find the page you’re looking for.
-                </p>
-                <div class="mt-3 flex items-center justify-center gap-x-6">
-                    <a
-                        href="/"
-                        class="rounded-md bg-blue-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >Go back home</a
-                    >
-                </div>
+                <h2
+                    class="m-5 w-full text-lg h-1/2 max-h-28 text-ellipsis overflow-hidden text-white"
+                >
+                    {{ error.statusMessage }}
+                </h2>
+                <button
+                    @click="handleError"
+                    class="rounded-md capitalize bg-primary px-3 py-2 m-2 text-xl font-semibold text-white shadow-sm shadow-white hover:scale-125 smooth-transition"
+                >
+                    home
+                </button>
             </div>
-        </main>
+        </div>
     </div>
 </template>
+
+<script lang="ts" setup>
+defineProps(['error'])
+
+const handleError = () => clearError({ redirect: '/' })
+</script>

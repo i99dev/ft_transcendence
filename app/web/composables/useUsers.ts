@@ -23,31 +23,15 @@ export async function useUsersSearch(username: string): Promise<any> {
         pending,
     } = await useFetch('users/search', {
         baseURL: useRuntimeConfig().API_URL,
-        query: {
-            username: username
-        },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
-        server: false,
+        query: {
+            search: username,
+        },
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }
-}
-
-export async function SearchUserNames(username: string): Promise<any[] | null> {
-    const {
-        data,
-        error: errorRef,
-    } = await useFetch<any[]>(`users/search/${username}`, {
-        baseURL: useRuntimeConfig().API_URL,
-        headers: {
-            Authorization: `Bearer ${useCookie('access_token').value}`,
-        },
-        server: false,
-    })
-    const error = errorRef.value as FetchError<any> | null
-    return data.value
 }
 
 export async function getUserInfo(player: string): Promise<any> {
@@ -59,7 +43,6 @@ export async function getUserInfo(player: string): Promise<any> {
         },
     })
     const error = errorRef.value as FetchError<any> | null
-    console.log(data, error)
     return data.value
 }
 
@@ -72,11 +55,5 @@ export async function getUserbyUserName(player: string): Promise<any> {
         },
     })
     const error = errorRef.value as FetchError<any> | null
-    console.log(data, error)
     return data.value
-}
-
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
 }

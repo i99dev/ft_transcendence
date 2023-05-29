@@ -1,7 +1,9 @@
-import { BallDto, GameSelectDto, PaddleDto, PlayerDto, PowerUpInfoDto, gameStatusDto } from '../dto/game.dto'
-import { PowerUp } from '../interface/game.interface';
-import { EventEmitter } from 'events';
-
+import { Injectable } from '@nestjs/common'
+import { BallDto, PaddleDto, PlayerDto, gameStatusDto } from '../dto/game.dto'
+import { PowerUp } from '../interface/game.interface'
+import { EventEmitter } from 'events'
+import { Player } from '@prisma/client'
+import { BlockList } from 'net'
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -9,36 +11,37 @@ const DEFAULT_POWER_UPS: PowerUp[] = [
         active: false,
         ready: true,
         duration: 0,
-        cooldown: 5000,
+        cooldown: 7000,
     },
     {
         type: 'Baika no Jutsu',
         active: false,
         ready: true,
         duration: 5000,
-        cooldown: 5000,
+        cooldown: 7000,
     },
     {
         type: 'Shinigami',
         active: false,
         ready: true,
         duration: 500,
-        cooldown: 5000,
+        cooldown: 8000,
     },
     {
         type: 'Shunshin no Jutsu',
         active: false,
         ready: true,
         duration: 10000,
-        cooldown: 5000,
+        cooldown: 8000,
     },
 ]
 
 const PADDLE_WIDTH = 0.02
 const PADDLE_HEIGHT = 0.2
-const PADDLE_SPEED = 0.019
+const PADDLE_SPEED = 0.0175
+const BALL_RADIUS = 0.03
 const REFLECT_ANGLE = 80
-const BALL_XSPEED = 0.017
+const BALL_XSPEED = 0.0155
 const BALL_YSPEED = 0.0
 const COMPUTER_SPEED = 0.0075
 
@@ -49,12 +52,16 @@ interface gameAnalyzer {
     Achievements: string[]
 }
 
+@Injectable()
 export class PongGame {
     private game_status: gameStatusDto
     private game_id: string
     private gameType: string
+    private winner: string
+    public leaver: string
     public events: EventEmitter
     public analyzePlayer = new Map<string, gameAnalyzer>()
+    public isDeuce = false
     constructor(
         player1Login: string,
         Player2Login: string,
@@ -65,6 +72,7 @@ export class PongGame {
         this.game_id = this.generateRandomId()
         this.gameType = gameType
         this.events = new EventEmitter()
+        this.winner = null
         if (gameType == 'classic')
             this.game_status = this.instanciateGame(player1Login, Player2Login)
         else
@@ -88,24 +96,25 @@ export class PongGame {
     }
 
     private instanciateGame(
-        player1ID: string,
-        player2ID: string,
+        player1Login: string,
+        Player2Login: string,
         p1PowerUps?: string[],
         p2PowerUps?: string[],
     ): gameStatusDto {
         return {
             players: [
-                this.createPlayer(player1ID, 1, p1PowerUps),
-                this.createPlayer(player2ID, 2, p2PowerUps),
+                this.createPlayer(player1Login, 1, p1PowerUps),
+                this.createPlayer(Player2Login, 2, p2PowerUps),
             ],
             ball: {
                 x: 0.5,
                 y: 0.5,
-                dx: Math.random() > 0.5 ? BALL_XSPEED : -BALL_XSPEED,
+                dx: BALL_XSPEED,
                 dy: Math.random() > 0.5 ? BALL_YSPEED : -BALL_YSPEED,
-                radius: 0.015,
+                radius: BALL_RADIUS,
                 color: 'white',
             },
+            time: 120,
         }
     }
 
@@ -114,11 +123,11 @@ export class PongGame {
     }
 
     public getPlayer1ID(): string {
-        return this.game_status.players[0].username
+        return this.game_status.players[0].login
     }
 
     public getPlayer2ID(): string {
-        return this.game_status.players[1].username
+        return this.game_status.players[1].login
     }
 
     public getGameID(): string {
@@ -139,12 +148,12 @@ export class PongGame {
 
     // generate a random id for the game.. replace with uuid later
     private generateRandomId(): string {
-        return Math.random().toString(36) + Date.now().toString(36)
+        return crypto.randomUUID()
     }
 
-    private createPlayer(username: string, side: number, pickedPowerUps: string[]): PlayerDto {
+    private createPlayer(login: string, side: number, pickedPowerUps: string[]): PlayerDto {
         return {
-            username,
+            login,
             score: 0,
             paddle: {
                 x: side == 1 ? PADDLE_WIDTH / 2 : 1 - PADDLE_WIDTH / 2,
@@ -156,6 +165,7 @@ export class PongGame {
             },
             gameID: this.game_id,
             powerUps: this.createPowerUps(pickedPowerUps),
+            ready: login == 'Computer' ? true : false,
         }
     }
 
@@ -169,19 +179,86 @@ export class PongGame {
         return powerUps
     }
 
-    public setLoser(playerID: string): void {
+    public setPlayerReady(playerLogin: string): void {
+        const player = this.game_status.players.find(player => player.login === playerLogin)
+        if (player) player.ready = true
+    }
+
+    public isPlayersReady(playerLogin?: string): boolean {
+        if (playerLogin) {
+            const player = this.game_status.players.find(player => player.login === playerLogin)
+            if (player) return player.ready
+        }
+        const players = this.game_status.players
+        return players[0].ready && players[1].ready
+    }
+
+    // public setLoser(playerID: string): void {
+    //     const playerIndex = this.game_status.players.findIndex(
+    //         player => player.login === playerID,
+    //     )
+
+    //     if (playerIndex !== -1) {
+    //         const opponentIndex = playerIndex === 0 ? 1 : 0
+    //         this.game_status.players[opponentIndex].score = 11
+    //     }
+    // }
+
+    public setWinner(playerLogin: string): void {
         const playerIndex = this.game_status.players.findIndex(
-            player => player.username === playerID,
+            player => player.login === playerLogin,
+        )
+        if (playerIndex !== -1) {
+            this.winner = this.game_status.players[playerIndex].login
+        }
+    }
+
+    public setLoser(playerLogin: string): void {
+        const playerIndex = this.game_status.players.findIndex(
+            player => player.login === playerLogin,
         )
 
         if (playerIndex !== -1) {
             const opponentIndex = playerIndex === 0 ? 1 : 0
-            this.game_status.players[opponentIndex].score = 11
+            this.winner = this.game_status.players[opponentIndex].login
         }
     }
 
+    public checkWinner(): boolean {
+        if (this.winner) return true
+        const player1Score = this.game_status.players[0].score
+        const player2Score = this.game_status.players[1].score
+        if (player1Score === 10 && player2Score === 10 && !this.isDeuce) {
+            this.isDeuce = true
+            this.events.emit('Game-Deuce')
+        }
+        if (this.isDeuce) {
+            if (player1Score - player2Score === 2 || player2Score - player1Score === 2) {
+                this.winner =
+                    player1Score > player2Score
+                        ? this.game_status.players[0].login
+                        : this.game_status.players[1].login
+                return true
+            }
+        } else {
+            if (player1Score === 11) {
+                this.winner = this.game_status.players[0].login
+                return true
+            }
+            if (player2Score === 11) {
+                this.winner = this.game_status.players[1].login
+                return true
+            }
+        }
+        return false
+    }
+
+    public getWinner(): PlayerDto {
+        return this.game_status.players.find(player => player.login === this.winner)
+    }
+
     public updateComputer(): void {
-        const computer = this.game_status.players.find(player => player.username === 'Computer')
+        const computer = this.game_status.players.find(player => player.login === 'Computer')
         const ball = this.game_status.ball
         const paddle = computer.paddle
         if (computer) {
@@ -206,6 +283,8 @@ export class PongGame {
     // update the game by updating the ball position and checking for collisions
     public updateGame(): void {
         this.updateBall()
+        this.updateTimer()
+        if (this.getPlayer2ID() === 'Computer') this.updateComputer()
     }
 
     // update the ball position and check for collisions
@@ -216,6 +295,7 @@ export class PongGame {
 
     // move the ball to the next position
     private moveBall(ball: BallDto): void {
+        if (ball.dx > BALL_RADIUS) ball.dx = BALL_RADIUS - 0.001
         ball.x += ball.dx
         ball.y += ball.dy
     }
@@ -225,8 +305,6 @@ export class PongGame {
         if ((ball.y <= ball.radius && ball.dy < 0) || (ball.y >= 1 - ball.radius && ball.dy > 0)) {
             ball.dy *= -1
             this.events.emit('play-sound', 'ball-hit')
-
-            console.log('Wall collision')
         }
     }
 
@@ -252,8 +330,7 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the left paddle
         if (ball.x <= players[0].paddle.x + players[0].paddle.width && ball.dx < 0) {
             if (this.checkPlayerCollision(ball, players[0].paddle, 0)) {
-                // console.log(players[0].username)
-                this.analyzePlayer.get(players[0].username).BlockingShot += 1
+                this.analyzePlayer.get(players[0].login).BlockingShot += 1
                 this.reflectBall(ball, players[0].paddle)
                 this.handleHikenPowerUp(game, 0)
                 this.handleShinigamiPowerUp(game, 0)
@@ -268,8 +345,7 @@ export class PongGame {
         // Check if the ball is within the horizontal range of the right paddle
         else if (ball.x >= players[1].paddle.x - players[1].paddle.width && ball.dx > 0) {
             if (this.checkPlayerCollision(ball, players[1].paddle, 1)) {
-                // console.log(players[1].username)
-                this.analyzePlayer.get(players[1].username).BlockingShot += 1
+                this.analyzePlayer.get(players[1].login).BlockingShot += 1
                 this.reflectBall(ball, players[1].paddle)
                 this.handleHikenPowerUp(game, 1)
                 this.handleShinigamiPowerUp(game, 1)
@@ -285,36 +361,33 @@ export class PongGame {
 
     private grantBallWhispererAchievement(ball: BallDto, player: PlayerDto): void {
         if (ball.y > 1 && ball.y < 0) {
-            this.analyzePlayer.get(player.username).EdgeHit += 1
-            console.log('edge hit', ball.y)
-            this.analyzePlayer.get(player.username).EdgeHit = 0
+            this.analyzePlayer.get(player.login).EdgeHit += 1
+            this.analyzePlayer.get(player.login).EdgeHit = 0
         }
         if (
-            this.analyzePlayer.get(player.username).EdgeHit > 3 &&
-            this.analyzePlayer.get(player.username).Achievements.indexOf('Ball Whisperer') === -1
+            this.analyzePlayer.get(player.login).EdgeHit > 3 &&
+            this.analyzePlayer.get(player.login).Achievements.indexOf('Ball Whisperer') === -1
         ) {
-            this.analyzePlayer.get(player.username).Achievements.push('Ball Whisperer')
-            console.log('Ball Whisperer')
+            this.analyzePlayer.get(player.login).Achievements.push('Ball Whisperer')
         }
     }
 
     // grant paddle sumaurai achievement if the player blocked 5 shots in a row
     private grantPaddleSamuraiAchievement(player: PlayerDto): void {
-        if (this.analyzePlayer.get(player.username).BlockingShot > 5) {
+        if (this.analyzePlayer.get(player.login).BlockingShot > 5) {
             if (
-                this.analyzePlayer.get(player.username).Achievements.indexOf('Paddle Samurai') ===
-                -1
+                this.analyzePlayer.get(player.login).Achievements.indexOf('Paddle Samurai') === -1
             ) {
-                this.analyzePlayer.get(player.username).Achievements.push('Paddle Samurai')
-                console.log('Paddle Samurai')
+                this.analyzePlayer.get(player.login).Achievements.push('Paddle Samurai')
             }
         }
-        this.analyzePlayer.get(player.username).BlockingShot = 0
+        this.analyzePlayer.get(player.login).BlockingShot = 0
     }
 
     // reflect the ball based on the paddle hit point
     private reflectBall(ball: BallDto, paddle: PaddleDto): void {
         ball.dx *= -1
+        if (this.gameType == 'classic') ball.dx += ball.dx * 0.005
         const relativePos = ball.y - paddle.y
         const paddleHitPoint = relativePos / (paddle.height / 2 + ball.radius)
         const angle = paddleHitPoint * REFLECT_ANGLE
@@ -340,7 +413,7 @@ export class PongGame {
 
     // update the paddle position of the player based on the direction
     public updatePaddlePosition(playerID: string, direction: string): void {
-        const player = this.game_status.players.find(player => player.username === playerID)
+        const player = this.game_status.players.find(player => player.login === playerID)
 
         if (direction === 'up') {
             player.paddle.y -= player.paddle.speed
@@ -356,6 +429,7 @@ export class PongGame {
 
     // ! POWER UPS ! //
     private handleShinigamiPowerUp(game: gameStatusDto, playerIndex: number): void {
+        if (this.gameType == 'classic') return
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Shinigami')
 
@@ -366,11 +440,11 @@ export class PongGame {
     }
 
     private handleHikenPowerUp(game: gameStatusDto, playerIndex: number): void {
+        if (this.gameType == 'classic') return
         const player = game.players[playerIndex]
         const powerUp = player.powerUps.find(powerUp => powerUp.type === 'Hiken')
 
         if (powerUp && powerUp.active) {
-            game.ball.color = 'blue'
             game.ball.color = 'red'
             game.ball.dx *= 2
             game.ball.dy *= 2
@@ -386,10 +460,12 @@ export class PongGame {
     }
 
     public activatePowerUp(playerID: string, powerUpNo: number): void {
-        const player = this.game_status.players.find(player => player.username === playerID)
-        const powerUp = player.powerUps[powerUpNo - 1]
+        const player = this.game_status.players.find(player => player.login === playerID)
 
-        if (powerUp && !powerUp.active && powerUp.ready === true) {
+        // if any power up is active, don't activate another one
+        if (player.powerUps.some(powerUp => powerUp.active)) return
+        const powerUp = player.powerUps[powerUpNo - 1]
+        if (powerUp && powerUp.ready === true) {
             powerUp.active = true
             powerUp.ready = false
 
@@ -399,21 +475,23 @@ export class PongGame {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             } else if (powerUp.type == 'Hiken') {
-                console.log('Hiken activated')
                 player.paddle.color = 'orange'
             } else if (powerUp.type == 'Shinigami') {
-                console.log('Shinigami activated')
             } else if (powerUp.type == 'Shunshin no Jutsu') {
-                console.log('Shunshin activated')
                 player.paddle.speed *= 1.5
                 player.paddle.color = 'cyan'
                 setTimeout(() => {
                     this.disablePowerUp(player, powerUp)
                 }, powerUp.duration)
             }
-            setTimeout(() => {
-                powerUp.ready = true
-            }, powerUp.cooldown)
+        }
+    }
+
+    public updateTimer(): void {
+        if (this.game_status.time > 0) {
+            this.game_status.time -= 1 / 60
+        } else {
+            this.game_status.time = 0
         }
     }
 
@@ -431,5 +509,8 @@ export class PongGame {
             player.paddle.speed = PADDLE_SPEED
             player.paddle.color = 'white'
         }
+        setTimeout(() => {
+            powerUp.ready = true
+        }, powerUp.cooldown)
     }
 }

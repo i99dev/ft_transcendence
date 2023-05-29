@@ -1,64 +1,30 @@
 <template>
     <div class="flex flex-col w-full items-center">
         <div
-            class="w-full items-center pb-2 border-b border-gray-200 flex sm:space-x-0 space-x-6 justify-center"
+            class="w-full items-center pb-2 flex mobile:space-x-4 sm:space-x-6 lg:space-x-10 justify-center"
         >
-            <div v-for="tab in tabs" :key="tab.name" class="flex flex-col">
-                <!-- desktop:start -->
+            <button v-for="tab in tabs" :key="tab.name" class="flex flex-col">
                 <div
-                    @click="setActiveTab(tab)"
-                    class="py-2 px-12 ease-in duration-150 rounded hidden md:flex cursor-pointer"
+                    @click=" setActiveTab(tab)"
+                    class="py-2 ease-in duration-150 rounded md:flex text-white whitespace-nowrap"
                 >
                     <div
+                        class="smooth-transition text-white"
                         :class="{
-                            'text-indigo-700 border-b-2 border-indigo-700 text-xs': isActive(tab),
-                            'text-gray-600 text-xs': !isActive(tab),
+                            'border-b-2 p-2 border-secondary text-lg': isActive(tab),
+                            'opacity-50 hover:opacity-100 text-md': !isActive(tab),
                         }"
                     >
-                        <p
-                            class="text-xs xl:text-lg font-bold leading-none text-center"
-                            :class="{
-                                'text-indigo-700 dark:text-orange-300 border-b-2 border-orange-300 text-xs':
-                                    isActive(tab),
-                                'text-gray-600 dark:text-white text-xs': !isActive(tab),
-                            }"
-                        >
-                            {{ tab.name }}
-                        </p>
+                        {{ tab.name }}
                     </div>
                 </div>
-                <!-- desktop:end -->
-                <!-- mobile:start -->
-                <div
-                    @click="setActiveTab(tab)"
-                    class="flex w-full text-xs justify-between md:hidden my-4 items-center border-b border-gray-200 cursor-pointer"
-                >
-                    <div
-                        :class="{
-                            'text-indigo-700 border-b-2 border-indigo-700 text-xs': isActive(tab),
-                            'text-gray-600 text-xs': !isActive(tab),
-                        }"
-                    >
-                        <p
-                            class="text-xs xl:text-sm leading-none text-center"
-                            :class="{
-                                'text-indigo-700 border-b-2 border-indigo-700 text-xs':
-                                    isActive(tab),
-                                'text-gray-600 text-xs': !isActive(tab),
-                            }"
-                        >
-                            {{ tab.name }}
-                        </p>
-                    </div>
-                </div>
-                <!-- mobile:end -->
-            </div>
+            </button>
         </div>
 
         <div class="w-full px-3">
             <component :is="getComponent(activeTab)" />
 
-            <DashTimeLine v-if="isActive(tabs[0])" :username="props.username" />
+            <DashMatchHistory v-if="isActive(tabs[0])" :username="props.username" />
             <DashAchievement v-if="isActive(tabs[1])" :username="props.username" />
             <DashLeaderBoard v-if="isMe && isActive(tabs[2])" />
         </div>
@@ -66,9 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { getUserbyUserName } from '../../composables/useUsers'
 import { computed, ref } from 'vue'
-import { useUserInfo } from '../../composables/useMe'
 
 const props = defineProps({
     username: {
@@ -80,9 +44,8 @@ const props = defineProps({
 const user = await getUserbyUserName(props.username)
 const { user_info } = useUserInfo()
 
-
 const isMe = computed(() => {
-    return user_info.value.id === user.id
+    return user_info.value?.id === user.id
 })
 
 //tabs
@@ -91,7 +54,7 @@ const tabs = computed(() => {
         return [
             {
                 name: 'Match History',
-                component: 'DashTimeLine',
+                component: 'DashMatchHistory',
             },
             {
                 name: 'Achievements',
@@ -105,7 +68,7 @@ const tabs = computed(() => {
     return [
         {
             name: 'Match History',
-            component: 'DashTimeLine',
+            component: 'DashMatchHistory',
         },
         {
             name: 'Achievements',
@@ -121,7 +84,7 @@ const setActiveTab = (tab: any) => {
 }
 
 const isActive = (tab: any) => {
-    return activeTab.value.name === tab.name
+    return activeTab.value?.name === tab.name
 }
 
 const getComponent = (tab: any) => {

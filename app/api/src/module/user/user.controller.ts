@@ -1,5 +1,3 @@
-import { UserPatchValidationPipe } from './pipes/user.pipe'
-import { User } from '@prisma/client'
 import { UserGetDto, UserPatchDto } from './dto/user.dto'
 import { UserService } from './user.service'
 import {
@@ -12,12 +10,8 @@ import {
     Query,
     UseGuards,
     Req,
-    UsePipes,
-    Logger,
-    UseInterceptors,
-    CacheKey,
-    CacheTTL,
-    CacheInterceptor,
+    ValidationPipe,
+    BadRequestException,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../../common/guards/jwt.guard'
 import {
@@ -26,13 +20,14 @@ import {
     ApiResponse,
     ApiTags,
     ApiParam,
-    ApiQuery,
     ApiBody,
 } from '@nestjs/swagger'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
+import { QueryParseStringPipe } from '@common/pipes/queryString.pipe'
 
 @ApiBearerAuth()
 @ApiTags('users')
-@Controller('users')
+@UseGuards(JwtAuthGuard)
 @Controller('/users')
 export class UserController {
     constructor(private readonly UserService: UserService) {}
@@ -45,14 +40,13 @@ export class UserController {
         tags: ['users'],
     })
     async GetUsers(
-        @Query('sort') sort: string,
-        @Query('order') order: string,
+        @Query('sort', QueryParseStringPipe) sort: string,
+        @Query('order', QueryParseStringPipe) order: string,
     ): Promise<UserGetDto[]> {
         const type = { [sort]: order }
         return await this.UserService.SortMany(type)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/me')
     @ApiOperation({
         operationId: 'getMe',
@@ -70,16 +64,17 @@ export class UserController {
         return await this.UserService.getUser(req.user.login)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async SearchUser(@Query('search') search: string, @Req() req) {
-        return await this.UserService.SearchUser(search)
-    }
+    async SearchUser(
+        @Query('search', QueryParseStringPipe) search: string,
+        @Query('page') page: number,
+        @Req() req,
+    ) {
+        if (!search || search === '') return await this.UserService.SortMany({ id: 'asc' })
+        else if (search.length > 255) throw new BadRequestException('Search is too long')
 
-    @UseGuards(JwtAuthGuard)
-    @Get('/search/:name')
-    async SearchUserByName(@Param('name') name: string) {
-        return await this.UserService.SearchUserNames(name)
+        if (!page || page < 1) page = 1
+        return await this.UserService.SearchUser(search, page)
     }
 
     @Get('/:name')
@@ -95,12 +90,12 @@ export class UserController {
         type: String,
         required: true,
     })
-    async GetUser(@Param('name') name: string): Promise<UserGetDto> {
+    async GetUser(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
         return await this.UserService.checkUser(await this.UserService.getUser(name))
     }
 
     @Get('username/:name/')
-    async GetUserByUserName(@Param('name') name: string): Promise<UserGetDto> {
+    async GetUserByUserName(@Param('name', ParseStringPipe) name: string): Promise<UserGetDto> {
         return await this.UserService.checkUser(await this.UserService.getUserbyUserName(name))
     }
 
@@ -117,16 +112,23 @@ export class UserController {
         required: true,
     })
     async UpdateUser(
-        @Param('name') name: string,
-        @Body(new UserPatchValidationPipe()) data1: UserPatchDto,
+        @Param('name', ParseStringPipe) name: string,
+        @Body(new ValidationPipe()) data: UserPatchDto,
+        @Req() req,
     ): Promise<UserGetDto> {
+        if (name !== req.user.login)
+            throw new BadRequestException('You cannot add a friend for someone else')
         const existingUser: UserGetDto = await this.UserService.getUserForPatch(name)
-        const updatedUser: User = Object.assign({}, existingUser, data1)
-        return await this.UserService.updateUser(updatedUser)
+        return await this.UserService.updateUser(data, existingUser.login)
     }
 
     @Delete('/:name')
-    async DeleteUser(@Param('name') name: string): Promise<UserGetDto> {
+    async DeleteUser(
+        @Param('name', ParseStringPipe) name: string,
+        @Req() req,
+    ): Promise<UserGetDto> {
+        if (name !== req.user.login)
+            throw new BadRequestException('You cannot add a friend for someone else')
         return await this.UserService.DeleteUser(name)
     }
 }

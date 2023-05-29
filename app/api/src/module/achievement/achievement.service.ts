@@ -1,13 +1,12 @@
-import { PrismaClient } from '@prisma/client'
+import { NotificationService } from '@module/notification/notification.service'
 import { Injectable } from '@nestjs/common'
-import { gameAnalyzer } from '../game/logic/gameAnalyzer'
 import { AchievementDto } from './dto/achievement.dto'
-import { NotificationType } from '@prisma/client'
+import { Achievement, NotificationType } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable({})
 export class AchievementService {
-    public gameAnalyzer = new gameAnalyzer()
-    private prisma = new PrismaClient()
+    constructor(private notificationService: NotificationService, private prisma: PrismaService) {}
 
     async getAchievements(login: string): Promise<AchievementDto[]> {
         const user = await this.prisma.user.findUnique({
@@ -18,7 +17,21 @@ export class AchievementService {
                 achievements: true,
             },
         })
+        if (!user || !user.achievements) return null
         return user.achievements
+    }
+
+    async getAchievementType(achievement: string) {
+        try {
+            const achievementType = await this.prisma.achievement.findUnique({
+                where: {
+                    type: achievement,
+                },
+            })
+            return achievementType
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     findType(type: string): NotificationType {
@@ -32,55 +45,72 @@ export class AchievementService {
         }
     }
 
-    async deleteAchievNotification(user_login: string, content: string, type: string) {
+    async getNewRank(login: string): Promise<{ rank: string; isUp: boolean; id: number }> {
+        const RankUp = await this.notificationService.getMyNotificationsByType(
+            login,
+            NotificationType.RANK_UP,
+        )
+        const RankDown = await this.notificationService.getMyNotificationsByType(
+            login,
+            NotificationType.RANK_DOWN,
+        )
+
+        if (RankUp) {
+            if (RankUp.length !== 0 && RankUp[0].content !== null)
+                return { rank: RankUp[0].content, isUp: false, id: RankUp[0].id }
+        }
+        if (RankDown) {
+            if (RankDown.length !== 0 && RankDown[0].content !== null)
+                return { rank: RankDown[0].content, isUp: true, id: RankDown[0].id }
+        }
+
+        return { rank: null, isUp: null, id: -1 }
+    }
+
+    async addAchievement(player: string, ach: Achievement) {
         try {
-            const notification = await this.prisma.notification.deleteMany({
+            const done = await this.prisma.user.update({
                 where: {
-                    user_login: user_login,
-                    content: content,
-                    type: this.findType(type),
+                    login: player,
+                },
+                data: {
+                    achievements: {
+                        connect: {
+                            id: ach.id,
+                        },
+                    },
                 },
             })
-            return notification
+            return done
         } catch (error) {
             console.log(error)
         }
     }
 
-    async getNewAchievements(login: string): Promise<string[]> {
-        const notification = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.ACHIEVEMENT,
-            },
-        })
-        if (notification.length === 0) return []
-        const achievements = []
-        for (const notif of notification) {
-            achievements.push(notif.content)
+    async checkPlayerAchievements(player: string, ach: string) {
+        try {
+            const count = await this.prisma.user.count({
+                where: {
+                    login: player,
+                    achievements: {
+                        some: {
+                            type: ach,
+                        },
+                    },
+                },
+            })
+            return count
+        } catch (error) {
+            console.log(error)
         }
-        return achievements
     }
-    async getNewRank(login: string): Promise<{ rank: string; isUp: boolean }> {
-        const RankUp = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.RANK_UP,
-            },
-        })
-        const RankDown = await this.prisma.notification.findMany({
-            where: {
-                user_login: login,
-                type: NotificationType.RANK_DOWN,
-            },
-        })
-        console.log(RankUp)
-        console.log(RankDown)
-        if (RankUp.length !== 0 && RankUp[0].content !== null)
-            return { rank: RankUp[0].content, isUp: false }
-        if (RankDown.length !== 0 && RankDown[0].content !== null)
-            return { rank: RankDown[0].content, isUp: true }
-        console.log('rank not found')
-        return { rank: null, isUp: null }
+
+    async getAllAchievements(): Promise<AchievementDto[]> {
+        try {
+            const ach = await this.prisma.achievement.findMany()
+            return ach
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

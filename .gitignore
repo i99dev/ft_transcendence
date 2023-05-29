@@ -8,3 +8,6 @@ package-lock.json
 # database directory
 data/*
 ./app/api/prisma/migrations/**
+
+.vscode
+.DS_Store

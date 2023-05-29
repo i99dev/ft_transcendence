@@ -22,6 +22,10 @@ export const useUserInfo = () => {
         user_info.value = user
     }
 
+    const setUserStatus = (status: string) => {
+        user_info.value.status = status
+    }
+
     const removeUserInfo = () => {
         user_info.value = null
     }
@@ -44,19 +48,24 @@ export const useUserInfo = () => {
         )
     }
 
-    return { user_info, setUserInfo, removeUserInfo, setUserName, setUserAvatar, setUserTwoFacAuth, removeFriends }
+    return {
+        user_info,
+        setUserInfo,
+        removeUserInfo,
+        setUserName,
+        setUserAvatar,
+        setUserTwoFacAuth,
+        setFriends,
+        removeFriends,
+        setUserStatus,
+    }
 }
 
-export async function useUpdateUserInfo(): Promise<any> {
-    const store = useUserInfo()
-    const { login, image, username, two_fac_auth }: any = store.user_info.value
-    const { data, error: errorRef } = await useFetch(`users/${login}`, {
+export async function useUpdateUserInfo(info: UserGetDto): Promise<any> {
+    const { user_info } = useUserInfo()
+    const { data, error: errorRef } = await useFetch(`users/${user_info.value.login}`, {
         method: 'PATCH',
-        body: {
-            username,
-            image,
-            two_fac_auth
-        },
+        body: info,
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -64,9 +73,4 @@ export async function useUpdateUserInfo(): Promise<any> {
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error }
-}
-
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
 }

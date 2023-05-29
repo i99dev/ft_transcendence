@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "build": "nuxt build",
+        "start": "nuxt start",
         "dev": "nuxt dev",
         "mock:server": "nodemon server.js",
         "generate": "nuxt generate",
@@ -21,7 +22,7 @@
         "primeflex": "3.3.0",
         "primeicons": "6.0.1",
         "primevue": "3.22.4",
-        "three": "^0.151.3",
+        "three": "^0.152.2",
         "three-stdlib": "^2.21.9"
     },
     "dependencies": {
@@ -31,6 +32,9 @@
         "@vuelidate/validators": "^2.0.2",
         "autoprefixer": "^10.4.14",
         "chart.js": "2.8.0",
+        "luxon": "^3.3.0",
+        "mitt": "^3.0.0",
+        "pm2": "^5.3.0",
         "postcss": "^8.4.21",
         "socket.io": "^4.6.1",
         "socket.io-client": "^4.6.1",

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@providers/prisma/prisma.service'
+import * as fs from 'fs'
 
 @Injectable()
 export class MulterService {
@@ -32,8 +33,7 @@ export class MulterService {
 
     async updateTargetAvatar(targetId: string, avatar: string) {
         try {
-            let target = null
-            target = await this.prisma.user.update({
+            return await this.prisma.user.update({
                 where: {
                     login: targetId,
                 },
@@ -41,8 +41,9 @@ export class MulterService {
                     image: avatar,
                 },
             })
-            if (!target) {
-                target = await this.prisma.groupChat.update({
+        } catch (error) {
+            try {
+                return await this.prisma.groupChat.update({
                     where: {
                         chat_room_id: targetId,
                     },
@@ -50,12 +51,22 @@ export class MulterService {
                         image: avatar,
                     },
                 })
+            } catch (error) {
+                console.log(error)
+                return undefined
             }
-            if (target) return target
-            return null
-        } catch (error) {
-            console.log(error)
-            return null
+        }
+    }
+
+    createAndDeleteExtraFiles(userDir: string) {
+        if (!fs.existsSync('./uploads')) fs.mkdirSync('./uploads')
+        if (!fs.existsSync(userDir)) {
+            fs.mkdirSync(userDir)
+        } else {
+            const files = fs.readdirSync(userDir)
+            for (const file of files) {
+                fs.unlinkSync(`${userDir}/${file}`)
+            }
         }
     }
 }

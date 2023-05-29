@@ -10,11 +10,14 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { FriendWsService } from './friendWs.service'
-import { Logger } from '@nestjs/common'
+import { Logger, UseGuards } from '@nestjs/common'
 import { NotificationService } from '@module/notification/notification.service'
 import { FriendService } from '../friend.service'
 import { SocketValidationPipe } from '@common/pipes/socketObjValidation.pipe'
 import { FriendWs } from './dto/friend.dto'
+import { BlockService } from '@module/block/block.service'
+import { WsGuard } from '../../../common/guards/ws.guard'
+import { ParseSocketStringPipe } from '../../../common/pipes/socketString.pipe'
 
 @WebSocketGateway({
     namespace: '/friend',
@@ -34,20 +37,27 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         private friendWsService: FriendWsService,
         private notification: NotificationService,
         private friendService: FriendService,
+        private blockService: BlockService,
     ) {}
 
     handleConnection(client: Socket, ...args: any[]) {
         if (this.clients.has(this.getID(client) as unknown as string)) {
             this.logger.log(`Client "${client.id}" is already connected to friends`)
-            return client.disconnect()
+            client.disconnect()
+            return
         }
         this.logger.log(`Client "${client.id}" connected to friends`)
         this.clients.set(this.getID(client) as unknown as string, client.id)
         this.sockets.set(client.id, client)
-        this.notification.setUpNotificationMessage(
-            client,
-            this.friendWsService.getMyNotificationsFriends(this.getID(client) as unknown as string),
-        )
+        setTimeout(async () => {
+            this.notification.setUpNotificationMessage(
+                client,
+                await this.friendWsService.getMyNotificationsFriends(
+                    this.getID(client) as unknown as string,
+                ),
+            )
+        }, 1000)
+        this.friendWsService.updateClientWithList(client, this.getID(client) as unknown as string)
     }
 
     handleDisconnect(client: Socket) {
@@ -57,11 +67,19 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         this.sockets.delete(client.id)
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('add-friend')
     async sendMessage(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
+        if (
+            !(await this.blockService.checkIfAvailableFromBlock(
+                this.getID(client) as string,
+                payload.friend_login,
+            ))
+        )
+            return this.socketError(`This user is unreachable`), []
         if (this.getID(client) === payload.friend_login)
             return this.socketError('cannot add yourself'), []
         if (
@@ -141,18 +159,19 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         }
     }
 
+    @UseGuards(WsGuard)
     @SubscribeMessage('delete-friend')
     async deleteFriend(
         @ConnectedSocket() client: Socket,
         @MessageBody(new SocketValidationPipe()) payload: FriendWs,
     ) {
         if (
-            !(await this.friendWsService.checkIfFriend(
+            !(await this.blockService.checkIfAvailableFromBlock(
                 this.getID(client) as string,
                 payload.friend_login,
             ))
         )
-            return this.socketError('not friends already'), []
+            return this.socketError(`This user is unreachable`), []
         if (
             !(await this.friendWsService.deleteFriend(
                 this.getID(client) as string,
@@ -172,6 +191,17 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
         )
     }
 
+    @UseGuards(WsGuard)
+    @SubscribeMessage('Update-Token')
+    updateToken(
+        @ConnectedSocket() client: Socket,
+        @MessageBody(new ParseSocketStringPipe()) token: string,
+    ) {
+        if (token) {
+            client.request.headers.authorization = 'Bearer ' + token
+        } else throw new WsException('No Refersh token provided')
+    }
+
     getSocket(user): Socket {
         const clientId = this.clients.get(user)
         if (clientId) return this.sockets.get(clientId)
@@ -189,7 +219,8 @@ export class FriendWsGateway implements OnGatewayConnection, OnGatewayDisconnect
             user = this.friendWsService.extractUserFromJwt(client.handshake.headers.authorization)
             if (!user) {
                 this.logger.error('Invalid token')
-                return client.disconnect()
+                client.disconnect()
+                return
             }
         }
         return user

@@ -1,5 +1,4 @@
-import { UserGetDto } from '../module/user/dto/user.dto'
-import { Injectable, HttpStatus, InternalServerErrorException } from '@nestjs/common'
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import { User } from '@prisma/client'
 import { MailerService } from '@nestjs-modules/mailer'
 import { twoFacAuthConstants } from '../common/constants/setting'
@@ -40,10 +39,9 @@ export class TwoFacAuthService {
                 two_fac_auth: true,
                 type: twoFacAuthConstants.type,
                 code_length: twoFacAuthConstants.length,
-                period: twoFacAuthConstants.period,
+                expired_at: Date.now() + twoFacAuthConstants.period * 1000,
             }
-        else
-            throw new InternalServerErrorException('2FA Email failed to send')
+        else throw new InternalServerErrorException('2FA Email failed to send')
     }
 
     verify2FA(login: string, code: string): boolean {
@@ -62,8 +60,7 @@ export class TwoFacAuthService {
     generateOTP = (length = 6) => {
         let otp = ''
 
-        for (let i = 0; i < length; i++)
-            otp += Math.floor(Math.random() * 10)
+        for (let i = 0; i < length; i++) otp += Math.floor(Math.random() * 10)
 
         return otp
     }
@@ -87,5 +84,4 @@ export class TwoFacAuthService {
             })
         return true
     }
-        
 }

@@ -1,29 +1,29 @@
-import { PrismaClient } from '@prisma/client'
-// import { MatchHistory } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 import { gameStatusDto, PlayerDto } from '../dto/game.dto'
+import { Injectable } from '@nestjs/common'
+import { UserService } from '@module/user/user.service'
+import { MatchService } from '@module/match/match.service'
 
+@Injectable()
 export class gameHistory {
-    private prisma = new PrismaClient()
-    private game: gameStatusDto
-
-    constructor(game: gameStatusDto) {
-        this.game = game
+    constructor(
+        private game: gameStatusDto,
+        private prisma: PrismaService,
+        private userService: UserService,
+        private matchService: MatchService,
+    ) {
         this.createGame()
     }
 
     public async findID(login: string): Promise<number> {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                login: login,
-            },
-        })
+        const user = await this.userService.getUser(login)
         return user.id
     }
 
     public IsWinner(player: PlayerDto): boolean {
         let isWinner = false
         this.game.players.forEach(pl => {
-            if (pl.username !== player.username) {
+            if (pl.login !== player.login) {
                 if (pl.score > player.score) {
                     isWinner = false
                 } else {
@@ -40,27 +40,14 @@ export class gameHistory {
     }
 
     private async setTimeEnded(): Promise<void> {
-        await this.prisma.match.update({
-            where: {
-                gameID: this.game.players[0].gameID,
-            },
-            data: {
-                end: new Date(),
-            },
-        })
+        await this.matchService.setTimeEnded(this.game.players[0].gameID)
     }
 
     private async assignOponents(): Promise<void> {
-        await this.prisma.match.update({
-            where: {
-                gameID: this.game.players[0].gameID,
-            },
-            data: {
-                opponents: {
-                    connect: await this.createOponents(),
-                },
-            },
-        })
+        await this.matchService.assignOpponnents(
+            this.game.players[0].gameID,
+            await this.createOponents(),
+        )
     }
 
     private async createPlayer(player: PlayerDto): Promise<number> {
@@ -70,7 +57,7 @@ export class gameHistory {
                     connect: { gameID: player.gameID },
                 },
                 user: {
-                    connect: { login: player.username },
+                    connect: { login: player.login },
                 },
                 score: player.score,
                 IsWinner: this.IsWinner(player),
@@ -88,11 +75,6 @@ export class gameHistory {
     }
 
     public async createGame(): Promise<void> {
-        await this.prisma.match.create({
-            data: {
-                gameID: this.game.players[0].gameID,
-                start: new Date(),
-            },
-        })
+        await this.matchService.createMatch(this.game.players[0].gameID)
     }
 }

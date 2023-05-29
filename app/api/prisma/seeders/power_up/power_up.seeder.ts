@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { PowerUp, PrismaClient, User } from '@prisma/client'
-import { UserSeeder } from '../user/user.seeder'
 
 @Injectable()
 export class PowerUpSeeder {

@@ -3,20 +3,13 @@ import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { WsException } from '@nestjs/websockets'
 import * as bcrypt from 'bcrypt'
-import {
-    ChatRoom,
-    chatType,
-    GroupChat,
-    ChatRoomType,
-    ChatUserRole,
-    ChatUserStatus,
-    ChatUser,
-} from '@prisma/client'
-import { decode } from 'punycode'
+import { ChatRoom, chatType, ChatRoomType, ChatUserRole, ChatUserStatus } from '@prisma/client'
 import { PrismaService } from '../../../providers/prisma/prisma.service'
 import { ChatService } from '../chat.service'
 import { SetUserDto, UpdateChatDto } from './dto/chatWs.dto'
 import { GroupChatService } from '../groupChat.service'
+import { ConfigService } from '@nestjs/config'
+import { DirectChatService } from '../directChat.service'
 
 @Injectable()
 export class ChatWsService {
@@ -26,29 +19,35 @@ export class ChatWsService {
         private groupChatService: GroupChatService,
         private jwtService: JwtService,
         private userService: UserService,
+        private configService: ConfigService,
+        private directChatService: DirectChatService,
     ) {}
     private chatRooms: ChatRoom[]
 
     extractUserFromJwt(jwt: string) {
         if (!jwt) return null
+        // console.log(jwt)
         jwt = jwt.split(' ')[1]
         const decode = this.jwtService.decode(jwt)
         return !decode ? null : decode['login']
     }
 
-    async setupGroupChat(payload: any, user_login: string): Promise<ChatRoom> {
-        if (
-            payload.type === chatType.PROTECTED &&
-            (payload.password === undefined || payload.password === null || payload.password === '')
-        )
+    async setupGroupChat(payload: any, user_login: string, protocol: string): Promise<ChatRoom> {
+        if (payload.type === chatType.PROTECTED && (!payload.password || payload.password === ''))
             throw new WsException('No password provided')
 
         const salt = bcrypt.genSaltSync(10)
 
         const room_id = crypto.randomUUID()
         let password = null
+        if (!payload.image || payload.image === '')
+            payload.image = `${this.configService.get<string>(
+                'server.protocol',
+            )}://${this.configService.get<string>(
+                'server.ip',
+            )}/api/multer/download/default_image/files/default.png`
         if (payload.type === chatType.PROTECTED) password = bcrypt.hashSync(payload.password, salt)
-        const chatRoom = await this.groupChatService.createGroupChatRoom(
+        const chatRoom = await this.chatService.createGroupChatRoom(
             {
                 room_id: room_id,
                 name: payload.name,
@@ -63,7 +62,7 @@ export class ChatWsService {
     }
 
     async getPassword(room_id: string) {
-        const room = await this.groupChatService.getChatRoom(room_id)
+        const room = await this.chatService.getChatRoom(room_id)
         let group
         if (room.type === ChatRoomType.GROUP) {
             group = await this.groupChatService.getGroupChatRoom(room_id)
@@ -92,6 +91,8 @@ export class ChatWsService {
     }
 
     async isUserNormal(room_id: string, user_login: string) {
+        if (await this.directChatService.getDirectChatUser(room_id, user_login)) return true
+
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status === ChatUserStatus.NORMAL) return true
         return false
@@ -104,6 +105,12 @@ export class ChatWsService {
             chatUser.role === ChatUserRole.OWNER
         )
             return true
+        return false
+    }
+
+    async isOwner(room_id: string, user_login: string) {
+        const chatUser = await this.chatService.getChatUser(room_id, user_login)
+        if (chatUser.role === ChatUserRole.OWNER) return true
         return false
     }
 
@@ -151,18 +158,30 @@ export class ChatWsService {
         await this.chatService.updateChatUser(user_login, room_id, { role: ChatUserRole.OWNER })
     }
 
+    async countUsersInChatRoom(room_id: string) {
+        const count = await this.groupChatService.countUsersInGroupChat(room_id)
+        return count
+    }
+
     async joinGroupChat(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
         if (chatUser && chatUser.status !== ChatUserStatus.OUT)
             throw new WsException('User is already in chat room')
         else if (chatUser && chatUser.status === ChatUserStatus.BAN)
             throw new WsException('User is banned from chat room')
-
-        await this.groupChatService.addUserToGroupChat(room_id, {
-            user_login: user_login,
-            role: ChatUserRole.MEMBER,
-            status: ChatUserStatus.NORMAL,
-        })
+        if ((await this.countUsersInChatRoom(room_id)) > 0) {
+            await this.groupChatService.addUserToGroupChat(room_id, {
+                user_login: user_login,
+                role: ChatUserRole.MEMBER,
+                status: ChatUserStatus.NORMAL,
+            })
+        } else {
+            await this.groupChatService.addUserToGroupChat(room_id, {
+                user_login: user_login,
+                role: ChatUserRole.OWNER,
+                status: ChatUserStatus.NORMAL,
+            })
+        }
         return await this.groupChatService.getGroupChatUsers(room_id)
     }
 
@@ -190,10 +209,11 @@ export class ChatWsService {
 
     async leaveGroupChat(room_id: string, user_login: string) {
         const chatUser = await this.chatService.getChatUser(room_id, user_login)
-        if (chatUser.role === ChatUserRole.OWNER)
+        if (chatUser.role === ChatUserRole.OWNER && (await this.countUsersInChatRoom(room_id)) > 1)
             throw new WsException('Owner cannot leave chat room')
         await this.chatService.updateChatUser(user_login, room_id, {
             status: ChatUserStatus.OUT,
+            role: ChatUserRole.MEMBER,
         })
         return await this.groupChatService.getGroupChatUsers(room_id)
     }
@@ -226,9 +246,12 @@ export class ChatWsService {
         if (await this.isUserBanned(room_id, user_login))
             throw new WsException('User is already banned')
 
-        this.chatService.updateUserStatus(user_login, room_id, 'BAN')
+        await this.chatService.updateChatUser(user_login, room_id, {
+            status: ChatUserStatus.BAN,
+            role: ChatUserRole.MEMBER,
+        })
 
-        return await this.groupChatService.getGroupChatUsers(room_id)
+        return await this.groupChatService.getGroupChatBannedUsers(room_id, ChatUserStatus.BAN)
     }
 
     async muteUser(room_id: string, user_login: string, sender: string) {
@@ -264,7 +287,7 @@ export class ChatWsService {
             throw new WsException('User is already normal')
 
         await this.chatService.updateChatUser(user_login, room_id, {
-            status: ChatUserStatus.NORMAL,
+            status: ChatUserStatus.OUT,
         })
 
         return await this.groupChatService.getGroupChatUsers(room_id)
@@ -282,14 +305,21 @@ export class ChatWsService {
 
     async validateInvitation(room_id: string, user_login: string) {
         if (await this.validateUserInRoom(room_id, user_login)) {
-            this.chatService.updateUserStatus(user_login, room_id, 'NORMAL')
+            if ((await this.countUsersInChatRoom(room_id)) > 0) {
+                await this.chatService.updateUserStatus(user_login, room_id, 'NORMAL')
+            } else {
+                await this.chatService.updateChatUser(user_login, room_id, {
+                    status: ChatUserStatus.NORMAL,
+                    role: ChatUserRole.OWNER,
+                })
+            }
             return true
         } else return false
     }
 
     async updateGroupChatRoom(room: UpdateChatDto, user_login: string) {
-        if (!this.canChangeAdmin(room.room_id, user_login))
-            throw new WsException('Request failed, not a admin')
+        if (!this.isOwner(room.room_id, user_login))
+            throw new WsException('Request failed, not the owner')
         const oldRoom = await this.groupChatService.getGroupChatRoom(room.room_id)
         if (
             oldRoom.type !== chatType.PROTECTED &&
@@ -297,11 +327,15 @@ export class ChatWsService {
             (room.password === '' || room.password === undefined || room.password === null)
         )
             throw new WsException('Password cannot be empty')
-        await this.groupChatService.updateGroupChat(room)
+        if (room.type === chatType.PROTECTED) {
+            const salt = bcrypt.genSaltSync(10)
+            room.password = bcrypt.hashSync(room.password, salt)
+        }
+        return await this.groupChatService.updateGroupChat(room)
     }
 
     async validateGroupChat(room_id: string) {
-        const room = await this.groupChatService.getChatRoom(room_id)
+        const room = await this.chatService.getChatRoom(room_id)
         if (room.type === ChatRoomType.GROUP) return true
         else return false
     }
@@ -323,7 +357,7 @@ export class ChatWsService {
     }
 
     async checkUserInRoom2(room_id: string, user_login: string) {
-        const chatUser = await this.chatService.getDirectChatUser(room_id, user_login)
+        const chatUser = await this.directChatService.getDirectChatUser(room_id, user_login)
         if (chatUser) return true
         else return false
     }

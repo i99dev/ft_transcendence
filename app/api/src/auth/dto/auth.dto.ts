@@ -1,19 +1,19 @@
-import { ConfigService } from '@nestjs/config'
 import { IsString } from 'class-validator'
 import { accessTokenConstants } from '../../common/constants/setting'
-const configService = new ConfigService()
+import { JwtService } from '@nestjs/jwt'
+const jwtService = new JwtService()
 
 export class TokenDto {
     access_token: string
     token_type: string
-    expires_in: string
-    created_at: number
+    expires_at: string
+    created_at: string
 
     constructor(accessToken: string) {
         this.access_token = accessToken
         this.token_type = accessTokenConstants.type
-        this.expires_in = configService.get<string>('ACCESS_TOKEN_EXPIRES_IN')
-        this.created_at = Date.now()
+        this.expires_at = jwtService.decode(accessToken)['exp']
+        this.created_at = jwtService.decode(accessToken)['iat']
     }
 }
 export class TwoFacAuthDto {
@@ -21,8 +21,7 @@ export class TwoFacAuthDto {
     two_fac_auth: boolean
     type: string
     code_length: number
-    period: number
-
+    expired_at: number
 }
 
 export class AuthPostDto {

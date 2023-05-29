@@ -1,13 +1,13 @@
 import { JwtService } from '@nestjs/jwt'
 import { Injectable } from '@nestjs/common'
 import { FriendService } from '../friend.service'
-import { PrismaClient } from '@prisma/client'
+import { PrismaService } from '@providers/prisma/prisma.service'
 
 @Injectable()
 export class FriendWsService {
     constructor(
         private friendService: FriendService,
-        private prisma: PrismaClient,
+        private prisma: PrismaService,
         private jwtService: JwtService,
     ) {}
 
@@ -41,5 +41,18 @@ export class FriendWsService {
         if (!(await this.friendService.DeleteFriend(friend, user))) return false
         if (!(await this.friendService.DeleteFriend(user, friend))) return false
         return true
+    }
+
+    async updateClientWithList(client: any, id: string) {
+        const interval = setInterval(async () => {
+            try {
+                const friends = await this.friendService.getFriends(id)
+                client.emit('friends-list', friends)
+            } catch (error) {}
+        }, 2000)
+
+        client.on('disconnect', async () => {
+            clearInterval(interval)
+        })
     }
 }

@@ -7,7 +7,12 @@ export default defineNuxtConfig({
             REDIRECT_URI: process.env.REDIRECT_URI,
             API_URL: process.env.API_URL,
             GAME_NAME: process.env.GAME_NAME,
+            IP: process.env.IP,
+            PROTOCOL: process.env.PROTOCOL,
         },
+    },
+    app: {
+        pageTransition: { name: 'page', mode: 'out-in' },
     },
     css: [
         '~/assets/css/main.css',
@@ -25,5 +30,5 @@ export default defineNuxtConfig({
         },
     },
     modules: ['@nuxtjs/tailwindcss'],
-    plugins: ['~/plugins/socket-io.ts','~/plugins/chat-socket.ts'],
+    plugins: ['~/plugins/click-effect.client.ts'],
 })

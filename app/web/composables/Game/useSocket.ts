@@ -1,42 +1,58 @@
 import { Socket } from 'socket.io-client'
-import { inject } from 'vue'
 
-const nuxtApp = useNuxtApp()
 export function useSocket() {
-    const socket = ref(nuxtApp.socket as Socket)
+    const { gameSocket } = useGameSocket()
+    const socket = ref(gameSocket.value as Socket | undefined)
 
-    const gameWinner = ref("")
-    const gameData = useState<gameStatusDto>('gameData', () => { return {} as gameStatusDto })
-    const gameSetup = useState<SetupDto>('gameSetup', () => { return {} as SetupDto })
+    const gameWinner = useState<string>('gameWinner', () => '')
+    const gameData = useState<gameStatusDto>('gameData', () => {
+        return {} as gameStatusDto
+    })
+    const gameSetup = useState<SetupDto>('gameSetup', () => {
+        return {} as SetupDto
+    })
+    const isDeuce = useState<boolean>('isDeuce', () => {
+        return false
+    })
 
     const resetSocket = () => {
-        socket.value.off
-        gameWinner.value = ""
+        socket.value?.off
+        // gameWinner.value = ''
+        // gameData.value = {} as gameStatusDto
+        // gameSetup.value = {} as SetupDto
     }
 
     const emitStartGame = (mode: GameSelectDto) => {
-        socket.value.emit('Join-Game', mode)
+        socket.value?.emit('Join-Game', JSON.stringify(mode))
     }
 
     const emitLeaveQueue = () => {
-        socket.value.emit('Leave-Queue')
+        socket.value?.emit('Leave-Queue')
+    }
+
+    const emitReady = () => {
+        socket.value?.emit('Ready')
     }
 
     const setupSocketHandlers = () => {
-        socket.value.on('Game-Setup', (data: SetupDto) => {
+        socket.value?.on('Game-Over', payload => {
+            gameWinner.value = payload.winner.login
+        })
+
+        socket.value?.on('Game-Setup', (data: SetupDto) => {
             gameSetup.value = data
-
         })
 
-        socket.value.on('Game-Data', (data: gameStatusDto) => {
+        socket.value?.on('Game-Data', (data: gameStatusDto) => {
             gameData.value = data
-
         })
 
-        socket.value.on('Game-Over', payload => {
-            gameWinner.value = payload.winner.username
+        socket.value?.on('Game-Deuce', () => {
+            isDeuce.value = true
+            setTimeout(() => {
+                isDeuce.value = false
+            }, 3000)
         })
-
     }
 
     return {
@@ -45,27 +61,26 @@ export function useSocket() {
         setupSocketHandlers,
         gameWinner,
         emitLeaveQueue,
-        resetSocket
+        resetSocket,
+        emitReady,
+        isDeuce,
     }
 }
 
-export function useTabEvent() {
-    const showTab = ref(false)
-    const socket = ref(nuxtApp.socket as Socket)
+export function useDublicateModal() {
+    const showDublicateModal = useState<boolean>('showDublicateModal', () => false)
+    const { gameSocket } = useGameSocket()
+    const isClientConnected = () => {
+        return gameSocket.value?.connected
+    }
 
-    socket.value.on('Close-Tab', () => {
-        console.log("Close TAB RECIVED !")
-        showTab.value = true
-    })
-
-    return { showTab }
+    return { showDublicateModal, isClientConnected }
 }
 
 export function useSound(playSoundCallback: (sound: string) => void) {
-    const socket = ref(nuxtApp.socket as Socket)
+    const { gameSocket } = useGameSocket()
 
-    socket.value.on('play-sound', (payload: string) => {
-        console.log("play-sound RECIVED !")
+    gameSocket.value?.on('play-sound', (payload: string) => {
         playSoundCallback(payload)
     })
 

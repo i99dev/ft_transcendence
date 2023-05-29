@@ -13,6 +13,9 @@ services:
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
             - API_URL=${API_URL}
+            - GAME_NAME=${GAME_NAME}
+            - IP=${IP}
+            - PROTOCOL=${PROTOCOL}
 
         volumes:
             - ./app/web:/usr/src/app
@@ -61,7 +64,9 @@ services:
             - JWT_SECRET=${JWT_SECRET}
             - PORT=${PORT}
             - EMAIL_USER=${EMAIL_USER}
-            - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+            - EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
+            - IP=${IP}
+            - PROTOCOL=${PROTOCOL}
 
         networks:
             - proxy_backend_net

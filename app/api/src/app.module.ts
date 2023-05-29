@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import config from './config/config'
 import { PrismaModule } from './providers/prisma/prisma.module'
 import { GameModule } from './module/game/game.module'
-import { MatchHistoryModule } from './module/match-history/match-history.module'
 import { AchievementModule } from './module/achievement/achievement.module'
 import { LeaderboardModule } from './module/leaderboard/leaderboard.module'
 import { MulterModule } from './module/multer/multer.module'
@@ -16,8 +15,18 @@ import { NotificationModule } from '@module/notification/notification.module'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
 import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
+import { BlockModule } from '@module/block/block.module'
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { APP_GUARD } from '@nestjs/core'
+import { MatchModule } from '@module/match/match.module'
+
 @Module({
     imports: [
+        PrismaModule,
+        ThrottlerModule.forRoot({
+            ttl: 60,
+            limit: 100,
+        }),
         MailerModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -26,7 +35,7 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
                     service: 'gmail',
                     auth: {
                         user: configService.getOrThrow<string>('email.user'),
-                        pass: configService.getOrThrow<string>('email.password'),
+                        pass: configService.getOrThrow<string>('email.app_password'),
                     },
                 },
                 defaults: {
@@ -48,17 +57,23 @@ import { FriendWsModule } from '@module/friend/gateway/friendWs.module'
         }),
         AuthModule,
         UserModule,
-        PrismaModule,
+        FriendWsModule,
         GameModule,
         ChatModule,
-        MatchHistoryModule,
+        MatchModule,
         AchievementModule,
         LeaderboardModule,
         MulterModule,
         NotificationModule,
-        FriendWsModule,
+        BlockModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
 export class AppModule {}

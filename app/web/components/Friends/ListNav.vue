@@ -1,154 +1,195 @@
 <template>
-    <TransitionRoot as="template" :show="open">
-        <Dialog as="div" class="relative z-10" @close="open = false">
-            <div class="fixed inset-0" />
-
-            <div class="fixed inset-0 overflow-hidden">
-                <div class="absolute inset-0 overflow-hidden">
-                    <div
-                        class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16"
-                    >
-                        <TransitionChild
-                            as="template"
-                            enter="transform transition ease-in-out duration-500 sm:duration-700"
-                            enter-from="translate-x-full"
-                            enter-to="translate-x-0"
-                            leave="transform transition ease-in-out duration-500 sm:duration-700"
-                            leave-from="translate-x-0"
-                            leave-to="translate-x-full"
+    <div>
+        <SideBar :show="open">
+            <div class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border">
+                <div class="pt-2">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="ml-3 flex items-center">
+                            <button
+                                type="button"
+                                class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
+                                @click=" setFriendsModalOpen(false)"
+                            >
+                                <span class="sr-only">Close panel</span>
+                                <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                            </button>
+                        </div>
+                        <button
+                            @click="add_new_friend"
+                            class="p-2 m-1 mr-4 rounded relative bg-secondary hover:bg-primary smooth-transition self-end text-white"
                         >
-                            <DialogPanel class="pointer-events-auto w-screen max-w-md">
-                                <div
-                                    class="flex min-h-screen flex-col overflow-y-scroll bg-white shadow-xl"
+                            Add friend
+                        </button>
+                    </div>
+                </div>
+                <div class="border-y border-white h-full overflow-hidden text-white">
+                    <div id="friend-list" class="overflow-y-scroll h-70vh">
+                        <!-- friend list -->
+                        <div class="flex flex-col" x-descriptions="Tab component">
+                            <!-- Friend element -->
+                            <div
+                                v-for="friend in friends_list"
+                                :key="friend?.id"
+                                class="p-2 border-t border-white bg-background_light hover:bg-secondary smooth-transition flex justify-between items-center relative w-full focus:outline-secondary"
+                            >
+                                <button
+                                    class="centered w-fit group"
+                                    @click=" navigateTo(`/users/${friend.username}`)"
                                 >
-                                    <div class="pt-2">
-                                        <div class="flex items-start justify-between">
-                                            <div class="ml-3 flex items-center">
-                                                <button
-                                                    type="button"
-                                                    class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                                                    @click="setFriendsModalOpen(false)"
+                                    <div class="relative">
+                                        <img
+                                            :src="friend.image"
+                                            alt="User Photo"
+                                            class="rounded-full w-10 h-10 object-cover"
+                                        />
+                                        <!-- online badge -->
+                                        <UserProfileStatus
+                                            :status="friend.status"
+                                            class="absolute bottom-0 right-0 w-3 h-3"
+                                        />
+                                    </div>
+                                    <div
+                                        class="m-2 font-medium capitalize whitespace-nowrap group-hover:scale-110 smooth-transition"
+                                    >
+                                        {{ friend?.username }}
+                                    </div>
+                                </button>
+                                <div
+                                    class="p-2 group rounded-full centered smooth-transition h-8 aspect-square relative"
+                                >
+                                    <Menu>
+                                        <MenuButton>
+                                            <EllipsisVerticalIcon
+                                                class="w-6 h-6 text-white group-hover:scale-125 smooth-transition transition-colors duration-200"
+                                            />
+                                        </MenuButton>
+                                        <MenuItems
+                                            class="absolute top-0 right-6 z-10 w-32 mt-2 origin-top-right bg-background_light border divide-white rounded-md shadow-lg ring-1 ring-white ring-opacity-5 focus:outline-none"
+                                        >
+                                            <div class="py-1">
+                                                <MenuItem
+                                                    class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
+                                                    @click=" showInviteModal(friend.login)"
                                                 >
-                                                    <span class="sr-only">Close panel</span>
-                                                    <XMarkIcon class="h-6 w-6" aria-hidden="true" />
-                                                </button>
+                                                    <span class="flex items-center">
+                                                        Invite to Game
+                                                    </span>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
+                                                    @click=" useDMUser(friend.login)"
+                                                >
+                                                    <span class="flex items-center">
+                                                        Send MSG
+                                                    </span>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
+                                                    @click=" viewProfile(friend.username)"
+                                                >
+                                                    <span class="flex items-center">
+                                                        View Profile
+                                                    </span>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
+                                                    @click=" remove(friend.login)"
+                                                >
+                                                    <span class="flex items-center">
+                                                        Unfriend
+                                                    </span>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
+                                                    @click="
+                                                        () => {
+                                                            isBlocked(friend)
+                                                                ? removeUserFromBlockList(friend)
+                                                                : addUserToBlockList(friend)
+                                                        }
+                                                    "
+                                                >
+                                                    <span
+                                                        v-if="!isBlocked(friend)"
+                                                        class="flex items-center"
+                                                    >
+                                                        Block
+                                                    </span>
+                                                    <span v-else class="flex items-center">
+                                                        Unblock
+                                                    </span>
+                                                </MenuItem>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Strat friends list -->
-                                    <!-- button to add friends -->
-                                    <div class="border-b border-gray-200">
-                                        <div class="px-6">
-                                            <nav
-                                                class="-mb-px flex space-x-6 justify-end pb-4"
-                                                x-descriptions="Tab component"
-                                            >
-                                                <button
-                                                    @click="add_new_friend"
-                                                    class="p-2 rounded relative bg-blue-500 self-end text-white"
-                                                >
-                                                    Add friends
-                                                </button>
-                                            </nav>
-                                        </div>
-                                    </div>
-                                    <!-- friends list -->
-                                    <div class="border-b border-gray-200">
-                                        <div class="px-6">
-                                            <nav
-                                                class="-mb-px flex space-x-6 flex-col"
-                                                x-descriptions="Tab component"
-                                            >
-                                                <div
-                                                    v-for="friend in friends_list"
-                                                    :key="friend.id"
-                                                    class="p-2 rounded-full bg-white flex flex-row justify-between"
-                                                >
-                                                    <div class="flex flex-row">
-                                                        <div class="relative">
-                                                            <img
-                                                                :src="friend.photo"
-                                                                alt="User Photo"
-                                                                class="rounded-full w-10 h-10"
-                                                            />
-                                                            <!-- online badge -->
-                                                            <span
-                                                                class="absolute bottom-0 left-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"
-                                                            />
-                                                        </div>
-                                                        <div class="text-start self-center pl-2">
-                                                            {{ friend.name }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="self-center">
-                                                        <!-- burger menu -->
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke-width="1.5"
-                                                            stroke="currentColor"
-                                                            class="w-6 h-6"
-                                                        >
-                                                            <path
-                                                                stroke-linecap="round"
-                                                                stroke-linejoin="round"
-                                                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                                                            />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                            </nav>
-                                        </div>
-                                    </div>
-                                    <!-- End friendds list -->
+                                        </MenuItems>
+                                    </Menu>
                                 </div>
-                            </DialogPanel>
-                        </TransitionChild>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t-1 h-20vh">
+                        <div v-for="(notification, index) in notifications" :key="notification.id">
+                            <FriendsNotification
+                                :notification="notification"
+                                @close="removeNotification(index)"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
-        </Dialog>
-    </TransitionRoot>
+        </SideBar>
+        <FriendsAddFriendBox :show="addFriendOpen" @close="addFriendOpen = false" class="z-20" />
+    </div>
 </template>
 
-<script setup>
-import {
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    TransitionChild,
-    TransitionRoot,
-} from '@headlessui/vue'
+<script setup lang="ts">
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
+import { useFriends } from '../../composables/Friends/useFriends'
+import { useNotifications } from '../../composables/Notifications/useNotifications'
+import { ref, computed } from 'vue'
 
-const { friends_info, setFriendsModalOpen, add_friend } = useFriends()
+const addFriendOpen = ref(false)
+const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } =
+    await useFriends()
+const open = computed(() => friends_info.value?.friendsModalOpen)
+const friends_list = computed(() => friends_info.value?.friends)
+const { deleteNotification } = await useNotifications()
+const { addUserToBlockList, removeUserFromBlockList, isBlocked } = await useBlock()
+const { showInviteModal } = await useGameInvite()
+setupSocketHandlers()
 
-const open = computed(() => friends_info.value.friendsModalOpen)
-const friends_list = computed(() => friends_info.value.friends)
-function add_new_friend() {}
+function add_new_friend() {
+    addFriendOpen.value = true
+}
+
+function viewProfile(name: string) {
+    navigateTo(`/users/${name}`)
+}
+
+function remove(name: string) {
+    removeFriend(name)
+}
+
+const removeNotification = (index: number) => {
+    if (notifications.value && notifications.value[index]) {
+        deleteNotification(notifications.value[index].id)
+    }
+    notifications.value?.splice(index, 1)
+}
 </script>
 
-<style>
-.chat-messages {
+<style scoped>
+#friend-list {
     scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
-.chat-messages::-webkit-scrollbar {
-    width: 0.5rem;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-/* screen width is less than 768px (medium) */
-.chat-messages {
-    height: 70vh;
+#friend-list::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera*/
 }
 </style>

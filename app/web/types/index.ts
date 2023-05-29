@@ -1,7 +1,7 @@
-export { }
+export {}
 
 declare global {
-    type UserStatus = 'OFFLINE' | 'ONLINE' | 'LIVE'
+    type UserStatus = 'OFFLINE' | 'ONLINE' | 'INGAME' | 'INQUEUE'
     type ChatRoomType = 'GROUP' | 'DM'
     type NotificationType =
         | 'ACHIEVEMENT'
@@ -9,6 +9,13 @@ declare global {
         | 'FRIEND_REQUEST_ACCEPTED'
         | 'MATCH_INVITE'
         | 'CHAT_INVITE'
+
+    interface AccessTokenDto {
+        access_token: string
+        token_type: string
+        expires_at: string
+        created_at: string
+    }
 
     interface UserGetDto {
         id: number
@@ -32,6 +39,7 @@ declare global {
     interface gameStatusDto {
         players: PlayerDto[]
         ball: BallDto
+        time: number
     }
 
     interface SetupDto {
@@ -48,12 +56,35 @@ declare global {
         color: string
     }
 
+    export interface PowerUp {
+        type: 'Hiken' | 'Baika no Jutsu' | 'Shinigami' | 'Shunshin no Jutsu'
+        active: boolean
+        ready: boolean
+        duration: number
+        cooldown: number
+    }
+
+    export interface AchievementDto {
+        id: number
+        type:
+            | 'Serial Killer'
+            | 'Rookie no more'
+            | 'First Blood'
+            | 'No Sweat'
+            | 'Paddle Samurai'
+            | 'Table Ninja'
+            | 'Ball Whisperer'
+        description: string
+        image: string
+        users: UserGetDto[]
+    }
+
     interface PlayerDto {
-        username: string
+        login: string
         score: number
         paddle: PaddleDto
-        gameId?: string
-        powerUp?: boolean
+        gameID?: string
+        powerUps: PowerUp[]
     }
 
     interface PaddleDto {
@@ -81,12 +112,13 @@ declare global {
         gameID: string
         start: Date
         end: Date
-        opponents: PlayerDto[]
+        opponents: PlayerStatusDto[]
     }
 
     interface GameSelectDto {
         gameType: string
         gameMode: string
+        powerups: string[]
         invitedID?: string
     }
 
@@ -139,6 +171,45 @@ declare global {
         user_login: string
         content: string
         type: NotificationType
+        target: string
+    }
+
+    interface NotificationDto {
+        id: number
+        created_at: Date
+        user_login?: string
+        content: string
+        type: NotificationType
+        target?: string
+        user?: UserGetDto
+    }
+
+    interface FetchError<T> extends Error {
+        status: number
+        statusText: string
+    }
+
+    interface InviteDto {
+        inviterId: string
+        invitedId: string
+        gameType: string
+        powerups: string[]
+        accepted?: boolean
+    }
+
+    interface InviteModal {
+        type: string
+        open: boolean
+        gameType: string
+        target: string
+        gameInProgress: boolean
+        rejected: boolean
+        playerStatus: string
+    }
+
+    interface InviteResponseDto {
+        status: string
+        playerStatus: string
         target: string
     }
 }

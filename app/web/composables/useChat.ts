@@ -1,3 +1,5 @@
+import { useToast } from 'primevue/usetoast'
+
 export const useChat = () => {
     const chat_info = useState<any | null>('chat_info', () => {
         return {
@@ -12,7 +14,7 @@ export const useChat = () => {
     }
 
     const send_message = async (message: string) => {
-        chat_info.value.messages.push({
+        chat_info.value?.messages.push({
             message,
             user: 'me',
         })
@@ -22,8 +24,7 @@ export const useChat = () => {
     return { chat_info, setChatModalOpen, send_message }
 }
 
-
-export async function useDirectChats(): Promise<any> {
+export async function useDirectChats(page: number = 1): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -34,19 +35,22 @@ export async function useDirectChats(): Promise<any> {
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
+        query: {
+            page: page,
+        },
         server: false,
     })
     const error = errorRef.value as FetchError<any> | null
     return { data, error, refresh, pending }
 }
 
-export async function useGroupChats(): Promise<any> {
+export async function useDirectChatWith(user_login: string): Promise<any> {
     const {
         data,
         error: errorRef,
         refresh,
         pending,
-    } = await useFetch('chats/groupChat/me', {
+    } = await useFetch(`chats/directChat/user/${user_login}`, {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -57,7 +61,30 @@ export async function useGroupChats(): Promise<any> {
     return { data, error, refresh, pending }
 }
 
-export async function useGetGroupChatParticipants(room_id: string): Promise<any> {
+export async function useGroupChats(page: number = 1): Promise<any> {
+    const {
+        data,
+        error: errorRef,
+        refresh,
+        pending,
+    } = await useFetch('chats/groupChat/me', {
+        baseURL: useRuntimeConfig().API_URL,
+        headers: {
+            Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        query: {
+            page: page,
+        },
+        server: false,
+    })
+    const error = errorRef.value as FetchError<any> | null
+    return { data, error, refresh, pending }
+}
+
+export async function useGetGroupChatParticipants(
+    room_id: string,
+    user_type: string = 'NORMAL',
+): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -65,7 +92,7 @@ export async function useGetGroupChatParticipants(room_id: string): Promise<any>
         pending,
     } = await useFetch(`chats/${room_id}/users`, {
         baseURL: useRuntimeConfig().API_URL,
-        query: { type: 'GROUP'},
+        query: { type: 'GROUP', user_type: user_type },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
         },
@@ -84,7 +111,7 @@ export async function useGroupChatSearch(name: string): Promise<any> {
     } = await useFetch('chats/groupChat/search', {
         baseURL: useRuntimeConfig().API_URL,
         query: {
-          name: name
+            name: name,
         },
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
@@ -95,7 +122,7 @@ export async function useGroupChatSearch(name: string): Promise<any> {
     return { data, error, refresh, pending }
 }
 
-export async function useChatMessages(room_id: string): Promise<any> {
+export async function useChatMessages(room_id: string, page: number = 1): Promise<any> {
     const {
         data,
         error: errorRef,
@@ -105,6 +132,10 @@ export async function useChatMessages(room_id: string): Promise<any> {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
             Authorization: `Bearer ${useCookie('access_token').value}`,
+        },
+        query: {
+            page: page,
+            sort: 'desc',
         },
         server: false,
     })
@@ -117,8 +148,20 @@ export const useChatType = () => {
 
     const setChatType = async (type: ChatRoomType | null) => {
         const { setChats } = useChats()
-        const { data } = type === 'DM' ? await useDirectChats() : type === 'GROUP'? await useGroupChats() : await useGroupChatSearch('')
-        if (data) setChats(data.value)
+        let chats = [] as any
+        let page = 1
+        while (true) {
+            const { data } =
+                type === 'DM'
+                    ? await useDirectChats(page)
+                    : type === 'GROUP'
+                    ? await useGroupChats(page)
+                    : { data: { value: undefined } }
+            if (data.value && chats) chats = chats?.concat(data.value)
+            if (!data.value || data.value?.length < 20) break
+            page++
+        }
+        setChats(chats)
 
         chatType.value = type
     }
@@ -128,16 +171,33 @@ export const useChatType = () => {
     return { chatType, setChatType }
 }
 
+export const useGroupChatSearching = () => {
+    const groupChatSearching = useState<boolean>('group_chat_search', () => false)
+
+    const setGroupChatSearching = async (status: boolean) => {
+        groupChatSearching.value = status
+    }
+
+    return { groupChatSearching, setGroupChatSearching }
+}
+
 export const useChats = () => {
     const chats = useState<any | null>('chats', () => null)
-    const searchedGroupChats = useState<GroupChat[] & DirectChat[] | null>('SearchedGroupChats', () => null)
+    const searchedGroupChats = useState<(GroupChat[] & DirectChat[]) | null>(
+        'SearchedGroupChats',
+        () => null,
+    )
 
-    const setChats = (chatList: GroupChat[] & DirectChat[] | null) => {
+    const setChats = (chatList: (GroupChat[] & DirectChat[]) | null) => {
         chats.value = chatList
     }
 
     const setSearchedGroupChats = async (name: string) => {
-        const {data} = await useGroupChatSearch(name)
+        if (!name) {
+            setChats([])
+            return
+        }
+        const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
 
@@ -145,11 +205,18 @@ export const useChats = () => {
 }
 
 export const useSearchedGroupChats = () => {
-    const searchedGroupChats = useState<GroupChat & DirectChat | null>('SearchedGroupChats', () => null)
+    const searchedGroupChats = useState<(GroupChat & DirectChat) | null>(
+        'SearchedGroupChats',
+        () => null,
+    )
 
     const setSearchedGroupChats = async (name: string) => {
         const { setChats } = useChats()
-        const {data} = await useGroupChatSearch(name)
+        if (!name) {
+            setChats([])
+            return
+        }
+        const { data } = await useGroupChatSearch(name)
         setChats(data.value)
     }
 
@@ -157,9 +224,9 @@ export const useSearchedGroupChats = () => {
 }
 
 export const useCurrentChat = () => {
-    const currentChat = useState<GroupChat & DirectChat | null>('current_chat', () => null)
+    const currentChat = useState<(GroupChat & DirectChat) | null>('current_chat', () => null)
 
-    const setCurrentChat = (chat: GroupChat & DirectChat | null) => {
+    const setCurrentChat = (chat: (GroupChat & DirectChat) | null) => {
         currentChat.value = chat
     }
 
@@ -168,21 +235,36 @@ export const useCurrentChat = () => {
 
 export const useGroupChatParticipants = () => {
     const participants = useState<ChatUser[] | null>('group_chat_participants', () => null)
+    const participantsType = useState<string>('group_chat_participants_type', () => 'NORMAL')
 
     const setParticipants = (groupChatParticipants: ChatUser[] | null) => {
         participants.value = groupChatParticipants
     }
 
-    const updateParticipants = async () => {
+    const setParticipantsType = (groupChatParticipantsType: string) => {
+        participantsType.value = groupChatParticipantsType
+    }
+
+    const updateParticipants = async (user_type: string = 'NORMAL') => {
         const { currentChat } = useCurrentChat()
         if (currentChat.value) {
-            const {data: chatUsers} = await useGetGroupChatParticipants(currentChat.value.chat_room_id)
-            if (chatUsers)
-            setParticipants(chatUsers.value.chat_user)
+            const { data: chatUsers } = await useGetGroupChatParticipants(
+                currentChat.value.chat_room_id,
+                user_type,
+            )
+            if (chatUsers.value?.chat_user) setParticipants(chatUsers.value?.chat_user)
+            if (user_type === 'BAN') participantsType.value = 'BAN'
+            else participantsType.value = 'NORMAL'
         }
     }
 
-    return { participants, setParticipants, updateParticipants }
+    return {
+        participants,
+        setParticipantsType,
+        participantsType,
+        setParticipants,
+        updateParticipants,
+    }
 }
 
 export const useChatView = () => {
@@ -195,7 +277,32 @@ export const useChatView = () => {
     return { chatView, setChatView }
 }
 
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
+export const useDMUser = async (user_login: string) => {
+    const toast = useToast()
+    const openDM = (chat: GroupChat & DirectChat) => {
+        const { setChatModalOpen } = useChat()
+        const { setChatView } = useChatView()
+        const { setCurrentChat } = useCurrentChat()
+        setChatModalOpen(true)
+        setChatView(true)
+        setCurrentChat(chat)
+    }
+
+    const { data } = await useDirectChatWith(user_login)
+    if (data.value && data.value.length !== 0) openDM(data.value[0])
+    else {
+        const { chatSocket } = useChatSocket()
+        chatSocket.value?.emit('create-direct-chat', JSON.stringify({ user: user_login }))
+        chatSocket.value?.on('new-direct-list', async (payload: any) => {
+            const { data } = await useDirectChatWith(user_login)
+            if (data.value && data.value.length !== 0) openDM(data.value[0])
+            else
+                toast.add({
+                    severity: 'error',
+                    summary: 'Opps!',
+                    detail: `error: can't DM ${user_login}`,
+                    life: 3000,
+                })
+        })
+    }
 }

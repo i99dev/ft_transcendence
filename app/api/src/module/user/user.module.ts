@@ -1,5 +1,4 @@
 import { FriendModule } from '../friend/friend.module'
-import { PrismaClient } from '@prisma/client'
 import { UserRepository } from './repository/user.repository'
 import { UserService } from './user.service'
 import { UserController } from './user.controller'
@@ -8,9 +7,9 @@ import { AuthModule } from '../../auth/auth.module'
 import { PrismaModule } from '../../providers/prisma/prisma.module'
 
 @Module({
-    imports: [forwardRef(() => AuthModule), FriendModule, PrismaModule],
+    imports: [forwardRef(() => AuthModule), forwardRef(() => FriendModule), PrismaModule],
     controllers: [UserController],
-    providers: [UserService, UserRepository, PrismaClient],
-    exports: [UserService],
+    providers: [UserService, UserRepository],
+    exports: [UserService, UserRepository],
 })
 export class UserModule {}

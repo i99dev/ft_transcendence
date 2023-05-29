@@ -1,24 +1,25 @@
 export const useIsAuth = async () => {
     const { data } = await useMe()
-    if (!data.value) {
-        await refreshAccessToken()
-        const { data, error } = await useMe()
-        if (!data.value) return false
-    }
-    return true
+    return data.value ? true : false
 }
 
-export const refreshAccessToken = async () => {
-    const { data, error: errorRef } = await useFetch('/auth/refresh', {
+export const refreshAccessToken = async (reconnect: boolean = true) => {
+    const { updateSocketsToken } = useSockets()
+    const { data, error } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
     })
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
-    return errorRef.value?.status
+    if (tokenInfo) await setCookies(tokenInfo)
+    updateSocketsToken()
+    return error.value?.status
 }
 
 export async function useLogin(code: string): Promise<any> {
+    let status = 200
     const { data, error: errorRef } = await useFetch('auth/login', {
+        onResponse({ response }) {
+            status = response.status
+        },
         method: 'POST',
         body: {
             code: code,
@@ -26,18 +27,14 @@ export async function useLogin(code: string): Promise<any> {
         baseURL: useRuntimeConfig().API_URL,
     })
     const error = errorRef.value as FetchError<any> | null
-    return { data, error }
+    return { data, error, status }
 }
 
 export async function useResendVerificationCode(user: string): Promise<any> {
-    console.log('resend')
     const { data, error: errorRef } = await useFetch(`auth/2fa/resend/${user}`, {
         baseURL: useRuntimeConfig().API_URL,
     })
-    console.log('done')
-    console.log(data.value)
     const error = errorRef.value as FetchError<any> | null
-    console.log(error)
     return { data, error }
 }
 
@@ -53,12 +50,8 @@ export async function useSubmitConfirmationCode(user: string, code: string): Pro
     return { data, error }
 }
 
-interface FetchError<T> extends Error {
-    status: number
-    statusText: string
-}
-
 export const useLogout = async () => {
+    const { disconnectSockets } = useSockets()
     const { data, error: errorRef } = await useFetch('auth/logout', {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
@@ -66,6 +59,7 @@ export const useLogout = async () => {
         },
     })
     if (data.value) {
+        disconnectSockets()
         useCookie('access_token').value = ''
         return useRouter().push('/login')
     }
@@ -76,23 +70,44 @@ export const useLogout = async () => {
 export const useAuth = async (route: any) => {
     if (route.path === '/callback' && !route.query.code) return navigateTo('/login')
 
-    const { data, error } = await useLogin(route.query.code.toString())
+    const { data, error, status } = await useLogin(route.query.code.toString())
 
     const tokenInfo = data.value as AccessTokenDto | null
-    if (tokenInfo) useCookie('access_token').value = tokenInfo.access_token
+    if (tokenInfo) setCookies(tokenInfo)
 
-    return data.value.access_token
+    if (status === 201) {
+        const { isFirstTimeLogin, setIsFirstTimeLogin } = useIsFirstTime()
+        setIsFirstTimeLogin(true)
+    }
+
+    return data.value?.access_token
         ? navigateTo('/')
-        : data.value.two_fac_auth
+        : data.value?.two_fac_auth
         ? navigateTo({
-            path: '/login/confirm',
-            query: {
-                "login": data.value.login,
-                "two_fac_auth": data.value.two_fac_auth,
-                "type": data.value.type,
-                "code_length": data.value.code_length,
-                "period": data.value.period,
-            }
-        })
+              path: '/login/confirm',
+              query: {
+                  login: data.value?.login,
+                  two_fac_auth: data.value?.two_fac_auth,
+                  type: data.value?.type,
+                  code_length: data.value?.code_length,
+                  expired_at: data.value?.expired_at,
+              },
+          })
         : await useIsAuth()
+}
+
+export const useIsFirstTime = () => {
+    const isFirstTimeLogin = useState<boolean>('first_time_login', () => false)
+
+    const setIsFirstTimeLogin = (status: boolean) => {
+        isFirstTimeLogin.value = status
+    }
+
+    return { isFirstTimeLogin, setIsFirstTimeLogin }
+}
+
+export const setCookies = (tokenInfo: AccessTokenDto) => {
+    useCookie('access_token').value = tokenInfo.access_token
+    useCookie('created_at').value = tokenInfo.created_at
+    useCookie('expires_at').value = tokenInfo.expires_at
 }

@@ -16,10 +16,12 @@ import { MulterService } from './multer.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
 import { JwtAuthGuard } from '@common/guards/jwt.guard'
+import { ConfigService } from '@nestjs/config'
+import { ParseStringPipe } from '@common/pipes/string.pipe'
 
 @Controller('/multer')
 export class MulterController {
-    constructor(private multerService: MulterService) {}
+    constructor(private multerService: MulterService, private configService: ConfigService) {}
 
     @UseGuards(JwtAuthGuard)
     @Post('/upload/:target')
@@ -32,40 +34,31 @@ export class MulterController {
                 .build({ errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE }),
         )
         file: Express.Multer.File,
-        @Param('target') target: string,
+        @Param('target', ParseStringPipe) target: string,
         @Req() request: any,
     ) {
         if (!(await this.multerService.checkTargetId(target, request.user.login))) {
             throw new NotFoundException('Target not found')
         }
         const userDir = `./uploads/${target}`
-        if (!fs.existsSync('./uploads'))
-            fs.mkdirSync('./uploads')
-        if (!fs.existsSync(userDir)) {
-            fs.mkdirSync(userDir)
-        } else {
-            const files = fs.readdirSync(userDir)
-            for (const file of files) {
-                fs.unlinkSync(`${userDir}/${file}`)
-            }
-        }
+        this.multerService.createAndDeleteExtraFiles(userDir)
         const filePath = `${userDir}/${file.originalname}`
-        const currentUri = `${request.protocol}://${request.get(
-            'host',
-        )}/api/multer/download/${target}/files/${file.originalname}`
+        const currentUri = `${this.configService.get<string>(
+            'server.protocol',
+        )}://${this.configService.get<string>('server.ip')}/api/multer/download/${target}/files/${
+            file.originalname
+        }`
         if (!(await this.multerService.updateTargetAvatar(target, currentUri)))
             throw new NotFoundException('updating failed')
         fs.writeFileSync(filePath, file.buffer)
-        return { message: 'File uploaded successfully' }
+        return { file_url: currentUri }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/download/:target/files/:filename')
     async getFile(
-        @Param('target') target: string,
-        @Param('filename') filename: string,
+        @Param('target', ParseStringPipe) target: string,
+        @Param('filename', ParseStringPipe) filename: string,
         @Res() res: any,
-        @Req() request: any,
     ) {
         const userDir = `./uploads/${target}`
         const filePath = `${userDir}/${filename}`
