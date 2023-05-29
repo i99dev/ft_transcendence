@@ -83,11 +83,13 @@ export const useSockets = () => {
         useGameSocket()
     const { friendSocket, connectFriendSocket, disconnectFriendSocket, reconnectFriendSocket } =
         useFriendSocket()
+    const toast = useToast()
 
     const connectSockets = () => {
         connectChatSocket()
         connectGameSocket()
         connectFriendSocket()
+        logSocketExceptions()
     }
 
     const disconnectSockets = () => {
@@ -109,7 +111,6 @@ export const useSockets = () => {
     }
 
     const logSocketExceptions = () => {
-        const toast = useToast()
         chatSocket.value?.on('exception', err => {
             toast.add({
                 severity: 'error',
