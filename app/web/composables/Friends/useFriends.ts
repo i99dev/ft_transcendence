@@ -44,11 +44,11 @@ export const useFriends = async () => {
             sortFriends()
         })
 
-        friendSocket.value?.on('add-friend', (payload: UserGetDto) => {
+        friendSocket.value?.on('add-friend', (payload: any) => {
             toast.add({
                 severity: 'success',
                 summary: 'Success',
-                detail: `Friend request sent successfully`,
+                detail: payload.content,
                 life: 3000,
             })
         })
