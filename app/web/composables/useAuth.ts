@@ -4,7 +4,7 @@ export const useIsAuth = async () => {
 }
 
 export const refreshAccessToken = async (reconnect: boolean = true) => {
-    const { reconnectSockets, updateSocketsToken } = useSockets()
+    const { updateSocketsToken } = useSockets()
     const { data, error } = await useFetch('/auth/refresh', {
         baseURL: useRuntimeConfig().API_URL,
     })
