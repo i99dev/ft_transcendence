@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UserProfileSetup v-if="isFirstTimeLogin" @close="closeSetup()" />
+        <UserProfileSetup v-if="isFirstTimeLogin" :show="iSetup" :submit-button="'Set'" @closePopup="closeSetupProfile" />
         <Home :username="user" />
     </div>
 </template>
@@ -14,6 +14,7 @@ const { user_info } = useUserInfo()
 const { isFirstTimeLogin, setIsFirstTimeLogin } = useIsFirstTime()
 const { play } = useSound()
 const user = ref('')
+const iSetup = ref(isFirstTimeLogin.value)
 onMounted(() => {
     if (user_info.value) user.value = user_info.value?.username
     // play('login')
@@ -21,7 +22,8 @@ onMounted(() => {
 
 if (user_info.value) user.value = user_info.value?.username
 
-const closeSetup = () => {
+const closeSetupProfile = () => {
     setIsFirstTimeLogin(false)
+    iSetup.value = false
 }
 </script>
