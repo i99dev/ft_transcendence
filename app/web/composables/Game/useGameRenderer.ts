@@ -71,9 +71,14 @@ export function useGameRenderer() {
         const renderPass = new RenderPass(scene, camera)
         composer.addPass(renderPass)
 
-        // bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.1, 0.1);
+        bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.7,
+            0.05,
+            0.1,
+        )
 
-        // composer.addPass(bloomPass);
+        composer.addPass(bloomPass)
     }
 
     const initScene = (canvasRef: Ref<HTMLCanvasElement>) => {
@@ -119,22 +124,22 @@ export function useGameRenderer() {
             paddleHeight,
             paddleDepth,
             paddlePosition,
-            0x006600,
-            0x6810eb,
-            0.1,
+            0x59cbe8,
+            0x7edfe8,
+            1,
         )
         paddle2 = createPaddle(
             paddle2Width,
             paddle2Height,
             paddleDepth,
             paddle2Position,
-            0x006600,
-            0x6810eb,
-            0.1,
+            0x59cbe8,
+            0x7edfe8,
+            0.5,
         )
 
-        addPointLightToObject(paddle, new THREE.Vector3(0, 0, 1.5), 0x00ff00, 6, 3)
-        addPointLightToObject(paddle2, new THREE.Vector3(0, 0, 1.5), 0x00ff00, 6, 3)
+        addPointLightToObject(paddle, new THREE.Vector3(0, 0, 1), 0x7edfe8, 4, 2)
+        addPointLightToObject(paddle2, new THREE.Vector3(0, 0, 1), 0x7edfe8, 4, 2)
         paddle.layers.enable(1)
         paddle2.layers.enable(1)
         gameGroup.add(paddle)
@@ -143,7 +148,7 @@ export function useGameRenderer() {
         //Ball
         /* ------------------------------- */
 
-        const sphereRadius = 0.5
+        const sphereRadius = gameSetup.value?.game.ball.radius
         const spherePosition = new THREE.Vector3(0, 0, 0.5)
         sphere = createSphere(sphereRadius, spherePosition, 0xffffff, 0xffffff, 0.5)
         // addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 4, 4);
@@ -163,8 +168,23 @@ export function useGameRenderer() {
         })
         const frame = new THREE.Mesh(frameGeometry, frameMaterial)
         // frame.layers.enable(1)
-        addPointLight(0, 11, 0, 0x6004d9, 3, 20)
-        addPointLight(0, -11, 0, 0x6004d9, 3, 20)
+        addPointLight(0, 11, 0, 0xe93cac, 5, 10)
+        addPointLight(0, -11, 0, 0xe93cac, 5, 10)
+        addPointLight(2, 11, 0, 0xe93cac, 5, 10)
+        addPointLight(2, -11, 0, 0xe93cac, 5, 10)
+        addPointLight(-2, 11, 0, 0xe93cac, 5, 10)
+        addPointLight(-2, -11, 0, 0xe93cac, 5, 10)
+        // addPointLight(5, 11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(5, -11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(0, 11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(0, -11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(-15, 11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(-15, -11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(-10, 11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(-10, -11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(-5, 11, 0, 0xE93CAC, 5, 10)
+        // addPointLight(-5, -11, 0, 0xE93CAC, 5, 10)
+
         // addPointLight(-14, 0, 0, 0x00ff00, 1, 7)
         // addPointLight(14, 0, 0, 0x00ff00, 1, 7)
         frame.position.set(0, 0, 0)
@@ -176,7 +196,7 @@ export function useGameRenderer() {
         const planeHeight = GAME.FRAME_HEIGHT + 0.85
         const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight)
         const planeMaterial = new THREE.MeshBasicMaterial({
-            color: 0x000000,
+            color: 0,
             side: THREE.DoubleSide,
         })
         const plane = new THREE.Mesh(planeGeometry, planeMaterial)
@@ -227,7 +247,7 @@ export function useGameRenderer() {
             function (gltf) {
                 gltf.scene.rotateX(Math.PI / 2)
                 gltf.scene.scale.set(1.5, 1.5, 1.5)
-                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 1, 6)
+                addPointLightToObject(gltf.scene, new THREE.Vector3(0, 0.2, 0), 0xffffff, 3, 6)
 
                 gltf.scene.traverse(child => {
                     if (child instanceof THREE.Mesh) {
@@ -266,8 +286,8 @@ export function useGameRenderer() {
     const animate = () => {
         requestAnimationFrame(animate)
         if (!isMobile.value) controls.update()
-        // composer.render();
-        renderer.render(scene, camera)
+        composer.render()
+        // renderer.render(scene, camera)
     }
 
     const rescaleGameData = (game: gameStatusDto) => {
@@ -303,7 +323,7 @@ export function useGameRenderer() {
                 }
                 paddle.scale.y = scaleFactor
 
-                updatePaddleColor(paddle, players[i].paddle.color)
+                updatePaddleColor(paddle, players[i].paddle.color, i)
             } else {
                 paddle2.position.y = players[i].paddle.y
                 let scaleFactor = 1
@@ -312,29 +332,33 @@ export function useGameRenderer() {
                 }
                 paddle2.scale.y = scaleFactor
 
-                updatePaddleColor(paddle2, players[i].paddle.color)
+                updatePaddleColor(paddle2, players[i].paddle.color, i)
             }
         }
     }
 
-    const updatePaddleColor = (paddle: THREE.Mesh, color: string): void => {
-        let newColor = 0x006600
-        let newEmissive = 0x6810eb
-        let newLightColor = 0x00ff00
+    const updatePaddleColor = (paddle: THREE.Mesh, color: string, player: number): void => {
+        let newColor: number
+        let newLightColor: number
+
+        if (player == 0) {
+            newColor = 0x59cbe8
+            newLightColor = 0x59cbe8
+        } else {
+            newColor = 0x59cbe8
+            newLightColor = 0x59cbe8
+        }
 
         if (color == 'orange') {
             newColor = 0xffa500
-            newEmissive = 0xffa500
             newLightColor = 0xffa500
         } else if (color == 'cyan') {
-            newColor = 0x00ffff
-            newEmissive = 0x00ffff
-            newLightColor = 0x00ffff
+            newColor = 0xc0c0c0
+            newLightColor = 0xc0c0c0
         }
 
-        if (paddle.material instanceof THREE.MeshStandardMaterial) {
+        if (paddle.material instanceof THREE.MeshBasicMaterial) {
             paddle.material.color.set(newColor)
-            paddle.material.emissive.set(newEmissive)
         }
 
         paddle.traverse(child => {
@@ -388,10 +412,8 @@ export function useGameRenderer() {
         emissiveIntensity: number,
     ): THREE.Mesh {
         const paddleGeometry = new THREE.BoxGeometry(width, height, depth)
-        const paddleMaterial = new THREE.MeshStandardMaterial({
+        const paddleMaterial = new THREE.MeshBasicMaterial({
             color: color,
-            emissive: emissive,
-            emissiveIntensity: emissiveIntensity,
         })
         const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial)
         paddle.position.copy(position)

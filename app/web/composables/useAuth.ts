@@ -51,6 +51,7 @@ export async function useSubmitConfirmationCode(user: string, code: string): Pro
 }
 
 export const useLogout = async () => {
+    const { disconnectSockets } = useSockets()
     const { data, error: errorRef } = await useFetch('auth/logout', {
         baseURL: useRuntimeConfig().API_URL,
         headers: {
@@ -58,6 +59,7 @@ export const useLogout = async () => {
         },
     })
     if (data.value) {
+        disconnectSockets()
         useCookie('access_token').value = ''
         return useRouter().push('/login')
     }

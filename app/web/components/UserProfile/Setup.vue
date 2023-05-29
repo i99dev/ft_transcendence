@@ -186,7 +186,7 @@ const updateUsername = async () => {
             toast.add({
                 severity: 'error',
                 summary: 'Opps!',
-                detail: 'Username is used',
+                detail: 'Invalid username',
                 life: 3000,
             })
             return false
@@ -203,7 +203,7 @@ const uploadUserImage = async () => {
             toast.add({
                 severity: 'error',
                 summary: 'Opps!',
-                detail: 'Image not uploaded',
+                detail: 'Invalid image',
                 life: 3000,
             })
             return false

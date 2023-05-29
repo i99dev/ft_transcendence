@@ -1,6 +1,6 @@
 <template>
-    <div class="border-y border-white h-full overflow-hidden">
-        <div id="chat-list" class="overflow-y-scroll h-90vh">
+    <div class="border-y border-white h-90vh overflow-hidden">
+        <div id="chat-list" class="overflow-y-scroll h-full">
             <!-- chat list -->
             <div class="flex flex-col" x-descriptions="Tab component">
                 <TransitionRoot appear :show="isJoinGroupChatOpened" as="template">

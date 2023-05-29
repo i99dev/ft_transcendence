@@ -1,24 +1,24 @@
 <template>
     <div
         v-if="show"
-        class="bg-z m-2 border h-5vh border-white text-white text-sm rounded-2xl p-1 shadow-md font-bold"
+        class="bg-z m-2 border h-fit border-white text-white text-sm rounded-2xl p-1 shadow-md font-bold"
     >
         <div class="centered">
-            <div class="px-2">
+            <div class="px-2 mobile:text-xs">
                 <span class="">{{ props.notification?.content }}</span>
             </div>
             <div class="ml-auto">
                 <div v-if="props.notification?.type === 'FRIEND_REQUEST'">
                     <button
-                        @click="accept"
-                        class="bg-primary hover:scale-105 smooth-transition py-1 px-2 rounded-full mr-2 capitalize"
+                        v-click-effect="accept"
+                        class="bg-primary hover:scale-105 smooth-transition py-1 px-2 rounded-full m-2 capitalize"
                     >
                         accept
                     </button>
                     <button
                         v-if="props.notification?.type === 'FRIEND_REQUEST'"
-                        @click="decline"
-                        class="bg-secondary hover:scale-105 smooth-transition py-1 px-2 rounded-full mr-2 capitalize"
+                        v-click-effect="decline"
+                        class="bg-secondary hover:scale-105 smooth-transition py-1 px-2 rounded-full m-2 capitalize"
                     >
                         decline
                     </button>

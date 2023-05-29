@@ -65,7 +65,6 @@
             </div>
         </div>
 
-
         <MainPopover
             :styles="'-left-24 bottom-full bg-background_light w-48'"
             class="text-white m-2 centered absolute my-4"
@@ -75,12 +74,10 @@
                     @click="handleDropdown"
                     class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none bg-background_light"
                 >
-                    <ChevronUpIcon class="w-4 h-4"/>
+                    <ChevronUpIcon class="w-4 h-4" />
                 </button>
             </template>
-            <div
-                class="m-2"
-            >
+            <div class="m-2">
                 <button
                     @click="() => handleFilteration('all')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
@@ -108,7 +105,7 @@
                 >
                     score: low to high
                 </button>
-    
+
                 <button
                     @click="() => handleFilteration('desc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
@@ -122,7 +119,7 @@
                 >
                     score: high to low
                 </button>
-    
+
                 <button
                     @click="() => handleFilteration('win')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
@@ -136,7 +133,7 @@
                 >
                     result: victories only
                 </button>
-    
+
                 <button
                     @click="() => handleFilteration('lose')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
@@ -152,7 +149,6 @@
                 </button>
             </div>
         </MainPopover>
-
 
         <!---- the pagination part -->
         <Pagination @page="handlePagination" :url="totalPagesURL" />

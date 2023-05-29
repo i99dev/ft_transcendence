@@ -1,7 +1,7 @@
 <template>
     <div class="fixed inset-0 bg-black bg-opacity-10 z-20">
         <div
-            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-slate-900 bg-opacity-90 py-6 px-10 rounded-lg shadow-lg border border-violet-700 space-y-4"
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-background bg-opacity-90 py-6 px-10 rounded-lg shadow-tertiary shadow-md border-1 border-secondary_light space-y-4"
         >
             <div v-if="inviteModal.type == 'invited'" key="invited">
                 <h2 class="text-2xl text-center text-white font-bold mb-4">
@@ -36,14 +36,14 @@
                         :disabled="
                             inviteModal.gameType === 'custom' && selectedPowerups.length != 2
                         "
-                        class="py-2 px-4 border-2 border-green-700 rounded-md text-white bg-green-700 hover:bg-green-800 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        @click="acceptInvite"
+                        class="py-2 px-4 border-1 border-white rounded-md text-white bg-primary bg-opacity-75 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        v-click-effect="acceptInvite"
                     >
                         Accept
                     </button>
                     <button
-                        class="py-2 px-4 border-2 border-red-700 rounded-md text-white bg-red-700 hover:bg-red-800 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        @click="declineInvite"
+                        class="py-2 px-4 border-1 border-white rounded-md text-white bg-background bg-opacity-75 hover:bg-opacity-100 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        v-click-effect="declineInvite"
                     >
                         Decline
                     </button>
@@ -62,18 +62,18 @@
                         <ul class="space-y-2">
                             <li>
                                 <button
-                                    :class="mode === 'classic' ? 'bg-green-500' : 'bg-blue-500'"
-                                    class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    @click="() => selectMode('classic')"
+                                    :class="mode === 'classic' ? 'bg-opacity-100' : 'bg-opacity-75'"
+                                    class="w-full py-2 px-4 rounded-md text-white bg-primary hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                                    v-click-effect="() => selectMode('classic')"
                                 >
                                     Classic Pong
                                 </button>
                             </li>
                             <li>
                                 <button
-                                    :class="mode === 'custom' ? 'bg-green-500' : 'bg-blue-500'"
-                                    class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    @click="() => selectMode('custom')"
+                                    :class="mode === 'custom' ? 'bg-opacity-100' : 'bg-opacity-75'"
+                                    class="w-full py-2 px-4 rounded-md text-white bg-primary hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                                    v-click-effect="() => selectMode('custom')"
                                 >
                                     Custom Pong
                                 </button>
@@ -117,8 +117,8 @@
                     class="mt-10 flex space-x-4 justify-center"
                 >
                     <button
-                        class="py-2 px-4 rounded-md text-white bg-red-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-red-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        @click="
+                        class="py-2 px-4 rounded-md text-white bg-background bg-opacity-75 hover:bg-opacity-100 border-1 border-whiute transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        v-click-effect="
                             () => {
                                 inviteModal.open = false
                             }
@@ -131,8 +131,8 @@
                             (mode === 'custom' && selectedPowerups.length != 2) ||
                             inviteModal.rejected
                         "
-                        class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        @click="sendInvite"
+                        class="py-2 px-4 border-1 border-white rounded-md text-white bg-tertiary bg-opacity-80 hover:bg-opacity-100 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+                        v-click-effect="sendInvite"
                     >
                         Send Invite
                     </button>
@@ -156,13 +156,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useFriends } from '@/composables/Friends/useFriends'
-
+import { useDublicateModal } from '@/composables/Game/useSocket'
 const mode = ref('' as string)
 const selectedPowerups = ref<string[]>([])
 const isLoading = ref(false)
 const { invite, inviteModal, send, accept, decline, reset } = await useGameInvite()
 const { chat_info } = useChat()
 const { friends_info } = await useFriends()
+const { showDublicateModal, isClientConnected } = useDublicateModal()
 
 const powerups = ['Hiken', 'Baika no Jutsu', 'Shinigami', 'Shunshin no Jutsu']
 
@@ -202,6 +203,10 @@ const declineInvite = () => {
 }
 
 const sendInvite = () => {
+    if (!isClientConnected()) {
+        showDublicateModal.value = true
+        return
+    }
     isLoading.value = true
     send({
         inviterId: '',

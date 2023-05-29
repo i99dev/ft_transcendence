@@ -15,8 +15,8 @@
             class="z-19"
             @touchStart="handleTouchStart"
             @touchEnd="handleTouchEnd"
-        >
-        </GameMobileControls>
+        />
+        <GameAnnouncments class="z-20" />
         <canvas
             ref="canvasRef"
             class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
@@ -32,7 +32,6 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
-
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
@@ -40,10 +39,12 @@ const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } =
     useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isDeuce } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner, isDeuce } = useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
+
+const isMobile = useState<boolean>('isMobile')
 
 const playSound = (sound: string): void => {
     const random = Math.floor(Math.random() * 2) + 1
@@ -59,11 +60,8 @@ const keys: { [key: string]: boolean } = {
     ArrowDown: false,
 }
 
-const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-const isMobile = useState<boolean>('isMobile', () => false)
-
 onMounted(() => {
-    isMobile.value = mobileRegex.test(navigator.userAgent)
+    checkWinner()
     setupEvents()
 })
 
@@ -72,6 +70,13 @@ onUnmounted(() => {
     clearEvents()
     reset()
 })
+
+const checkWinner = () => {
+    if (gameWinner.value) {
+        emitGameOver(gameWinner.value)
+        gameWinner.value = ''
+    }
+}
 
 const setupEvents = (): void => {
     document.addEventListener('keydown', handleKeyDown)
@@ -90,7 +95,7 @@ const handleArrows = (e: PopStateEvent): void => {
 }
 
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].login) {
+    if (winner == gameSetup.value?.game?.players[gameSetup.value?.player].login) {
         emit('GameOver', 'you won')
         const winSound = new Audio('/sounds/win.mp3')
         winSound.play()
@@ -104,9 +109,10 @@ const emitGameOver = (winner: string): void => {
     showStatusBar.value = false
 }
 
-watch(gameWinner, (newVal, oldVal) => {
-    if (newVal) {
-        emitGameOver(newVal)
+watchEffect(() => {
+    if (gameWinner.value) {
+        emitGameOver(gameWinner.value)
+        gameWinner.value = ''
     }
 })
 
@@ -118,13 +124,16 @@ function destroy(): void {
 function giveUp(): void {
     if (!gameSetup.value?.game) return
     socket.value?.emit('Give-Up', gameSetup.value?.game.players[gameSetup.value?.player])
+    setTimeout(() => {
+        gameWinner.value = ''
+    }, 500)
     destroy()
 }
 
 function setup(mode: GameSelectDto): void {
     resetSocket()
-    if (mode.gameMode != 'invite') emitStartGame(mode)
     setupSocketHandlers()
+    if (mode.gameMode != 'invite') emitStartGame(mode)
 }
 
 watch(gameSetup, (newVal, oldVal) => {
