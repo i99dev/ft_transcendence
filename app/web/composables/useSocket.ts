@@ -77,13 +77,13 @@ export const useFriendSocket = () => {
 }
 
 export const useSockets = () => {
+    const toast = useToast()
     const { chatSocket, connectChatSocket, disconnectChatSocket, reconnectChatSocket } =
         useChatSocket()
     const { gameSocket, connectGameSocket, disconnectGameSocket, reconnectGameSocket } =
         useGameSocket()
     const { friendSocket, connectFriendSocket, disconnectFriendSocket, reconnectFriendSocket } =
         useFriendSocket()
-    const toast = useToast()
 
     const connectSockets = () => {
         connectChatSocket()
