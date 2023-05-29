@@ -22,7 +22,7 @@
                 </svg>
             </button>
             <button
-            @click="openFriendsModel"
+            v-click-effect="openFriendsModel"
                 title="Friends"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square col-span-2 lg:col-span-1"
             >
@@ -237,10 +237,6 @@ function handleMuteSound() {
     muteSound.value = !muteSound.value
     if (isPaused('login')) play('login')
     else if (!isPaused('login')) pause('login')
-}
-
-function goToHelp() {
-    navigateTo('/help')
 }
 
 function handleDMUser() {
