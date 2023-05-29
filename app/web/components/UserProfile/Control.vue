@@ -219,14 +219,14 @@ const { play, pause, isPaused } = useSound()
 const muteSound = ref(!isPaused('login') as boolean)
 
 useListen('soundTrack', (status: string) => {
-    console.log(status)
+    // console.log(status)
     if (status == 'on'){
         muteSound.value = true
         play('login')
     }
     else if (status == 'off' || status === 'play') {
         muteSound.value = false
-        console.log('mute')
+        // console.log('mute')
     }
     else if (status == 'play' && isPaused('login')) play('login')
 })
