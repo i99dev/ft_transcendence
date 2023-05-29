@@ -80,8 +80,8 @@ export class MatchSeeder {
         gameid = '5a48398f-30ae-489f-b22a-4fc20e0b7623'
         await this.createMatch(gameid, new Date('2022-12-31T23:59:59.000Z'))
         await this.assignOponents(gameid, [
-            { username: 'AJ', score: 10, isWinner: false, gameId: gameid },
-            { username: 'IS', score: 11, isWinner: true, gameId: gameid },
+            { username: 'AJ', score: 12, isWinner: true, gameId: gameid },
+            { username: 'IS', score: 10, isWinner: false, gameId: gameid },
         ])
         gameid = '5a48398f-30ae-489f-b22a-4fc20e0b7624'
         await this.createMatch(gameid, new Date('2020-11-31T23:59:59.000Z'))
