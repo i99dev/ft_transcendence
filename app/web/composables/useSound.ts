@@ -2,7 +2,7 @@ import mitt from 'mitt'
 
 type ApplicationEvents = {
     soundEffect: 'click'
-    soundTrack: 'on' | 'off'
+    soundTrack: 'on' | 'off' | 'play'
 }
 
 const emitter = mitt<ApplicationEvents>()

@@ -43,4 +43,8 @@ const { user_info } = useUserInfo()
 const IsProfile = ref(false)
 
 const props = defineProps(['username'])
+
+useListen('soundTrack', (status: string) => {
+    console.log(status)
+})
 </script>

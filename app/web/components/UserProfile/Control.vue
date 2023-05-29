@@ -186,6 +186,7 @@ import {
     ChatBubbleOvalLeftEllipsisIcon,
 } from '@heroicons/vue/24/outline'
 import { useToast } from 'primevue/usetoast'
+import { c } from 'consola/dist/consola-3fef035a';
 
 const toast = useToast()
 const props = defineProps({
@@ -218,7 +219,16 @@ const { play, pause, isPaused } = useSound()
 const muteSound = ref(!isPaused('login') as boolean)
 
 useListen('soundTrack', (status: string) => {
-    if (status) muteSound.value = true
+    console.log(status)
+    if (status == 'on'){
+        muteSound.value = true
+        play('login')
+    }
+    else if (status == 'off' || status === 'play') {
+        muteSound.value = false
+        console.log('mute')
+    }
+    else if (status == 'play' && isPaused('login')) play('login')
 })
 
 function openChatModel() {
