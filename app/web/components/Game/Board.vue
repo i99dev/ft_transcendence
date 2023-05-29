@@ -32,7 +32,6 @@ import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
 let gameData = useState<gameStatusDto>('gameData')
-
 const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
@@ -40,7 +39,7 @@ const showReadyModal = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } =
     useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, gameWinner, resetSocket, isDeuce } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner, isDeuce } = useSocket()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -62,6 +61,7 @@ const keys: { [key: string]: boolean } = {
 }
 
 onMounted(() => {
+    checkWinner()
     setupEvents()
 })
 
@@ -70,6 +70,13 @@ onUnmounted(() => {
     clearEvents()
     reset()
 })
+
+const checkWinner = () => {
+    if (gameWinner.value) {
+        emitGameOver(gameWinner.value)
+        gameWinner.value = ''
+    }
+}
 
 const setupEvents = (): void => {
     document.addEventListener('keydown', handleKeyDown)
@@ -88,7 +95,7 @@ const handleArrows = (e: PopStateEvent): void => {
 }
 
 const emitGameOver = (winner: string): void => {
-    if (winner == gameSetup.value?.game.players[gameSetup.value?.player].login) {
+    if (winner == gameSetup.value?.game?.players[gameSetup.value?.player].login) {
         emit('GameOver', 'you won')
         const winSound = new Audio('/sounds/win.mp3')
         winSound.play()
@@ -102,9 +109,10 @@ const emitGameOver = (winner: string): void => {
     showStatusBar.value = false
 }
 
-watch(gameWinner, (newVal, oldVal) => {
-    if (newVal) {
-        emitGameOver(newVal)
+watchEffect(() => {
+    if (gameWinner.value) {
+        emitGameOver(gameWinner.value)
+        gameWinner.value = ''
     }
 })
 
@@ -116,13 +124,16 @@ function destroy(): void {
 function giveUp(): void {
     if (!gameSetup.value?.game) return
     socket.value?.emit('Give-Up', gameSetup.value?.game.players[gameSetup.value?.player])
+    setTimeout(() => {
+        gameWinner.value = ''
+    }, 500)
     destroy()
 }
 
 function setup(mode: GameSelectDto): void {
     resetSocket()
-    if (mode.gameMode != 'invite') emitStartGame(mode)
     setupSocketHandlers()
+    if (mode.gameMode != 'invite') emitStartGame(mode)
 }
 
 watch(gameSetup, (newVal, oldVal) => {

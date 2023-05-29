@@ -28,7 +28,7 @@ export class GameWsService {
         private prisma: PrismaService,
         private userService: UserService,
         private matchService: MatchService,
-    ) {}
+    ) { }
 
     /* 
         Adds a new user to connected_users array
@@ -36,19 +36,17 @@ export class GameWsService {
     public addConnectedUser(userLogin: string, userSocket: Socket) {
         const temp = this.connected_users.find(user => user.login == userLogin)
         if (temp) {
-            setTimeout(() => {
-                userSocket.emit('Close-Tab')
                 userSocket.disconnect(true)
                 return
-            }, 1000)
         }
-
-        this.connected_users.push({
-            login: userLogin,
-            socket: userSocket,
-            status: 'online',
-        })
-        this.repo.updatePlayerStatus('ONLINE', userLogin)
+        else {
+            this.connected_users.push({
+                login: userLogin,
+                socket: userSocket,
+                status: 'online',
+            })
+            this.repo.updatePlayerStatus('ONLINE', userLogin)
+        }
     }
 
     /* 
@@ -145,17 +143,15 @@ export class GameWsService {
     public respondInvite(userSocket: Socket, invite: InviteDto, error?: boolean) {
         const inviter = this.connected_users.find(user => user.login == invite.inviterId)
         const invited = this.connected_users.find(user => user.login == invite.invitedId)
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         if (error) {
-            if (invited.status == 'busy') invited.status = 'online'
-            if (inviter.status == 'busy') inviter.status = 'online'
+            if (invited?.status == 'busy') invited.status = 'online'
+            if (inviter?.status == 'busy') inviter.status = 'online'
             this.respond(inviter, invited, invite, 'error', 'Respond-Invite')
             return
         }
         if (
-            inviter &&
-            inviter.pendingInvite &&
-            inviter.pendingInvite.invitedId == invite.invitedId
+            inviter?.pendingInvite &&
+            inviter?.pendingInvite.invitedId == invite.invitedId
         ) {
             if (invite.accepted == true) {
                 this.respond(inviter, invited, invite, 'accepted', 'Respond-Invite')
@@ -164,7 +160,6 @@ export class GameWsService {
                 inviter.status = 'ingame'
                 this.createMultiGame(inviter, invited, invite.gameType)
             } else {
-                console.log('rejected')
                 invited.status = 'online'
                 this.respond(inviter, invited, invite, 'rejected', 'Respond-Invite')
                 inviter.status = 'online'

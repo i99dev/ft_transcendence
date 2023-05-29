@@ -88,15 +88,6 @@
             />
         </div>
         <div
-            v-if="showTab"
-            class="fixed z-50 inset-0 bg-black bg-opacity-70 flex items-center justify-center"
-        >
-            <div class="bg-white p-6 rounded-md text-center">
-                <h2 class="text-xl font-semibold mb-4">You can't use the app on multiple tabs</h2>
-                <p>Please use the other tab.</p>
-            </div>
-        </div>
-        <div
             v-show="showRotateOverlay"
             class="fixed inset-0 bg-gray-900 opacity-100 flex items-center justify-center text-white text-2xl z-30"
         >
@@ -106,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useSocket, useTabEvent } from '../composables/Game/useSocket'
+import { useSocket } from '../composables/Game/useSocket'
 import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
 
 const route = useRoute()
@@ -119,12 +110,10 @@ const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
 const { emitLeaveQueue } = useSocket()
-const { showTab } = useTabEvent()
 const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
 const showRotateOverlay = ref(false)
 const isMobile = useState('isMobile')
-
 loop('play')
 
 onMounted(() => {
@@ -154,12 +143,26 @@ onUnmounted(() => {
 
 const startGame = (mode: GameSelectDto): void => {
     showBoard.value = true
-
     setTimeout(() => {
         gameBoard.value?.setup(mode)
     }, 1000)
     gameResult.value = false
 }
+
+watchEffect(() => {
+    if (route.path === '/play') {
+        if (inviteModal.value.gameInProgress) {
+            showSelector.value = false
+            showBoard.value = true
+            startGame({
+                gameType: invite.value.gameType,
+                gameMode: 'invite',
+                powerups: invite.value.powerups,
+            })
+            inviteModal.value.gameInProgress = false
+        }
+    }
+})
 
 const playAgain = (): void => {
     showSelector.value = true
@@ -202,21 +205,6 @@ function handleMuteSound() {
 const switchExistStatus = (status: boolean): void => {
     exit.value = status
 }
-
-watchEffect(() => {
-    if (route.path === '/play') {
-        if (inviteModal.value.gameInProgress) {
-            showSelector.value = false
-            showBoard.value = true
-            startGame({
-                gameType: invite.value.gameType,
-                gameMode: 'invite',
-                powerups: invite.value.powerups,
-            })
-            inviteModal.value.gameInProgress = false
-        }
-    }
-})
 </script>
 
 <style>
