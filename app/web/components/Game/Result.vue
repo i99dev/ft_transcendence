@@ -16,7 +16,7 @@
                         Home
                     </button>
                     <button
-                    v-click-effect=" () => $emit('playAgain')"
+                    v-click-effect="() => $emit('playAgain')"
                         class="rounded-md shadow-slate-50 border border-white bg-primary bg-opacity-75 transation-all duration-300 hover:scale-110 active:scale-95 hover:bg-opacity-100 text-white text-lg px-4 py-1.5"
                     >
                         Play Again
