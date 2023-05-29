@@ -6,8 +6,8 @@
             <Header />
             <ChatNavBar />
             <FriendsListNav />
-            <GameInviteBox v-if="inviteModal.open" class="z-21" />
-            <GameDublicateWarningModal v-if="showDublicateModal" class="z-20" />
+            <GameInviteBox v-if="inviteModal.open" class="z-20" />
+            <DublicateWarningModal v-if="showDublicateModal" class="z-30" />
             <slot />
         </div>
         <!-- loading -->
@@ -53,8 +53,8 @@ onMounted(async () => {
     const { setBlockList } = useBlock()
     const { data: myblockList } = await useBlockList()
     if (myblockList.value) setBlockList(myblockList.value)
-})
 
-handleSocketDisconnection()
-logSocketExceptions()
+    handleSocketDisconnection()
+
+})
 </script>
