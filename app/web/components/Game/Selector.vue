@@ -22,7 +22,7 @@
             <div class="flex justify-center mt-4">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    @click:unplay="goHome"
+                    @click="goHome"
                 >
                     Home
                 </button>
@@ -104,7 +104,7 @@
 
         <div v-else-if="step === 3" class="box">
             <div class="loading-container flex flex-col items-center justify-center">
-                <Loading />
+                <CommonLoading />
                 <p class="loading-text mt-2 text-lg font-bold text-white">{{ loadingMsg }}</p>
                 <button
                     v-if="selectedMode == 'multi'"
@@ -119,7 +119,6 @@
 </template>
 
 <script setup lang="ts">
-import { useDublicateModal } from '~~/composables/Game/useSocket'
 
 const step = ref(1)
 const selectedGame = ref('' as string)

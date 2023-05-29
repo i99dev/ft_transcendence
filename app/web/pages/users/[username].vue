@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <Home :username="route.params.username" />
+        <UserProfile :username="route.params.username" />
     </div>
 </template>
 

@@ -187,7 +187,6 @@
 
 <script lang="ts" setup>
 import { TrashIcon } from '@heroicons/vue/24/outline'
-import { Socket } from 'socket.io-client'
 
 const { user_info } = useUserInfo()
 const { isBlocked } = useBlock()

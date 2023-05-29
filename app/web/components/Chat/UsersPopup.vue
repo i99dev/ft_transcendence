@@ -1,5 +1,5 @@
 <template>
-    <MainPopup :show="props?.show" @closeMainPopup="closePopup">
+    <CommonMainPopup :show="props?.show" @closeMainPopup="closePopup">
         <div v-for="user in users" :key="user.username" class="flex-row inline-flex flex-nowrap">
             <button
                 class="border rounded-full bg-background ease-in-out transition duration-200 m-2 relative"
@@ -35,7 +35,7 @@
                 {{ props.addButton || 'add' }}
             </button>
         </div>
-    </MainPopup>
+    </CommonMainPopup>
 </template>
 
 <script lang="ts" setup>

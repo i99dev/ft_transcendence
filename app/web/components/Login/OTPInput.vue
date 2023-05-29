@@ -15,7 +15,6 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
 import VOtpInput from 'vue3-otp-input'
 
 const otpInput = ref<InstanceType<typeof VOtpInput> | null>(null)

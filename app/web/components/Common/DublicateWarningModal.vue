@@ -16,6 +16,5 @@
 </template>
 
 <script setup lang="ts">
-import { useDublicateModal } from '@/composables/Game/useSocket'
 const { showDublicateModal } = useDublicateModal()
 </script>

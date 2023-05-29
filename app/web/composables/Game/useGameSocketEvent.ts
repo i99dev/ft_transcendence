@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client'
 
-export function useSocket() {
+export function useGameSocketEvent() {
     const { gameSocket } = useGameSocket()
     const socket = ref(gameSocket.value as Socket | undefined)
 
@@ -17,9 +17,6 @@ export function useSocket() {
 
     const resetSocket = () => {
         socket.value?.off
-        // gameWinner.value = ''
-        // gameData.value = {} as gameStatusDto
-        // gameSetup.value = {} as SetupDto
     }
 
     const emitStartGame = (mode: GameSelectDto) => {
@@ -65,24 +62,4 @@ export function useSocket() {
         emitReady,
         isDeuce,
     }
-}
-
-export function useDublicateModal() {
-    const showDublicateModal = useState<boolean>('showDublicateModal', () => false)
-    const { gameSocket } = useGameSocket()
-    const isClientConnected = () => {
-        return gameSocket.value?.connected
-    }
-
-    return { showDublicateModal, isClientConnected }
-}
-
-export function useSound(playSoundCallback: (sound: string) => void) {
-    const { gameSocket } = useGameSocket()
-
-    gameSocket.value?.on('play-sound', (payload: string) => {
-        playSoundCallback(payload)
-    })
-
-    return {}
 }

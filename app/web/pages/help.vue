@@ -98,8 +98,6 @@
 
 const achievements = await getAllAchievements()
 
-console.log('achvs', achievements)
-
 const gameInfo = computed(() => {
     return [
         {

@@ -37,9 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { useFriends } from '../../composables/Friends/useFriends'
+import { useFriends } from '../../composables/useFriends'
 const props = defineProps({
     notification: {
         type: Object,

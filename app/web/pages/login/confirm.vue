@@ -61,7 +61,6 @@
 <script lang="ts" setup>
 import { ArrowSmallLeftIcon } from '@heroicons/vue/24/outline'
 import { useToast } from 'primevue/usetoast'
-import { ref, onMounted } from 'vue'
 
 const toast = useToast()
 

@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import { GLTFLoader, OrbitControls, TTFLoader, FontLoader, TextGeometry } from 'three-stdlib'
-import { watch } from 'vue'
 import * as GAME from '~/constants/'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -174,19 +173,6 @@ export function useGameRenderer() {
         addPointLight(2, -11, 0, 0xe93cac, 5, 10)
         addPointLight(-2, 11, 0, 0xe93cac, 5, 10)
         addPointLight(-2, -11, 0, 0xe93cac, 5, 10)
-        // addPointLight(5, 11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(5, -11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(0, 11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(0, -11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(-15, 11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(-15, -11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(-10, 11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(-10, -11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(-5, 11, 0, 0xE93CAC, 5, 10)
-        // addPointLight(-5, -11, 0, 0xE93CAC, 5, 10)
-
-        // addPointLight(-14, 0, 0, 0x00ff00, 1, 7)
-        // addPointLight(14, 0, 0, 0x00ff00, 1, 7)
         frame.position.set(0, 0, 0)
         gameGroup.add(frame)
 

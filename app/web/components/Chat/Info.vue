@@ -61,7 +61,7 @@
                     </Dialog>
                 </TransitionRoot>
 
-                <ChatImageAndName
+                <ChatImageAndNamePopup
                     :show="isEditChatImageAndNameOpened"
                     :submitButton="'update'"
                     :name="currentChat?.name"
@@ -70,7 +70,7 @@
                     @closePopup="closeChatImageAndNamePopup"
                 />
 
-                <ChatUsers
+                <ChatUsersPopup
                     :show="isAddUserOpened"
                     :submitButton="'add'"
                     :participants="participants"
@@ -78,7 +78,7 @@
                     @closePopup="closeAddUsersPopup"
                 />
 
-                <ChatType
+                <ChatTypePopup
                     :show="isEditChatTypeOpened"
                     :submitButton="'update'"
                     :type="currentChat?.type"
@@ -193,7 +193,6 @@ import {
     KeyIcon,
     ArrowRightOnRectangleIcon,
 } from '@heroicons/vue/24/outline'
-import { ref, onMounted, watch } from 'vue'
 
 const { chatSocket } = useChatSocket()
 watch(chatSocket, async () => {
@@ -227,7 +226,6 @@ const isEditChatImageAndNameOpened = ref(false)
 const isEditChatTypeOpened = ref(false)
 const { user_info } = useUserInfo()
 const { currentChat, setCurrentChat } = useCurrentChat()
-const emit = defineEmits(['closeNavBar'])
 
 onMounted(() => {
     socketOn()
@@ -372,7 +370,7 @@ const updateChatInfo = async (payload: {
     chatData.room_id = currentChat.value?.chat_room_id as string
     if (payload?.name) chatData.name = payload.name
     if (payload?.image && currentChat.value?.chat_room_id) {
-        const { data } = await useUplaod(currentChat.value?.chat_room_id, payload.image)
+        const { data } = await useUpload(currentChat.value?.chat_room_id, payload.image)
         if (data?.value) chatData.image = data?.value?.file_url
     }
     if (payload?.type) chatData.type = payload.type

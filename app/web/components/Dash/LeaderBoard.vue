@@ -46,12 +46,11 @@
 
         <!---- Pagination ---->
 
-        <Pagination @page="handlePagination" :url="totalPagesURL" />
+        <DashPagination @page="handlePagination" :url="totalPagesURL" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
 
 const lbPlayers = ref([] as any)
 

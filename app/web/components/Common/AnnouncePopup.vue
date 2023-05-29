@@ -1,6 +1,6 @@
 <template>
     <div v-for="(ann, index) in announcement" :key="index">
-        <MainPopup
+        <CommonMainPopup
             :show="isAnnounce && checkAnnounceAchiev(index)"
             @closeMainPopup="closeAcievPopUp(index)"
         >
@@ -24,7 +24,7 @@
                     {{ getButtonName(ann) }}
                 </button>
             </div>
-        </MainPopup>
+        </CommonMainPopup>
     </div>
 </template>
 

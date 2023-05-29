@@ -10,7 +10,5 @@
 </template>
 
 <script setup lang="ts">
-import { useSocket } from '~~/composables/Game/useSocket'
-
-const { isDeuce } = useSocket()
+const { isDeuce } = useGameSocketEvent()
 </script>
