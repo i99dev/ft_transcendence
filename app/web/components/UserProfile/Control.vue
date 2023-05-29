@@ -150,14 +150,14 @@
         </div>
         <div v-else-if="!props.isMe" class="flex space-x-6">
             <button
-                v-click-effect="() => useDMUser(props.login)"
+                v-click-effect="handleDMUser"
                 :title="`DM '${props.username}'`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
                 <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                v-click-effect="() => addFriend(props.login)"
+                v-click-effect="handleAddFriend"
                 :title="`Add '${props.login}' to friends`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
@@ -179,6 +179,7 @@
 
 <script setup lang="ts">
 import { useFriends } from '../../composables/Friends/useFriends'
+import { useDublicateModal } from '~~/composables/Game/useSocket'
 import {
     UserPlusIcon,
     UserMinusIcon,
@@ -205,7 +206,9 @@ const props = defineProps({
         default: false,
     },
 })
-
+const { chatSocket } = useChatSocket()
+const { friendSocket } = useFriendSocket()
+const { showDublicateModal } = useDublicateModal()
 const { user_info, setUserTwoFacAuth } = useUserInfo()
 const { chat_info, setChatModalOpen } = useChat()
 const { friends_info, setFriendsModalOpen, addFriend, notifications } = await useFriends()
@@ -219,6 +222,10 @@ useListen('soundTrack', (status: string) => {
 })
 
 function openChatModel() {
+    if (chatSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
     if (chat_info.value?.chatModalOpen) {
         setChatModalOpen(false)
     } else {
@@ -236,6 +243,22 @@ function goToHelp() {
     navigateTo('/help')
 }
 
+function handleDMUser() {
+    if (chatSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
+    useDMUser(props?.login)
+}
+
+function handleAddFriend() {
+    if (friendSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
+    addFriend(props?.login)
+}
+
 function handleUserBlock() {
     if (isBlocked(user)) {
         removeUserFromBlockList(user)
@@ -245,6 +268,10 @@ function handleUserBlock() {
 }
 
 function openFriendsModel() {
+    if (friendSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
     if (friends_info.value?.friendsModalOpen) {
         setFriendsModalOpen(false)
     } else {
