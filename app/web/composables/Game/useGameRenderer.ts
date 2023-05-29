@@ -310,10 +310,8 @@ export function useGameRenderer() {
     }
 
     const updatePlayer = (players: PlayerDto[]): void => {
-        if (!paddle || !paddle2) {
-            console.log('paddle1 or paddle2 is not defined')
+        if (!paddle || !paddle2)
             return
-        }
         for (let i = 0; i < players.length; i++) {
             if (i == 0) {
                 paddle.position.y = players[i].paddle.y
@@ -379,10 +377,8 @@ export function useGameRenderer() {
     }
 
     const updateBall = (ball: BallDto): void => {
-        if (!sphere || !ball) {
-            console.log('sphere or ball is not defined')
+        if (!sphere || !ball)
             return
-        }
         sphere.position.x = ball.x
         sphere.position.y = ball.y
         updateBallColor(sphere, ball.color)
