@@ -16,41 +16,49 @@ const prisma = new PrismaClient()
 
 async function main() {
     // Create Users
-    const users = await new UserSeeder().seedUsers()
-    // Assign Friends
-    await new FriendSeeder().assignFriendsToUsers()
-    // Create powerUp
-    const powerUps = await new PowerUpSeeder().seedPowerUps()
-    // Assign Powerup
-    await new PowerUpSeeder().assignPowerUpsToUsers()
-    // Create Achievements
-    const achievements = await new AchievementSeeder().seedAchievements()
-    // Assign Achievements
-    const updateUsers = await new AchievementSeeder().assignAchievementsToUsers()
-    // Create ChatRooms
-    const chatRooms = await new ChatRoomSeeder().seedChatRooms()
-    // Create DirectChatRooms
-    const directChats = await new DirectChatSeeder().seedDirectChats()
-    //
-    const groupChats = await new GroupChatSeeder().seedGroupChats()
-    // Create ChatRoomUsers
-    await new ChatUserSeeder().assignUsersToChats()
-    // Assign Messages to ChatRooms and Users
-    await new MessageSeeder().assignMessagesToChats()
-    console.log({ users, powerUps, achievements, updateUsers, groupChats, directChats, chatRooms })
-    // Create MatchHistory
-    const matchHistory = await new MatchSeeder().seedMatchHistory()
-    const getAchievements = await new NotificationSeeder().seedNotifications()
-    const getBlocks = await new BlockSeeder().seedBlock()
-    console.log({
-        users,
-        powerUps,
-        achievements,
-        updateUsers,
-        matchHistory,
-        getAchievements,
-        getBlocks,
-    })
+    if (process.env.NODE_ENV === 'production') {
+        await new PowerUpSeeder().seedPowerUps()
+
+        await new AchievementSeeder().seedAchievements()
+    }
+    else if (process.env.NODE_ENV === 'development') {
+
+        await new UserSeeder().seedUsers()
+        // Assign Friends
+        await new FriendSeeder().assignFriendsToUsers()
+        // Create powerUp
+        await new PowerUpSeeder().seedPowerUps()
+        // Assign Powerup
+        await new PowerUpSeeder().assignPowerUpsToUsers()
+        // Create Achievements
+        await new AchievementSeeder().seedAchievements()
+        // Assign Achievements
+        await new AchievementSeeder().assignAchievementsToUsers()
+        // Create ChatRooms
+        await new ChatRoomSeeder().seedChatRooms()
+        // Create DirectChatRooms
+        await new DirectChatSeeder().seedDirectChats()
+        //
+        await new GroupChatSeeder().seedGroupChats()
+        // Create ChatRoomUsers
+        await new ChatUserSeeder().assignUsersToChats()
+        // Assign Messages to ChatRooms and Users
+        await new MessageSeeder().assignMessagesToChats()
+        // Create MatchHistory
+        await new MatchSeeder().seedMatchHistory()
+        await new NotificationSeeder().seedNotifications()
+        await new BlockSeeder().seedBlock()
+    }
+    // console.log({ users, powerUps, achievements, updateUsers, groupChats, directChats, chatRooms })
+    // console.log({
+    //     users,
+    //     powerUps,
+    //     achievements,
+    //     updateUsers,
+    //     matchHistory,
+    //     getAchievements,
+    //     getBlocks,
+    // })
 }
 
 // execute the main function
