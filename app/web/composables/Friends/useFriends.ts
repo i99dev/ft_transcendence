@@ -1,8 +1,11 @@
+import { useToast } from "primevue/usetoast"
+
 export const useFriends = async () => {
     const order = ['ONLINE', 'INQUEUE', 'INGAME', 'OFFLINE']
     const notifications = useState<NotificationDto[] | null>('notifications', () => {
         return []
     })
+    const toast = useToast()
 
     const { friendSocket } = useFriendSocket()
     const { data } = await useFetch<UserGetDto[]>('/users/me/friends', {
@@ -39,6 +42,15 @@ export const useFriends = async () => {
         friendSocket.value?.on('friends-list', (payload: UserGetDto) => {
             friends_info.value.friends = payload
             sortFriends()
+        })
+
+        friendSocket.value?.on('add-friend', (payload: any) => {
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: payload.content,
+                life: 3000,
+            })
         })
     }
 

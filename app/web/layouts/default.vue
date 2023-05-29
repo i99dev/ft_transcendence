@@ -53,8 +53,8 @@ onMounted(async () => {
     const { setBlockList } = useBlock()
     const { data: myblockList } = await useBlockList()
     if (myblockList.value) setBlockList(myblockList.value)
-})
 
-handleSocketDisconnection()
-logSocketExceptions()
+    handleSocketDisconnection()
+
+})
 </script>
