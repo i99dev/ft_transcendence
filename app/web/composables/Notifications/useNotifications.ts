@@ -10,11 +10,11 @@ export async function useNotifications() {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
             },
         })
-        if (error)
+        if (error.value)
             toast.add({
                 severity: 'error',
                 summary: 'Opps!',
-                detail: `can't delete conthe notification (${error.value})`,
+                detail: `can't retrieve friends notification`,
                 life: 3000,
             })
         return data
@@ -28,11 +28,11 @@ export async function useNotifications() {
                 Authorization: `Bearer ${useCookie('access_token').value}`,
             },
         })
-        if (!data.value)
+        if (error.value)
             toast.add({
                 severity: 'error',
                 summary: 'Opps!',
-                detail: `can't delete the notification`,
+                detail: `can't delete friend notification`,
                 life: 3000,
             })
     }
