@@ -105,7 +105,7 @@ const gameInfo = computed(() => {
         {
             title: 'Game Modes',
             subtitle: 'There are two game modes available:',
-            description: ['Custom: Activates power-ups during the game.', 'Classic: Play the game without any power-ups.']
+            description: ['This game mode activates power-ups during the game, enhancing the gameplay experience by introducing special abilities or advantages for the players.', 'Classic: Play the game without any power-ups.']
         },
         {
             title: 'Players',

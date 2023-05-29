@@ -48,7 +48,7 @@
                     Didn't receive the code?
                     <button
                         class="bg-secondary hover:bg-primary smooth-transition rounded-xl p-2 m-2"
-                        v-click-effect="resendCode"
+                        @click="resendCode"
                     >
                         Resend
                     </button>

@@ -39,7 +39,7 @@
                                                     <button
                                                         type="button"
                                                         class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                                        v-click-effect="
+                                                        @click="
                                                             () => setFriendsModalOpen(false)
                                                         "
                                                     >
@@ -51,7 +51,7 @@
                                                     </button>
                                                 </div>
                                                 <button
-                                                    v-click-effect="add_new_friend"
+                                                    @click="add_new_friend"
                                                     class="p-2 m-1 mr-4 rounded relative bg-secondary hover:bg-primary smooth-transition self-end text-white"
                                                 >
                                                     Add friend
@@ -75,7 +75,7 @@
                                                     >
                                                         <button
                                                             class="centered w-fit group"
-                                                            v-click-effect="
+                                                            @click="
                                                                 () =>
                                                                     navigateTo(
                                                                         `/users/${friend.username}`,
@@ -115,7 +115,7 @@
                                                                     <div class="py-1">
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            v-click-effect="
+                                                                            @click="
                                                                                 () =>
                                                                                     showInviteModal(
                                                                                         friend.login,
@@ -130,7 +130,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            v-click-effect="
+                                                                            @click="
                                                                                 () =>
                                                                                     useDMUser(
                                                                                         friend.login,
@@ -145,7 +145,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            v-click-effect="
+                                                                            @click="
                                                                                 () =>
                                                                                     viewProfile(
                                                                                         friend.username,
@@ -160,7 +160,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            v-click-effect="
+                                                                            @click="
                                                                                 () =>
                                                                                     remove(
                                                                                         friend.login,
@@ -175,7 +175,7 @@
                                                                         </MenuItem>
                                                                         <MenuItem
                                                                             class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                                            v-click-effect="
+                                                                            @click="
                                                                                 () => {
                                                                                     isBlocked(
                                                                                         friend,

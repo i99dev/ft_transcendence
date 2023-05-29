@@ -8,7 +8,7 @@
         <div v-if="!isLoading" class="flex justify-center mt-4">
             <button
                 class="py-2 px-4 rounded-md text-white bg-green-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-green-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                v-click-effect="readyToStart"
+                @click="readyToStart"
             >
                 Ready
             </button>

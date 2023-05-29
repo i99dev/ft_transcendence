@@ -10,13 +10,13 @@
                 </h1>
                 <div class="after-game-options flex justify-center space-x-4">
                     <button
-                        v-click-effect="() => navigateTo('/')"
+                        @click="() => navigateTo('/')"
                         class="rounded-md shadow-slate-50 bg-slate-300 hover:bg-slate-200 text-slate-700 hover:text-slate-900 text-lg px-4 py-1.5"
                     >
                         Home
                     </button>
                     <button
-                        v-click-effect="() => $emit('playAgain')"
+                        @click="() => $emit('playAgain')"
                         class="rounded-md shadow-slate-50 bg-slate-300 hover:bg-slate-200 text-slate-700 hover:text-slate-900 text-lg px-4 py-1.5"
                     >
                         Play Again

@@ -36,7 +36,7 @@
                                         <form @submit.prevent="" class="flex">
                                             <div class="relative mx-2">
                                                 <div
-                                                    v-click-effect="changePasswordView"
+                                                    @click="changePasswordView"
                                                     class="absolute right-2 text-gray-600 hover:text-gray-700 flex items-center h-full cursor-pointer"
                                                 >
                                                     <svg
@@ -82,7 +82,7 @@
                 <button
                     v-for="chat in chats"
                     :key="chat?.id"
-                    v-click-effect="() => setCurrentChat(chat)"
+                    @click="() => setCurrentChat(chat)"
                     class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
@@ -192,7 +192,7 @@
                 <div class="absolute bottom-10 right-10">
                     <button
                         type="button"
-                        v-click-effect="
+                        @click="
                             () => {
                                 isChatCreateGroupOpened = true
                             }

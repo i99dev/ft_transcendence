@@ -16,7 +16,7 @@
                 confirmation="Are you sure you want to exit the game?"
             />
             <div class="container">
-                <Button v-click-effect="() => switchExistStatus(true)" icon="pi pi-times" />
+                <Button @click="() => switchExistStatus(true)" icon="pi pi-times" />
                 <GameBoard @ReadyGame="setGameReady" @GameOver="gameOver($event)" ref="gameBoard" />
             </div>
             <GameResult

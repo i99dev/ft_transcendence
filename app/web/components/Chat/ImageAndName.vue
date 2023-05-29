@@ -18,7 +18,7 @@
                         style="display: none"
                     />
                     <button
-                        v-click-effect="() => fileInput.click()"
+                        @click="() => fileInput.click()"
                         type="button"
                         class="border-1 border-white smooth-transition hover:bg-primary rounded-full focus:outline-white"
                         :class="{ 'p-2': !chatImage }"
@@ -61,14 +61,14 @@
                     v-if="props.cancelButton"
                     class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                     type="button"
-                    v-click-effect="() => closePopup('cancel')"
+                    @click="() => closePopup('cancel')"
                 >
                     {{ props.cancelButton || 'cancel' }}
                 </button>
                 <button
                     class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                     type="button"
-                    v-click-effect="sendChatData"
+                    @click="sendChatData"
                 >
                     {{ props.submitButton || 'done' }}
                 </button>

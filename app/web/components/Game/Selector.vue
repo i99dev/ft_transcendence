@@ -8,7 +8,7 @@
                 <li>
                     <button
                         class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectGame('classic')"
+                        @click="() => selectGame('classic')"
                     >
                         Classic Pong
                     </button>
@@ -16,7 +16,7 @@
                 <li>
                     <button
                         class="w-full py-2 px-4 rounded-md text-white bg-blue-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectGame('custom')"
+                        @click="() => selectGame('custom')"
                     >
                         Custom Pong
                     </button>
@@ -25,7 +25,7 @@
             <div class="flex justify-center mt-4">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-red-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-red-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect:unplay="goHome"
+                    @click:unplay="goHome"
                 >
                     Home
                 </button>
@@ -39,7 +39,7 @@
                     <button
                         :class="selectedMode === 'single' ? 'bg-green-500' : 'bg-blue-500'"
                         class="w-full py-2 px-4 rounded-md text-white bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectMode('single')"
+                        @click="() => selectMode('single')"
                     >
                         Single Player
                     </button>
@@ -48,7 +48,7 @@
                     <button
                         :class="selectedMode === 'multi' ? 'bg-green-500' : 'bg-blue-500'"
                         class="w-full py-2 px-4 rounded-md text-white bg-opacity-75 hover:bg-opacity-100 border-2 border-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                        v-click-effect="() => selectMode('multi')"
+                        @click="() => selectMode('multi')"
                     >
                         Find Opponent
                     </button>
@@ -84,7 +84,7 @@
             <div class="mt-4 flex space-x-4 justify-center">
                 <button
                     class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="() => (step = 1)"
+                    @click="() => (step = 1)"
                 >
                     Back
                 </button>
@@ -93,7 +93,7 @@
                         !selectedMode || (selectedGame === 'custom' && selectedPowerups.length != 2)
                     "
                     class="py-2 px-4 border-2 border-blue-700 rounded-md text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="emitGameSelected"
+                    @click="emitGameSelected"
                 >
                     Start Game
                 </button>
@@ -107,7 +107,7 @@
                 <button
                     v-if="selectedMode == 'multi'"
                     class="py-2 px-4 mt-4 rounded-md text-white bg-red-500 bg-opacity-75 hover:bg-opacity-100 border-2 border-red-500 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="leaveQueue"
+                    @click="leaveQueue"
                 >
                     Leave Queue
                 </button>

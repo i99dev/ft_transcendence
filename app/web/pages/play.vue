@@ -3,7 +3,7 @@
         <div class="fixed top-4 right-8 cursor-pointer w-8 h-8 z-50">
             <button
                 v-if="muteSound"
-                v-click-effect="handleMuteSound"
+                @click="handleMuteSound"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
                 <svg
@@ -21,7 +21,7 @@
             </button>
             <button
                 v-else
-                v-click-effect="handleMuteSound"
+                @click="handleMuteSound"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
                 <svg
