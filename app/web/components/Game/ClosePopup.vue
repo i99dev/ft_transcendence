@@ -14,13 +14,13 @@
             </h3>
             <div class="flex justify-center space-x-4">
                 <button
-                    @click="() => $emit('closePopup')"
+                    @click=" $emit('closePopup')"
                     class="py-1 px-4 rounded-md text-white bg-background transparent bg-opacity-90 hover:bg-opacity-100 border-1 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
                 >
                     Cancel
                 </button>
                 <button
-                    @click="() => $emit('GiveUp')"
+                    @click=" $emit('GiveUp')"
                     class="py-1 px-4 rounded-md text-white bg-primary transparent bg-opacity-90 hover:bg-opacity-100 border-1 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
                 >
                     Exit

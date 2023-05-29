@@ -98,7 +98,7 @@
                 </svg>
             </button>
             <button
-                @click="() => navigateTo('/help')"
+                @click=" navigateTo('/help')"
                 title="Help"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -150,14 +150,14 @@
         </div>
         <div v-else-if="!props.isMe" class="flex space-x-6">
             <button
-                @click="() => useDMUser(props.login)"
+                @click=" useDMUser(props.login)"
                 :title="`DM '${props.username}'`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
                 <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                @click="() => addFriend(props.login)"
+                @click=" addFriend(props.login)"
                 :title="`Add '${props.login}' to friends`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >

@@ -50,7 +50,7 @@
                                             v-for="option in adminOptions"
                                             :key="option.action"
                                             class="flex items-center justify-center p-2 w-full rounded-lg hover:bg-secondary text-white"
-                                            @click="() => setUser(option.action)"
+                                            @click=" setUser(option.action)"
                                         >
                                             {{ option.text }}
                                         </button>
@@ -93,13 +93,13 @@
                             'scale-125 text-primary': participantsType === 'NORMAL',
                             'opacity-70 hover:opacity-100': participantsType !== 'NORMAL',
                         }"
-                        @click="() => switchParticipantsList()"
+                        @click=" switchParticipantsList()"
                     >
                         participants
                     </button>
                     <button
                         class="mx-4 transition-all ease-in-out duration-200 underline underline-offset-8 capitalize"
-                        @click="() => switchParticipantsList('BAN')"
+                        @click=" switchParticipantsList('BAN')"
                         :class="{
                             'scale-125 text-primary': participantsType === 'BAN',
                             'opacity-70 hover:opacity-100': participantsType !== 'BAN',
@@ -162,14 +162,14 @@
                     <button
                         v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="() => (isEditChatImageAndNameOpened = true)"
+                        @click=" (isEditChatImageAndNameOpened = true)"
                     >
                         <PencilSquareIcon class="w-6 h-6" />
                     </button>
                     <button
                         v-if="isOwner()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        @click="() => (isEditChatTypeOpened = true)"
+                        @click=" (isEditChatTypeOpened = true)"
                     >
                         <KeyIcon class="w-6 h-6" />
                     </button>

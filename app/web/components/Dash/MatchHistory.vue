@@ -79,7 +79,7 @@
             </template>
             <div class="m-2">
                 <button
-                    @click="() => handleFilteration('all')"
+                    @click=" handleFilteration('all')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('all'),
@@ -93,7 +93,7 @@
                 </button>
 
                 <button
-                    @click="() => handleFilteration('asc')"
+                    @click=" handleFilteration('asc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('asc'),
@@ -107,7 +107,7 @@
                 </button>
 
                 <button
-                    @click="() => handleFilteration('desc')"
+                    @click=" handleFilteration('desc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('desc'),
@@ -121,7 +121,7 @@
                 </button>
 
                 <button
-                    @click="() => handleFilteration('win')"
+                    @click=" handleFilteration('win')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('win'),
@@ -135,7 +135,7 @@
                 </button>
 
                 <button
-                    @click="() => handleFilteration('lose')"
+                    @click=" handleFilteration('lose')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('lose'),

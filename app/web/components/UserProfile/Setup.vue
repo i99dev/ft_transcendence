@@ -58,7 +58,7 @@
                     <button
                         class="mx-4 flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
                         type="button"
-                        @click="() => fileInput.click()"
+                        @click=" fileInput.click()"
                     >
                         upload
                     </button>
