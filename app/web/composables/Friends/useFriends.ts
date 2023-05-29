@@ -48,7 +48,7 @@ export const useFriends = async () => {
             toast.add({
                 severity: 'success',
                 summary: 'Success',
-                detail: `Friend request sent to ${payload.login}`,
+                detail: `Friend request sent successfully`,
                 life: 3000,
             })
         })
