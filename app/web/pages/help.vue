@@ -31,13 +31,14 @@
                             </template>
                         </div>
                         <div v-else v-for="des in info.description">
-                            <p class="mt-4 text-lg text-white">{{ des }} </p>
+                            <p v-if="info.title != 'Rank System'" class="mt-4 text-lg text-white">{{ des }} </p>
                         </div>
 
                         <div
-                            class="mt-20 flex col-auto transform items-center justify-center transition-transform duration-150 ease-in-out hover:scale-125">
+                            class="mt-20 flex col-auto transform items-center justify-center transition-transform duration-150 ease-in-out ">
 
-                            <div v-if="info.title == 'Achievements'" class="grid grid-cols-3 mb-5 gap-4">
+                            <div v-if="info.title == 'Achievements'"
+                                class="grid grid-cols-3 mb-5 gap-4  smooth-transition hover:scale-105">
                                 <div v-for="achv in achievements" class="mt-3 mb-10 rounded-full border overflow-hidden"
                                     :class="getAchvType(achv.type, false)">
                                     <img :src="achv.image" class="w-full h-full object-cover">
@@ -46,15 +47,28 @@
                                 </div>
                             </div>
 
-                            <div v-if="info.title == 'Rank System'" class="flex justify-center mt-10">
+                            <div v-if="info.title == 'Rank System'" class="flex justify-center mt-2">
                                 <div v-for="(rectangle, index) in rectangles" :key="index"
-                                    class="relative w-25 h-[100px] mr-20">
-                                    <div class="absolute bottom-0 left-0 w-8 bg-white shadow-xl shadow-tertiary_dark"
+                                    class="relative w-16 h-[80px] mx-4 mt-20  group">
+                                    <div class="flex absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 bg-white shadow-xl shadow-tertiary_dark smooth-transition group-hover:scale-110 "
                                         :style="{ height: rectangle.height + '%' }"></div>
+                                    <div
+                                        class="absolute -bottom-12 left-1/2 transform -translate-x-1/2  translate-y-1/3 text-center text-white">
+                                        {{ info.description[index] }}
+                                    </div>
+
+                                    <div class="invisible bg-background border-1 border-secondary group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 px-3 py-2 text-md shadow-lg rounded w-auto md:min-w-[260px] md:max-w-xl md:px-4 md:py-3 z-10"
+                                        :style="'min-width: 200px;'">
+                                        <h1 class="text-bold text-lg text-tertiary border-b">{{ info.description[index] }}
+                                        </h1>
+                                        <p class="text-white">XP: {{ ranksInfo[index].XP }}</p>
+                                        <p class="text-white">{{ ranksInfo[index].Description }}</p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div v-if="info.title == 'Controls'" class="flex flex-col items-center shadow-xl shadow-secondary_dark">
+                            <div v-if="info.title == 'Controls'"
+                                class="flex flex-col items-center shadow-xl shadow-secondary_dark">
                                 <svg style="color: blueviolet" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
                                     fill="currentColor" class="bi bi-arrow-up-square-fill mb-2" viewBox="0 0 16 16">
                                     <path
@@ -106,7 +120,7 @@ const gameInfo = computed(() => {
         {
             title: 'Rank System',
             subtitle: 'There are six Ranks in this game:',
-            description: []
+            description: ["Capin Boy", "Kaizoku", "Super Rookie", "Shichbukai", "Yonko", "Kaizoku O"],
         },
         {
             title: 'Achievements',
@@ -115,6 +129,33 @@ const gameInfo = computed(() => {
         },
     ];
 });
+
+const ranksInfo = [
+    {
+        XP: "+10/win +2/lose",
+        Description: "Requires 10 wins to advance to next level"
+    },
+    {
+        XP: "+20/win +4/lose",
+        Description: "Requires 60% W/R + 150XP to advance to next level"
+    },
+    {
+        XP: "+30/win +6/lose",
+        Description: "Requires 55% W/R + 600XP to advance to next level"
+    },
+    {
+        XP: "+40/win +8/lose",
+        Description: "Requires 50% W/R + 1500XP to advance to next level"
+    },
+    {
+        XP: "+50/win +10/lose",
+        Description: "Requires 45% W/R + 3500XP to advance to next level"
+    },
+    {
+        XP: "+60/win +12/lose",
+        Description: "Requires 40% W/R + 6000XP to advance to next level"
+    }
+];
 
 const getClassForDescription = (description: any, info: any) => {
     if (description === info.description[0]) {
@@ -134,12 +175,12 @@ const getAchvType = (type: string, isText: boolean) => {
 }
 
 const rectangles = [
-    { height: 40 },
-    { height: 60 },
-    { height: 80 },
+    { height: 70 },
     { height: 100 },
-    { height: 120 },
-    { height: 140 }
+    { height: 130 },
+    { height: 150 },
+    { height: 180 },
+    { height: 210 }
 ]
 
 </script>
