@@ -241,6 +241,7 @@ onMounted(async () => {
 
 const socketOn = () => {
     chatSocket.value?.on('add-message', (payload: chatMessage) => {
+        if (payload.chat_room_id !== currentChat.value?.chat_room_id) return
         messages.value?.unshift(payload)
 
         //scroll to bottom
@@ -252,6 +253,7 @@ const socketOn = () => {
     })
 
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
+        if (payload[0].chat_room_id !== currentChat.value?.chat_room_id) return
         setParticipants(payload)
         if (participants.value)
             me.value = participants.value?.find(
@@ -259,6 +261,7 @@ const socketOn = () => {
             )
     })
 }
+
 
 const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
