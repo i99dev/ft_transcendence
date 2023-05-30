@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { useDublicateModal } from '@/composables/Game/useSocket'
-const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+const { connectSockets, handleSocketDisconnection, disconnectSockets } =
     useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
