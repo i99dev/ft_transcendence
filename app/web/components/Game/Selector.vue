@@ -7,14 +7,14 @@
             <div class="space-y-2">
                 <button
                     class="w-full py-2 px-2 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    v-click-effect="() => selectGame('classic')"
+                    @click="selectGame('classic')"
                 >
                     Classic Pong
                 </button>
 
                 <button
                     class="w-full py-2 px-2 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    v-click-effect="() => selectGame('custom')"
+                    @click="selectGame('custom')"
                 >
                     Custom Pong
                 </button>
@@ -39,7 +39,7 @@
                             selectedMode === 'single' ? 'bg-opacity-100' : 'bg-opacity-75',
                             selectedGame === 'classic' ? 'bg-tertiary' : 'bg-primary',
                         ]"
-                        v-click-effect="() => selectMode('single')"
+                        @click="selectMode('single')"
                     >
                         Single Player
                     </button>
@@ -51,7 +51,7 @@
                             selectedMode === 'multi' ? 'bg-opacity-100' : 'bg-opacity-75',
                             selectedGame === 'classic' ? 'bg-tertiary' : 'bg-primary',
                         ]"
-                        v-click-effect="() => selectMode('multi')"
+                        @click="selectMode('multi')"
                     >
                         Find Opponent
                     </button>
@@ -85,7 +85,7 @@
             <div class="mt-4 flex space-x-4 justify-center">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    v-click-effect="() => { (step = 1) }"
+                    @click="step = 1"
                 >
                     Back
                 </button>

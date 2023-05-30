@@ -3,7 +3,7 @@
         <div class="p-2 relative flex h-16">
             <button
                 class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
-                v-click-effect="() => setCurrentChat(null)"
+                @click="setCurrentChat(null)"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,11 @@
                 <div class="centered" v-if="enableLoadMoreButton">
                     <button
                         class="bg-primary p-2 rounded-2xl my-2"
+<<<<<<< HEAD
                         v-click-effect="() => loadMoreMessages(messagesPage)"
+=======
+                        @click="loadMoreMessages(messagesPage)"
+>>>>>>> origin/dev
                     >
                         Load more
                     </button>
@@ -127,7 +131,11 @@
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
                         class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
+<<<<<<< HEAD
                         v-click-effect="() => deleteMessage(message.id)"
+=======
+                        @click="deleteMessage(message.id)"
+>>>>>>> origin/dev
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>

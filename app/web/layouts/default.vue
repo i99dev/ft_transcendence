@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { useDublicateModal } from '@/composables/Game/useSocket'
-const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+const { connectSockets, handleSocketDisconnection, disconnectSockets } =
     useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
@@ -29,6 +29,7 @@ const isMobile = useState<boolean>('isMobile', () => false)
 const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
 
 onMounted(async () => {
+    // TODO: check if user is logged in
     const { data, error } = await useMe()
     me.value = data.value
     isMobile.value = mobileRegex.test(navigator.userAgent)
@@ -55,6 +56,5 @@ onMounted(async () => {
     if (myblockList.value) setBlockList(myblockList.value)
 
     handleSocketDisconnection()
-
 })
 </script>

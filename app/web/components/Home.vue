@@ -15,9 +15,7 @@
                 </div>
                 <button
                     v-if="props?.username === user_info?.username"
-                    v-click-effect:play="() => {
-                        navigateTo('/play')
-                    }"
+                    @click="navigateTo('/play')"
                     class="h-10 w-30 hover:scale-125 smooth-transition text-white bg-primary hover:bg-access font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 inline-flex items-center"
                 >
                     Play
@@ -39,6 +37,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+const { logSocketExceptions } =
+    useSockets()
 
 const { user_info } = useUserInfo()
 
@@ -46,6 +46,10 @@ const IsProfile = ref(false)
 
 const props = defineProps(['username'])
 
+<<<<<<< HEAD
 const { play, isPaused } = useSound()
 
+=======
+logSocketExceptions()
+>>>>>>> origin/dev
 </script>

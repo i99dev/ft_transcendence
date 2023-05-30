@@ -5,14 +5,14 @@
         >
             <button v-for="tab in tabs" :key="tab.name" class="flex flex-col">
                 <div
-                v-click-effect="() => setActiveTab(tab)"
+                    @click="setActiveTab(tab)"
                     class="py-2 ease-in duration-150 rounded md:flex text-white whitespace-nowrap"
                 >
                     <div
                         class="smooth-transition text-white"
                         :class="{
-                            'border-b-2 p-2 border-secondary text-lg': isActive(tab),
-                            'opacity-50 hover:opacity-100 text-md': !isActive(tab),
+                            'border-b-2 sm:p-2 border-secondary sm:text-lg text-sm p-1': isActive(tab),
+                            'opacity-50 sm:p-2 hover:opacity-100 sm:text-md text-xs p-1': !isActive(tab),
                         }"
                     >
                         {{ tab.name }}

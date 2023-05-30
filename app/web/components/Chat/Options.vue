@@ -37,7 +37,7 @@
                 'bg-background_light opacity-70': chatType !== 'GROUP',
                 'bg-primary': chatType === 'GROUP',
             }"
-            v-click-effect="() => switchChatType('GROUP')"
+            @click="switchChatType('GROUP')"
         >
             <UserGroupIcon class="h-6 w-6" />
         </button>
@@ -47,7 +47,7 @@
                 'bg-background_light opacity-70': chatType !== 'DM',
                 'bg-primary': chatType === 'DM',
             }"
-            v-click-effect="() => switchChatType('DM')"
+            @click="switchChatType('DM')"
         >
             <UserIcon class="h-6 w-6" />
         </button>

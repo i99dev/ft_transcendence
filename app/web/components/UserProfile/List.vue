@@ -52,7 +52,7 @@
                             (user.username === user_info.username && props.isMe === true)
                         "
                         type="button"
-                        v-click-effect="() => handleUserSelection(user)"
+                        @click="() => handleUserSelection(user)"
                         class="p-2 border smooth-transition border-white rounded-xl relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
                         :class="{
                             'bg-background cursor-default': isUserDimmed(user.username),
