@@ -1,6 +1,11 @@
 <template>
     <div>
-        <UserProfileSetup v-if="isFirstTimeLogin" :show="iSetup" :submit-button="'Set'" @closePopup="closeSetupProfile" />
+        <UserProfileSetup
+            v-if="isFirstTimeLogin"
+            :show="iSetup"
+            :submit-button="'Set'"
+            @closePopup="closeSetupProfile"
+        />
         <Home :username="user" />
     </div>
 </template>
