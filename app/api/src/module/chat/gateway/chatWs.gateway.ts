@@ -530,7 +530,6 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     socketError(error: string) {
-        this.logger.error(error)
         throw new WsException(error)
     }
 
