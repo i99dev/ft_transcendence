@@ -17,6 +17,7 @@ export class gameStatusDto {
     players: PlayerDto[]
     ball: BallDto
     time: number
+    countDown: number
 }
 
 export class SetupDto {

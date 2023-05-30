@@ -16,7 +16,7 @@
             @touchStart="handleTouchStart"
             @touchEnd="handleTouchEnd"
         />
-        <GameAnnouncments class="z-20" />
+        <GameAnnouncments v-if="showAnnouncment" class="z-20" />
         <canvas
             ref="canvasRef"
             class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
@@ -28,6 +28,7 @@
 <script lang="ts" setup>
 import { useSocket, useSound } from '~/composables/Game/useSocket'
 import { useGameRenderer } from '~/composables/Game/useGameRenderer'
+import { useGameAnnouncment } from '~/composables/Game/useAnnouncment'
 
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
@@ -36,10 +37,12 @@ const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
 const showReadyModal = ref(false)
+const zooming = ref(false)
 
-const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } =
+const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, zoomToArena, reset } =
     useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner, isDeuce } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner } = useSocket()
+const { showAnnouncment, announcmentMessage, resetAnnouncment } = useGameAnnouncment()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -69,6 +72,8 @@ onUnmounted(() => {
     giveUp()
     clearEvents()
     reset()
+    zooming.value = false
+    resetAnnouncment()
 })
 
 const checkWinner = () => {
@@ -150,6 +155,20 @@ watch(gameData, (newVal, oldVal) => {
     showStatusBar.value = true
     if (newVal) {
         showReadyModal.value = false
+        if (gameData.value?.countDown > 0) {
+            if (!zooming.value) {
+                zoomToArena()
+                zooming.value = true
+            }
+            showAnnouncment.value = true
+            announcmentMessage.value = (Math.floor(gameData.value?.countDown) + 1).toString()
+
+            return
+        }
+        if (zooming.value) {
+            showAnnouncment.value = false
+            zooming.value = false
+        }
         updatePaddleDirection()
         rescaleGameData(newVal)
         updatePlayer(gameData.value?.players)

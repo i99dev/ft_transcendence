@@ -4,6 +4,7 @@ import { PowerUp } from '../interface/game.interface'
 import { EventEmitter } from 'events'
 import { Player } from '@prisma/client'
 import { BlockList } from 'net'
+import { count } from 'console'
 
 const DEFAULT_POWER_UPS: PowerUp[] = [
     {
@@ -41,7 +42,7 @@ const PADDLE_HEIGHT = 0.2
 const PADDLE_SPEED = 0.0175
 const BALL_RADIUS = 0.03
 const REFLECT_ANGLE = 80
-const BALL_XSPEED = 0.0155
+const BALL_XSPEED = 0.0165
 const BALL_YSPEED = 0.0
 const COMPUTER_SPEED = 0.0075
 
@@ -115,6 +116,7 @@ export class PongGame {
                 color: 'white',
             },
             time: 120,
+            countDown: 3,
         }
     }
 
@@ -282,6 +284,11 @@ export class PongGame {
 
     // update the game by updating the ball position and checking for collisions
     public updateGame(): void {
+        if (this.game_status.countDown > 0) {
+            this.game_status.countDown -= 1 / 60
+            return
+        }
+
         this.updateBall()
         this.updateTimer()
         if (this.getPlayer2ID() === 'Computer') this.updateComputer()
@@ -414,7 +421,7 @@ export class PongGame {
     // update the paddle position of the player based on the direction
     public updatePaddlePosition(playerID: string, direction: string): void {
         const player = this.game_status.players.find(player => player.login === playerID)
-
+        if(this.game_status.countDown > 0) return
         if (direction === 'up') {
             player.paddle.y -= player.paddle.speed
         } else if (direction === 'down') {
