@@ -102,6 +102,8 @@ export class GameSelectDto {
     gameMode: gameMode
 
     @IsArray()
+    @IsString({ each: true })
+    @Length(1, 100, { each: true })
     powerups: string[]
 
     @IsString()
