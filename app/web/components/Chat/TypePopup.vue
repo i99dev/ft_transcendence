@@ -1,5 +1,5 @@
 <template>
-    <MainPopup :show="props?.show" @closeMainPopup="closePopup()">
+    <CommonMainPopup :show="props?.show" @closeMainPopup="closePopup()">
         <form class="chat-form" @submit.prevent="">
             <RadioGroup v-model="groupChatType">
                 <RadioGroupLabel class="sr-only">Group Chat Type</RadioGroupLabel>
@@ -121,7 +121,7 @@
                 </button>
             </div>
         </form>
-    </MainPopup>
+    </CommonMainPopup>
 </template>
 
 <script lang="ts" setup>

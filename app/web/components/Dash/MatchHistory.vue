@@ -65,9 +65,9 @@
             </div>
         </div>
 
-        <MainPopover
+        <CommonMainPopover
             :styles="'-left-24 bottom-full bg-background_light w-48'"
-            class="text-white m-2 centered absolute my-4"
+            class="text-white m-2 centered absolute my-3 sm:my-4 w-full"
         >
             <template #button>
                 <button
@@ -148,10 +148,10 @@
                     result: defeats only
                 </button>
             </div>
-        </MainPopover>
+        </CommonMainPopover>
 
         <!---- the pagination part -->
-        <Pagination @page="handlePagination" :url="totalPagesURL" />
+        <DashPagination @page="handlePagination" :url="totalPagesURL" />
     </div>
 </template>
 

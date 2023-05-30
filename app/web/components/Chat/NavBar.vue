@@ -1,6 +1,6 @@
 <template>
     <div>
-        <SideBar :show="open">
+        <CommonSideBar :show="open">
             <div
                 class="flex h-screen flex-col bg-background shadow-xl rounded-2xl border overflow-hidden"
             >
@@ -24,13 +24,12 @@
                     <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                 </div>
             </div>
-        </SideBar>
+        </CommonSideBar>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { computed, watch } from 'vue'
 
 const { chat_info, setChatModalOpen, send_message } = useChat()
 

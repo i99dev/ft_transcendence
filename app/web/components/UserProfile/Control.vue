@@ -178,8 +178,6 @@
 </template>
 
 <script setup lang="ts">
-import { useFriends } from '../../composables/Friends/useFriends'
-import { useDublicateModal } from '~~/composables/Game/useSocket'
 import {
     UserPlusIcon,
     UserMinusIcon,
@@ -237,10 +235,6 @@ function handleMuteSound() {
     muteSound.value = !muteSound.value
     if (isPaused('login')) play('login')
     else if (!isPaused('login')) pause('login')
-}
-
-function goToHelp() {
-    navigateTo('/help')
 }
 
 function handleDMUser() {

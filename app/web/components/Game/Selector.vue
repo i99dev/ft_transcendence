@@ -104,7 +104,7 @@
 
         <div v-else-if="step === 3" class="box">
             <div class="loading-container flex flex-col items-center justify-center">
-                <Loading />
+                <CommonLoading />
                 <p class="loading-text mt-2 text-lg font-bold text-white">{{ loadingMsg }}</p>
                 <button
                     v-if="selectedMode == 'multi'"
@@ -119,7 +119,6 @@
 </template>
 
 <script setup lang="ts">
-import { useDublicateModal } from '~~/composables/Game/useSocket'
 
 const step = ref(1)
 const selectedGame = ref('' as string)

@@ -1,4 +1,4 @@
-export async function useUplaod(target: string, formData: any): Promise<any> {
+export async function useUpload(target: string, formData: any): Promise<any> {
     let resStatus = 0
     const { data, error: errorRef } = await useFetch(`multer/upload/${target}`, {
         onResponseError: error => {

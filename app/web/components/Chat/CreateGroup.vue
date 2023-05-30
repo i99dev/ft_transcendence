@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ChatImageAndName
+        <ChatImageAndNamePopup
             :show="props.isOpened && stage === 1"
             :submitButton="'next'"
             :title="'Create Group Chat'"
@@ -8,7 +8,7 @@
             @closePopup="closePopup"
         />
 
-        <ChatUsers
+        <ChatUsersPopup
             :show="props.isOpened && stage === 2"
             :addButton="'next'"
             :cancelButton="'back'"
@@ -17,7 +17,7 @@
             @cancel="prevStage"
         />
 
-        <ChatType
+        <ChatTypePopup
             :show="props.isOpened && stage === 3"
             :submitButton="'create'"
             :cancelButton="'back'"
@@ -79,7 +79,7 @@ const socketOn = () => {
             )
         }
         if (formData.value) {
-            const { data } = await useUplaod(payload.room_id, formData.value)
+            const { data } = await useUpload(payload.room_id, formData.value)
             if (data.value)
                 chats.value?.forEach((chat: GroupChat) => {
                     if (chat.chat_room_id === payload.room_id) chat.image = data.value?.file_url

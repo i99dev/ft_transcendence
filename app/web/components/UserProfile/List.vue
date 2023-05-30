@@ -71,7 +71,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
 
 const { user_info } = useUserInfo()
 const searchedUsers = ref('')

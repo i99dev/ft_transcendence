@@ -1,7 +1,7 @@
 <template>
     <!---- rank dropdown -->
     <div class="mt-4 w-full">
-        <MainPopover
+        <CommonMainPopover
             :styles="'-left-9 md:-left-6 bg-background_light w-40'"
             class="text-white flex justify-start mobile:justify-center"
         >
@@ -28,7 +28,7 @@
             <span class="block px-4 py-2 text-xs text-white transition duration-150 ease-in-out"
                 >Total Loses: {{ totaLoses }}</span
             >
-        </MainPopover>
+        </CommonMainPopover>
     </div>
 </template>
 

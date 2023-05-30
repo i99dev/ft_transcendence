@@ -228,7 +228,6 @@
 
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { ref, watch, onMounted } from 'vue'
 
 const { chatSocket } = useChatSocket()
 watch(chatSocket, async () => {

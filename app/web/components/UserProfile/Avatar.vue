@@ -60,5 +60,6 @@ const defaultImages = [
     'https://i1.ae/img/icons/13.png',
     'https://i1.ae/img/icons/14.png',
     'https://i1.ae/img/icons/20.png',
+    'https://icons.iconarchive.com/icons/crountch/one-piece-jolly-roger/256/Shanks-icon.png',
 ]
 </script>

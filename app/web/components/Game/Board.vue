@@ -26,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useSocket, useSound } from '~/composables/Game/useSocket'
 import { useGameRenderer } from '~/composables/Game/useGameRenderer'
 import { useGameAnnouncment } from '~/composables/Game/useAnnouncment'
 
@@ -41,8 +40,7 @@ const zooming = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, zoomToArena, reset } =
     useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner } = useSocket()
-const { showAnnouncment, announcmentMessage, resetAnnouncment } = useGameAnnouncment()
+const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner, isDeuce } = useGameSocketEvent()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
@@ -56,7 +54,7 @@ const playSound = (sound: string): void => {
     audio.play()
 }
 
-useSound(playSound)
+useGameSound(playSound)
 
 const keys: { [key: string]: boolean } = {
     ArrowUp: false,

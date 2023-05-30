@@ -10,7 +10,5 @@
 </template>
 
 <script setup lang="ts">
-import { useGameAnnouncment } from '~~/composables/Game/useAnnouncment'
-
-const { announcmentMessage } = useGameAnnouncment()
+const { isDeuce } = useGameSocketEvent()
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <MainPopup :show="props?.show" @closeMainPopup="closePopup()">
+    <CommonMainPopup :show="props?.show" @closeMainPopup="closePopup()">
         <form class="chat-form" @submit.prevent="">
             <DialogTitle
                 v-if="props?.title"
@@ -74,7 +74,7 @@
                 </button>
             </div>
         </form>
-    </MainPopup>
+    </CommonMainPopup>
 </template>
 
 <script lang="ts" setup>
