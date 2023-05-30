@@ -280,10 +280,13 @@ export const useChatView = () => {
 export const useDMUser = async (user_login: string) => {
     const openDM = (chat: GroupChat & DirectChat) => {
         const { setChatModalOpen } = useChat()
-        const { setChatView } = useChatView()
         const { setCurrentChat } = useCurrentChat()
+        const { setChatType } = useChatType()
+        const { setGroupChatSearching } = useGroupChatSearching()
+
+        setGroupChatSearching(false)
+        setChatType('DM')
         setChatModalOpen(true)
-        setChatView(true)
         setCurrentChat(chat)
     }
 
