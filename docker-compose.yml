@@ -8,7 +8,6 @@ services:
         build: ./app/web
 
         environment:
-            - NODE_ENV=${NODE_ENV}
             - CLIENT_ID=${CLIENT_ID}
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
@@ -106,9 +105,6 @@ services:
         container_name: ft_transcendence_nginx
 
         image: nginx:latest
-
-        environment:
-            - NODE_ENV=${NODE_ENV}
 
         ports:
             - 80:80
