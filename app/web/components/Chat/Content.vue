@@ -273,6 +273,7 @@ const getLightColor = () => {
 }
 
 const sendMessage = () => {
+    if (!newMessage.value || !newMessage.value.replace(/\s/g, '').length) return
     chatSocket.value?.emit(
         'add-message',
         JSON.stringify({ room_id: currentChat.value?.chat_room_id, message: newMessage.value }),
