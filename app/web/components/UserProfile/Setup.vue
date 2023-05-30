@@ -4,62 +4,35 @@
             <form class="chat-form" @submit.prevent="">
                 <div class="flex items-center">
                     <div class="file-upload">
-                        <input
-                            id="groupChatImage"
-                            type="file"
-                            ref="fileInput"
-                            @change="uploadeImage"
-                            style="display: none"
-                        />
-                        <div
-                            class="border-1 border-white smooth-transition hover:bg-primary rounded-full focus:outline-white"
-                            :class="{ 'p-2': !image }"
-                        >
-                            <svg
-                                v-if="!image"
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="stroke-2 stroke-white fill-none"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
+                        <input id="groupChatImage" type="file" ref="fileInput" @change="uploadeImage"
+                            style="display: none" />
+                        <div class="border-1 border-white smooth-transition hover:bg-primary rounded-full focus:outline-white"
+                            :class="{ 'p-2': !image }">
+                            <svg v-if="!image" xmlns="http://www.w3.org/2000/svg" class="stroke-2 stroke-white fill-none"
+                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <path
-                                    d="M12 20h-7a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v3.5"
-                                ></path>
+                                    d="M12 20h-7a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v3.5">
+                                </path>
                                 <path d="M16 19h6"></path>
                                 <path d="M19 16v6"></path>
                                 <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
                             </svg>
-                            <img
-                                v-else
-                                :src="image"
-                                class="rounded-full w-16 aspect-square object-cover"
-                            />
+                            <img v-else :src="image" class="rounded-full w-16 aspect-square object-cover" />
                         </div>
                     </div>
 
                     <div class="border-b border-secondary py-2 mx-5">
                         <input
                             class="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            id="groupChatName"
-                            type="text"
-                            :placeholder="user_info?.username"
-                            aria-label="Group Name"
-                            v-model="newUsername"
-                            @keyup.enter="submitProfile()"
-                            required
-                        />
+                            id="groupChatName" type="text" :placeholder="user_info?.username" aria-label="Group Name"
+                            v-model="newUsername" @keyup.enter="submitProfile()" required />
                     </div>
                 </div>
                 <div class="centered my-5">
                     <button
                         class="mx-4 flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
-                        type="button"
-                        @click="fileInput.click()"
-                    >
+                        type="button" @click="fileInput.click()">
                         upload
                     </button>
                 </div>
@@ -67,33 +40,22 @@
                     <Disclosure v-slot="{ open }">
                         <div class="w-full centered">
                             <DisclosureButton
-                                class="flex w-1/2 justify-between border-b border-white px-4 py-2 text-left text-sm font-medium text-white rounded-t-xl smooth-transition hover:bg-primary focus:outline-none focus-visible:ring focus-visible:ring-secondary focus-visible:ring-opacity-75 capitalize"
-                            >
+                                class="flex w-1/2 justify-between border-b border-white px-4 py-2 text-left text-sm font-medium text-white rounded-t-xl smooth-transition hover:bg-primary focus:outline-none focus-visible:ring focus-visible:ring-secondary focus-visible:ring-opacity-75 capitalize">
                                 <span class="justify-self-center">custom</span>
-                                <ChevronDownIcon
-                                    :class="open ? 'rotate-180 transform' : ''"
-                                    class="h-5 w-5 smooth-transition"
-                                />
+                                <ChevronDownIcon :class="open ? 'rotate-180 transform' : ''"
+                                    class="h-5 w-5 smooth-transition" />
                             </DisclosureButton>
                         </div>
                         <DisclosurePanel class="px-4 pt-4 pb-2 text-sm text-gray-500">
                             <div class="grid grid-cols-4 gap-4 p-4">
-                                <button
-                                    v-for="(image, index) in defaultImages"
-                                    :key="index"
-                                    type="button"
-                                    class="rounded-full hover:bg-background_light hover:border smooth-transition"
-                                >
-                                    <img
-                                        class="w-full aspect-square items-center justify-center object-cover rounded-full hover:shadow-lg"
-                                        :src="image"
-                                        v-click-effect="
+                                <button v-for="(image, index) in defaultImages" :key="index" type="button"
+                                    class="rounded-full hover:bg-background_light hover:border smooth-transition">
+                                    <img class="w-full aspect-square items-center justify-center object-cover rounded-full hover:shadow-lg"
+                                        :src="image" @click="
                                             () => {
                                                 useDefaultImage(image)
                                             }
-                                        "
-                                        alt="icon"
-                                    />
+                                        " alt="icon" />
                                 </button>
                             </div>
                         </DisclosurePanel>
@@ -102,13 +64,11 @@
                 <div class="flex justify-end mt-4">
                     <button
                         class="flex-shrink-0 bg-secondary hover:bg-primary smooth-transition border-white hover:border-white text-white py-1 px-2 rounded capitalize focus:outline-secondary hover:focus:outline-primary"
-                        type="button"
-                        v-click-effect="
+                        type="button" @click="
                             () => {
                                 submitProfile()
                             }
-                        "
-                    >
+                        ">
                         {{ props.submitButton || 'done' }}
                     </button>
                 </div>

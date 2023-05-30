@@ -4,36 +4,25 @@
 		the match history component
 		-->
         <div v-if="games.length > 0">
-            <div
-                v-for="(game, index) in games"
-                :key="game.id"
+            <div v-for="(game, index) in games" :key="game.id"
                 class="w-full rounded-2xl m-2 bg-trasparent shadow-sm p-2 text-white border-1 smooth-transition hover:bg-secondary"
                 :class="{
                     'bg-background': !(index % 2),
                     'bg-background_light': index % 2,
-                }"
-            >
+                }">
                 <div v-if="!isSameLogin(game)">
                     <div class="grid grid-cols-3 w-full">
                         <div class="centered justify-self-start">
-                            <img
-                                v-if="user.login == user_info.login"
-                                :src="user_info.image"
-                                class="w-8 h-8 rounded-full object-cover"
-                            />
-                            <img
-                                v-else
-                                :src="getMe(game)?.user.image"
-                                class="w-8 h-8 rounded-full object-cover"
-                            />
+                            <img v-if="user.login == user_info.login" :src="user_info.image"
+                                class="w-8 h-8 rounded-full object-cover" />
+                            <img v-else :src="getMe(game)?.user.image" class="w-8 h-8 rounded-full object-cover" />
                             <!-- name and result -->
                             <div
-                                class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20"
-                            >
+                                class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20">
                                 {{
                                     user.login === user_info.login
-                                        ? user_info.username
-                                        : getMe(game)?.user.username
+                                    ? user_info.username
+                                    : getMe(game)?.user.username
                                 }}
                             </div>
                         </div>
@@ -46,14 +35,10 @@
                         <div class="centered justify-self-end">
                             <!-- name and result -->
                             <div
-                                class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20 text-end"
-                            >
+                                class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20 text-end">
                                 {{ getOpponent(game)?.user.username }}
                             </div>
-                            <img
-                                :src="getOpponent(game)?.user.image"
-                                class="w-8 h-8 rounded-full object-cover"
-                            />
+                            <img :src="getOpponent(game)?.user.image" class="w-8 h-8 rounded-full object-cover" />
                         </div>
                     </div>
                 </div>
@@ -65,86 +50,57 @@
             </div>
         </div>
 
-        <MainPopover
-            :styles="'-left-24 bottom-full bg-background_light w-48'"
-            class="text-white m-2 centered absolute my-3 sm:my-4 w-full"
-        >
+        <MainPopover :styles="'-left-24 bottom-full bg-background_light w-48'"
+            class="text-white m-2 centered absolute my-3 sm:my-4 w-full">
             <template #button>
-                <button
-                v-click-effect="handleDropdown"
-                    class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none bg-background_light"
-                >
+                <button @click="handleDropdown"
+                    class="centered p-2 rounded-full w-full text-white hover:bg-primary smooth-transition focus:outline-none bg-background_light">
                     <ChevronUpIcon class="w-4 h-4" />
                 </button>
             </template>
             <div class="m-2">
-                <button
-                    @click="handleFilteration('all')"
+                <button @click="handleFilteration('all')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('all'),
                         ' hover:bg-primary': !isFilter.get('all'),
-                    }"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="menu-item-1"
-                >
+                    }" role="menuitem" tabindex="-1" id="menu-item-1">
                     latest
                 </button>
 
-                <button
-                    @click="handleFilteration('asc')"
+                <button @click="handleFilteration('asc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('asc'),
                         'hover:bg-primary': !isFilter.get('asc'),
-                    }"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="menu-item-1"
-                >
+                    }" role="menuitem" tabindex="-1" id="menu-item-1">
                     score: low to high
                 </button>
 
-                <button
-                    @click="handleFilteration('desc')"
+                <button @click="handleFilteration('desc')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('desc'),
                         'hover:bg-primary': !isFilter.get('desc'),
-                    }"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="menu-item-1"
-                >
+                    }" role="menuitem" tabindex="-1" id="menu-item-1">
                     score: high to low
                 </button>
 
-                <button
-                    @click="handleFilteration('win')"
+                <button @click="handleFilteration('win')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('win'),
                         'hover:bg-primary': !isFilter.get('win'),
-                    }"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="menu-item-1"
-                >
+                    }" role="menuitem" tabindex="-1" id="menu-item-1">
                     result: victories only
                 </button>
 
-                <button
-                    @click="handleFilteration('lose')"
+                <button @click="handleFilteration('lose')"
                     class="w-full text-left block px-4 py-2 text-sm focus:outline-none smooth-transition rounded-xl whitespace-nowrap my-2 capitalize"
                     :class="{
                         'font-medium focus:bg-tertiary': isFilter.get('lose'),
                         'hover:bg-primary': !isFilter.get('lose'),
-                    }"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="menu-item-1"
-                >
+                    }" role="menuitem" tabindex="-1" id="menu-item-1">
                     result: defeats only
                 </button>
             </div>

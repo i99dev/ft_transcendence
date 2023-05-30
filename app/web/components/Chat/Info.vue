@@ -38,7 +38,7 @@
                                     >
                                         <div class="border-b border-secondary mb-2 centered">
                                             <button
-                                            v-click-effect="
+                                            @click="
                                                     () => goToUserProfile(participant.user.username)
                                                 "
                                                 class="p-2 text-white font-semibold flex justify-center items-center hover:bg-primary mb-2 rounded-xl smooth-transition"
@@ -151,7 +151,7 @@
                     <button
                         v-if="isAdmin()"
                         class="border rounded-full hover:bg-primary ease-in-out transition duration-200 p-2 mx-4"
-                        v-click-effect="
+                        @click="
                             () => {
                                 isAddUserOpened = true
                             }
@@ -175,7 +175,7 @@
                     </button>
                     <button
                         class="border rounded-full hover:bg-secondary ease-in-out transition duration-200 p-2 mx-4"
-                        v-click-effect="exitChat"
+                        @click="exitChat"
                     >
                         <ArrowRightOnRectangleIcon class="w-6 h-6" />
                     </button>

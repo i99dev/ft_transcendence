@@ -46,10 +46,7 @@ const IsProfile = ref(false)
 
 const props = defineProps(['username'])
 
-<<<<<<< HEAD
 const { play, isPaused } = useSound()
 
-=======
 logSocketExceptions()
->>>>>>> origin/dev
 </script>

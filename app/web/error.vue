@@ -15,7 +15,7 @@
                     {{ error.statusMessage }}
                 </h2>
                 <button
-                    v-click-effect="handleError"
+                    @click="handleError"
                     class="rounded-md capitalize bg-primary px-3 py-2 m-2 text-xl font-semibold text-white shadow-sm shadow-white hover:scale-125 smooth-transition"
                 >
                     home
