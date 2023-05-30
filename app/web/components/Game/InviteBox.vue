@@ -64,7 +64,7 @@
                                 <button
                                     :class="mode === 'classic' ? 'bg-opacity-100' : 'bg-opacity-75'"
                                     class="w-full py-2 px-4 rounded-md text-white bg-primary hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    @click=" selectMode('classic')"
+                                    @click="selectMode('classic')"
                                 >
                                     Classic Pong
                                 </button>
@@ -73,7 +73,7 @@
                                 <button
                                     :class="mode === 'custom' ? 'bg-opacity-100' : 'bg-opacity-75'"
                                     class="w-full py-2 px-4 rounded-md text-white bg-primary hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                                    @click=" selectMode('custom')"
+                                    @click="selectMode('custom')"
                                 >
                                     Custom Pong
                                 </button>

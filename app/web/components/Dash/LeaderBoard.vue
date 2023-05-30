@@ -6,7 +6,7 @@
             v-for="(player, index) in players"
             :title="getLadderRank(player.ladder)"
             :key="index"
-            @click=" navigateTo(`/users/${player.username}`)"
+            @click="navigateTo(`/users/${player.username}`)"
             class="w-full h-12 rounded-2xl m-2 shadow-sm p-2 text-white border-1 smooth-transition hover:scale-105 hover:bg-tertiary"
             :class="{
                 'bg-background': !(index % 2),
@@ -14,18 +14,18 @@
             }"
         >
             <div
-                class="min-w-full h-full text-left text-sm font-light text-white grid grid-cols-3 mobile:grid-cols-2 place-content-center"
+                class="min-w-full h-full text-left text-xs sm:text-sm font-light text-white grid grid-cols-3 place-content-center"
             >
                 <div class="centered lg:justify-start">
                     <div
-                        class="whitespace-nowrap font-medium p-1 m-2 mr-4 h-8 aspect-square bg-tertiary rounded-xl text-center mobile:mr-2"
+                        class="whitespace-nowrap font-medium centered p-1 m-2 sm:mr-4 h-6 sm:h-8 aspect-square bg-tertiary rounded-md sm:rounded-xl mr-2"
                     >
                         {{ player.rankNum }}
                     </div>
-                    <img :src="player.image" class="h-6 aspect-square rounded-full object-cover" />
+                    <img :src="player.image" class="h-6 aspect-square rounded-full object-cover mr-4" />
                     <!-- name and result -->
                     <div
-                        class="text-xs m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20"
+                        class="m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20"
                     >
                         {{ player.username }}
                     </div>
@@ -36,10 +36,10 @@
                 <div
                     class="whitespace-nowrap mx-4 align-middle lowercase flex items-center justify-end"
                 >
-                    <span class="font-bold text-md mr-1">
+                    <span class="font-bold mr-1">
                         {{ player.TotalMatches }}
                     </span>
-                    <span class="text-sm"> matches </span>
+                    <span> matches </span>
                 </div>
             </div>
         </button>

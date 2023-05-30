@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+import { useDublicateModal } from '@/composables/Game/useSocket'
+const { connectSockets, handleSocketDisconnection, disconnectSockets } =
     useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
@@ -54,6 +55,5 @@ onMounted(async () => {
     if (myblockList.value) setBlockList(myblockList.value)
 
     handleSocketDisconnection()
-
 })
 </script>

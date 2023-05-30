@@ -18,7 +18,7 @@
                     {{ getAnnounceContent(ann) }}
                 </span>
                 <button
-                    @click=" closeAcievPopUp(index)"
+                    @click="closeAcievPopUp(index)"
                     class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none"
                 >
                     {{ getButtonName(ann) }}
