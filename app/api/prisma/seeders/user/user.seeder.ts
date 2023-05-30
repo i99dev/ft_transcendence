@@ -21,7 +21,7 @@ export class UserSeeder {
                     image: 'https://cdn.intra.42.fr/users/9dd4ce5214846a4cf919a6290e7db56c/bnaji.jpg',
                     xp: 2000,
                     ladder: 3,
-                    wr: 0.5,
+                    wr: 0,
                 },
             }),
             await this.prisma.user.upsert({
@@ -37,7 +37,7 @@ export class UserSeeder {
                     image: 'https://cdn.intra.42.fr/users/f63f7f3080ae66de20d2b71c03559aaf/isaad.jpg',
                     xp: 700,
                     ladder: 4,
-                    wr: 0,
+                    wr: 0.33,
                 },
             }),
             await this.prisma.user.upsert({
