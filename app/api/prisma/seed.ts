@@ -16,12 +16,12 @@ const prisma = new PrismaClient()
 
 async function main() {
     // Create Users
-    if (`${process.env.NODE_ENV}` == 'production') {
+    if (`${process.env.MODE}` == 'production') {
         await new PowerUpSeeder().seedPowerUps()
 
         await new AchievementSeeder().seedAchievements()
     }
-    else if (`${process.env.NODE_ENV}` == 'development') {
+    else if (`${process.env.MODE}` == 'development') {
 
         await new UserSeeder().seedUsers()
         // Assign Friends
