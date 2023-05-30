@@ -10,7 +10,10 @@
                 </h1>
                 <div class="after-game-options flex justify-center space-x-4">
                     <button
-                        @click="navigateTo('/')"
+                        @click="() => {
+                            navigateTo('/')
+                            if (isPaused('login')) play('login')
+                        }"
                         class="rounded-md shadow-slate-50 border border-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 text-white transation-all duration-300 hover:scale-105 active:scale-95 text-lg px-4 py-1.5"
                     >
                         Home
@@ -28,6 +31,7 @@
 </template>
 <script setup>
 const { gameResultMessage } = defineProps(['gameResultMessage'])
+const { paly, pause, isPaused } = useSound()
 </script>
 <style>
 .game-result {

@@ -106,6 +106,8 @@ const { showDublicateModal, isClientConnected } = useDublicateModal()
 
 const emit = defineEmits(['gameSelected', 'leaveQueue'])
 
+const { play, isPaused, pause } = useSound()
+
 const selectGame = (game: string) => {
     if (!isClientConnected()) {
         showDublicateModal.value = true
@@ -134,6 +136,7 @@ const checkPowerupLimit = () => {
 
 const goHome = () => {
     navigateTo('/')
+    if (isPaused('login')) play('login')
 }
 
 const leaveQueue = () => {

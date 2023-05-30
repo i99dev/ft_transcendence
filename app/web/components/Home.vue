@@ -15,7 +15,11 @@
                 </div>
                 <button
                     v-if="props?.username === user_info?.username"
-                    @click="navigateTo('/play')"
+                    @click="() => {
+                        navigateTo('/play')
+                        if (isPaused('play')) play('play')
+                        pause('login')
+                    }"
                     class="h-10 w-30 hover:scale-125 smooth-transition text-white bg-primary hover:bg-access font-medium rounded-lg text-xl px-5 py-2.5 text-center mr-5 inline-flex items-center"
                 >
                     Play
@@ -46,7 +50,7 @@ const IsProfile = ref(false)
 
 const props = defineProps(['username'])
 
-const { play, isPaused } = useSound()
+const { play, isPaused, pause } = useSound()
 
 logSocketExceptions()
 </script>
