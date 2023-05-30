@@ -51,6 +51,7 @@ export async function useSubmitConfirmationCode(user: string, code: string): Pro
 }
 
 export const useLogout = async () => {
+    console.log('logout')
     const { disconnectSockets } = useSockets()
     const { data, error: errorRef } = await useFetch('auth/logout', {
         baseURL: useRuntimeConfig().API_URL,
@@ -83,17 +84,17 @@ export const useAuth = async (route: any) => {
     return data.value?.access_token
         ? navigateTo('/')
         : data.value?.two_fac_auth
-        ? navigateTo({
-              path: '/login/confirm',
-              query: {
-                  login: data.value?.login,
-                  two_fac_auth: data.value?.two_fac_auth,
-                  type: data.value?.type,
-                  code_length: data.value?.code_length,
-                  expired_at: data.value?.expired_at,
-              },
-          })
-        : await useIsAuth()
+            ? navigateTo({
+                path: '/login/confirm',
+                query: {
+                    login: data.value?.login,
+                    two_fac_auth: data.value?.two_fac_auth,
+                    type: data.value?.type,
+                    code_length: data.value?.code_length,
+                    expired_at: data.value?.expired_at,
+                },
+            })
+            : await useIsAuth()
 }
 
 export const useIsFirstTime = () => {

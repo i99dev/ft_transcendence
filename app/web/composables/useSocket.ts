@@ -77,7 +77,6 @@ export const useFriendSocket = () => {
 }
 
 export const useSockets = () => {
-    const toast = useToast()
     const { chatSocket, connectChatSocket, disconnectChatSocket, reconnectChatSocket } =
         useChatSocket()
     const { gameSocket, connectGameSocket, disconnectGameSocket, reconnectGameSocket } =
@@ -149,7 +148,7 @@ export const useSockets = () => {
         })
     }
 
-    
+
 
     return {
         connectSockets,
@@ -162,7 +161,7 @@ export const useSockets = () => {
     }
 }
 
-export const areSocketsConnected = () : boolean | undefined => {
+export const areSocketsConnected = (): boolean | undefined => {
     const { chatSocket } = useChatSocket()
     const { gameSocket } = useGameSocket()
     const { friendSocket } = useFriendSocket()
