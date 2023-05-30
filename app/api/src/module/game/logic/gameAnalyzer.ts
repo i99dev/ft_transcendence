@@ -217,9 +217,9 @@ export class gameAnalyzer {
 
     async checkNoSweatAchievement(login: string): Promise<boolean> {
         const matches = await this.matchService.getPlayerMatchHistory(1, login)
-        const lastMatch = matches[0]
+        const lastMatch = matches ? matches[0] : null
 
-        if (lastMatch.opponents[0].user && lastMatch.opponents[1].user) {
+        if (lastMatch && lastMatch.opponents[0].user && lastMatch.opponents[1].user) {
             if (
                 (lastMatch.opponents[0].user.login == login &&
                     lastMatch.opponents[0].IsWinner &&
