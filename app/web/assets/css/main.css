@@ -33,6 +33,12 @@
         font-display: swap;
     }
 
+    @font-face {
+        font-family: FunGames;
+        src: url('~/assets/fonts/Fun Games.ttf');
+        font-display: swap;
+    }
+
     body {
         @apply bg-background_dark text-[primary];
     }
@@ -42,6 +48,7 @@
     .centered {
         @apply flex justify-center items-center;
     }
+
     .smooth-transition {
         @apply transition ease-in-out duration-300;
     }

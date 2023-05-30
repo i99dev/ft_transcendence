@@ -1,33 +1,21 @@
 <template>
     <div class="no-context-menu">
-        <GameStatusBar
-            v-if="showStatusBar"
-            @ExitBtn="$emit('ExitBtn')"
-            :cooldown11="pu1Cooldowns[0]"
-            :cooldown12="pu1Cooldowns[1]"
-            :cooldown21="pu2Cooldowns[0]"
-            :cooldown22="pu2Cooldowns[1]"
-            @powerup="activatePowerUp($event)"
-        />
+        <GameStatusBar v-if="showStatusBar" @ExitBtn="$emit('ExitBtn')" :cooldown11="pu1Cooldowns[0]"
+            :cooldown12="pu1Cooldowns[1]" :cooldown21="pu2Cooldowns[0]" :cooldown22="pu2Cooldowns[1]"
+            @powerup="activatePowerUp($event)" />
         <GameReadyModal class="fixed z-20" v-if="showReadyModal" />
-        <GameMobileControls
-            v-if="isMobile"
-            class="z-19"
-            @touchStart="handleTouchStart"
-            @touchEnd="handleTouchEnd"
-        />
-        <GameAnnouncments class="z-20" />
-        <canvas
-            ref="canvasRef"
-            class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
-            style="width: 100%; height: 100%"
-        ></canvas>
+        <GameMobileControls v-if="isMobile" class="z-19" @touchStart="handleTouchStart" @touchEnd="handleTouchEnd" />
+        <GameAnnouncments v-if="showAnnouncment" class="z-20" />
+        <canvas ref="canvasRef" class="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+            style="width: 100%; height: 100%"></canvas>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { useSocket, useSound } from '~/composables/Game/useSocket'
 import { useGameRenderer } from '~/composables/Game/useGameRenderer'
+import { useGameAnnouncment } from '~/composables/Game/useAnnouncment'
+
 
 let canvasRef = ref<HTMLCanvasElement>()
 let gameSetup = useState<SetupDto>('gameSetup')
@@ -36,10 +24,12 @@ const pu1Cooldowns = ref([false, false])
 const pu2Cooldowns = ref([false, false])
 const showStatusBar = ref(false)
 const showReadyModal = ref(false)
+const zooming = ref(false)
 
-const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, reset } =
+const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, zoomToArena , reset } =
     useGameRenderer()
-const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner, isDeuce } = useSocket()
+const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner } = useSocket()
+const { showAnnouncment, announcmentMessage, resetAnnouncment } = useGameAnnouncment()
 
 const emit = defineEmits(['ReadyGame', 'GameOver', 'ExitBtn'])
 defineExpose({ setup, giveUp, destroy })
