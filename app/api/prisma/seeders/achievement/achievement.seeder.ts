@@ -54,16 +54,6 @@ export class AchievementSeeder {
                 },
             }),
             await this.prisma.achievement.upsert({
-                where: { type: 'Table Ninja' },
-                update: {},
-                create: {
-                    type: 'Table Ninja',
-                    description:
-                        'Hitting a certain number of shots that bounce off multiple edges of the table',
-                    image: `https://gamefresco1.s3.amazonaws.com/2022/11/UI_Skill_Icon_Beam.png`,
-                },
-            }),
-            await this.prisma.achievement.upsert({
                 where: { type: 'Ball Whisperer' },
                 update: {},
                 create: {
@@ -91,7 +81,7 @@ export class AchievementSeeder {
                 where: { login: 'isaad' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'Ball Whisperer' }],
+                        connect: [{ type: 'Ball Whisperer' }, { type: 'First Blood' }],
                     },
                 },
             }),
@@ -99,11 +89,7 @@ export class AchievementSeeder {
                 where: { login: 'aaljaber' },
                 data: {
                     achievements: {
-                        connect: [
-                            { type: 'Table Ninja' },
-                            { type: 'Paddle Samurai' },
-                            { type: 'No Sweat' },
-                        ],
+                        connect: [{ type: 'Paddle Samurai' }, { type: 'First Blood' }],
                     },
                 },
             }),
@@ -111,7 +97,7 @@ export class AchievementSeeder {
                 where: { login: 'mal-guna' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'Table Ninja' }, { type: 'Paddle Samurai' }],
+                        connect: [{ type: 'Paddle Samurai' }, { type: 'First Blood' }],
                     },
                 },
             }),
@@ -119,7 +105,7 @@ export class AchievementSeeder {
                 where: { login: 'oal-tena' },
                 data: {
                     achievements: {
-                        connect: [{ type: 'No Sweat' }],
+                        connect: [{ type: 'No Sweat' }, { type: 'First Blood' }],
                     },
                 },
             }),
