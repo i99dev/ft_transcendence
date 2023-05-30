@@ -6,8 +6,8 @@
             <Header />
             <ChatNavBar />
             <FriendsListNav />
-            <GameInviteBox v-if="inviteModal.open" class="z-21" />
-            <GameDublicateWarningModal v-if="showDublicateModal" class="z-20" />
+            <GameInviteBox v-if="inviteModal.open" class="z-20" />
+            <DublicateWarningModal v-if="showDublicateModal" class="z-30" />
             <slot />
         </div>
         <!-- loading -->
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { useDublicateModal } from '@/composables/Game/useSocket'
-const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+const { connectSockets, handleSocketDisconnection, disconnectSockets } =
     useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
@@ -55,6 +55,5 @@ onMounted(async () => {
     if (myblockList.value) setBlockList(myblockList.value)
 
     handleSocketDisconnection()
-
 })
 </script>

@@ -278,7 +278,6 @@ export const useChatView = () => {
 }
 
 export const useDMUser = async (user_login: string) => {
-    const toasst = useToast()
     const openDM = (chat: GroupChat & DirectChat) => {
         const { setChatModalOpen } = useChat()
         const { setChatView } = useChatView()
@@ -296,13 +295,15 @@ export const useDMUser = async (user_login: string) => {
         chatSocket.value?.on('new-direct-list', async (payload: any) => {
             const { data } = await useDirectChatWith(user_login)
             if (data.value && data.value.length !== 0) openDM(data.value[0])
-            else
+            else {
+                const toast = useToast()
                 toast.add({
                     severity: 'error',
                     summary: 'Opps!',
                     detail: `error: can't DM ${user_login}`,
                     life: 3000,
                 })
+            }
         })
     }
 }

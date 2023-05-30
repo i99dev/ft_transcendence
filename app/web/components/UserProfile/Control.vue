@@ -5,7 +5,7 @@
             class="grid grid-cols-4 lg:grid-cols-6 gap-1 lg:gap-2"
         >
             <button
-                v-click-effect="openChatModel"
+                @click="openChatModel"
                 title="Chat"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square col-span-2 place-self-end lg:col-span-1 lg:place-self-start"
             >
@@ -22,7 +22,7 @@
                 </svg>
             </button>
             <button
-                v-click-effect="openFriendsModel"
+                @click="openFriendsModel"
                 title="Friends"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square col-span-2 lg:col-span-1"
             >
@@ -48,7 +48,7 @@
                 </div>
             </button>
             <button
-                v-click-effect="useLogout"
+                @click="useLogout"
                 title="Logout"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -65,7 +65,7 @@
                 </svg>
             </button>
             <button
-                v-click-effect="updateTwoFacAuth"
+                @click="updateTwoFacAuth"
                 :title="user_info.two_fac_auth ? 'Disable 2FA' : 'Enable 2FA'"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -98,7 +98,7 @@
                 </svg>
             </button>
             <button
-                v-click-effect="() => navigateTo('/help')"
+                @click="navigateTo('/help')"
                 title="Help"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -116,7 +116,7 @@
                 </svg>
             </button>
             <button
-                v-click-effect="handleMuteSound"
+                @click="handleMuteSound"
                 :title="muteSound ? 'Mute' : 'Unmute'"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -150,14 +150,14 @@
         </div>
         <div v-else-if="!props.isMe" class="flex space-x-6">
             <button
-                v-click-effect="() => useDMUser(props.login)"
+                @click="handleDMUser"
                 :title="`DM '${props.username}'`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
                 <ChatBubbleOvalLeftEllipsisIcon class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                v-click-effect="() => addFriend(props.login)"
+                @click="handleAddFriend"
                 :title="`Add '${props.login}' to friends`"
                 class="p-2 hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2"
             >
@@ -165,7 +165,7 @@
                 <UserMinusIcon v-else class="h-8 w-8" aria-hidden="true" />
             </button>
             <button
-                v-click-effect="handleUserBlock"
+                @click="handleUserBlock"
                 class="p-2 hover hover:bg-primary transition ease-in-out duration-500 text-white rounded-full relative mb-1 focus:outline-indigo-400 focus:-outline-offset-2 capitalize"
                 :class="{
                     'bg-secondary': isBlocked(user),
@@ -179,6 +179,7 @@
 
 <script setup lang="ts">
 import { useFriends } from '../../composables/Friends/useFriends'
+import { useDublicateModal } from '~~/composables/Game/useSocket'
 import {
     UserPlusIcon,
     UserMinusIcon,
@@ -205,7 +206,9 @@ const props = defineProps({
         default: false,
     },
 })
-
+const { chatSocket } = useChatSocket()
+const { friendSocket } = useFriendSocket()
+const { showDublicateModal } = useDublicateModal()
 const { user_info, setUserTwoFacAuth } = useUserInfo()
 const { chat_info, setChatModalOpen } = useChat()
 const { friends_info, setFriendsModalOpen, addFriend, notifications } = await useFriends()
@@ -215,10 +218,14 @@ const { play, pause, isPaused } = useSound()
 const muteSound = ref(!isPaused('login') as boolean)
 
 useListen('soundTrack', (status: string) => {
-    if (status) muteSound.value = false
+    if (status) muteSound.value = true
 })
 
 function openChatModel() {
+    if (chatSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
     if (chat_info.value?.chatModalOpen) {
         setChatModalOpen(false)
     } else {
@@ -236,6 +243,22 @@ function goToHelp() {
     navigateTo('/help')
 }
 
+function handleDMUser() {
+    if (chatSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
+    useDMUser(props?.login)
+}
+
+function handleAddFriend() {
+    if (friendSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
+    addFriend(props?.login)
+}
+
 function handleUserBlock() {
     if (isBlocked(user)) {
         removeUserFromBlockList(user)
@@ -245,6 +268,10 @@ function handleUserBlock() {
 }
 
 function openFriendsModel() {
+    if (friendSocket.value?.disconnected) {
+        showDublicateModal.value = true
+        return
+    }
     if (friends_info.value?.friendsModalOpen) {
         setFriendsModalOpen(false)
     } else {

@@ -2,7 +2,7 @@
     <div>
         <button
             class="cybr-btn text-white before:bg-primary group hover:before:opacity-80 before:border-r-4 before:border-r-tertiary text-4xl font-[CyberGlitch]"
-            v-click-effect="clickButton"
+            @click="clickButton"
         >
             {{ buttonName }}
             <span aria-hidden class=""></span>

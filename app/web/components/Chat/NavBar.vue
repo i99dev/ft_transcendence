@@ -10,7 +10,7 @@
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                v-click-effect="() => setChatModalOpen(false)"
+                                @click="setChatModalOpen(false)"
                             >
                                 <span class="sr-only">Close panel</span>
                                 <XMarkIcon class="h-6 w-6" aria-hidden="true" />
