@@ -27,7 +27,7 @@ const showReadyModal = ref(false)
 const zooming = ref(false)
 
 const { init_game, updatePlayer, updateBall, rescaleGameData, resetCamera, zoomToArena , reset } =
-    useGameRenderer()
+useGameRenderer()
 const { socket, emitStartGame, setupSocketHandlers, resetSocket, gameWinner } = useSocket()
 const { showAnnouncment, announcmentMessage, resetAnnouncment } = useGameAnnouncment()
 
@@ -59,6 +59,8 @@ onUnmounted(() => {
     giveUp()
     clearEvents()
     reset()
+    zooming.value = false
+    resetAnnouncment()
 })
 
 const checkWinner = () => {
@@ -140,6 +142,22 @@ watch(gameData, (newVal, oldVal) => {
     showStatusBar.value = true
     if (newVal) {
         showReadyModal.value = false
+        if (gameData.value?.countDown > 0) {
+            if(!zooming.value)
+            {
+                zoomToArena()
+                zooming.value = true
+            }
+            showAnnouncment.value = true
+            announcmentMessage.value = (Math.floor(gameData.value?.countDown)+1).toString()
+            
+            return
+        }
+        if(zooming.value)
+        {
+            showAnnouncment.value = false
+            zooming.value = false
+        }
         updatePaddleDirection()
         rescaleGameData(newVal)
         updatePlayer(gameData.value?.players)

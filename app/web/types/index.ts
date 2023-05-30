@@ -40,6 +40,7 @@ declare global {
         players: PlayerDto[]
         ball: BallDto
         time: number
+        countDown: number
     }
 
     interface SetupDto {

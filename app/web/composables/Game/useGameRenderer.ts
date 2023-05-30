@@ -5,6 +5,7 @@ import * as GAME from '~/constants/'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+import { Tween, Easing } from '@tweenjs/tween.js'
 
 export function useGameRenderer() {
     const gameSetup = useState<SetupDto>('gameSetup')
@@ -19,7 +20,8 @@ export function useGameRenderer() {
     wallsLayer.set(1)
     let bloomPass: UnrealBloomPass
     let composer: EffectComposer
-
+    let rotateTween: Tween<{ y:number }> | null = null
+    let zoomTween: Tween<{ zoom: number }> | null = null
     const reset = () => {
         if (gameGroup) {
             gameGroup.children.forEach(child => {
@@ -102,6 +104,8 @@ export function useGameRenderer() {
         )
         camera.position.set(0, 0, 15)
         camera.layers.enable(1)
+        camera.zoom = 0.01
+        camera.updateProjectionMatrix()
     }
 
     const createGameObjects = async () => {
@@ -153,6 +157,7 @@ export function useGameRenderer() {
         sphere = createSphere(sphereRadius, spherePosition, 0xffffff, 0xffffff, 0.5)
         // addPointLightToObject(sphere, new THREE.Vector3(0, 0, 1.5), 0xffffff, 4, 4);
         gameGroup.add(sphere)
+        gameGroup.rotation.x = Math.PI
 
         /* ------------------------------- */
 
@@ -259,6 +264,7 @@ export function useGameRenderer() {
                 })
 
                 scene.add(gltf.scene)
+                gameGroup.add(gltf.scene)
             },
             undefined,
             function (error) {
@@ -285,9 +291,24 @@ export function useGameRenderer() {
 
     const animate = () => {
         requestAnimationFrame(animate)
+        zoomTween?.update()
+        rotateTween?.update()
         if (!isMobile.value) controls.update()
         composer.render()
         // renderer.render(scene, camera)
+    }
+
+    const zoomToArena = () => {
+        if (!camera) return
+        rotateTween = new Tween(gameGroup.rotation)
+            .to({ x: 0 }, 2500)
+            .onUpdate(() => { camera.updateProjectionMatrix() })
+            .start();
+        zoomTween = new Tween(camera)
+            .to({ zoom: 1 }, 2500)
+            .onUpdate(() => { camera.updateProjectionMatrix() })
+            .start();
+
     }
 
     const rescaleGameData = (game: gameStatusDto) => {
@@ -490,6 +511,7 @@ export function useGameRenderer() {
         updateBall,
         rescaleGameData,
         resetCamera,
+        zoomToArena,
         reset,
     }
 }
