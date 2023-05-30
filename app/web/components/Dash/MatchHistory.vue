@@ -67,7 +67,7 @@
 
         <MainPopover
             :styles="'-left-24 bottom-full bg-background_light w-48'"
-            class="text-white m-2 centered absolute my-4"
+            class="text-white m-2 centered absolute my-3 sm:my-4 w-full"
         >
             <template #button>
                 <button
