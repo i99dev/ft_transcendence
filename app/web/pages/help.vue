@@ -147,11 +147,8 @@ const gameInfo = computed(() => {
     return [
         {
             title: 'Game Modes',
-            subtitle: 'There are two game modes available:',
-            description: [
-                'This game mode activates power-ups during the game, enhancing the gameplay experience by introducing special abilities or advantages for the players.',
-                'Classic: Play the game without any power-ups.',
-            ],
+            subtitle: 'Two game modes are available:',
+            description: ['This game mode activates power-ups during the game, enhancing the gameplay experience by introducing special abilities or advantages for the players.', 'Classic: Play the game without any power-ups.']
         },
         {
             title: 'Players',
@@ -191,8 +188,13 @@ const gameInfo = computed(() => {
                 ' The one you can get after the game.',
             ],
         },
-    ]
-})
+        {
+            title :'leaderboard',
+            subtitle: 'Players are ranked by both XP and Win Rate:',
+            description: [`XP: calculated by taking into account both wins and losses, and the specific amount is determined based on the player's rank.`, 'Win Rate: Calculated by dividing the total number of wins by the total number of matches played.']
+        },
+    ];
+});
 
 const ranksInfo = [
     {

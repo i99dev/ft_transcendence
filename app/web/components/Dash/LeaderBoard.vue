@@ -88,7 +88,7 @@ const getLB = async () => {
             })
         }
     }
-    if (data.value) lbPlayers.value = playersArray.sort((a, b) => b.TotalMatches - a.TotalMatches)
+    lbPlayers.value = playersArray
 }
 
 const getLadderRank = (ladder: number) => {
