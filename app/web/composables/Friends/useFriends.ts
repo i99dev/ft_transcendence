@@ -1,4 +1,4 @@
-import { useToast } from "primevue/usetoast"
+import { useToast } from 'primevue/usetoast'
 
 export const useFriends = async () => {
     const order = ['ONLINE', 'INQUEUE', 'INGAME', 'OFFLINE']

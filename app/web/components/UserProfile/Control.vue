@@ -98,7 +98,7 @@
                 </svg>
             </button>
             <button
-                @click=" navigateTo('/help')"
+                @click="navigateTo('/help')"
                 title="Help"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >

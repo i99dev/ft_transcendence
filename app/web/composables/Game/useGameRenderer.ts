@@ -20,7 +20,7 @@ export function useGameRenderer() {
     wallsLayer.set(1)
     let bloomPass: UnrealBloomPass
     let composer: EffectComposer
-    let rotateTween: Tween<{ y:number }> | null = null
+    let rotateTween: Tween<{ y: number }> | null = null
     let zoomTween: Tween<{ zoom: number }> | null = null
     const reset = () => {
         if (gameGroup) {
@@ -302,13 +302,16 @@ export function useGameRenderer() {
         if (!camera) return
         rotateTween = new Tween(gameGroup.rotation)
             .to({ x: 0 }, 2500)
-            .onUpdate(() => { camera.updateProjectionMatrix() })
-            .start();
+            .onUpdate(() => {
+                camera.updateProjectionMatrix()
+            })
+            .start()
         zoomTween = new Tween(camera)
             .to({ zoom: 1 }, 2500)
-            .onUpdate(() => { camera.updateProjectionMatrix() })
-            .start();
-
+            .onUpdate(() => {
+                camera.updateProjectionMatrix()
+            })
+            .start()
     }
 
     const rescaleGameData = (game: gameStatusDto) => {
@@ -331,8 +334,7 @@ export function useGameRenderer() {
     }
 
     const updatePlayer = (players: PlayerDto[]): void => {
-        if (!paddle || !paddle2)
-            return
+        if (!paddle || !paddle2) return
         for (let i = 0; i < players.length; i++) {
             if (i == 0) {
                 paddle.position.y = players[i].paddle.y
@@ -398,8 +400,7 @@ export function useGameRenderer() {
     }
 
     const updateBall = (ball: BallDto): void => {
-        if (!sphere || !ball)
-            return
+        if (!sphere || !ball) return
         sphere.position.x = ball.x
         sphere.position.y = ball.y
         updateBallColor(sphere, ball.color)
