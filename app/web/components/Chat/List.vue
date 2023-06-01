@@ -84,6 +84,7 @@
                     :key="chat?.id"
                     @click="selectChat(chat)"
                     class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
+                    :class="{ 'cursor-default': !chatType }"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
                 >
@@ -260,7 +261,6 @@ const socketOn = () => {
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
     if (chatType.value === 'DM') {
         emit('showInvite', chat.users[0].login)
-        // navigateTo('/play')
     } else {
         selectedChat.value = chat
         if (chat.type === 'PROTECTED') isJoinGroupChatOpened.value = true
@@ -269,8 +269,10 @@ const HandleItemButton = (chat: DirectChat & GroupChat) => {
 }
 
 const selectChat = (chat: GroupChat & DirectChat) => {
-    setChatView(false)
-    setCurrentChat(chat)
+    if (chatType.value) {
+        setChatView(false)
+        setCurrentChat(chat)
+    }
 }
 
 const joinGroupChat = () => {

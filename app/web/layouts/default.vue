@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-const { connectSockets, handleSocketDisconnection, disconnectSockets } = useSockets()
+const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+    useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
 const { showDublicateModal } = useDublicateModal()
@@ -47,6 +48,7 @@ onMounted(async () => {
         navigateTo('/login')
     }
     connectSockets()
+    logSocketExceptions()
 
     const { setBlockList } = useBlock()
     const { data: myblockList } = await useBlockList()

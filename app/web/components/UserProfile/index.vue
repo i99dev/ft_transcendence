@@ -37,11 +37,8 @@
 
 <script lang="ts" setup>
 const { user_info } = useUserInfo()
-const { logSocketExceptions } = useSockets()
 
 const IsProfile = ref(false)
 
 const props = defineProps(['username'])
-
-logSocketExceptions()
 </script>
