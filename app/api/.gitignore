@@ -36,4 +36,5 @@ lerna-debug.log*
 /prisma/migrations
 
 # uploads
-/uploads
+uploads/
+!uploads/default_image

@@ -8,7 +8,7 @@
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                @click=" setFriendsModalOpen(false)"
+                                @click="setFriendsModalOpen(false)"
                             >
                                 <span class="sr-only">Close panel</span>
                                 <XMarkIcon class="h-6 w-6" aria-hidden="true" />
@@ -34,7 +34,7 @@
                             >
                                 <button
                                     class="centered w-fit group"
-                                    @click=" navigateTo(`/users/${friend.username}`)"
+                                    @click="navigateTo(`/users/${friend.username}`)"
                                 >
                                     <div class="relative">
                                         <img
@@ -69,7 +69,7 @@
                                             <div class="py-1">
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" showInviteModal(friend.login)"
+                                                    @click="showInviteModal(friend.login)"
                                                 >
                                                     <span class="flex items-center">
                                                         Invite to Game
@@ -77,7 +77,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" useDMUser(friend.login)"
+                                                    @click="useDMUser(friend.login)"
                                                 >
                                                     <span class="flex items-center">
                                                         Send MSG
@@ -85,7 +85,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" viewProfile(friend.username)"
+                                                    @click="viewProfile(friend.username)"
                                                 >
                                                     <span class="flex items-center">
                                                         View Profile
@@ -93,7 +93,7 @@
                                                 </MenuItem>
                                                 <MenuItem
                                                     class="text-white block px-4 py-2 text-sm cursor-pointer hover:bg-primary smooth-transition centered"
-                                                    @click=" remove(friend.login)"
+                                                    @click="remove(friend.login)"
                                                 >
                                                     <span class="flex items-center">
                                                         Unfriend
@@ -141,14 +141,13 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 
 const addFriendOpen = ref(false)
-const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } =
-    await useFriends()
+const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } = await useFriends()
 const open = computed(() => friends_info.value?.friendsModalOpen)
 const friends_list = computed(() => friends_info.value?.friends)
 const { deleteNotification } = await useNotifications()

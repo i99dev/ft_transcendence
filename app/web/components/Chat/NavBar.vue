@@ -10,7 +10,7 @@
                             <button
                                 type="button"
                                 class="rounded-full p-2 bg-background_light text-white hover:text-primary ring-1 ring-white focus:outline-white hover:ring-primary hover:focus:outline-primary"
-                                @click=" setChatModalOpen(false)"
+                                @click="setChatModalOpen(false)"
                             >
                                 <span class="sr-only">Close panel</span>
                                 <XMarkIcon class="h-6 w-6" aria-hidden="true" />
@@ -31,31 +31,10 @@
 <script lang="ts" setup>
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 
-const { chat_info, setChatModalOpen, send_message } = useChat()
+const { chat_info, setChatModalOpen } = useChat()
 
-const { chatView, setChatView } = useChatView()
-const { currentChat, setCurrentChat } = useCurrentChat()
-const { chatType } = useChatType()
+const { chatView } = useChatView()
 const { showInviteModal } = await useGameInvite()
-
-watch(
-    () => chatType.value,
-    () => {
-        setChatView(true)
-        setCurrentChat(null)
-    },
-)
-
-watch(
-    () => currentChat.value,
-    () => {
-        if (currentChat.value && chatType.value) {
-            setChatView(false)
-        } else {
-            setChatView(true)
-        }
-    },
-)
 
 const open = computed(() => chat_info.value?.chatModalOpen)
 </script>

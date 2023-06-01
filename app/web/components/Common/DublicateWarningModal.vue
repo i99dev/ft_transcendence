@@ -7,7 +7,7 @@
             <p>Please use the other tab. if you don't have another active tab, refresh the page</p>
             <button
                 class="mt-4 bg-secondary hover:bg-primary smooth-transition hover:scale-105 active:scale-95 border-1 text-white rounded-md px-4 py-2"
-                @click=" (showDublicateModal = false)"
+                @click="showDublicateModal = false"
             >
                 Close
             </button>
@@ -15,6 +15,6 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const { showDublicateModal } = useDublicateModal()
 </script>

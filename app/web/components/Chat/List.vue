@@ -82,7 +82,7 @@
                 <button
                     v-for="chat in chats"
                     :key="chat?.id"
-                    @click=" setCurrentChat(chat)"
+                    @click="selectChat(chat)"
                     class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
@@ -236,6 +236,7 @@ watch(chatSocket, async () => {
 const { chats, setChats } = useChats()
 const { chatType, setChatType } = useChatType()
 const { setGroupChatSearching } = useGroupChatSearching()
+const { chatView, setChatView } = useChatView()
 const { setCurrentChat } = useCurrentChat()
 const isChatCreateGroupOpened = ref(false)
 const isJoinGroupChatOpened = ref(false)
@@ -265,6 +266,11 @@ const HandleItemButton = (chat: DirectChat & GroupChat) => {
         if (chat.type === 'PROTECTED') isJoinGroupChatOpened.value = true
         else joinGroupChat()
     }
+}
+
+const selectChat = (chat : GroupChat & DirectChat) => {
+    setChatView(false)
+    setCurrentChat(chat)
 }
 
 const joinGroupChat = () => {

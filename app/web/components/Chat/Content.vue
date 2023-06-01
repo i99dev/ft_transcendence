@@ -3,7 +3,7 @@
         <div class="p-2 relative flex h-16">
             <button
                 class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
-                @click=" setCurrentChat(null)"
+                @click="goBack"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
                 <div class="centered" v-if="enableLoadMoreButton">
                     <button
                         class="bg-primary p-2 rounded-2xl my-2"
-                        @click=" loadMoreMessages(messagesPage)"
+                        @click="loadMoreMessages(messagesPage)"
                     >
                         Load more
                     </button>
@@ -127,7 +127,7 @@
                             message.sender_login === user_info.login && message.type !== 'SPECIAL'
                         "
                         class="text-white hidden group-hover:block absolute -top-1 left-0 bg-inherit rounded-full focus:outline-secondary"
-                        @click=" deleteMessage(message.id)"
+                        @click="deleteMessage(message.id)"
                     >
                         <TrashIcon class="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -209,6 +209,7 @@ const AmIAllowed = computed(() => {
 const { chatType } = useChatType()
 const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
+const { setChatView } = useChatView()
 
 onMounted(async () => {
     if (chatType.value === 'GROUP') {
@@ -238,8 +239,14 @@ onMounted(async () => {
     loadMoreMessages()
 })
 
+const goBack = () => {
+    setChatView(true)
+    setCurrentChat(null)
+}
+
 const socketOn = () => {
     chatSocket.value?.on('add-message', (payload: chatMessage) => {
+        if (payload.chat_room_id !== currentChat.value?.chat_room_id) return
         messages.value?.unshift(payload)
 
         //scroll to bottom
@@ -251,6 +258,7 @@ const socketOn = () => {
     })
 
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
+        if (payload[0].chat_room_id !== currentChat.value?.chat_room_id) return
         setParticipants(payload)
         if (participants.value)
             me.value = participants.value?.find(
@@ -258,6 +266,7 @@ const socketOn = () => {
             )
     })
 }
+
 
 const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
@@ -272,6 +281,7 @@ const getLightColor = () => {
 }
 
 const sendMessage = () => {
+    if (!newMessage.value || !newMessage.value.replace(/\s/g, '').length) return
     chatSocket.value?.emit(
         'add-message',
         JSON.stringify({ room_id: currentChat.value?.chat_room_id, message: newMessage.value }),

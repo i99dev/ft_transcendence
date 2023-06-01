@@ -2,6 +2,7 @@ import { Socket } from 'socket.io-client'
 
 export function useGameSocketEvent() {
     const { gameSocket } = useGameSocket()
+    const { showAnnouncment, announcmentMessage } = useGameAnnouncment()
     const socket = ref(gameSocket.value as Socket | undefined)
 
     const gameWinner = useState<string>('gameWinner', () => '')
@@ -10,9 +11,6 @@ export function useGameSocketEvent() {
     })
     const gameSetup = useState<SetupDto>('gameSetup', () => {
         return {} as SetupDto
-    })
-    const isDeuce = useState<boolean>('isDeuce', () => {
-        return false
     })
 
     const resetSocket = () => {
@@ -45,9 +43,10 @@ export function useGameSocketEvent() {
         })
 
         socket.value?.on('Game-Deuce', () => {
-            isDeuce.value = true
+            showAnnouncment.value = true
+            announcmentMessage.value = 'Deuce!'
             setTimeout(() => {
-                isDeuce.value = false
+                showAnnouncment.value = false
             }, 3000)
         })
     }
@@ -60,6 +59,5 @@ export function useGameSocketEvent() {
         emitLeaveQueue,
         resetSocket,
         emitReady,
-        isDeuce,
     }
 }

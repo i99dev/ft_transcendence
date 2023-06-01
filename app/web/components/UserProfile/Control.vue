@@ -98,7 +98,7 @@
                 </svg>
             </button>
             <button
-                @click=" navigateTo('/help')"
+                @click="navigateTo('/help')"
                 title="Help"
                 class="relative hover:bg-primary rounded-full smooth-transition p-2 w-12 aspect-square"
             >
@@ -177,7 +177,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
     UserPlusIcon,
     UserMinusIcon,
@@ -242,7 +242,15 @@ function handleDMUser() {
         showDublicateModal.value = true
         return
     }
-    useDMUser(props?.login)
+    if (!useDMUser(props?.login)) {
+        const toast = useToast()
+        toast.add({
+                  severity: 'error',
+                  summary: 'Opps!',
+                  detail: `error: can't DM ${props?.login}`,
+                  life: 3000,
+              })
+    }
 }
 
 function handleAddFriend() {

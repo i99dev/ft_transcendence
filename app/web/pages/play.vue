@@ -170,6 +170,7 @@ const playAgain = (): void => {
 
 const gameOver = (message: string): void => {
     gameResult.value = true
+    exit.value = false
     gameResultMessage.value = message
     showBoard.value = false
 }

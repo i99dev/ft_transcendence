@@ -17,11 +17,8 @@ export const useChatType = () => {
           page++
       }
       setChats(chats)
-
       chatType.value = type
   }
-
-  setChatType(chatType.value)
 
   return { chatType, setChatType }
 }

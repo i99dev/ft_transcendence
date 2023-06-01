@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
+const { connectSockets, handleSocketDisconnection, disconnectSockets } =
     useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
@@ -54,6 +54,5 @@ onMounted(async () => {
     if (myblockList.value) setBlockList(myblockList.value)
 
     handleSocketDisconnection()
-
 })
 </script>

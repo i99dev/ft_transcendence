@@ -88,7 +88,7 @@
     </svg>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 const { duration } = defineProps(['duration'])
 const dur = ref('2s')
 

@@ -37,7 +37,7 @@
                 'bg-background_light opacity-70': chatType !== 'GROUP',
                 'bg-primary': chatType === 'GROUP',
             }"
-            @click=" switchChatType('GROUP')"
+            @click="switchChatType('GROUP')"
         >
             <UserGroupIcon class="h-6 w-6" />
         </button>
@@ -47,7 +47,7 @@
                 'bg-background_light opacity-70': chatType !== 'DM',
                 'bg-primary': chatType === 'DM',
             }"
-            @click=" switchChatType('DM')"
+            @click="switchChatType('DM')"
         >
             <UserIcon class="h-6 w-6" />
         </button>
@@ -70,6 +70,7 @@ const handleChatSearch = (e: any) => {
     e.preventDefault()
     e.stopPropagation()
     setGroupChatSearching(true)
+    setChatView(true)
     setChatType(null)
     setTimeout(() => {
         chatSearch.value?.focus()
@@ -78,6 +79,8 @@ const handleChatSearch = (e: any) => {
 
 const switchChatType = (type: ChatRoomType) => {
     setGroupChatSearching(false)
+    setChatView(true)
+    setCurrentChat(null)
     setChatType(type)
 }
 </script>

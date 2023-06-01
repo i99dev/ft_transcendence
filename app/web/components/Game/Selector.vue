@@ -7,14 +7,14 @@
             <div class="space-y-2">
                 <button
                     class="w-full py-2 px-2 rounded-md text-white bg-tertiary bg-opacity-75 hover:bg-opacity-100 border-1 border-white smooth-transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    @click=" selectGame('classic')"
+                    @click="selectGame('classic')"
                 >
                     Classic Pong
                 </button>
 
                 <button
                     class="w-full py-2 px-2 rounded-md text-white bg-primary bg-opacity-75 hover:bg-primary border-1 border-white transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    @click=" selectGame('custom')"
+                    @click="selectGame('custom')"
                 >
                     Custom Pong
                 </button>
@@ -39,7 +39,7 @@
                             selectedMode === 'single' ? 'bg-opacity-100' : 'bg-opacity-75',
                             selectedGame === 'classic' ? 'bg-tertiary' : 'bg-primary',
                         ]"
-                        @click=" selectMode('single')"
+                        @click="selectMode('single')"
                     >
                         Single Player
                     </button>
@@ -51,7 +51,7 @@
                             selectedMode === 'multi' ? 'bg-opacity-100' : 'bg-opacity-75',
                             selectedGame === 'classic' ? 'bg-tertiary' : 'bg-primary',
                         ]"
-                        @click=" selectMode('multi')"
+                        @click="selectMode('multi')"
                     >
                         Find Opponent
                     </button>
@@ -63,11 +63,12 @@
                     Pick Two PowerUps
                 </h3>
 
-                <div class="grid grid-cols-2 gap-2 text-white">
-                    <div
+                <div class="grid grid-cols-2 text-white">
+                    <label
                         v-for="(powerup, index) in powerups"
+                        :for="powerup"
                         :key="index"
-                        class="flex items-center"
+                        class="flex items-center hover:bg-background_light rounded-xl smooth-transition p-2 cursor-pointer smooth-transition group"
                     >
                         <input
                             type="checkbox"
@@ -75,17 +76,22 @@
                             :value="powerup"
                             v-model="selectedPowerups"
                             @change="checkPowerupLimit"
-                            class="form-checkbox text-blue-500"
+                            class="hidden"
                         />
-                        <label :for="powerup" class="ml-2">{{ powerup }}</label>
-                    </div>
+                        <label :for="powerup" class="cursor-pointer p-2 rounded-xl w-full h-full smooth-transition"
+                            :class="[
+                                selectedPowerups.includes(powerup) ? 'bg-secondary' : 'text-white',
+                                selectedPowerups.length === 2 && !selectedPowerups.includes(powerup) ? 'opacity-70 group-hover:opacity-100 cursor-not-allowed' : '',
+                            ]"
+                        >{{ powerup }}</label>
+                    </label>
                 </div>
             </div>
 
             <div class="mt-4 flex space-x-4 justify-center">
                 <button
                     class="py-2 px-4 rounded-md text-white bg-background_dark bg-opacity-75 hover:bg-opacity-100 border-1 border-white transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
-                    @click=" (step = 1)"
+                    @click="step = 1"
                 >
                     Back
                 </button>
@@ -118,7 +124,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 
 const step = ref(1)
 const selectedGame = ref('' as string)

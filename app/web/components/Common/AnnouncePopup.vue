@@ -18,7 +18,7 @@
                     {{ getAnnounceContent(ann) }}
                 </span>
                 <button
-                    @click=" closeAcievPopUp(index)"
+                    @click="closeAcievPopUp(index)"
                     class="centered mt-6 w-full py-4 px-10 text-xl font-medium bg-secondary rounded-xl transition duration-500 ease-in-out transform hover:bg-primary focus:outline-none"
                 >
                     {{ getButtonName(ann) }}
@@ -28,7 +28,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 let newAchievement = (await getNewAnnouncement('ACHIEVEMENT')) as NotificationDto[]
 
 let newPunish = (await getNewAnnouncement('PUNISHMENT')) as NotificationDto[]

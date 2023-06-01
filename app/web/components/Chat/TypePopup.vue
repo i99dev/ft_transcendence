@@ -74,6 +74,7 @@
                                                         type="password"
                                                         v-model="chatPassword"
                                                         placeholder="Enter password"
+                                                        autocomplete="on"
                                                     />
                                                 </div>
                                             </div>
@@ -108,7 +109,7 @@
                     v-if="props.cancelButton"
                     class="flex-shrink-0 border-transparent border-4 text-white hover:text-primary text-sm py-1 px-2 rounded capitalize focus:outline-white"
                     type="button"
-                    @click=" closePopup('cancel')"
+                    @click="closePopup('cancel')"
                 >
                     {{ props.cancelButton || 'cancel' }}
                 </button>

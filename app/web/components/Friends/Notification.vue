@@ -36,7 +36,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { useFriends } from '../../composables/useFriends'
 const props = defineProps({

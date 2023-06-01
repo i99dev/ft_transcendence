@@ -8,7 +8,6 @@ services:
         build: ./app/web
 
         environment:
-            - NODE_ENV=${NODE_ENV}
             - CLIENT_ID=${CLIENT_ID}
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
@@ -54,7 +53,7 @@ services:
                 | yarn dev',
             ]
         environment:
-            - NODE_ENV=${NODE_ENV}
+            - MODE=${MODE}
             - CLIENT_ID=${CLIENT_ID}
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
@@ -88,7 +87,6 @@ services:
         image: postgres:12
 
         environment:
-            - NODE_ENV=${NODE_ENV}
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             - POSTGRES_DB=${POSTGRES_DB}
@@ -106,9 +104,6 @@ services:
         container_name: ft_transcendence_nginx
 
         image: nginx:latest
-
-        environment:
-            - NODE_ENV=${NODE_ENV}
 
         ports:
             - 80:80

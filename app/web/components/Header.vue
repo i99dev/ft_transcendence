@@ -3,10 +3,7 @@
         v-if="useRoute().path !== '/play'"
         class="relative flex flex-col top-0 w-full h-10vh mb-10 z-10"
     >
-        <button
-            @click="handleHomeNav"
-            class="justify-self-center self-center w-32 h-1/3 mt-5"
-        >
+        <button @click="handleHomeNav" class="justify-self-center self-center w-32 h-1/3 mt-5">
             <LoginLogo :horizontal="true" class="text-2xl" />
         </button>
         <div class="flex justify-center items-start w-full">
@@ -25,7 +22,7 @@
     </header>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const clear = ref(false)
 const focusNow = ref(false)
 

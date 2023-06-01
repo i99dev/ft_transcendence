@@ -17,6 +17,7 @@ export class gameStatusDto {
     players: PlayerDto[]
     ball: BallDto
     time: number
+    countDown: number
 }
 
 export class SetupDto {
@@ -101,6 +102,8 @@ export class GameSelectDto {
     gameMode: gameMode
 
     @IsArray()
+    @IsString({ each: true })
+    @Length(1, 100, { each: true })
     powerups: string[]
 
     @IsString()

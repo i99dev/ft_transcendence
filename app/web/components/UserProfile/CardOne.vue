@@ -75,7 +75,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const { user_info } = useUserInfo()
 
 const props = defineProps({

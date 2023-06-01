@@ -8,7 +8,6 @@ services:
         build: ./app/web
 
         environment:
-            - NODE_ENV=${NODE_ENV}
             - CLIENT_ID=${CLIENT_ID}
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
@@ -25,7 +24,7 @@ services:
                 'sh',
                 '-c',
                 'yarn install && yarn run build && npx pm2 start yarn --name "ft_transcendence"
-                --interpreter bash --no-daemon -- start',
+                --interpreter bash --no-daemon -- start >/dev/null 2>&1',
             ]
 
         networks:
@@ -52,12 +51,12 @@ services:
             [
                 'sh',
                 '-c',
-                'yarn && npx prisma db push --force-reset && yarn run build && npx pm2 start yarn
-                --name "ft_transcendence" --interpreter bash --no-daemon -- start',
+                'yarn && npx prisma db push --force-reset && npx prisma db seed && yarn run build && npx pm2 start yarn
+                --name "ft_transcendence" --interpreter bash --no-daemon -- start >/dev/null 2>&1',
             ]
 
         environment:
-            - NODE_ENV=${NODE_ENV}
+            - MODE=${MODE}
             - CLIENT_ID=${CLIENT_ID}
             - CLIENT_SECRET=${CLIENT_SECRET}
             - REDIRECT_URI=${REDIRECT_URI}
@@ -91,7 +90,6 @@ services:
         image: postgres:12
 
         environment:
-            - NODE_ENV=${NODE_ENV}
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             - POSTGRES_DB=${POSTGRES_DB}
@@ -109,9 +107,6 @@ services:
         container_name: ft_transcendence_nginx
 
         image: nginx:latest
-
-        environment:
-            - NODE_ENV=${NODE_ENV}
 
         ports:
             - 80:80

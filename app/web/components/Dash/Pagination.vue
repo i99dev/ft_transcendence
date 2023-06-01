@@ -18,9 +18,9 @@
                     aria-label="Pagination"
                 >
                     <button
-                        @click=" handlePagination(currentPage - 1)"
+                        @click="handlePagination(currentPage - 1)"
                         type="button"
-                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
+                        class="relative inline-flex items-center rounded-l-md p-1 sm:p-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
                         <span class="sr-only">Previous</span>
                         <svg
@@ -39,15 +39,15 @@
 
                     <div
                         aria-current="page"
-                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 smooth-transition z-10 bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        class="relative inline-flex items-center px-2 py-1 sm:px-4 sm:py-2 text-sm font-semibold focus:z-20 smooth-transition z-10 bg-tertiary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
                         {{ currentPage }}
                     </div>
 
                     <button
-                        @click=" handlePagination(currentPage + 1)"
+                        @click="handlePagination(currentPage + 1)"
                         type="button"
-                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
+                        class="relative inline-flex items-center rounded-r-md p-1 sm:p-2 text-white ring-1 ring-inset ring-secondary hover:bg-primary smooth-transition focus:z-20 focus:outline-offset-0"
                     >
                         <span class="sr-only">Next</span>
                         <svg
@@ -69,7 +69,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 
 const props = defineProps({
     url: {

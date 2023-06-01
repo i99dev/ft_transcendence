@@ -215,6 +215,26 @@ export class gameAnalyzer {
         return winStreak
     }
 
+    async checkNoSweatAchievement(login: string): Promise<boolean> {
+        const matches = await this.matchService.getPlayerMatchHistory(1, login)
+        const lastMatch = matches ? matches[0] : null
+
+        if (lastMatch && lastMatch.opponents[0].user && lastMatch.opponents[1].user) {
+            if (
+                (lastMatch.opponents[0].user.login == login &&
+                    lastMatch.opponents[0].IsWinner &&
+                    lastMatch.opponents[0].score === 11 &&
+                    lastMatch.opponents[1].score === 0) ||
+                (lastMatch.opponents[1].user.login == login &&
+                    lastMatch.opponents[1].IsWinner &&
+                    lastMatch.opponents[1].score === 11 &&
+                    lastMatch.opponents[0].score === 0)
+            )
+                return true
+        }
+        return false
+    }
+
     async checkIfAchievementExists(login: string, achievement: string): Promise<boolean> {
         const count = await this.achievementService.checkPlayerAchievements(login, achievement)
         if (count > 0) return true
@@ -225,27 +245,21 @@ export class gameAnalyzer {
         const totalAcheivments = []
         const totalWins = await this.matchService.getTotalVictories(login)
         const ladder = await this.getLadderLevel(login)
-        if (!(await this.checkIfAchievementExists(login, 'First Blood')) && totalWins == 1)
-            totalAcheivments.push('First Blood')
-        if (
-            !(await this.checkIfAchievementExists(login, 'Rookie no more')) &&
-            ladder == ladderLevel.CapinBoy.Rank &&
-            (await this.calcWinStreak(login, 2)) == 2
-        )
+        if (totalWins == 1) totalAcheivments.push('First Blood')
+        if (ladder == ladderLevel.CapinBoy.Rank && (await this.calcWinStreak(login, 2)) == 2)
             totalAcheivments.push('Rookie no more')
-        if (
-            !(await this.checkIfAchievementExists(login, 'Serial Killer')) &&
-            (await this.calcWinStreak(login, 11)) == 11
-        )
-            totalAcheivments.push('Serial Killer')
+        if ((await this.calcWinStreak(login, 11)) == 11) totalAcheivments.push('Serial Killer')
+        if (await this.checkNoSweatAchievement(login)) totalAcheivments.push('No Sweat')
         return totalAcheivments
     }
 
     async assignAcheivments(login: string, achievements: string[]): Promise<void> {
         if (achievements.length == 0) return
         achievements.forEach(async achievement => {
-            await this.updatePlayerAcheivments(login, achievement)
-            await this.storeAchievementAsNotification(login, achievement)
+            if (!(await this.checkIfAchievementExists(login, achievement))) {
+                await this.updatePlayerAcheivments(login, achievement)
+                await this.storeAchievementAsNotification(login, achievement)
+            }
         })
     }
 

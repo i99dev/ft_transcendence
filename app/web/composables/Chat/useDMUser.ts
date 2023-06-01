@@ -1,15 +1,17 @@
-import { useToast } from 'primevue/usetoast'
-
 export const useDMUser = async (user_login: string) => {
-  const toast = useToast()
   const openDM = (chat: GroupChat & DirectChat) => {
       const { setChatModalOpen } = useChat()
+      const { setChatType } = useChatType()
       const { setChatView } = useChatView()
       const { setCurrentChat } = useCurrentChat()
+      const { setGroupChatSearching } = useGroupChatSearching()
+
+      setGroupChatSearching(false)
       setChatModalOpen(true)
-      setChatView(true)
+      setChatType('DM')
       setCurrentChat(chat)
-  }
+      setChatView(false)
+    }
 
   const { data } = await useDirectChatWith(user_login)
   if (data.value && data.value.length !== 0) openDM(data.value[0])
@@ -20,12 +22,8 @@ export const useDMUser = async (user_login: string) => {
           const { data } = await useDirectChatWith(user_login)
           if (data.value && data.value.length !== 0) openDM(data.value[0])
           else
-              toast.add({
-                  severity: 'error',
-                  summary: 'Opps!',
-                  detail: `error: can't DM ${user_login}`,
-                  life: 3000,
-              })
+              return false
       })
   }
+  return true
 }

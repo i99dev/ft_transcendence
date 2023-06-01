@@ -10,7 +10,7 @@
                 leave-from="opacity-100"
                 leave-to="opacity-0"
             >
-                <div class="fixed inset-0 bg-background bg-opacity-25" />
+                <div class="fixed inset-0 bg-background bg-opacity-60" />
             </TransitionChild>
 
             <div class="fixed inset-0 overflow-y-auto">
@@ -36,7 +36,7 @@
     </TransitionRoot>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 const props = defineProps(['show'])
 </script>
