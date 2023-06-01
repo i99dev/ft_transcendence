@@ -258,7 +258,7 @@ const socketOn = () => {
     })
 
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
-        if (payload[0].chat_room_id !== currentChat.value?.chat_room_id) return
+        if (payload[0]?.chat_room_id !== currentChat.value?.chat_room_id) return
         setParticipants(payload)
         if (participants.value)
             me.value = participants.value?.find(
