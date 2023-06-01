@@ -1,1 +1,1 @@
-export { useFriends } from "./Friends/useFriends"
+export { useFriends } from './Friends/useFriends'

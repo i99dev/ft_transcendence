@@ -18,8 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-const { connectSockets, handleSocketDisconnection, disconnectSockets } =
-    useSockets()
+const { connectSockets, handleSocketDisconnection, disconnectSockets } = useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
 const { showDublicateModal } = useDublicateModal()

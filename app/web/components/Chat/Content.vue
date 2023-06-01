@@ -267,7 +267,6 @@ const socketOn = () => {
     })
 }
 
-
 const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return
     const chatMessages = document.getElementById('chat-messages') as HTMLElement

@@ -245,11 +245,11 @@ function handleDMUser() {
     if (!useDMUser(props?.login)) {
         const toast = useToast()
         toast.add({
-                  severity: 'error',
-                  summary: 'Opps!',
-                  detail: `error: can't DM ${props?.login}`,
-                  life: 3000,
-              })
+            severity: 'error',
+            summary: 'Opps!',
+            detail: `error: can't DM ${props?.login}`,
+            life: 3000,
+        })
     }
 }
 

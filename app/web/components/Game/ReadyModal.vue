@@ -28,7 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const { emitReady } = useGameSocketEvent()
 
 const isLoading = ref(false)

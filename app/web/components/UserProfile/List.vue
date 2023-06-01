@@ -71,7 +71,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const { user_info } = useUserInfo()
 const searchedUsers = ref('')
 const users = ref()

@@ -268,7 +268,7 @@ const HandleItemButton = (chat: DirectChat & GroupChat) => {
     }
 }
 
-const selectChat = (chat : GroupChat & DirectChat) => {
+const selectChat = (chat: GroupChat & DirectChat) => {
     setChatView(false)
     setCurrentChat(chat)
 }

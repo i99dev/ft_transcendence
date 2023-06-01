@@ -97,7 +97,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const route = useRoute()
 const { invite, inviteModal } = await useGameInvite()
 const exit = ref(false)

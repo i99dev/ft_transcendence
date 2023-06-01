@@ -1,9 +1,9 @@
 export function useGameSound(playSoundCallback: (sound: string) => void) {
-  const { gameSocket } = useGameSocket()
+    const { gameSocket } = useGameSocket()
 
-  gameSocket.value?.on('play-sound', (payload: string) => {
-      playSoundCallback(payload)
-  })
+    gameSocket.value?.on('play-sound', (payload: string) => {
+        playSoundCallback(payload)
+    })
 
-  return {}
+    return {}
 }

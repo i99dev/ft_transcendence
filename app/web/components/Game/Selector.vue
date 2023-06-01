@@ -78,12 +78,17 @@
                             @change="checkPowerupLimit"
                             class="hidden"
                         />
-                        <label :for="powerup" class="cursor-pointer p-2 rounded-xl w-full h-full smooth-transition"
+                        <label
+                            :for="powerup"
+                            class="cursor-pointer p-2 rounded-xl w-full h-full smooth-transition"
                             :class="[
                                 selectedPowerups.includes(powerup) ? 'bg-secondary' : 'text-white',
-                                selectedPowerups.length === 2 && !selectedPowerups.includes(powerup) ? 'opacity-70 group-hover:opacity-100 cursor-not-allowed' : '',
+                                selectedPowerups.length === 2 && !selectedPowerups.includes(powerup)
+                                    ? 'opacity-70 group-hover:opacity-100 cursor-not-allowed'
+                                    : '',
                             ]"
-                        >{{ powerup }}</label>
+                            >{{ powerup }}</label
+                        >
                     </label>
                 </div>
             </div>
@@ -125,7 +130,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const step = ref(1)
 const selectedGame = ref('' as string)
 const selectedMode = ref('' as string)

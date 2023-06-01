@@ -22,7 +22,10 @@
                     >
                         {{ player.rankNum }}
                     </div>
-                    <img :src="player.image" class="h-6 aspect-square rounded-full object-cover mr-4" />
+                    <img
+                        :src="player.image"
+                        class="h-6 aspect-square rounded-full object-cover mr-4"
+                    />
                     <!-- name and result -->
                     <div
                         class="m-2 font-bold overflow-hidden inline-block text-ellipsis whitespace-nowrap w-20 sm:w-20"
@@ -51,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-
 const lbPlayers = ref([] as any)
 
 const players = computed(() => lbPlayers.value)

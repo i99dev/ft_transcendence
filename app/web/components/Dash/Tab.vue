@@ -11,8 +11,10 @@
                     <div
                         class="smooth-transition text-white"
                         :class="{
-                            'border-b-2 sm:p-2 border-secondary sm:text-lg text-sm p-1': isActive(tab),
-                            'opacity-50 sm:p-2 hover:opacity-100 sm:text-md text-xs p-1': !isActive(tab),
+                            'border-b-2 sm:p-2 border-secondary sm:text-lg text-sm p-1':
+                                isActive(tab),
+                            'opacity-50 sm:p-2 hover:opacity-100 sm:text-md text-xs p-1':
+                                !isActive(tab),
                         }"
                     >
                         {{ tab.name }}
@@ -32,7 +34,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const props = defineProps({
     username: {
         type: String,

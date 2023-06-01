@@ -21,7 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const buttonName = ref('Click Me!')
 const props = defineProps({
     buttonName: {

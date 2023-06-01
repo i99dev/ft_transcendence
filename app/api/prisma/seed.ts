@@ -20,9 +20,7 @@ async function main() {
         await new PowerUpSeeder().seedPowerUps()
 
         await new AchievementSeeder().seedAchievements()
-    }
-    else if (`${process.env.MODE}` == 'development') {
-
+    } else if (`${process.env.MODE}` == 'development') {
         await new UserSeeder().seedUsers()
         // Assign Friends
         await new FriendSeeder().assignFriendsToUsers()
