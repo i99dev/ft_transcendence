@@ -7,7 +7,7 @@
                 @input="getFilteredUsers()"
                 class="text-sm leading-none text-left text-white bg-background_light px-4 py-3 w-full border rounded border-secondary_light outline-none"
                 type="text"
-                placeholder="Search"
+                placeholder="Search Users"
             />
             <div v-if="!searchedUsers" class="absolute right-3 z-10 flex space-x-2">
                 <div
@@ -71,8 +71,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-
 const { user_info } = useUserInfo()
 const searchedUsers = ref('')
 const users = ref()

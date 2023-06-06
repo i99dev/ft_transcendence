@@ -70,6 +70,7 @@ const handleChatSearch = (e: any) => {
     e.preventDefault()
     e.stopPropagation()
     setGroupChatSearching(true)
+    setChatView(true)
     setChatType(null)
     setTimeout(() => {
         chatSearch.value?.focus()
@@ -78,6 +79,8 @@ const handleChatSearch = (e: any) => {
 
 const switchChatType = (type: ChatRoomType) => {
     setGroupChatSearching(false)
+    setChatView(true)
+    setCurrentChat(null)
     setChatType(type)
 }
 </script>

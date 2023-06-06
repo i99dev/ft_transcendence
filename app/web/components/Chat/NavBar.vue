@@ -1,6 +1,6 @@
 <template>
     <div>
-        <SideBar :show="open">
+        <CommonSideBar :show="open">
             <div
                 class="flex h-screen flex-col bg-background shadow-xl rounded-2xl border overflow-hidden"
             >
@@ -24,39 +24,17 @@
                     <ChatContent v-else @closeNavBar="setChatModalOpen(false)" />
                 </div>
             </div>
-        </SideBar>
+        </CommonSideBar>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { computed, watch } from 'vue'
 
-const { chat_info, setChatModalOpen, send_message } = useChat()
+const { chat_info, setChatModalOpen } = useChat()
 
-const { chatView, setChatView } = useChatView()
-const { currentChat, setCurrentChat } = useCurrentChat()
-const { chatType } = useChatType()
+const { chatView } = useChatView()
 const { showInviteModal } = await useGameInvite()
-
-watch(
-    () => chatType.value,
-    () => {
-        setChatView(true)
-        setCurrentChat(null)
-    },
-)
-
-watch(
-    () => currentChat.value,
-    () => {
-        if (currentChat.value && chatType.value) {
-            setChatView(false)
-        } else {
-            setChatView(true)
-        }
-    },
-)
 
 const open = computed(() => chat_info.value?.chatModalOpen)
 </script>

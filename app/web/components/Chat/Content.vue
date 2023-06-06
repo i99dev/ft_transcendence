@@ -3,7 +3,7 @@
         <div class="p-2 relative flex h-16">
             <button
                 class="flex flex-row justify-between w-24 hover:bg-primary smooth-transition items-center rounded-full p-1 focus:outline-secondary"
-                @click="setCurrentChat(null)"
+                @click="goBack"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +187,6 @@
 
 <script lang="ts" setup>
 import { TrashIcon } from '@heroicons/vue/24/outline'
-import { Socket } from 'socket.io-client'
 
 const { user_info } = useUserInfo()
 const { isBlocked } = useBlock()
@@ -210,6 +209,7 @@ const AmIAllowed = computed(() => {
 const { chatType } = useChatType()
 const emit = defineEmits(['closeNavBar'])
 const { currentChat, setCurrentChat } = useCurrentChat()
+const { setChatView } = useChatView()
 
 onMounted(async () => {
     if (chatType.value === 'GROUP') {
@@ -239,6 +239,11 @@ onMounted(async () => {
     loadMoreMessages()
 })
 
+const goBack = () => {
+    setChatView(true)
+    setCurrentChat(null)
+}
+
 const socketOn = () => {
     chatSocket.value?.on('add-message', (payload: chatMessage) => {
         if (payload.chat_room_id !== currentChat.value?.chat_room_id) return
@@ -253,7 +258,7 @@ const socketOn = () => {
     })
 
     chatSocket.value?.on('group-chat-users', (payload: ChatUser[]) => {
-        if (payload[0].chat_room_id !== currentChat.value?.chat_room_id) return
+        if (payload[0]?.chat_room_id !== currentChat.value?.chat_room_id) return
         setParticipants(payload)
         if (participants.value)
             me.value = participants.value?.find(
@@ -261,7 +266,6 @@ const socketOn = () => {
             )
     })
 }
-
 
 const scrollToLastMessage = () => {
     if (isChatInfoOpened.value) return

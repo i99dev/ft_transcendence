@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Loading class="w-screen h-screen centered" size="w-32" />
+        <CommonLoading class="w-screen h-screen centered" size="w-32" />
     </div>
 </template>
 

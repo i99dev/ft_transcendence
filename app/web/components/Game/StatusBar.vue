@@ -1,4 +1,3 @@
-import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
 <template>
     <div
         class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-violet-900 bg-opacity-5 py-2 px-6 rounded-b-lg shadow-lg border border-violet-700 flex items-center space-x-6"
@@ -61,7 +60,7 @@ import { PlayerDto } from '../../../api/src/module/game/dto/game.dto';
     </button>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const props = defineProps({
     cooldown11: {
         type: Boolean,
@@ -119,8 +118,6 @@ const playersData = computed(() => {
         },
     ]
 })
-
-onMounted(() => {})
 
 const onPowerUpClick = (player: number, powerup: number) => {
     if (gameSetup.value.player == player) {

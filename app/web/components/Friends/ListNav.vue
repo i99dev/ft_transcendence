@@ -1,6 +1,6 @@
 <template>
     <div>
-        <SideBar :show="open">
+        <CommonSideBar :show="open">
             <div class="flex min-h-screen flex-col bg-background shadow-xl rounded-2xl border">
                 <div class="pt-2">
                     <div class="flex items-start justify-between mb-2">
@@ -136,18 +136,15 @@
                     </div>
                 </div>
             </div>
-        </SideBar>
+        </CommonSideBar>
         <FriendsAddFriendBox :show="addFriendOpen" @close="addFriendOpen = false" class="z-20" />
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
-import { useFriends } from '../../composables/Friends/useFriends'
-import { useNotifications } from '../../composables/Notifications/useNotifications'
-import { ref, computed } from 'vue'
 
 const addFriendOpen = ref(false)
 const { friends_info, setFriendsModalOpen, setupSocketHandlers, notifications, removeFriend } =

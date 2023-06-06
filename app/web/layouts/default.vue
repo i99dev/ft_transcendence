@@ -7,19 +7,18 @@
             <ChatNavBar />
             <FriendsListNav />
             <GameInviteBox v-if="inviteModal.open" class="z-20" />
-            <DublicateWarningModal v-if="showDublicateModal" class="z-30" />
+            <CommonDublicateWarningModal v-if="showDublicateModal" class="z-30" />
             <slot />
         </div>
         <!-- loading -->
         <div v-else>
-            <Loading class="w-screen h-screen centered" size="w-32" />
+            <CommonLoading class="w-screen h-screen centered" size="w-32" />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { useDublicateModal } from '@/composables/Game/useSocket'
-const { connectSockets, handleSocketDisconnection, disconnectSockets } =
+const { connectSockets, handleSocketDisconnection, disconnectSockets, logSocketExceptions } =
     useSockets()
 const { setUserInfo } = useUserInfo()
 const { inviteModal } = await useGameInvite()
@@ -29,7 +28,6 @@ const isMobile = useState<boolean>('isMobile', () => false)
 const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
 
 onMounted(async () => {
-    // TODO: check if user is logged in
     const { data, error } = await useMe()
     me.value = data.value
     isMobile.value = mobileRegex.test(navigator.userAgent)
@@ -50,6 +48,7 @@ onMounted(async () => {
         navigateTo('/login')
     }
     connectSockets()
+    logSocketExceptions()
 
     const { setBlockList } = useBlock()
     const { data: myblockList } = await useBlockList()

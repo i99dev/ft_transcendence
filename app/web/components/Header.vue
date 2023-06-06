@@ -22,7 +22,7 @@
     </header>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const clear = ref(false)
 const focusNow = ref(false)
 

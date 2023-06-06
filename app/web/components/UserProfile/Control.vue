@@ -177,9 +177,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { useFriends } from '../../composables/Friends/useFriends'
-import { useDublicateModal } from '~~/composables/Game/useSocket'
+<script lang="ts" setup>
 import {
     UserPlusIcon,
     UserMinusIcon,
@@ -239,16 +237,20 @@ function handleMuteSound() {
     else if (!isPaused('login')) pause('login')
 }
 
-function goToHelp() {
-    navigateTo('/help')
-}
-
 function handleDMUser() {
     if (chatSocket.value?.disconnected) {
         showDublicateModal.value = true
         return
     }
-    useDMUser(props?.login)
+    if (!useDMUser(props?.login)) {
+        const toast = useToast()
+        toast.add({
+            severity: 'error',
+            summary: 'Opps!',
+            detail: `error: can't DM ${props?.login}`,
+            life: 3000,
+        })
+    }
 }
 
 function handleAddFriend() {

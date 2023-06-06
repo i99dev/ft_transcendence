@@ -17,7 +17,7 @@
 
             <div v-if="isLoading" class="box">
                 <div class="loading-container flex flex-col items-center justify-center">
-                    <Loading />
+                    <CommonLoading />
                     <p class="loading-text mt-2 text-lg font-bold text-white">
                         Waiting Opponent to be ready...
                     </p>
@@ -27,10 +27,8 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { useSocket } from '~~/composables/Game/useSocket'
-
-const { emitReady } = useSocket()
+<script lang="ts" setup>
+const { emitReady } = useGameSocketEvent()
 
 const isLoading = ref(false)
 

@@ -9,8 +9,6 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { useGameAnnouncment } from '~~/composables/Game/useAnnouncment'
-
+<script lang="ts" setup>
 const { announcmentMessage } = useGameAnnouncment()
 </script>

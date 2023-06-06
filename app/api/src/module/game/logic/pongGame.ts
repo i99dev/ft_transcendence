@@ -421,7 +421,7 @@ export class PongGame {
     // update the paddle position of the player based on the direction
     public updatePaddlePosition(playerID: string, direction: string): void {
         const player = this.game_status.players.find(player => player.login === playerID)
-        if(this.game_status.countDown > 0) return
+        if (this.game_status.countDown > 0) return
         if (direction === 'up') {
             player.paddle.y -= player.paddle.speed
         } else if (direction === 'down') {

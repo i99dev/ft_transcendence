@@ -97,9 +97,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useSocket } from '../composables/Game/useSocket'
-import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
-
 const route = useRoute()
 const { invite, inviteModal } = await useGameInvite()
 const exit = ref(false)
@@ -109,7 +106,7 @@ const gameResult = ref(false)
 const gameResultMessage = ref('')
 const gameBoard = ref()
 const gameSelector = ref()
-const { emitLeaveQueue } = useSocket()
+const { emitLeaveQueue } = useGameSocketEvent()
 const { play, pause, loop, isPaused } = useSound()
 const muteSound = ref(true as boolean)
 const showRotateOverlay = ref(false)

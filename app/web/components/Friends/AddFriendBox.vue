@@ -60,18 +60,28 @@
     </TransitionRoot>
 </template>
 
-<script setup lang="ts">
-import { useFriends } from '../../composables/Friends/useFriends'
+<script lang="ts" setup>
 import { Dialog, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
+const toast = useToast()
 
 const { addFriend } = await useFriends()
 const friendNameToAdd = ref('')
 const addFriendOpen = ref(true)
 const emit = defineEmits(['close'])
 
-function addNewFriend() {
-    addFriend(friendNameToAdd.value)
-    emit('close')
+const addNewFriend = async () => {
+    const friend = await getUserbyUserName(friendNameToAdd.value)
+    if (friend) {
+        addFriend(friend.login)
+        friendNameToAdd.value = ''
+        emit('close')
+    } else
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Username '${friendNameToAdd.value}' not found`,
+            life: 3000,
+        })
 }
 </script>

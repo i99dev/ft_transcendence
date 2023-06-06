@@ -140,7 +140,7 @@
             </div>
             <div v-if="isLoading && !inviteModal.rejected" class="box">
                 <div class="loading-container flex flex-col items-center justify-center">
-                    <Loading />
+                    <CommonLoading />
                     <p class="loading-text mt-2 text-lg font-bold text-white">
                         Let's see if {{ inviteModal.target }} is
                     </p>
@@ -153,14 +153,13 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
-import { useFriends } from '@/composables/Friends/useFriends'
-import { useDublicateModal } from '@/composables/Game/useSocket'
+import { useFriends } from '~~/composables/useFriends'
 const mode = ref('' as string)
 const selectedPowerups = ref<string[]>([])
 const isLoading = ref(false)
-const { invite, inviteModal, send, accept, decline, reset } = await useGameInvite()
+const { invite, inviteModal, send, accept, decline } = await useGameInvite()
 const { chat_info } = useChat()
 const { friends_info } = await useFriends()
 const { showDublicateModal, isClientConnected } = useDublicateModal()

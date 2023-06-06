@@ -1,6 +1,6 @@
 <template>
     <div>
-        <MainPopup :show="props?.show" @closeMainPopup="closePopup()">
+        <CommonMainPopup :show="props?.show" @closeMainPopup="closePopup()">
             <form class="chat-form" @submit.prevent="">
                 <div class="flex items-center">
                     <div class="file-upload">
@@ -113,11 +113,11 @@
                     </button>
                 </div>
             </form>
-        </MainPopup>
+        </CommonMainPopup>
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 import { useToast } from 'primevue/usetoast'
@@ -197,7 +197,7 @@ const updateUsername = async () => {
 
 const uploadUserImage = async () => {
     if (formData.value) {
-        const { data } = await useUplaod(user_info.value?.login, formData.value)
+        const { data } = await useUpload(user_info.value?.login, formData.value)
         if (data.value) image.value = data.value?.file_url
         else {
             toast.add({

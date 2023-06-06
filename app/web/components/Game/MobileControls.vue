@@ -36,7 +36,7 @@
         />
     </div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 let gameSetup = useState<SetupDto>('gameSetup')
 </script>
 

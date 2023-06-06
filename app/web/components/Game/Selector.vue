@@ -63,11 +63,12 @@
                     Pick Two PowerUps
                 </h3>
 
-                <div class="grid grid-cols-2 gap-2 text-white">
-                    <div
+                <div class="grid grid-cols-2 text-white">
+                    <label
                         v-for="(powerup, index) in powerups"
+                        :for="powerup"
                         :key="index"
-                        class="flex items-center"
+                        class="flex items-center hover:bg-background_light rounded-xl smooth-transition p-2 cursor-pointer smooth-transition group"
                     >
                         <input
                             type="checkbox"
@@ -75,10 +76,20 @@
                             :value="powerup"
                             v-model="selectedPowerups"
                             @change="checkPowerupLimit"
-                            class="form-checkbox text-blue-500"
+                            class="hidden"
                         />
-                        <label :for="powerup" class="ml-2">{{ powerup }}</label>
-                    </div>
+                        <label
+                            :for="powerup"
+                            class="cursor-pointer p-2 rounded-xl w-full h-full smooth-transition"
+                            :class="[
+                                selectedPowerups.includes(powerup) ? 'bg-secondary' : 'text-white',
+                                selectedPowerups.length === 2 && !selectedPowerups.includes(powerup)
+                                    ? 'opacity-70 group-hover:opacity-100 cursor-not-allowed'
+                                    : '',
+                            ]"
+                            >{{ powerup }}</label
+                        >
+                    </label>
                 </div>
             </div>
 
@@ -104,7 +115,7 @@
 
         <div v-else-if="step === 3" class="box">
             <div class="loading-container flex flex-col items-center justify-center">
-                <Loading />
+                <CommonLoading />
                 <p class="loading-text mt-2 text-lg font-bold text-white">{{ loadingMsg }}</p>
                 <button
                     v-if="selectedMode == 'multi'"
@@ -118,9 +129,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { useDublicateModal } from '~~/composables/Game/useSocket'
-
+<script lang="ts" setup>
 const step = ref(1)
 const selectedGame = ref('' as string)
 const selectedMode = ref('' as string)

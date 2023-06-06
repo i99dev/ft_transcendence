@@ -26,7 +26,7 @@
         </div>
     </div>
 </template>
-<script setup>
+<script lang="ts" setup>
 const { gameResultMessage } = defineProps(['gameResultMessage'])
 </script>
 <style>

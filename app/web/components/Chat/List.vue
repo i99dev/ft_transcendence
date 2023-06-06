@@ -82,8 +82,9 @@
                 <button
                     v-for="chat in chats"
                     :key="chat?.id"
-                    @click="setCurrentChat(chat)"
+                    @click="selectChat(chat)"
                     class="p-2 border-t border-white bg-background_light hover:bg-secondary group smooth-transition flex relative w-full focus:outline-secondary"
+                    :class="{ 'cursor-default': !chatType }"
                     @mouseover="hoverButton = chat"
                     @mouseleave="hoverButton = null"
                 >
@@ -228,7 +229,6 @@
 
 <script lang="ts" setup>
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { ref, watch, onMounted } from 'vue'
 
 const { chatSocket } = useChatSocket()
 watch(chatSocket, async () => {
@@ -237,6 +237,7 @@ watch(chatSocket, async () => {
 const { chats, setChats } = useChats()
 const { chatType, setChatType } = useChatType()
 const { setGroupChatSearching } = useGroupChatSearching()
+const { chatView, setChatView } = useChatView()
 const { setCurrentChat } = useCurrentChat()
 const isChatCreateGroupOpened = ref(false)
 const isJoinGroupChatOpened = ref(false)
@@ -260,11 +261,17 @@ const socketOn = () => {
 const HandleItemButton = (chat: DirectChat & GroupChat) => {
     if (chatType.value === 'DM') {
         emit('showInvite', chat.users[0].login)
-        // navigateTo('/play')
     } else {
         selectedChat.value = chat
         if (chat.type === 'PROTECTED') isJoinGroupChatOpened.value = true
         else joinGroupChat()
+    }
+}
+
+const selectChat = (chat: GroupChat & DirectChat) => {
+    if (chatType.value) {
+        setChatView(false)
+        setCurrentChat(chat)
     }
 }
 
