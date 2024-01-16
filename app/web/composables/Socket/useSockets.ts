@@ -1,7 +1,9 @@
-import { useToast } from 'primevue/usetoast'
+import { usePVToastService } from "../usePVToastService"
+
+
 
 export const useSockets = () => {
-    const toast = useToast()
+    const toast = usePVToastService()
     const { chatSocket, connectChatSocket, disconnectChatSocket, reconnectChatSocket } =
         useChatSocket()
     const { gameSocket, connectGameSocket, disconnectGameSocket, reconnectGameSocket } =
@@ -61,12 +63,15 @@ export const useSockets = () => {
 
     const handleSocketDisconnection = () => {
         chatSocket.value?.on('disconnect', reason => {
+			if (reason == 'io client disconnect') return
             refreshAccessToken()
         })
         gameSocket.value?.on('disconnect', reason => {
+			if (reason == 'io client disconnect') return
             refreshAccessToken()
         })
         friendSocket.value?.on('disconnect', reason => {
+			if (reason == 'io client disconnect') return
             refreshAccessToken()
         })
     }

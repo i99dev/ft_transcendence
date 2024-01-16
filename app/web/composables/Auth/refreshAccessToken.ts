@@ -1,6 +1,7 @@
 export const refreshAccessToken = async (reconnect: boolean = true) => {
     const { updateSocketsToken } = useSockets()
     const { data, error } = await useFetch('/auth/refresh', {
+		method: 'GET',
         baseURL: useRuntimeConfig().API_URL,
     })
     const tokenInfo = data.value as AccessTokenDto | null
